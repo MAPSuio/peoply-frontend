@@ -14,3 +14,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+h1 {
+  color: $primary-color;
+
+  @include desktop() {
+    color: red;
+  }
+}
