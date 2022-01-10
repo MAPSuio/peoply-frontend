@@ -18,7 +18,7 @@ a {
 h1 {
   color: $primary-color;
 
-  @include mobile() {
+  @include desktop() {
     color: red;
   }
 }
