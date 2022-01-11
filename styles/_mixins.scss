@@ -13,3 +13,8 @@
 	cursor: pointer;
 	outline: inherit;   
 }
+
+@mixin card() {
+	background-color: $card-color;
+    border-radius: $card-border-radius;
+}
