@@ -3,6 +3,7 @@ export interface User {
   last_name: string;
   birth_date: string;
   user_id: string;
+  email: string;
   arranger_id: string;
   phone: string;
   image?: string;
