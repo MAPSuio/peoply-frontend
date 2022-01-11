@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    column-gap: 10px;
+    cursor: pointer;
+
+    span {
+        color: $p-color-primary;
+    }
+}
