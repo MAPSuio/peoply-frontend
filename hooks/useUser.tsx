@@ -8,23 +8,7 @@ import {
   useState,
 } from "react";
 import { fetchUser, logout, refreshAccessToken } from "../services/auth";
-
-interface User {
-  first_name: string;
-  last_name: string;
-  birth_date: string;
-  user_id: string;
-  arranger_id: string;
-  phone: string;
-  image?: string;
-}
-
-interface UserContextType {
-  user?: User;
-  loading: boolean;
-  error?: string;
-  logout: () => void;
-}
+import { User, UserContextType } from "../types/types";
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
@@ -49,13 +33,13 @@ export function UserProvider({
         if (refreshRes.ok) {
           /* new token should be received - try to fetch the user again */
           const user = await fetchUser().then((res) => res.json());
-          setUser(user);
+          setUser(user.user);
         } else {
           setError("Authentication failed");
         }
       } else {
         const user = await res.json();
-        setUser(user);
+        setUser(user.user);
       }
       setLoading(false);
     };
