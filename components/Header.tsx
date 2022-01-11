@@ -10,9 +10,9 @@ export default function Header() {
   const { user, logout } = useUser();
   const router = useRouter();
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
     logout();
-    router.reload();
+    router.push("/");
   };
 
   if (router.pathname === "/login") {

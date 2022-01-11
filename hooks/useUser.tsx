@@ -48,9 +48,9 @@ export function UserProvider({
   }, []);
 
   /* will clear user state and request to remove the cookies */
-  const logoutHandler = () => {
-    setUser({} as User);
-    logout();
+  const logoutHandler = async () => {
+    setUser(undefined);
+    return logout();
   };
 
   const memoizedState = useMemo(
