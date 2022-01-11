@@ -1,8 +1,55 @@
 import { NextPage } from "next";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import CheckCircle from "../components/CheckCircle";
+import ConfirmButton from "../components/ConfirmButton";
+import useUser from "../hooks/useUser";
 import styles from "../styles/Login.module.scss";
 
 const Login: NextPage = () => {
+  const { user } = useUser();
+  const router = useRouter();
+
+  if (user) {
+    return (
+      <div className={styles.loginContainer}>
+        <div className={styles.loginHeaderContainer}>
+          <h1>Du er logget inn</h1>
+          <p>Vi har hentet dataene dine fra Vipps</p>
+        </div>
+        <div className={styles.card}>
+          <div className={styles.cardSection}>
+            <span className={styles.sectionName}>Navn</span>
+            <span
+              className={styles.sectionData}
+            >{`${user.first_name} ${user.last_name}`}</span>
+          </div>
+          <div className={styles.cardSection}>
+            <span className={styles.sectionName}>Email</span>
+            <span className={styles.sectionData}>{user.email}</span>
+          </div>
+          <div className={styles.cardSection}>
+            <span className={styles.sectionName}>Telefonnummer</span>
+            <span className={styles.sectionData}>{user.phone}</span>
+          </div>
+          <div className={styles.cardSection}>
+            <span className={styles.sectionName}>Fødselsdato</span>
+            <span className={styles.sectionData}>{user.birth_date}</span>
+          </div>
+          <div className={styles.checkContainer}>
+            <CheckCircle />
+          </div>
+        </div>
+        <ConfirmButton
+          onClick={() => {
+            router.push("/");
+          }}
+          text="Fortsett til appen"
+          className={styles.confirmButton}
+        />
+      </div>
+    );
+  }
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginHeaderContainer}>
