@@ -32,14 +32,14 @@ export function UserProvider({
         const refreshRes = await refreshAccessToken();
         if (refreshRes.ok) {
           /* new token should be received - try to fetch the user again */
-          const user = await fetchUser().then((res) => res.json());
-          setUser(user.user);
+          const { user } = await fetchUser().then((res) => res.json());
+          setUser(user);
         } else {
           setError("Authentication failed");
         }
       } else {
-        const user = await res.json();
-        setUser(user.user);
+        const { user } = await res.json();
+        setUser(user);
       }
       setLoading(false);
     };
