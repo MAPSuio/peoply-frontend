@@ -15,6 +15,7 @@ export default function Header() {
     router.push("/");
   };
 
+  /* probably temporary - will send the user to / when backing on /login */
   if (router.pathname === "/login") {
     return (
       <div className={styles.wrapper}>
