@@ -7,10 +7,8 @@ import BackButton from "./BackButton";
 import Avatar from "./Avatar";
 
 export default function Header() {
-  const { user, loading, error, logout } = useUser();
+  const { user, logout } = useUser();
   const router = useRouter();
-
-  console.log(router.pathname);
 
   const logoutHandler = () => {
     logout();
