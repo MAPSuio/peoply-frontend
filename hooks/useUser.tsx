@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import {
   createContext,
   ReactNode,
@@ -6,20 +7,23 @@ import {
   useMemo,
   useState,
 } from "react";
-import { fetchUser, refreshAccessToken } from "../services/auth";
+import { fetchUser, logout, refreshAccessToken } from "../services/auth";
+
+interface User {
+  first_name: string;
+  last_name: string;
+  birth_date: string;
+  user_id: string;
+  arranger_id: string;
+  phone: string;
+  image?: string;
+}
 
 interface UserContextType {
-  user?: {
-    first_name: string;
-    last_name: string;
-    birth_date: string;
-    user_id: string;
-    arranger_id: string;
-    phone: string;
-    image?: string;
-  };
+  user?: User;
   loading: boolean;
   error?: string;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -30,7 +34,7 @@ export function UserProvider({
 }: {
   children: ReactNode;
 }): JSX.Element {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<User>();
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -59,10 +63,17 @@ export function UserProvider({
     checkAuth();
   }, []);
 
+  /* will clear user state and request to remove the cookies */
+  const logoutHandler = () => {
+    setUser({} as User);
+    logout();
+  };
+
   const memoizedState = useMemo(
     () => ({
       user,
       loading,
+      logout: logoutHandler,
       error,
     }),
     [user, loading, error],
