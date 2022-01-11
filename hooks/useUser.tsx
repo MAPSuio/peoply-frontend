@@ -32,11 +32,9 @@ export function UserProvider({
 }): JSX.Element {
   const [user, setUser] = useState();
   const [error, setError] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(true);
-
     /* will attempt to fetch and set the user state */
     const checkAuth = async () => {
       const res = await fetchUser();
