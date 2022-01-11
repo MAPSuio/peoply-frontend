@@ -6,7 +6,6 @@ interface UserProps {
 }
 
 export default function Avatar({ user }: UserProps) {
-  console.log(user);
   return (
     <div>
       <div className={styles.avatar}>
