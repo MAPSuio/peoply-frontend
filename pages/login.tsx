@@ -10,6 +10,12 @@ const Login: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
 
+  const formatDate = (date: Date) => {
+    return `${date.getDate()}. ${date.toLocaleString("no", {
+      month: "long",
+    })} ${date.getFullYear()}`;
+  };
+
   if (user) {
     return (
       <div className={styles.loginContainer}>
@@ -34,7 +40,9 @@ const Login: NextPage = () => {
           </div>
           <div className={styles.cardSection}>
             <span className={styles.sectionName}>Fødselsdato</span>
-            <span className={styles.sectionData}>{user.birth_date}</span>
+            <span className={styles.sectionData}>
+              {formatDate(new Date(user.birth_date))}
+            </span>
           </div>
           <div className={styles.checkContainer}>
             <CheckCircle />
