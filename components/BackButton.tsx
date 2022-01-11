@@ -3,15 +3,13 @@ import { useRouter } from "next/router";
 import styles from "../styles/BackButton.module.scss";
 import chevron from "../public/assets/chevron.svg";
 
-export default function BackButton() {
-  const router = useRouter();
+interface BackButtonProps {
+  onClick: () => void;
+}
 
+export default function BackButton({ onClick }: BackButtonProps) {
   return (
-    <div
-      onClick={() => router.back()}
-      tabIndex={1}
-      className={styles.container}
-    >
+    <div onClick={onClick} tabIndex={1} className={styles.container}>
       <Image src={chevron} objectFit="contain" alt="left-chevron" />
       <span>Tilbake</span>
     </div>
