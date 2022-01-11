@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useRouter } from "next/router";
 import styles from "../styles/BackButton.module.scss";
 import chevron from "../public/assets/chevron.svg";
 
