@@ -35,7 +35,7 @@ export function UserProvider({
   children: ReactNode;
 }): JSX.Element {
   const [user, setUser] = useState<User>();
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
