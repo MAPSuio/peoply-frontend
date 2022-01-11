@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk');
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: "Space Grotesk", sans-serif;
+  background-color: $background-color-primary;
 }
 
 a {
@@ -15,10 +17,16 @@ a {
   box-sizing: border-box;
 }
 
+p {
+  color: $p-color-primary;
+}
+
 h1 {
-  color: $primary-color;
+  color: $h1-color-primary;
+  font-style: normal;
+  font-weight: bold;
 
   @include desktop() {
-    color: red;
+    // color: red;
   }
 }
