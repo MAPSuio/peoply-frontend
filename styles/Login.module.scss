@@ -1,6 +1,5 @@
 .loginContainer {
   display: flex;
-  position: relative;
   flex-direction: column;
   align-items: center;
 
@@ -43,7 +42,7 @@
     flex-direction: column;
     padding: 1rem 2rem;
     padding-bottom: 2.5rem;
-    row-gap: 1rem;
+    row-gap: 2rem;
 
     .cardSection {
       display: flex;
@@ -51,11 +50,13 @@
       
       .sectionName {
         color: $p-color-primary;
+        font-size: 14px;
       }
 
       .sectionData {
         color: $h1-color-primary;
         font-family: $mono-font;
+        font-size: 16px;
       }
     }
     .checkContainer {

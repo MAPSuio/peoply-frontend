@@ -10,6 +10,7 @@ const Login: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
 
+  /* formats date to fit card format (DD. Month YYYY) */
   const formatDate = (date: Date) => {
     return `${date.getDate()}. ${date.toLocaleString("no", {
       month: "long",
