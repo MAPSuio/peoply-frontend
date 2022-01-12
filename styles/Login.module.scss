@@ -2,14 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  height: 100vh;
 
   .loginHeaderContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: 2.5rem;
 
     h1 {
       margin-bottom: 0;
@@ -28,10 +27,49 @@
     align-items: center;
     justify-content: center;
     width: 16rem;
+    margin-top: 4rem;
   }
 
   .loginButtonText {
     text-align: center;
     font-size: 0.8rem;
   }
+
+  .card {
+    @include card();
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    padding-bottom: 2.5rem;
+    row-gap: 2rem;
+
+    .cardSection {
+      display: flex;
+      flex-direction: column;
+      
+      .sectionName {
+        color: $p-color-primary;
+        font-size: 0.875rem;
+      }
+
+      .sectionData {
+        color: $h1-color-primary;
+        font-family: $mono-font;
+        font-size: 1rem;
+      }
+    }
+    .checkContainer {
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      bottom: -20px;
+      left: calc(50% - 20px);
+    }
+  }
+
+  .confirmButton {
+    margin-top: 9rem;
+  }
+
 }
