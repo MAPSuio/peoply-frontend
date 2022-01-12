@@ -15,7 +15,7 @@
 
     a {
         margin: 0;
-        color: $h1-color-primary;
+        color: $text-color-emphasis;
     }
 
     .avatarContainer {
@@ -24,7 +24,7 @@
 
         button {
             @include resetButton();
-            color: $h1-color-primary;
+            color: $text-color-emphasis;
         }
     }
     

@@ -11,9 +11,11 @@
   padding: 0;
   font: inherit;
   cursor: pointer;
+  font-family: $mono-font;
+  border-radius: $border-radius-regular;
 }
 
 @mixin card() {
-  background-color: $card-color;
-  border-radius: $card-border-radius;
+  background-color: $background-color-card;
+  border-radius: $border-radius-regular;
 }
