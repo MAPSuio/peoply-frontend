@@ -1,6 +1,5 @@
-import Image from "next/image";
 import styles from "../styles/BackButton.module.scss";
-import chevron from "../public/assets/chevron.svg";
+import ChevronIcon from "./icons/ChevronIcon";
 
 interface BackButtonProps {
   onClick: () => void;
@@ -9,7 +8,7 @@ interface BackButtonProps {
 export default function BackButton({ onClick }: BackButtonProps) {
   return (
     <div onClick={onClick} tabIndex={1} className={styles.container}>
-      <Image src={chevron} objectFit="contain" alt="left-chevron" />
+      <ChevronIcon />
       <span>Tilbake</span>
     </div>
   );
