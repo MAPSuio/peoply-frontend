@@ -47,14 +47,14 @@
     .cardSection {
       display: flex;
       flex-direction: column;
-      
+
       .sectionName {
-        color: $p-color-primary;
+        color: $text-color-primary;
         font-size: 0.875rem;
       }
 
       .sectionData {
-        color: $h1-color-primary;
+        color: $heading-color-primary;
         font-family: $mono-font;
         font-size: 1rem;
       }

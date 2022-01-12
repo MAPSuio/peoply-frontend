@@ -1,6 +1,6 @@
 .button {
     @include resetButton();
-    color: $h1-color-primary;    
+    color: $heading-color-primary;
     background-color: $purple-color;
     border-radius: 12px;
     padding: 1rem 5rem;

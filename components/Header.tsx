@@ -20,7 +20,7 @@ export default function Header() {
     return (
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <BackButton onClick={() => router.push("/", {})} />
+          <BackButton onClick={() => router.push("/")} />
         </div>
       </div>
     );
