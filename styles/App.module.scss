@@ -5,7 +5,6 @@
 }
 
 .container {
-    max-width: $max-width;
-    min-width: 0;
+    width: $max-width;
     padding-bottom: 2rem;
 }
