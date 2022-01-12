@@ -1,6 +1,7 @@
 .button {
     @include resetButton();
     width: 100%;
+    max-width: 500px;
     padding: $spacer-small 0;
     color: $text-color-emphasis;
     background-color: $primary-color;
