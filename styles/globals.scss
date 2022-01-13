@@ -10,12 +10,14 @@ body {
 }
 
 a {
-  color: inherit;
+  box-sizing: border-box;
+  color: $primary-color;
   text-decoration: none;
+  font-weight: 700;
 }
 
-* {
-  box-sizing: border-box;
+p, span {
+  color: $text-color-primary;
 }
 
 h1, h2, h3, h4, h5, h6, p {
