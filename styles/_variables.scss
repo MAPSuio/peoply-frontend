@@ -1,13 +1,56 @@
-$primary-color:#7EFB8E;
-$h1-color-primary: #FFFFFF;
-$p-color-primary: #A9AAB7;
-$card-color: #303A47;
+// Primary color variations.
+$primary-color: #7C4DFF;
+
+// Status colors.
+$success-color:#7EFB8E;
+
+// Background colors.
 $background-color-primary: #1E2630;
-$purple-color: #7C4DFF;
+$background-color-card: #303A47;
+
+// Text colors.
+$text-color-emphasis: #FFFFFF;
+$text-color-primary: #A9AAB7;
+$text-color-input: #C1C3D0;
+$text-color-black: #2C263C;
+
+// Misc.
+$max-width: 1200px;
+
+// Border radii.
+$border-radius-regular: 12px;
+$border-radius-round: 100px;
 
 
-$max-width: 960px;
-$card-border-radius: 12px;
-
+// Font families.
 $main-font: "Space Grotesk", sans-serif;
 $mono-font: "Space Mono", monospace;
+
+// Font weights.
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Font sizes.
+$font-size-title: 2.25rem;
+$font-size-heading-large: 1.75rem;
+$font-size-heading-medium: 1.375rem;
+$font-size-primary: 1rem;
+$font-size-secondary: 0.875rem;
+$font-size-tertiary: 0.75rem;
+
+// Line heights.
+$line-height-title: 1;
+$line-height-text: 1.5;
+
+// Spacers
+$spacer-mini: 0.25rem;
+$spacer-very-small: 0.5rem;
+$spacer-very-small-plus: 0.75rem;
+$spacer-small: 1rem;
+$spacer-small-plus: 1.5rem;
+$spacer-medium: 2rem;
+$spacer-medium-plus: 3rem;
+$spacer-large: 4rem;
+$spacer-large-plus: 6rem;
+$spacer-very-large: 8rem;

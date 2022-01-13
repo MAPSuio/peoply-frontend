@@ -1,12 +1,12 @@
 .button {
     @include resetButton();
-    color: $h1-color-primary;    
-    background-color: $purple-color;
-    border-radius: 12px;
-    padding: 1rem 5rem;
+    width: 100%;
+    max-width: 500px;
+    padding: $spacer-small 0;
+    color: $text-color-emphasis;
+    background-color: $primary-color;
     font-size: 1rem;
-    font-family: $mono-font;
-    font-weight: 700;
+    font-weight: $font-weight-bold;
     cursor: pointer;
     box-shadow: 0px 8px 20px rgba(124, 77, 255, 0.3);
 }

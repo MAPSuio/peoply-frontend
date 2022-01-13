@@ -1,0 +1,21 @@
+.eventWrapper {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-self: center;
+    position: relative;
+}
+
+.imageContainer {
+    height: 400px;
+    width: 100%;
+    position: relative;
+}
+
+
+.eventContainer {
+    width: 90%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-self: center;
+}

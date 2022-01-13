@@ -1,4 +1,12 @@
+.loginWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .loginContainer {
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,17 +16,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: $spacer-medium-plus;
+    margin-top: $spacer-medium-plus;
 
     h1 {
-      margin-bottom: 0;
+      margin-bottom: $spacer-very-small;
     }
 
     p {
-      margin-top: 0.5rem;
-      margin-bottom: 0;
+      font-size: $font-size-secondary;
     }
-
   }
 
   .loginButtonContainer {
@@ -26,13 +33,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 16rem;
-    margin-top: 4rem;
+    margin-top: $spacer-large;
   }
 
   .loginButtonText {
     text-align: center;
-    font-size: 0.8rem;
+    font-size: $font-size-tertiary;
+    line-height: $line-height-text;
+    margin-top: $spacer-very-small;
   }
 
   .card {
@@ -40,25 +48,25 @@
     display: flex;
     position: relative;
     flex-direction: column;
-    padding: 1rem 2rem;
-    padding-bottom: 2.5rem;
-    row-gap: 2rem;
+    padding: $spacer-small $spacer-medium $spacer-medium-plus;
+    row-gap: $spacer-medium;
 
     .cardSection {
       display: flex;
       flex-direction: column;
-      
+
       .sectionName {
-        color: $p-color-primary;
-        font-size: 0.875rem;
+        margin-bottom: $spacer-very-small;
+        color: $text-color-primary;
+        font-size: $font-size-secondary;
       }
 
       .sectionData {
-        color: $h1-color-primary;
+        color: $text-color-emphasis;
         font-family: $mono-font;
-        font-size: 1rem;
       }
     }
+
     .checkContainer {
       height: 40px;
       width: 40px;
@@ -69,7 +77,6 @@
   }
 
   .confirmButton {
-    margin-top: 9rem;
+    margin-top: $spacer-very-large;
   }
-
 }
