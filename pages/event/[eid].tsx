@@ -24,6 +24,10 @@ const Event: NextPage = () => {
       />
       <div className={styles.eventContainer}>
         <h1>The user was fetched correctly</h1>
+        <div className={styles.eventDescContainer}>
+          <h2>Informasjon</h2>
+          <p className={styles.description}>Her kommer deskripsjonen.</p>
+        </div>
       </div>
     </div>
   );
