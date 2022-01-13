@@ -77,7 +77,7 @@ const Login: NextPage = () => {
           alt="Logg inn med Vipps"
         />
         <div className={styles.loginButtonContainer}>
-          <a href="http://localhost:3000/auth/login">
+          <a href={`${process.env.API_URL}/auth/login`}>
             <Image
               src={"/assets/continue_with_vipps_rect_250_NO.svg"}
               height={50}
