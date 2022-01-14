@@ -6,6 +6,7 @@ import ConfirmButton from "../components/ConfirmButton";
 import BackButton from "../components/BackButton";
 import useUser from "../hooks/useUser";
 import styles from "../styles/Login.module.scss";
+import Navbar from "../components/Navbar";
 
 const Login: NextPage = () => {
   const { user } = useUser();
@@ -59,6 +60,7 @@ const Login: NextPage = () => {
             className={styles.confirmButton}
           />
         </div>
+        <Navbar />
       </div>
     );
   }
