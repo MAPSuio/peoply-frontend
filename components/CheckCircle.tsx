@@ -1,6 +1,6 @@
 import styles from "../styles/CheckCircle.module.scss";
 
-import CheckIcon from "./icons/CheckIcon";
+import CheckIcon from "./svgs/CheckIcon";
 
 export default function CheckCircle() {
   return (
