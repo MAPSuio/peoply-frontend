@@ -1,11 +1,12 @@
 import { NextPage } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import CheckCircle from "../components/CheckCircle";
 import ConfirmButton from "../components/ConfirmButton";
 import BackButton from "../components/BackButton";
 import useUser from "../hooks/useUser";
 import styles from "../styles/Login.module.scss";
+import MobileLoginIllustration from "../components/svgs/MobileLoginIllustration";
+import ContinueWithVippsButton from "../components/svgs/ContinueWithVippsButton";
 
 const Login: NextPage = () => {
   const { user } = useUser();
@@ -70,20 +71,12 @@ const Login: NextPage = () => {
           <h1>Logg inn</h1>
           <p>Logg inn eller opprett en bruker</p>
         </div>
-        <Image
-          src={"/assets/undraw_mobile_login.svg"}
-          height={350}
-          width={350}
-          alt="Logg inn med Vipps"
-        />
+        <div className={styles.loginIllustration}>
+          <MobileLoginIllustration />
+        </div>
         <div className={styles.loginButtonContainer}>
           <a href={`${process.env.API_URL}/auth/login`}>
-            <Image
-              src={"/assets/continue_with_vipps_rect_250_NO.svg"}
-              height={50}
-              width={250}
-              alt="Logg inn med Vipps"
-            />
+            <ContinueWithVippsButton />
           </a>
           <p className={styles.loginButtonText}>
             Hvis du har logget inn før, vil du bli tatt til din gamle bruker.

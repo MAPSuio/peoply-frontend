@@ -5,6 +5,7 @@ import useSWR from "swr";
 import useUser from "../../hooks/useUser";
 import { useRouter } from "next/router";
 import styles from "../../styles/Event.module.scss";
+import defaultEventImage from "../../assets/images/undraw_partying.png";
 
 const Event: NextPage = () => {
   const { user } = useUser();
@@ -14,7 +15,7 @@ const Event: NextPage = () => {
   return (
     <div className={styles.eventWrapper}>
       <Image
-        src={"/assets/undraw_partying.png"}
+        src={defaultEventImage}
         width="100%"
         height="70%"
         layout="responsive"

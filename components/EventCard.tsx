@@ -1,9 +1,9 @@
 import Image from "next/image";
 import styles from "../styles/EventCard.module.scss";
-import CalendarIcon from "./icons/CalendarIcon";
-import LocationIcon from "./icons/LocationIcon";
-import SmileIcon from "./icons/SmileIcon";
-import eventPlaceholder from "../assets/images/undraw_partying_re_at7f 1.png";
+import CalendarIcon from "./svgs/CalendarIcon";
+import LocationIcon from "./svgs/LocationIcon";
+import SmileIcon from "./svgs/SmileIcon";
+import eventPlaceholder from "../assets/images/undraw_partying.png";
 import Link from "next/link";
 
 const EventCard = ({ event }: any) => {
