@@ -1,6 +1,8 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import EventCard from "../components/EventCard";
 import styles from "../styles/Home.module.scss";

@@ -1,6 +1,6 @@
 import styles from "../styles/UserCircle.module.scss";
 
-import UserIcon from "./icons/UserIcon";
+import UserIcon from "./svgs/UserIcon";
 
 export default function UserCircle() {
   return (

@@ -1,6 +1,6 @@
 import styles from "../styles/PlaceCircle.module.scss";
 
-import PlaceIcon from "./icons/PlaceIcon";
+import PlaceIcon from "./svgs/PlaceIcon";
 
 export default function PlaceCircle() {
   return (

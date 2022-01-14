@@ -1,8 +1,11 @@
-import type { NextPage } from "next";
+import type { InferGetStaticPropsType, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 
 import useUser from "../../hooks/useUser";
+import useBack from "../../hooks/useBack";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 
 import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
@@ -14,27 +17,52 @@ import HeartIconGlass from "../../components/HeartIconGlass";
 
 import styles from "../../styles/Event.module.scss";
 import { getTopXEvents } from "../../services/events";
-import { Event } from "../../types/types";
+import { EventData } from "../../types/types";
+import { formatDateRange, formatTimeRange } from "../../utils/functions";
+import placeholderImage from "../../assets/images/undraw_partying.png";
+import { useEffect, useState } from "react";
 
-const Event: NextPage = () => {
+interface EventProps {
+  eventData: EventData;
+}
+
+const Event = ({ eventData }: EventProps) => {
   const { user } = useUser();
-  const router = useRouter();
+  const goBack = useBack();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-  // Get event ID.
-  const { eid } = router.query;
+  // TODO: Fetch actual favorited status from the API.
+  const [favorited, setFavorited] = useState(false);
+
+  // Extract the relevant event data.
+  const {
+    dateString: eventDate,
+    timeString: eventTime,
+    title: eventTitle,
+    description: eventDescription,
+    capacity: eventCapacity,
+    private: eventPrivate,
+  } = eventData;
+
+  const imageHeight = windowWidth > 500 ? "30%" : "65%";
 
   return (
     <div className={styles.eventWrapper}>
       <div className={styles.imageContainer}>
-        <BackButtonGlass classes={styles.backIcon} />
-        <HeartIconGlass classes={styles.favoriteIcon} />
+        <BackButtonGlass classes={styles.backIcon} onClick={goBack} />
+        <HeartIconGlass
+          classes={styles.favoriteIcon}
+          onClick={() => setFavorited(!favorited)}
+          favorited={favorited}
+        />
         <Image
-          src={"/assets/undraw_partying.png"}
+          src={placeholderImage}
           width="100%"
-          height="65%"
+          height={imageHeight}
           layout="responsive"
           objectFit="cover"
           objectPosition="center top"
+          priority
           alt="Nå er det fest!"
         />
       </div>
@@ -42,7 +70,7 @@ const Event: NextPage = () => {
         <div className={styles.eventPriceTag}>Gratis</div>
         <div className={styles.eventInfoContainer}>
           <p className={styles.eventTags}>Fest, alkohol, kaffe</p>
-          <h1 className={styles.marginBottomSmall}>Escape fest</h1>
+          <h1 className={styles.marginBottomSmall}>{eventTitle}</h1>
           <div className={styles.eventInfoCard}>
             <div
               className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
@@ -60,9 +88,9 @@ const Event: NextPage = () => {
                 <p
                   className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
                 >
-                  Lør, 10.10.2021
+                  {eventDate}
                 </p>
-                <p className={styles.infoText}>18:00 - 01:00</p>
+                <p className={styles.infoText}>{eventTime}</p>
               </div>
             </div>
             <div
@@ -85,20 +113,15 @@ const Event: NextPage = () => {
             >
               <SmallCheckCircle />
               <p className={styles.infoText}>
-                <span className={styles.emphasis}>20</span> plasser ledig
+                <span className={styles.emphasis}>{eventCapacity}</span> plasser
+                ledig
               </p>
             </div>
           </div>
         </div>
         <div className={styles.descContainer}>
           <h2 className={styles.descHeader}>Informasjon</h2>
-          <p className={styles.descText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
-            iaculis interdum enim et rhoncus. <br></br>
-            <br></br>Fusce porttitor imperdiet nunc nec faucibus. Ut dapibus
-            lacinia purus a malesuada. Sed imperdiet ligula id accumsan
-            pellentesque.
-          </p>
+          <p className={styles.descText}>{eventDescription}</p>
         </div>
         <ConfirmButton
           onClick={() => console.log("clicked")}
@@ -111,13 +134,12 @@ const Event: NextPage = () => {
 };
 
 // Build the 10000 most popular events at build time.
-export async function getStaticProps() {
-  const res = await fetch(`${process.env.API_URL}/events?take=10000`);
-  const events = await res.json();
+export async function getStaticProps({ params }: { params: { eid: string } }) {
+  const eventData = await getEventData(params.eid);
 
   return {
     props: {
-      events,
+      eventData,
     },
     revalidate: 60,
   };
@@ -125,30 +147,34 @@ export async function getStaticProps() {
 
 export async function getStaticPaths() {
   const top10000Events = await getTopXEvents(10000);
-  const paths: Array<object> = top10000Events.map((event: any) => {
-    params: {
-      eid: event.id;
-    }
-  });
+  const paths: Array<object> = top10000Events.map((event: any) => ({
+    params: { eid: `${event.id}` },
+  }));
 
-  return { paths, fallback: "true" };
+  return { paths, fallback: "blocking" };
 }
 
-async function getEventData(eid: number) {
+// Fetch and format data for an event specified by an event ID.
+async function getEventData(eid: string) {
   const eventUrl = `${process.env.API_URL}/events/${eid}`;
   const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
   const eventData = await res.json();
 
   // Extract event data and format in new object.
   const startDate = new Date(eventData.start_date);
-  const endDate = new Date(eventData.end_Date);
-  const event: Event = {
-    event_id: eid,
-    start_date: eventData.start_date,
-    end_date: eventData.end_date,
+  const endDate = new Date(eventData.end_date);
+
+  const dateString = formatDateRange(startDate, endDate);
+  const timeString = formatTimeRange(startDate, endDate);
+
+  const event: EventData = {
+    eventId: eid,
+    dateString: dateString,
+    timeString: timeString,
     title: eventData.title,
     description: eventData.description,
     capacity: eventData.capacity,
+    private: eventData.private,
   };
 
   return event;

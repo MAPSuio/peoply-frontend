@@ -16,11 +16,12 @@ export interface UserContextType {
   logout: () => void;
 }
 
-export interface Event {
-  event_id: number;
-  start_date: Date;
-  end_date: Date;
+export interface EventData {
+  eventId: string;
+  dateString: string;
+  timeString: string;
   title: string;
   description: string;
   capacity: number;
+  private: boolean;
 }

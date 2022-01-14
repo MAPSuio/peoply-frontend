@@ -1,6 +1,6 @@
 import styles from "../styles/DateCircle.module.scss";
 
-import DateIcon from "./icons/DateIcon";
+import DateIcon from "./svgs/DateIcon";
 
 export default function DateCircle() {
   return (
