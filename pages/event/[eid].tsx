@@ -1,7 +1,4 @@
-import type { InferGetStaticPropsType, NextPage } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
@@ -20,7 +17,7 @@ import { getTopXEvents } from "../../services/events";
 import { EventData } from "../../types/types";
 import { formatDateRange, formatTimeRange } from "../../utils/functions";
 import placeholderImage from "../../assets/images/undraw_partying.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface EventProps {
   eventData: EventData;
