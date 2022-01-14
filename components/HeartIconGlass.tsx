@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "../styles/HeartIconGlass.module.scss";
 
 import HeartIcon from "./svgs/HeartIcon";

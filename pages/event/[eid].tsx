@@ -26,7 +26,7 @@ interface EventProps {
 const Event = ({ eventData }: EventProps) => {
   const { user } = useUser();
   const goBack = useBack();
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
   // TODO: Fetch actual favorited status from the API.
   const [favorited, setFavorited] = useState(false);
