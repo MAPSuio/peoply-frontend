@@ -15,3 +15,12 @@ export interface UserContextType {
   error?: string;
   logout: () => void;
 }
+
+export interface Event {
+  event_id: number;
+  start_date: Date;
+  end_date: Date;
+  title: string;
+  description: string;
+  capacity: number;
+}
