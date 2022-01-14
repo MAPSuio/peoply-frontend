@@ -1,6 +1,6 @@
 import styles from "../styles/HeartIconGlass.module.scss";
 
-import HeartIcon from "./icons/HeartIcon";
+import HeartIcon from "./svgs/HeartIcon";
 
 interface HeartIconGlassProps {
   classes?: string;

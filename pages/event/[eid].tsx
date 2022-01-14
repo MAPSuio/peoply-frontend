@@ -1,11 +1,8 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 
 import useUser from "../../hooks/useUser";
-import fetcher from "../../hooks/fetcher";
 
 import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
@@ -16,7 +13,6 @@ import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 
 import styles from "../../styles/Event.module.scss";
-import loadConfig from "next/dist/server/config";
 import { getTopXEvents } from "../../services/events";
 import { Event } from "../../types/types";
 

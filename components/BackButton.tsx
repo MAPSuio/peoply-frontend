@@ -1,5 +1,5 @@
 import styles from "../styles/BackButton.module.scss";
-import ChevronIcon from "./icons/ChevronIcon";
+import ChevronIcon from "./svgs/ChevronIcon";
 
 interface BackButtonProps {
   onClick: () => void;

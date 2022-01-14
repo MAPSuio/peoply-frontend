@@ -1,0 +1,92 @@
+.eventCardContainer {
+  height: 19rem;
+  border-radius: 0.75rem;
+  background-color: $background-color-card;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  .eventCard {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    border-radius: 0.75rem;
+    flex-direction: column;
+
+    .eventCardImageContainer {
+      height: 40%;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 0.75rem 0.75rem 0 0;
+
+    }
+
+    .eventCardInfoContainer {
+      border-radius: 0 0 0.75rem 0.75rem;
+      background-color: $background-color-card;
+      height: 60%;
+      width: 100%;
+      bottom: 0;
+
+      .eventCardInfo {
+        margin: 1rem;
+        border-radius: 0.75rem;
+
+        .eventCardInfoHeaderContainer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+
+          h2 {
+            color: $text-color-emphasis;
+            margin: 0;
+            font-size: $font-size-heading-medium;
+          }
+
+          .eventCardInfoHeaderPriceContainer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: $mono-font;
+          }
+        }
+
+        .divider {
+          height: 0;
+          border: 1px solid $divider-color;
+          width: 100%;
+          margin: 0.7rem 0;
+        }
+
+        .eventCardInfoBodyContainer {
+          display: flex;
+
+          .eventCardInfoBody{
+            font-family: $mono-font;
+
+            div {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+
+              .eventCardInfoBodyItem {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem;
+
+                div {
+                  display: flex;
+                  gap: 0.1rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  span {
+    font-size: $font-size-secondary;
+  }
+}

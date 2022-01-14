@@ -1,6 +1,6 @@
 import styles from "../styles/SmallCheckCircle.module.scss";
 
-import SmallCheckIcon from "./icons/SmallCheckIcon";
+import SmallCheckIcon from "./svgs/SmallCheckIcon";
 
 export default function SmallCheckCircle() {
   return (

@@ -1,6 +1,6 @@
 import styles from "../styles/BackButtonGlass.module.scss";
 
-import ChevronLeftIcon from "./icons/ChevronLeftIcon";
+import ChevronLeftIcon from "./svgs/ChevronLeftIcon";
 
 interface BackButtonGlassProps {
   classes?: string;
