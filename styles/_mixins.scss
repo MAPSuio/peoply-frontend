@@ -1,8 +1,8 @@
 @mixin desktop() {
-    @media (min-width: 600px) {
-      @content;
-    }
+  @media (min-width: 600px) {
+    @content;
   }
+}
 
 @mixin resetButton() {
   background: none;
@@ -18,4 +18,9 @@
 @mixin card() {
   background-color: $background-color-card;
   border-radius: $border-radius-regular;
+}
+
+@mixin background-opacity($color, $opacity: 0.3) {
+  background: $color; /* The Fallback */
+  background: rgba($color, $opacity);
 }

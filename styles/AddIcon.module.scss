@@ -1,0 +1,43 @@
+.container {
+    height: 3.5rem;
+    width: 3.5rem;
+    border-radius: $border-radius-round;
+    background-color: $primary-color;
+    position: relative;
+
+    @include desktop() {
+        &:hover {
+            span {
+                &:first-child {
+                    transform: scale(1.2);
+                }
+        
+                &:last-child {
+                    transform: rotate(90deg) scale(1.1);
+                }
+            }
+        }
+    }
+
+    span {
+        display: block;
+        height: 3px;
+        width: 30%;
+        background-color: white;
+        position: absolute;
+        transition: transform 0.2s ease;
+
+        /* vertical bar */
+        &:first-child {
+            top: 50%;
+            left: 35%;
+        }
+
+        /* horizontal bar */
+        &:last-child {
+            top: 50%;
+            left: 35%;
+            transform: rotate(90deg);
+        }
+    }
+}
