@@ -1,4 +1,6 @@
 .wrapper {
+  display: flex;
+  justify-content: center;
   width: 100%;
   max-width: $max-width;
   position: fixed;
@@ -7,23 +9,31 @@
   padding-bottom: $spacer-small;
 
   .container {
-    @include background-opacity($background-color-navbar, 0.8);
+    @include background-opacity($background-color-navbar, 0.925);
     display: flex;
     justify-content: space-between;
     width: 100%;
     max-width: 350px;
-    border-radius: $border-radius-regular;
-    padding: $spacer-small $spacer-medium-plus;
-    margin: 0 auto;
+    border-radius: $border-radius-round;
+    padding: $spacer-very-small-plus $spacer-medium-plus;
+    padding-top: $spacer-small;
+    margin: 0 $spacer-very-small;
 
     .item {
+      transition: all 0.15s ease;
+      cursor: pointer;
       > * {
         filter: drop-shadow(0px 3px 6px rgba(231, 231, 231, 0.5));
       }
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
-    .active {
-      height: 3px;
-      width: 80%;
+
+    .underline {
+      height: 2px;
+      width: 0.75rem;
       background-color: white;
       display: block;
       margin: 0 auto;
