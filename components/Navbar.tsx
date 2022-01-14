@@ -39,7 +39,7 @@ export default function Navbar() {
 
   return (
     <div className={`${styles.wrapper} ${hidden ? styles.hidden : ""}`}>
-      <div tabIndex={1} className={styles.container}>
+      <div className={styles.container}>
         <div className={`${styles.item} ${isActive("/") ? styles.active : ""}`}>
           <Link href="/" passHref>
             <a>
