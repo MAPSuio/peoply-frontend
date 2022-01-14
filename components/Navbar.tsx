@@ -2,8 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.scss";
-import AddIcon from "./icons/AddIcon";
-import HomeIcon from "./icons/HomeIcon";
+import AddIcon from "../components/AddIcon";
+import HomeIcon from "./svgs/HomeIcon";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);

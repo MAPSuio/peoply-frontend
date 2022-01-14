@@ -1,4 +1,4 @@
-import styles from "../../styles/AddIcon.module.scss";
+import styles from "../styles/AddIcon.module.scss";
 
 interface AddIconProps {
   classNames?: string;
