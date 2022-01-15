@@ -1,6 +1,6 @@
 const fetcher = async (input: RequestInfo, init: RequestInit) => {
   try {
-    const res = await fetch(`${process.env.API_URL}${input}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${input}`, {
       credentials: "include",
       ...init,
     });
