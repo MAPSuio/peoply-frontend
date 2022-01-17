@@ -1,8 +1,8 @@
 .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $primary-color-muted;
-    border-radius: 50%;
-    padding: 4px;
+  align-items: center;
+  background-color: $primary-color-muted;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
 }

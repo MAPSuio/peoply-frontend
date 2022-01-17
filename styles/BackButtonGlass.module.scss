@@ -1,10 +1,10 @@
 .glassButton {
-    @include resetButton();
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $background-color-glass;
-    backdrop-filter: blur($background-blur);
-    border-radius: $border-radius-icon;
-    padding: 4px;
+  @include resetButton();
+  align-items: center;
+  backdrop-filter: blur($background-blur);
+  background-color: $background-color-glass;
+  border-radius: $border-radius-icon;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
 }

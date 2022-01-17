@@ -1,43 +1,43 @@
 .container {
-    height: 3.5rem;
-    width: 3.5rem;
-    border-radius: $border-radius-round;
-    background-color: $primary-color-400;
-    position: relative;
+  background-color: $primary-color-400;
+  border-radius: $border-radius-round;
+  height: 3.5rem;
+  position: relative;
+  width: 3.5rem;
 
-    @include desktop() {
-        &:hover {
-            span {
-                &:first-child {
-                    transform: scale(1.2);
-                }
-        
-                &:last-child {
-                    transform: rotate(90deg) scale(1.1);
-                }
-            }
-        }
-    }
-
-    span {
-        display: block;
-        height: 3px;
-        width: 30%;
-        background-color: white;
-        position: absolute;
-        transition: transform 0.2s ease;
-
-        /* vertical bar */
+  @include desktop() {
+    &:hover {
+      span {
         &:first-child {
-            top: 50%;
-            left: 35%;
+          transform: scale(1.2);
         }
 
-        /* horizontal bar */
         &:last-child {
-            top: 50%;
-            left: 35%;
-            transform: rotate(90deg);
+          transform: rotate(90deg) scale(1.1);
         }
+      }
     }
+  }
+
+  span {
+    background-color: #FFFFFF;
+    display: block;
+    height: 3px;
+    position: absolute;
+    transition: transform 0.2s ease;
+    width: 30%;
+
+    /* vertical bar */
+    &:first-child {
+      left: 35%;
+      top: 50%;
+    }
+
+    /* horizontal bar */
+    &:last-child {
+      left: 35%;
+      top: 50%;
+      transform: rotate(90deg);
+    }
+  }
 }

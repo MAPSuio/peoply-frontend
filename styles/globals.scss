@@ -8,25 +8,20 @@ html {
 
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: "Space Grotesk", sans-serif;
   background-color: $background-color-primary;
+  font-family: "Space Grotesk", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 a {
   box-sizing: border-box;
   color: $primary-color-400;
-  text-decoration: none;
   font-weight: 700;
+  text-decoration: none;
 }
 
 p, span {
-  color: $text-color-primary;
-}
-
-p,
-span {
   color: $text-color-primary;
 }
 
@@ -42,11 +37,11 @@ p {
 }
 
 p {
-  max-width: 600px;
   color: $text-color-primary;
   font-size: $font-size-primary;
   font-weight: $font-weight-regular;
   line-height: 1;
+  max-width: 600px;
 }
 
 h1, h2 {
@@ -57,6 +52,7 @@ h1, h2 {
 }
 
 h1 {
+  color: $text-color-emphasis;
   font-size: $font-size-title;
   font-weight: $font-weight-bold;
 }

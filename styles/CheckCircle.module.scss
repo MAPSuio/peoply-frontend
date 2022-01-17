@@ -1,14 +1,14 @@
 .container {
-    height: 100%;
-    width: 100%;
-    background-color: $success-color;
-    border-radius: 50%;
-    position: relative;
-    box-shadow: 0px 3px 7px rgba(126, 251, 142, 0.3);
+  background-color: $success-color;
+  border-radius: 50%;
+  box-shadow: 0px 3px 7px rgba(126, 251, 142, 0.3);
+  height: 100%;
+  position: relative;
+  width: 100%;
 
-    .checkContainer {
-        position: absolute;
-        top: calc(50% - 8px);
-        left: calc(50% - 12px);
-    }
+  .checkContainer {
+    left: calc(50% - 12px);
+    position: absolute;
+    top: calc(50% - 8px);
+  }
 }

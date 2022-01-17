@@ -1,33 +1,33 @@
 
 .wrapper {
+  bottom: 0;
   display: flex;
   justify-content: center;
-  width: 100vw;
   max-width: $max-width;
-  position: fixed;
-  bottom: 0;
-  z-index: 999;
   padding-bottom: $spacer-small;
+  position: fixed;
   transition: transform 0.4s ease;
+  width: 100vw;
+  z-index: 999;
 
   .container {
     @include background-opacity($background-color-input, 0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    width: 100%;
-    max-width: 200px;
-    height: 2rem;
+    backdrop-filter: blur(8px);
     border-radius: $border-radius-round;
+    display: flex;
+    height: 2rem;
+    justify-content: space-between;
+    margin: 0 $spacer-very-small;
+    max-width: 200px;
     padding: $spacer-very-small-plus $spacer-medium-plus;
     padding-top: $spacer-small;
-    margin: 0 $spacer-very-small;
+    width: 100%;
 
     .item {
+      cursor: pointer;
       filter: invert(40%) sepia(0%) saturate(175%) hue-rotate(43deg) brightness(113%) contrast(84%);
       transition: all 0.15s ease;
-      cursor: pointer;
 
       @include desktop() {
         &:hover {
@@ -38,17 +38,17 @@
 
     .active {
       filter: drop-shadow(0px 3px 6px rgba(231, 231, 231, 0.5));
-    
+
     }
 
     .underline {
-      height: 2px;
-      width: 0.75rem;
-      background-color: white;
+      background-color: #FFFFFF;
+      border-radius: $border-radius-round;
       display: block;
+      height: 2px;
       margin: 0 auto;
       margin-top: $spacer-mini;
-      border-radius: $border-radius-round;
+      width: 0.75rem;
     }
 
     .button {

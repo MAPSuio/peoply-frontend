@@ -1,25 +1,25 @@
 .avatar {
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 100px;
+  display: flex;
+  filter: drop-shadow(0px 3px 8px rgba(209, 241, 230, 0.2));
+  height: 50px;
+  justify-content: center;
+  position: relative;
+  width: 50px;
+
+  .name {
+    font-size: 1rem;
+  }
+
+  .indicator {
+    background-color: $success-color;
     border-radius: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    width: 50px;
-    background-color: white;
-    position: relative;
-    filter: drop-shadow(0px 3px 8px rgba(209, 241, 230, 0.2));
-
-    .name {
-        font-size: 1rem;
-    }
-
-    .indicator {
-        height: 10px;
-        width: 10px;
-        border-radius: 100px;
-        background-color: $success-color;
-        position: absolute;
-        top: 37px;
-        left: 2px;
-    }
+    height: 10px;
+    left: 2px;
+    position: absolute;
+    top: 37px;
+    width: 10px;
+  }
 }

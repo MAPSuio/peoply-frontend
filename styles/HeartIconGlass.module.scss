@@ -1,22 +1,22 @@
 .container {
   @include resetButton();
-  display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: $background-color-glass;
   backdrop-filter: blur($background-blur);
+  background-color: $background-color-glass;
   border-radius: $border-radius-icon;
+  display: flex;
+  fill: none;
+  justify-content: center;
   padding: 4px;
   stroke: #FFFFFF;
-  fill: none;
 }
 
 .favorited {
-    fill: $red-color;
-    stroke: $red-color;
-  }
-  
-  .notFavorited {
-    fill: none;
-    stroke: #FFFFFF;
-  }
+  fill: $red-color;
+  stroke: $red-color;
+}
+
+.notFavorited {
+  fill: none;
+  stroke: #FFFFFF;
+}

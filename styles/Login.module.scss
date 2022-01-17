@@ -1,20 +1,20 @@
 .loginWrapper {
-  width: 100%;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
 }
 
 .loginContainer {
-  width: 90%;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 90%;
 
   .loginHeaderContainer {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     margin-bottom: $spacer-medium-plus;
     margin-top: $spacer-medium-plus;
@@ -29,39 +29,39 @@
   }
 
   .loginIllustration {
-    border-radius: 100%;
-    overflow: hidden;
-    height: 350px;
-    width: 350px;
-    display: flex;
-    justify-content: center;
     align-items: center;
     border: 4px solid $text-color-primary;
+    border-radius: 100%;
     box-sizing: border-box;
+    display: flex;
+    height: 350px;
+    justify-content: center;
+    overflow: hidden;
+    width: 350px;
   }
 
   .loginButtonContainer {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     margin-top: $spacer-large;
     width: 267px;
   }
 
   .loginButtonText {
-    text-align: center;
     font-size: $font-size-tertiary;
     line-height: $line-height-text;
     margin-top: $spacer-very-small;
+    text-align: center;
   }
 
   .card {
     @include card();
     display: flex;
-    position: relative;
     flex-direction: column;
     padding: $spacer-small $spacer-medium $spacer-medium-plus;
+    position: relative;
     row-gap: $spacer-medium;
 
     .cardSection {
@@ -69,9 +69,9 @@
       flex-direction: column;
 
       .sectionName {
-        margin-bottom: $spacer-very-small;
         color: $text-color-primary;
         font-size: $font-size-secondary;
+        margin-bottom: $spacer-very-small;
       }
 
       .sectionData {
@@ -81,11 +81,11 @@
     }
 
     .checkContainer {
-      height: 40px;
-      width: 40px;
-      position: absolute;
       bottom: -20px;
+      height: 40px;
       left: calc(50% - 20px);
+      position: absolute;
+      width: 40px;
     }
   }
 

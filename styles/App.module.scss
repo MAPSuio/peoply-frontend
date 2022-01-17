@@ -1,10 +1,10 @@
 .wrapper {
-    width: 100%;
+  width: 100%;
 }
 
 .container {
-    max-width: $max-width;
-    margin: auto;
-    min-width: 0;
-    padding-bottom: 2rem;
+  margin: auto;
+  max-width: $max-width;
+  min-width: 0;
+  padding-bottom: 2rem;
 }

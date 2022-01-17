@@ -1,12 +1,12 @@
 .container {
-    margin-top: $spacer-small;
-    display: flex;
-    align-items: center;
-    column-gap: $spacer-very-small-plus;
-    align-self: flex-start;
-    cursor: pointer;
+  align-items: center;
+  align-self: flex-start;
+  column-gap: $spacer-very-small-plus;
+  cursor: pointer;
+  display: flex;
+  margin-top: $spacer-small;
 
-    span {
-        color: $text-color-primary;
-    }
+  span {
+    color: $text-color-primary;
+  }
 }

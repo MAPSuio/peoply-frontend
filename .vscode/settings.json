@@ -2,6 +2,11 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
   },
+  "stylelint.validate": ["css", "scss", "module.scss"],
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
 }

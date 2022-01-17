@@ -6,13 +6,13 @@
 
 @mixin resetButton() {
   background: none;
-  color: inherit;
   border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  font-family: $mono-font;
   border-radius: $border-radius-regular;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-family: $mono-font;
+  padding: 0;
 }
 
 @mixin card() {

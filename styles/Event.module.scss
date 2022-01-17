@@ -1,7 +1,7 @@
 .eventWrapper {
-  width: 100%;
   display: flex;
   flex-flow: column nowrap;
+  width: 100%;
 }
 
 .imageContainer {
@@ -9,44 +9,44 @@
 }
 
 .backIcon {
+  left: 1rem;
   position: absolute;
   top: 1rem;
-  left: 1rem;
   z-index: 1;
 }
 
 .favoriteIcon {
   position: absolute;
-  top: 1rem;
   right: 1rem;
+  top: 1rem;
   z-index: 1;
 }
 
 .eventContainer {
-  width: 90%;
+  align-self: center;
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-  align-self: center;
+  width: 90%;
 }
 
 .eventPriceTag {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: $spacer-small;
+  background-color: $background-color-price-tag;
   border-radius: $border-radius-regular;
   font-family: $mono-font;
   font-weight: $font-weight-bold;
-  background-color: $background-color-price-tag;
+  padding: $spacer-small;
+  position: absolute;
+  right: 0;
+  top: 0;
   transform: translateY(-50%);
 }
 
 .eventTags {
-  margin-top: $spacer-medium;
   font-family: $mono-font;
   font-size: $font-size-tertiary;
   margin-bottom: $spacer-mini;
+  margin-top: $spacer-medium;
 }
 
 .eventInfoContainer {
@@ -64,29 +64,29 @@
 }
 
 .eventInfoCard {
+  background-color: $background-color-card;
+  border-radius: $border-radius-regular;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   padding: $spacer-small;
-  border-radius: $border-radius-regular;
-  background-color: $background-color-card;
 
   .infoTextContainer {
+    align-items: center;
     display: flex;
     flex-flow: row wrap;
-    align-items: center;
 
     .infoText {
-      margin-left: $spacer-very-small;
       font-family: $mono-font;
       font-size: $font-size-secondary;
+      margin-left: $spacer-very-small;
     }
   }
 }
 
 .confirmButton {
-  margin-top: $spacer-very-large;
   align-self: center;
+  margin-top: $spacer-very-large;
 }
 
 .flexContainer {
