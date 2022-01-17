@@ -75,7 +75,7 @@ const Login: NextPage = () => {
           <MobileLoginIllustration />
         </div>
         <div className={styles.loginButtonContainer}>
-          <a href={`${process.env.API_URL}/auth/login`}>
+          <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}>
             <ContinueWithVippsButton />
           </a>
           <p className={styles.loginButtonText}>

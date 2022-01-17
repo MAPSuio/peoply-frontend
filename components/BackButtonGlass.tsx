@@ -3,16 +3,16 @@ import styles from "../styles/BackButtonGlass.module.scss";
 import ChevronLeftIcon from "./svgs/ChevronLeftIcon";
 
 interface BackButtonGlassProps {
-  classes?: string;
+  className?: string;
   onClick: () => void;
 }
 
 export default function BackButtonGlass({
-  classes,
+  className,
   onClick,
 }: BackButtonGlassProps) {
   return (
-    <button onClick={onClick} className={`${styles.glassButton} ${classes}`}>
+    <button onClick={onClick} className={`${styles.glassButton} ${className}`}>
       <ChevronLeftIcon />
     </button>
   );

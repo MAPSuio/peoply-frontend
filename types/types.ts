@@ -1,3 +1,7 @@
+enum OrgRole {
+  admin = "ADMIN",
+}
+
 export interface User {
   first_name: string;
   last_name: string;
@@ -16,12 +20,51 @@ export interface UserContextType {
   logout: () => void;
 }
 
+export interface UserOrganizationRoles {
+  organization_id: string;
+  user_id: string;
+  organization: Organization;
+  user: User;
+  role: OrgRole;
+}
+
+export interface Organization {
+  organization_id: string;
+  arranger: Arranger;
+  arranger_id: string;
+  name: string;
+  org_nr: string;
+  image?: string;
+  organization_roles: Array<UserOrganizationRoles>;
+}
+
+export interface Arranger {
+  arranger_id: string;
+  is_business: boolean;
+  organization?: Organization;
+  user?: User;
+  event_arrangers: Array<Arranger>;
+}
+
+export interface Event {
+  event_id: string;
+  event_numeric_id: number;
+  start_date: Date;
+  end_date: Date;
+  title: string;
+  description: string;
+  capacity?: number;
+  private: boolean;
+  event_arrangers: Array<Arranger>;
+  registrations: Array<User>;
+}
+
 export interface EventData {
-  eventId: string;
+  eventId: number;
   dateString: string;
   timeString: string;
   title: string;
   description: string;
-  capacity: number;
+  capacity?: number;
   private: boolean;
 }

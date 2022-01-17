@@ -3,17 +3,17 @@ import styles from "../styles/HeartIconGlass.module.scss";
 import HeartIcon from "./svgs/HeartIcon";
 
 interface HeartIconGlassProps {
-  classes?: string;
+  className?: string;
   onClick: () => void;
   favorited: boolean;
 }
 
 export default function HeartIconGlass({
-  classes,
+  className,
   onClick,
   favorited,
 }: HeartIconGlassProps) {
-  const heartClasses = `${classes} ${
+  const heartClasses = `${className} ${
     favorited ? styles.favorited : styles.notFavorited
   }`;
 

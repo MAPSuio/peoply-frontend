@@ -13,9 +13,8 @@ import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 
 import styles from "../../styles/Event.module.scss";
-import { getTopXEvents } from "../../services/events";
-import { EventData } from "../../types/types";
-import { formatDateRange, formatTimeRange } from "../../utils/functions";
+import { getEventData, getTopXEvents } from "../../services/events";
+import { Event, EventData } from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
 import { useState } from "react";
 
@@ -46,9 +45,9 @@ const Event = ({ eventData }: EventProps) => {
   return (
     <div className={styles.eventWrapper}>
       <div className={styles.imageContainer}>
-        <BackButtonGlass classes={styles.backIcon} onClick={goBack} />
+        <BackButtonGlass className={styles.backIcon} onClick={goBack} />
         <HeartIconGlass
-          classes={styles.favoriteIcon}
+          className={styles.favoriteIcon}
           onClick={() => setFavorited(!favorited)}
           favorited={favorited}
         />
@@ -131,7 +130,7 @@ const Event = ({ eventData }: EventProps) => {
 };
 
 // Build the 10000 most popular events at build time.
-export async function getStaticProps({ params }: { params: { eid: string } }) {
+export async function getStaticProps({ params }: { params: { eid: number } }) {
   const eventData = await getEventData(params.eid);
 
   return {
@@ -144,37 +143,11 @@ export async function getStaticProps({ params }: { params: { eid: string } }) {
 
 export async function getStaticPaths() {
   const top10000Events = await getTopXEvents(10000);
-  const paths: Array<object> = top10000Events.map((event: any) => ({
-    params: { eid: `${event.id}` },
+  const paths = top10000Events.map((event: Event) => ({
+    params: { eid: `${event.event_numeric_id}` },
   }));
 
   return { paths, fallback: "blocking" };
-}
-
-// Fetch and format data for an event specified by an event ID.
-async function getEventData(eid: string) {
-  const eventUrl = `${process.env.API_URL}/events/${eid}`;
-  const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
-  const eventData = await res.json();
-
-  // Extract event data and format in new object.
-  const startDate = new Date(eventData.start_date);
-  const endDate = new Date(eventData.end_date);
-
-  const dateString = formatDateRange(startDate, endDate);
-  const timeString = formatTimeRange(startDate, endDate);
-
-  const event: EventData = {
-    eventId: eid,
-    dateString: dateString,
-    timeString: timeString,
-    title: eventData.title,
-    description: eventData.description,
-    capacity: eventData.capacity,
-    private: eventData.private,
-  };
-
-  return event;
 }
 
 export default Event;

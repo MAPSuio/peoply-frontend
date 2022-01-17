@@ -1,10 +1,12 @@
-/** @type {import('next').NextConfig} */
-module.exports = {
-  reactStrictMode: true,
-  sassOptions: {
-    prependData: `@import "variables"; @import "mixins";`,
-},
-  env: {
-    API_URL: "http://localhost:3000"
+module.exports = () => {
+  /** @type {import('next').NextConfig} */
+
+  const nextConfig = {
+    reactStrictMode: true,
+    sassOptions: {
+      prependData: `@import "variables"; @import "mixins";`,
+    },
   }
+
+  return nextConfig;
 }
