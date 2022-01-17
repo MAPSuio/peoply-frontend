@@ -1,16 +1,13 @@
 import { NextPage } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
-import ConfirmButton from "../components/ConfirmButton";
+import PrimaryButton from "../components/PrimaryButton";
 import ErrorImage from "../assets/images/undraw_404.png";
-
-import useHome from "../hooks/useHome";
 
 import styles from "../styles/Custom404.module.scss";
 
 const Custom404: NextPage = () => {
-  const goHome = useHome();
-
   return (
     <div className={styles.errorWrapper}>
       <div className={styles.errorContainer}>
@@ -25,11 +22,13 @@ const Custom404: NextPage = () => {
             placeholder="blur"
           />
         </div>
-        <ConfirmButton
-          onClick={goHome}
-          text="Gå til hjemskjermen"
-          className={styles.homeButton}
-        />
+        <Link href="/" passHref>
+          <PrimaryButton
+            isLink
+            text="Gå til hjemskjermen"
+            className={styles.homeButton}
+          />
+        </Link>
       </div>
     </div>
   );

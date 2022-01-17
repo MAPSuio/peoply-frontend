@@ -8,7 +8,7 @@ import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
 import PlaceCircle from "../../components/PlaceCircle";
 import SmallCheckCircle from "../../components/SmallCheckCircle";
-import ConfirmButton from "../../components/ConfirmButton";
+import PrimaryButton from "../../components/PrimaryButton";
 import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 
@@ -119,11 +119,10 @@ const Event = ({ eventData }: EventProps) => {
           <h2 className={styles.descHeader}>Informasjon</h2>
           <p className={styles.descText}>{eventDescription}</p>
         </div>
-        <ConfirmButton
-          onClick={() => console.log("clicked")}
+        <PrimaryButton
           text="Meld deg på arrangementet"
-          className={styles.confirmButton}
-        ></ConfirmButton>
+          className={styles.primaryButton}
+        ></PrimaryButton>
       </div>
     </div>
   );
