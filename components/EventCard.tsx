@@ -18,7 +18,7 @@ const EventCard = ({ event }: any) => {
     <Link
       href={{
         pathname: "/event/[event_id]",
-        query: { event_id: event.event_id },
+        query: { event_id: event.event_numeric_id },
       }}
       passHref={true}
     >
