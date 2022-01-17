@@ -73,7 +73,10 @@ const EventSwiper = ({ header, seeAllUrl, events, error }: any) => {
         slidesPerView={"auto"}
       >
         {events?.map((event: any) => (
-          <SwiperSlide key={event.event_id} className={styles.mySwiperSlide}>
+          <SwiperSlide
+            key={event.event_numeric_id}
+            className={styles.mySwiperSlide}
+          >
             <EventCard event={event} />
           </SwiperSlide>
         ))}
