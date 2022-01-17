@@ -1,0 +1,44 @@
+.errorWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.errorContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: $spacer-large;
+  width: 90%;
+}
+
+.errorHeaderContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: $spacer-medium-plus;
+  text-align: center;
+
+  h1 {
+    margin-bottom: $spacer-very-small;
+  }
+}
+
+.imageContainer {
+  max-width: 350px;
+}
+
+.homeButton {
+  bottom: $spacer-large;
+  left: 50%;
+  position: fixed;
+  transform: translateX(-50%);
+  width: 90%;
+}
+
+
+@media screen and (max-height: 680px) {
+  .imageContainer {
+    display: none;
+  }
+}

@@ -1,12 +1,13 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import CheckCircle from "../components/CheckCircle";
-import ConfirmButton from "../components/ConfirmButton";
+import ConfirmButton from "../components/PrimaryButton";
 import BackButton from "../components/BackButton";
 import useUser from "../hooks/useUser";
 import styles from "../styles/Login.module.scss";
 import MobileLoginIllustration from "../components/svgs/MobileLoginIllustration";
 import ContinueWithVippsButton from "../components/svgs/ContinueWithVippsButton";
+import Link from "next/link";
 
 const Login: NextPage = () => {
   const { user } = useUser();
@@ -52,13 +53,13 @@ const Login: NextPage = () => {
               <CheckCircle />
             </div>
           </div>
-          <ConfirmButton
-            onClick={() => {
-              router.push("/");
-            }}
-            text="Fortsett til appen"
-            className={styles.confirmButton}
-          />
+          <Link href="/" passHref>
+            <ConfirmButton
+              isLink
+              text="Fortsett til appen"
+              className={styles.confirmButton}
+            />
+          </Link>
         </div>
       </div>
     );
