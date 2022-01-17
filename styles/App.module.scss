@@ -1,11 +1,10 @@
 .wrapper {
-    display: flex;
-    justify-content: center;
     width: 100%;
 }
 
 .container {
     max-width: $max-width;
+    margin: auto;
     min-width: 0;
     padding-bottom: 2rem;
 }

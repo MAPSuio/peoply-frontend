@@ -16,9 +16,13 @@ body {
 
 a {
   box-sizing: border-box;
-  color: $primary-color;
+  color: $primary-color-400;
   text-decoration: none;
   font-weight: 700;
+}
+
+p, span {
+  color: $text-color-primary;
 }
 
 p,
@@ -38,15 +42,25 @@ p {
 }
 
 p {
+  max-width: 600px;
   color: $text-color-primary;
+  font-size: $font-size-primary;
   font-weight: $font-weight-regular;
   line-height: 1;
+}
+
+h1, h2 {
+  color: $text-color-emphasis;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  word-break: all;
 }
 
 h1 {
   font-size: $font-size-title;
   font-weight: $font-weight-bold;
-  color: $text-color-emphasis;
-  line-height: 1;
-  word-break: break-all;
+}
+
+h2 {
+  font-size: $font-size-heading-medium;
 }

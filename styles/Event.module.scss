@@ -1,21 +1,115 @@
 .eventWrapper {
-    width: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-    align-self: center;
-    position: relative;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .imageContainer {
-    height: 400px;
-    width: 100%;
-    position: relative;
+  position: relative;
 }
 
+.backIcon {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+}
+
+.favoriteIcon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+}
 
 .eventContainer {
-    width: 90%;
+  width: 90%;
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  align-self: center;
+}
+
+.eventPriceTag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: $spacer-small;
+  border-radius: $border-radius-regular;
+  font-family: $mono-font;
+  font-weight: $font-weight-bold;
+  background-color: $background-color-price-tag;
+  transform: translateY(-50%);
+}
+
+.eventTags {
+  margin-top: $spacer-medium;
+  font-family: $mono-font;
+  font-size: $font-size-tertiary;
+  margin-bottom: $spacer-mini;
+}
+
+.eventInfoContainer {
+  margin-bottom: $spacer-medium-plus;
+}
+
+.descContainer {
+  .descHeader {
+    margin-bottom: $spacer-very-small-plus;
+  }
+
+  .descText {
+    line-height: 1.5;
+  }
+}
+
+.eventInfoCard {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  padding: $spacer-small;
+  border-radius: $border-radius-regular;
+  background-color: $background-color-card;
+
+  .infoTextContainer {
     display: flex;
-    flex-flow: column nowrap;
-    align-self: center;
+    flex-flow: row wrap;
+    align-items: center;
+
+    .infoText {
+      margin-left: $spacer-very-small;
+      font-family: $mono-font;
+      font-size: $font-size-secondary;
+    }
+  }
+}
+
+.confirmButton {
+  margin-top: $spacer-very-large;
+  align-self: center;
+}
+
+.flexContainer {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.emphasis {
+  color: $text-color-emphasis;
+}
+
+.primaryColor {
+  color: $primary-color-200;
+}
+
+.marginBottomMini {
+  margin-bottom: $spacer-mini;
+}
+
+.marginBottomSmall {
+  margin-bottom: $spacer-small;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
 }
