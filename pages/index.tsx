@@ -23,6 +23,7 @@ import SwiperCore, {
 SwiperCore.use([Scrollbar, Mousewheel, FreeMode, Navigation]);
 import Header from "../components/Header";
 import { useState } from "react";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   const [today] = useState(new Date().toISOString());
@@ -37,6 +38,9 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Peoply - Home</title>
+      </Head>
       <Header />
       <div className={styles.container}>
         <EventSwiper

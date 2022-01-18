@@ -1,12 +1,30 @@
-module.exports = () => {
+const withPWA = require('next-pwa');
+
+module.exports = withPWA({
   /** @type {import('next').NextConfig} */
 
-  const nextConfig = {
-    reactStrictMode: true,
-    sassOptions: {
-      prependData: `@import "variables"; @import "mixins";`,
-    },
-  }
+  i18n: {
+    locales: ["nb"],
+    defaultLocale: "nb",
+    // localeDetector: {
+    //   type: "cookie",
+    //   options: {
+    //     cookieKey: "i18n_redirected",
+    //   },
+    // },
+    // redirect: true,
+  },
 
-  return nextConfig;
-}
+
+  reactStrictMode: true,
+  sassOptions: {
+    prependData: `@import "variables"; @import "mixins";`,
+  },
+
+  // generate manifest using https://www.simicart.com/
+  pwa: {
+    dest: 'public',
+    disable: process.env.NODE_ENV === 'development',
+    register: false,  // disable service worker registration
+  }
+});
