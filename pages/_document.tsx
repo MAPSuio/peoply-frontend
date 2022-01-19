@@ -1,12 +1,162 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
+  state: any;
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      appName: "Peoply",
+      appDescription: "A place to find events",
+      appUrl: "https://peoply.app",
+      appThemeColor: "#000000",
+    };
+  }
+
+  // icons generated using https://www.favicon-generator.org/
   render() {
     return (
       <Html>
         <Head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
           <link rel="manifest" href="/manifest.webmanifest" />
-          <link rel="apple-touch-icon" href="/icon.png"></link>
+          <meta name="msapplication-config" content="/browserconfig.xml" />
+          <meta name="msapplication-tap-highlight" content="no" />
+          <meta name="application-name" content={this.state.appName} />
+          <meta
+            name="apple-mobile-web-app-title"
+            content={this.state.appName}
+          />
+          <meta name="description" content={this.state.appDescription} />
+          <meta
+            name="msapplication-TileColor"
+            content={this.state.appThemeColor}
+          />
+          <meta name="theme-color" content={this.state.appThemeColor} />
+          <link rel="shortcut icon" href="/icons/favicon.ico" />
+          <meta
+            name="msapplication-TileImage"
+            content="/icons/ms-icon-144x144.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="57x57"
+            href="/icons/apple-icon-57x57.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="60x60"
+            href="/icons/apple-icon-60x60.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="72x72"
+            href="/icons/apple-icon-72x72.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="76x76"
+            href="/icons/apple-icon-76x76.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="114x114"
+            href="/icons/apple-icon-114x114.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="120x120"
+            href="/icons/apple-icon-120x120.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="144x144"
+            href="/icons/apple-icon-144x144.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="/icons/apple-icon-152x152.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/icons/apple-icon-180x180.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="192x192"
+            href="/icons/android-icon-192x192.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/icons/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="96x96"
+            href="/icons/favicon-96x96.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/icons/favicon-16x16.png"
+          />
+          {/*
+          <link
+            rel="mask-icon"
+            href="/icons/safari-pinned-tab.svg"
+            color="#5bbad5"
+          />
+          */}
+          {/* Twitter metadata
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:url" content={this.state.appUrl} />
+          <meta name="twitter:title" content={this.state.appName} />
+          <meta
+            name="twitter:description"
+            content={this.state.appDescription}
+          />
+          <meta
+            name="twitter:image"
+            content="https://peoply.app/icons/android-icon-192x192.png"
+          />
+          <meta name="twitter:creator" content="@DavidWShadow" />
+          */}
+          {/* // Facebook++ metadata */}
+          {/*           <meta property="og:type" content="website" />
+          <meta property="og:title" content={this.state.appName} />
+          <meta
+            property="og:description"
+            content="Peoply - Connecting people through events"
+            />
+          <meta property="og:site_name" content={this.state.appName} />
+          <meta property="og:url" content={this.state.appUrl} />
+          <meta
+            property="og:image"
+            content="https://peoply.app/icons/apple-icon.png"
+          /> */}
+          {/* Apple splash screen images
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_2048.png' sizes='2048x2732' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_1668.png' sizes='1668x2224' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_1536.png' sizes='1536x2048' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_1125.png' sizes='1125x2436' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_1242.png' sizes='1242x2208' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_750.png' sizes='750x1334' />
+          <link rel='apple-touch-startup-image' href='/images/apple_splash_640.png' sizes='640x1136' />
+          */}
         </Head>
         <body>
           <Main />
