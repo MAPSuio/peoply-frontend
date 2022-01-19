@@ -1,0 +1,17 @@
+.formWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.formContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: $spacer-medium;
+  width: 90%;
+
+  > * {
+    margin-bottom: $spacer-large;
+  }
+}

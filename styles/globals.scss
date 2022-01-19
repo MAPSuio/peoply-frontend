@@ -60,3 +60,18 @@ h1 {
 h2 {
   font-size: $font-size-heading-medium;
 }
+
+button, input, select, textarea {
+  border: none;
+  border-radius: $border-radius-regular;
+  font-family: inherit;
+  font-size: 100%;
+}
+
+label {
+  color: $text-color-primary;
+}
+
+/* input:focus {
+  outline-color: $primary-color-200;
+} */
