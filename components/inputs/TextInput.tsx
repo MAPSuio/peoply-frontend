@@ -51,6 +51,8 @@ const TextInput = ({
           placeholder={placeholder}
           onChange={handleChange}
           onClick={() => setFocused(true)}
+          minLength={1}
+          maxLength={maxLength}
         ></input>
         {focused && (
           <div className={styles.errorContainer}>
@@ -81,6 +83,8 @@ const TextInput = ({
         placeholder={placeholder}
         onChange={handleChange}
         onClick={() => setFocused(true)}
+        minLength={1}
+        maxLength={maxLength}
       ></input>
     </div>
   );
