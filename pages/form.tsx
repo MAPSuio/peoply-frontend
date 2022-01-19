@@ -10,7 +10,9 @@ const Form: NextPage = () => {
   const [text, setText] = useState("");
 
   const updateInputValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+    if (e.target.value.length <= 100) {
+      setText(e.target.value);
+    }
   };
 
   return (
