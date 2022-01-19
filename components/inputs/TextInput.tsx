@@ -2,7 +2,6 @@ import ErrorIcon from "../svgs/ErrorIcon";
 
 import styles from "../../styles/TextInput.module.scss";
 import { useState } from "react";
-import { notDeepEqual } from "assert";
 
 interface TextInputProps {
   value: string;
@@ -11,6 +10,7 @@ interface TextInputProps {
   label: string;
   placeholder: string;
   maxLength: number;
+  errorMessage: string;
   handleChange: (e: any) => void;
 }
 
@@ -21,6 +21,7 @@ const TextInput = ({
   label,
   placeholder,
   maxLength,
+  errorMessage,
   handleChange,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
@@ -54,7 +55,7 @@ const TextInput = ({
         {focused && (
           <div className={styles.errorContainer}>
             <ErrorIcon />
-            <p className={styles.errorText}>Tittelen kan ikke være tom.</p>
+            <p className={styles.errorText}>{errorMessage}</p>
           </div>
         )}
       </div>

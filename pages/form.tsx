@@ -24,6 +24,7 @@ const Form: NextPage = () => {
           label="Tittel på arrangementet*"
           placeholder="Here there will be a placeholder"
           maxLength={100}
+          errorMessage="Tittelen kan ikke være tom."
           handleChange={updateInputValue}
         />
         <h2>{text}</h2>
