@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Avatar from "../components/Avatar";
 import BackButton from "../components/BackButton";
+import ProfileMenu from "../components/ProfileMenu";
 import useUser from "../hooks/useUser";
 import styles from "../styles/me.module.scss";
 
@@ -34,6 +35,7 @@ const Me: NextPage = () => {
             this shit
           </p>
         </div>
+        <ProfileMenu />
       </div>
     );
   }

@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  font-family: $mono-font;
+  font-variant-ligatures: no-common-ligatures;
+  justify-content: space-between;
+  padding: 1rem;
+
+  p {
+    color: white;
+  }
+  
+  svg {
+    height: 1rem;
+    width: 1rem;
+  }
+
+  .left {
+    column-gap: 1rem;
+    display: flex;
+  }
+
+  .danger {
+    color: $danger-color;
+  }
+}
