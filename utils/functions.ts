@@ -1,4 +1,4 @@
-function formatDateRange(startDate: Date, endDate: Date) {
+function formatDateRange(startDate: Date, endDate: Date): string {
   let dateString: string;
   // if start date, month and year is today
   if (
@@ -46,7 +46,7 @@ function formatDateRange(startDate: Date, endDate: Date) {
   return dateString;
 }
 
-function formatTimeRange(startDate: Date, endDate: Date) {
+function formatTimeRange(startDate: Date, endDate: Date): string {
   const timeString = `${startDate.toLocaleString("default", {
     hour: "2-digit",
     minute: "2-digit",
@@ -57,4 +57,21 @@ function formatTimeRange(startDate: Date, endDate: Date) {
   return timeString;
 }
 
-export { formatDateRange, formatTimeRange };
+// Checks if the supplied date is older than today's date (valid).
+function olderThanToday(date: Date): boolean {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  date.setHours(0, 0, 0, 0);
+
+  return today <= date;
+}
+
+// Formats a date into yyyy-mm-dd.
+function getISODate(date: Date): string {
+  const isoString = date.toISOString().slice(0, 10);
+
+  return isoString;
+}
+
+export { formatDateRange, formatTimeRange, olderThanToday, getISODate };
