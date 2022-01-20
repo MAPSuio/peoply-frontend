@@ -92,12 +92,6 @@ function laterThanNow(date: string, timeStamp: string): boolean {
   today.setMilliseconds(0);
   dateStampWithDate.setHours(hours, minutes, 0, 0);
 
-  console.log("The current date and time is:", today);
-  console.log("The selected timestamp is:", timeStamp);
-  console.log("The selected hours are:", hours);
-  console.log("The selected minutes are:", minutes);
-  console.log("The selected date and time is:", dateStampWithDate);
-
   return dateStampWithDate >= today;
 }
 
