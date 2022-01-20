@@ -1,11 +1,12 @@
+import Link from "next/link";
 import styles from "../styles/ProfileMenuItem.module.scss";
 
 interface ProfileMenuItemProps {
   text: string;
   Icon: React.FunctionComponent;
   ActionIcon: React.FunctionComponent;
-  danger?: "true";
-  onClick: () => void;
+  danger?: boolean;
+  linkOrOnclick: string | (() => void);
 }
 
 export default function ProfileMenuItem({
@@ -13,15 +14,28 @@ export default function ProfileMenuItem({
   Icon,
   ActionIcon,
   danger,
-  onClick,
+  linkOrOnclick,
 }: ProfileMenuItemProps) {
+  if (typeof linkOrOnclick === "string") {
+    return (
+      <Link href={linkOrOnclick} passHref>
+        <a className={styles.container}>
+          <div className={styles.left}>
+            <Icon />
+            <p className={danger ? styles.danger : ""}>{text}</p>
+          </div>
+          <ActionIcon />
+        </a>
+      </Link>
+    );
+  }
   return (
-    <div onClick={onClick} className={styles.container}>
+    <button onClick={linkOrOnclick} className={styles.container}>
       <div className={styles.left}>
         <Icon />
         <p className={danger ? styles.danger : ""}>{text}</p>
       </div>
       <ActionIcon />
-    </div>
+    </button>
   );
 }

@@ -8,47 +8,51 @@ import BriefcaseIcon from "./svgs/BriefcaseIcon";
 import MailIcon from "./svgs/MailIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import CloseIcon from "./svgs/CloseIcon";
+import { useRouter } from "next/router";
+import useUser from "../hooks/useUser";
 
 export default function ProfileMenu() {
+  const { logout } = useUser();
+  const router = useRouter();
   return (
     <div className={styles.container}>
       <ProfileMenuItem
         text="Rediger profil"
         Icon={UserIcon}
         ActionIcon={ChevronRightIcon}
-        onClick={() => ""}
+        linkOrOnclick="/login"
       />
       <ProfileMenuItem
         text="Instillinger"
         Icon={SettingsIcon}
         ActionIcon={ChevronRightIcon}
-        onClick={() => ""}
+        linkOrOnclick={() => ""}
       />
       <ProfileMenuItem
         text="Betalingsinformasjon"
         Icon={CreditCardIcon}
         ActionIcon={ChevronRightIcon}
-        onClick={() => ""}
+        linkOrOnclick={() => ""}
       />
       <ProfileMenuItem
         text="Organisasjoner"
         Icon={BriefcaseIcon}
         ActionIcon={ChevronRightIcon}
-        onClick={() => ""}
+        linkOrOnclick={() => ""}
       />
       <span className={styles.divider} />
       <ProfileMenuItem
         text="Kontakt oss"
         Icon={MailIcon}
         ActionIcon={ChevronRightIcon}
-        onClick={() => ""}
+        linkOrOnclick={() => ""}
       />
       <ProfileMenuItem
         text="Log ut"
         Icon={LogoutIcon}
-        danger="true"
+        danger
         ActionIcon={CloseIcon}
-        onClick={() => ""}
+        linkOrOnclick={async () => logout().then(() => router.push("/"))}
       />
     </div>
   );
