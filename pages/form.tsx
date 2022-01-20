@@ -5,19 +5,30 @@ import DateInput from "../components/inputs/DateInput";
 
 import TextInput from "../components/inputs/TextInput";
 
-import { getISODate } from "../utils/functions";
+import { getISODate, getISOTime } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
+import TimeInput from "../components/inputs/TimeInput";
 
 const Form: NextPage = () => {
-  const [text, setText] = useState("");
-  const [date, setDate] = useState(getISODate(new Date()));
+  const today = new Date();
 
+  const [text, setText] = useState("");
+  const [date, setDate] = useState(getISODate(today));
+  const [time, setTime] = useState("");
+
+  console.log(time);
+
+  // TODO: Convert these functions into a general function.
   const updateTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
 
   const updateDate = (e: ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
+  };
+
+  const updateTime = (e: ChangeEvent<HTMLInputElement>) => {
+    setTime(e.target.value);
   };
 
   return (
@@ -32,6 +43,7 @@ const Form: NextPage = () => {
           placeholder="Here there will be a placeholder"
           maxLength={100}
           errorMessage="Tittelen kan ikke være tom."
+          required
           handleChange={updateTitle}
         />
         <DateInput
@@ -40,7 +52,18 @@ const Form: NextPage = () => {
           inputName="event_date_start"
           label="Dato start*"
           errorMessage="Datoen kan ikke være eldre enn dagens dato"
+          required
           handleChange={updateDate}
+        />
+        <TimeInput
+          value={time}
+          date={date}
+          inputId="timeStart"
+          inputName="event_time_start"
+          label="Tidspunkt start*"
+          errorMessage="Tiden må være i fremtiden."
+          required
+          handleChange={updateTime}
         />
       </div>
     </div>

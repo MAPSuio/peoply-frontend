@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import ErrorIcon from "../svgs/ErrorIcon";
 
-import { getISODate, olderThanToday } from "../../utils/functions";
-import styles from "../../styles/DateInput.module.scss";
+import styles from "../../styles/TimeInput.module.scss";
+import { getISOTime, laterThanNow } from "../../utils/functions";
 
-interface DateInputProps {
+interface TimeInputProps {
   value: string;
+  date: string;
   inputId: string;
   inputName: string;
   label: string;
@@ -15,30 +16,30 @@ interface DateInputProps {
   handleChange: (e: any) => void;
 }
 
-const DateInput = ({
+const TimeInput = ({
   value,
+  date,
   inputId,
   inputName,
   label,
   errorMessage,
   required,
   handleChange,
-}: DateInputProps) => {
+}: TimeInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  const getDateInputStyles = () => {
-    if (focused && validDate) {
-      return `${styles.dateInput} ${styles.valid}`;
-    } else if (focused && !validDate) {
-      return `${styles.dateInput} ${styles.notValid}`;
+  const getTimeInputStyles = () => {
+    if (focused && validTime) {
+      return `${styles.timeInput} ${styles.valid}`;
+    } else if (focused && !validTime) {
+      return `${styles.timeInput} ${styles.notValid}`;
     } else {
-      return styles.dateInput;
+      return styles.timeInput;
     }
   };
 
-  const todayISO = getISODate(new Date());
-  const validDate = olderThanToday(new Date(value));
-  const dateInputStyles = getDateInputStyles();
+  const validTime = laterThanNow(date, value);
+  const timeInputStyles = getTimeInputStyles();
 
   return (
     <div className={styles.inputContainer}>
@@ -46,17 +47,16 @@ const DateInput = ({
         {label}
       </label>
       <input
-        className={dateInputStyles}
-        type="date"
+        className={timeInputStyles}
+        type="time"
         value={value}
         id={inputId}
         name={inputName}
         onChange={handleChange}
         onClick={() => setFocused(true)}
-        min={todayISO}
         required={required}
       ></input>
-      {!validDate && focused && (
+      {!validTime && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon />
           <p className={styles.errorText}>{errorMessage}</p>
@@ -66,4 +66,4 @@ const DateInput = ({
   );
 };
 
-export default DateInput;
+export default TimeInput;

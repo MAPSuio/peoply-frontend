@@ -11,6 +11,7 @@ interface TextInputProps {
   placeholder: string;
   maxLength: number;
   errorMessage: string;
+  required?: boolean;
   handleChange: (e: any) => void;
 }
 
@@ -22,6 +23,7 @@ const TextInput = ({
   placeholder,
   maxLength,
   errorMessage,
+  required,
   handleChange,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
@@ -53,6 +55,8 @@ const TextInput = ({
           onClick={() => setFocused(true)}
           minLength={1}
           maxLength={maxLength}
+          required={required}
+          autoComplete="off"
         ></input>
         {focused && (
           <div className={styles.errorContainer}>
@@ -85,6 +89,7 @@ const TextInput = ({
         onClick={() => setFocused(true)}
         minLength={1}
         maxLength={maxLength}
+        required={required}
       ></input>
     </div>
   );
