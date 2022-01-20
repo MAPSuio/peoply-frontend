@@ -21,8 +21,23 @@
   background-image: url('../assets/svgs/calendar_icon.svg');
 }
 
+.errorContainer {
+  display: flex;
+  margin-top: $spacer-very-small;
+}
+
+.errorText {
+  color: $error-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+}
+
 .valid {
   border: 1px solid $success-color;
+}
+
+.notValid {
+  border: 1px solid $error-color;
 }
 
 .required {

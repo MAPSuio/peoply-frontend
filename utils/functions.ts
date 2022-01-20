@@ -59,20 +59,15 @@ function formatTimeRange(startDate: Date, endDate: Date): string {
 
 // Checks if the supplied date is older than today's date (valid).
 function olderThanToday(date: Date): boolean {
-  if (
-    date.getFullYear() < new Date().getFullYear() ||
-    (date.getFullYear() === new Date().getFullYear() &&
-      date.getMonth() < new Date().getMonth()) ||
-    (date.getFullYear() === new Date().getFullYear() &&
-      date.getMonth() === new Date().getMonth() &&
-      date.getDate() < new Date().getDate())
-  ) {
-    return false;
-  }
-  return true;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  date.setHours(0, 0, 0, 0);
+
+  return today <= date;
 }
 
-// Formats a date into dd/mm/yyyy.
+// Formats a date into yyyy-mm-dd.
 function getISODate(date: Date): string {
   const isoString = date.toISOString().slice(0, 10);
 

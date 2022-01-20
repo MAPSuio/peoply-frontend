@@ -39,6 +39,7 @@ const Form: NextPage = () => {
           inputId="dateStart"
           inputName="event_date_start"
           label="Dato start*"
+          errorMessage="Datoen kan ikke være eldre enn dagens dato"
           handleChange={updateDate}
         />
       </div>

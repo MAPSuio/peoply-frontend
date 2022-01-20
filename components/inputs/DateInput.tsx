@@ -1,13 +1,16 @@
-import styles from "../../styles/DateInput.module.scss";
 import { useState } from "react";
 
-import { getISODate } from "../../utils/functions";
+import ErrorIcon from "../svgs/ErrorIcon";
+
+import { getISODate, olderThanToday } from "../../utils/functions";
+import styles from "../../styles/DateInput.module.scss";
 
 interface DateInputProps {
   value: string;
   inputId: string;
   inputName: string;
   label: string;
+  errorMessage: string;
   handleChange: (e: any) => void;
 }
 
@@ -16,15 +19,24 @@ const DateInput = ({
   inputId,
   inputName,
   label,
+  errorMessage,
   handleChange,
 }: DateInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  const today = getISODate(new Date());
+  const getDateInputStyles = () => {
+    if (focused && validDate) {
+      return `${styles.dateInput} ${styles.valid}`;
+    } else if (focused && !validDate) {
+      return `${styles.dateInput} ${styles.notValid}`;
+    } else {
+      return styles.dateInput;
+    }
+  };
 
-  const dateInputStyles = focused
-    ? `${styles.dateInput} ${styles.valid}`
-    : `${styles.dateInput}`;
+  const todayISO = getISODate(new Date());
+  const validDate = olderThanToday(new Date(value));
+  const dateInputStyles = getDateInputStyles();
 
   return (
     <div className={styles.inputContainer}>
@@ -39,8 +51,14 @@ const DateInput = ({
         name={inputName}
         onChange={handleChange}
         onClick={() => setFocused(true)}
-        min={today}
+        min={todayISO}
       ></input>
+      {!validDate && focused && (
+        <div className={styles.errorContainer}>
+          <ErrorIcon />
+          <p className={styles.errorText}>{errorMessage}</p>
+        </div>
+      )}
     </div>
   );
 };
