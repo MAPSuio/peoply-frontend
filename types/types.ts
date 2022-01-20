@@ -17,7 +17,7 @@ export interface UserContextType {
   user?: User;
   loading: boolean;
   error?: string;
-  logout: () => void;
+  logout: () => Promise<Response>;
 }
 
 export interface UserOrganizationRoles {
