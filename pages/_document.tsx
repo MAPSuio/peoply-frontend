@@ -6,9 +6,8 @@ class MyDocument extends Document {
     super(props);
     this.state = {
       appName: "Peoply",
-      appDescription: "A place to find events",
       appUrl: "https://peoply.app",
-      appThemeColor: "#000000",
+      appThemeColor: "#7C4DFF",
     };
   }
 
@@ -18,7 +17,6 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta
             name="apple-mobile-web-app-status-bar-style"
@@ -34,12 +32,21 @@ class MyDocument extends Document {
             name="apple-mobile-web-app-title"
             content={this.state.appName}
           />
-          <meta name="description" content={this.state.appDescription} />
           <meta
             name="msapplication-TileColor"
             content={this.state.appThemeColor}
           />
           <meta name="theme-color" content={this.state.appThemeColor} />
+          {/* <meta
+            name="theme-color"
+            media="(prefers-color-scheme: light)"
+            content="white"
+          />
+          <meta
+            name="theme-color"
+            media="(prefers-color-scheme: dark)"
+            content="black"
+          /> */}
           <link rel="shortcut icon" href="/icons/favicon.ico" />
           <meta
             name="msapplication-TileImage"
@@ -121,33 +128,6 @@ class MyDocument extends Document {
             color="#5bbad5"
           />
           */}
-          {/* Twitter metadata
-          <meta name="twitter:card" content="summary" />
-          <meta name="twitter:url" content={this.state.appUrl} />
-          <meta name="twitter:title" content={this.state.appName} />
-          <meta
-            name="twitter:description"
-            content={this.state.appDescription}
-          />
-          <meta
-            name="twitter:image"
-            content="https://peoply.app/icons/android-icon-192x192.png"
-          />
-          <meta name="twitter:creator" content="@DavidWShadow" />
-          */}
-          {/* // Facebook++ metadata */}
-          {/*           <meta property="og:type" content="website" />
-          <meta property="og:title" content={this.state.appName} />
-          <meta
-            property="og:description"
-            content="Peoply - Connecting people through events"
-            />
-          <meta property="og:site_name" content={this.state.appName} />
-          <meta property="og:url" content={this.state.appUrl} />
-          <meta
-            property="og:image"
-            content="https://peoply.app/icons/apple-icon.png"
-          /> */}
           {/* Apple splash screen images
           <link rel='apple-touch-startup-image' href='/images/apple_splash_2048.png' sizes='2048x2732' />
           <link rel='apple-touch-startup-image' href='/images/apple_splash_1668.png' sizes='1668x2224' />

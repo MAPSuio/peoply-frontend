@@ -17,16 +17,21 @@ import { getEventData, getTopXEvents } from "../../services/events";
 import { Event, EventData } from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
 import { useState } from "react";
-import Head from "next/head";
+import HeadComponent from "../../components/HeadComponent";
+import { useRouter } from "next/router";
+import { GetStaticProps } from "next";
+import { ParsedUrlQuery } from "querystring";
 
 interface EventProps {
   eventData: EventData;
+  baseUrl: string;
 }
 
-const Event = ({ eventData }: EventProps) => {
+const Event = ({ eventData, baseUrl }: EventProps) => {
   const { user } = useUser();
   const goBack = useBack();
   const { width: windowWidth } = useWindowDimensions();
+  const router = useRouter();
 
   // TODO: Fetch actual favorited status from the API.
   const [favorited, setFavorited] = useState(false);
@@ -45,9 +50,13 @@ const Event = ({ eventData }: EventProps) => {
 
   return (
     <>
-      <Head>
-        <title>{`Peoply - Event: ${eventData.title}`}</title>
-      </Head>
+      <HeadComponent
+        title={`Peoply - ${eventTitle}`}
+        description={eventData.description}
+        url={`${baseUrl}${router.asPath}`}
+        // imageUrl=""
+      />
+
       <div className={styles.eventWrapper}>
         <div className={styles.imageContainer}>
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
@@ -134,17 +143,32 @@ const Event = ({ eventData }: EventProps) => {
   );
 };
 
+interface IParams extends ParsedUrlQuery {
+  eid: string;
+}
+
 // Build the 10000 most popular events at build time.
-export async function getStaticProps({ params }: { params: { eid: number } }) {
-  const eventData = await getEventData(params.eid);
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { eid } = context.params as IParams;
+  const eidNumber = parseInt(eid);
+
+  const eventData = await getEventData(eidNumber);
+  const baseUrl = process.env.BASE_URL;
+
+  if (!eventData) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
+      baseUrl,
       eventData,
     },
     revalidate: 60,
   };
-}
+};
 
 export async function getStaticPaths() {
   const top10000Events = await getTopXEvents(10000);
