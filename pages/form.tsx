@@ -16,7 +16,7 @@ const Form: NextPage = () => {
   const [text, setText] = useState("");
   const [date, setDate] = useState(getISODate(today));
   const [time, setTime] = useState("");
-  const [capacity, setCapacity] = useState("0");
+  const [capacity, setCapacity] = useState("");
 
   console.log(time);
 
@@ -76,6 +76,7 @@ const Form: NextPage = () => {
           inputId="capacity"
           inputName="event_capacity"
           label="Antall deltakere*"
+          placeholder="0"
           errorMessage="Antall deltakere kan ikke være tom eller null."
           max="250"
           required
