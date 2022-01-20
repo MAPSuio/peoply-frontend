@@ -28,14 +28,9 @@ const DateInput = ({
 
   return (
     <div className={styles.inputContainer}>
-      <div className={styles.labelContainer}>
-        <label
-          className={`${styles.label} ${styles.required}`}
-          htmlFor={inputId}
-        >
-          {label}
-        </label>
-      </div>
+      <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
+        {label}
+      </label>
       <input
         className={dateInputStyles}
         type="date"
