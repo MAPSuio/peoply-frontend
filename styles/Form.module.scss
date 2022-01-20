@@ -10,7 +10,7 @@
   flex-flow: column nowrap;
   margin-top: $spacer-medium;
   width: 90%;
-  word-break: break-all;
+  word-break: break-word;
 
   > * {
     margin-bottom: $spacer-large;
