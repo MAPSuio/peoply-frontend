@@ -1,0 +1,33 @@
+.container {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.profile {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: $spacer-medium-plus;
+
+  .name {
+    font-size: $font-size-primary;
+    font-weight: $font-weight-bold;
+    margin-top: 1.5rem;
+  }
+
+  .location {
+    color: $text-color-primary;
+    font-size: $font-size-tertiary;
+    margin-top: $spacer-very-small;
+  }
+
+  .description {
+    color: $text-color-primary;
+    font-size: $font-size-secondary;
+    line-height: $line-height-text;
+    margin-top: $spacer-small;
+    max-width: 500px;
+    text-align: center;
+    width: 70%;
+  }
+}
