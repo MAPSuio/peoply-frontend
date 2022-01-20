@@ -1,45 +1,45 @@
-import { useState } from "react";
-
 import ErrorIcon from "../svgs/ErrorIcon";
 
-import styles from "../../styles/TimeInput.module.scss";
-import { laterThanNow } from "../../utils/functions";
+import styles from "../../styles/NumberInput.module.scss";
+import { useState } from "react";
 
-interface TimeInputProps {
+interface NumberInputProps {
   value: string;
-  date: string;
   inputId: string;
   inputName: string;
   label: string;
+  placeholder: string;
+  max: string;
   errorMessage: string;
   required?: boolean;
   handleChange: (e: any) => void;
 }
 
-const TimeInput = ({
+const NumberInput = ({
   value,
-  date,
   inputId,
   inputName,
   label,
+  placeholder,
+  max,
   errorMessage,
   required,
   handleChange,
-}: TimeInputProps) => {
+}: NumberInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  const getTimeInputStyles = () => {
-    if (focused && validTime) {
-      return `${styles.timeInput} ${styles.valid}`;
-    } else if (focused && !validTime) {
-      return `${styles.timeInput} ${styles.notValid}`;
+  const getNumberInputStyles = () => {
+    if (focused && validNumber) {
+      return `${styles.numberInput} ${styles.valid}`;
+    } else if (focused && !validNumber) {
+      return `${styles.numberInput} ${styles.notValid}`;
     } else {
-      return styles.timeInput;
+      return styles.numberInput;
     }
   };
 
-  const validTime = laterThanNow(date, value);
-  const timeInputStyles = getTimeInputStyles();
+  const validNumber = parseInt(value) > 0;
+  const numberInputStyles = getNumberInputStyles();
 
   return (
     <div className={styles.inputContainer}>
@@ -47,16 +47,20 @@ const TimeInput = ({
         {label}
       </label>
       <input
-        className={timeInputStyles}
-        type="time"
+        className={numberInputStyles}
+        type="number"
         value={value}
         id={inputId}
         name={inputName}
+        placeholder={placeholder}
         onChange={handleChange}
         onClick={() => setFocused(true)}
+        min={1}
+        max={max}
         required={required}
+        autoComplete="off"
       ></input>
-      {!validTime && focused && (
+      {!validNumber && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon />
           <p className={styles.errorText}>{errorMessage}</p>
@@ -66,4 +70,4 @@ const TimeInput = ({
   );
 };
 
-export default TimeInput;
+export default NumberInput;

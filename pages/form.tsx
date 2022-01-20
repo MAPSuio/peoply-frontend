@@ -1,13 +1,14 @@
 import { NextPage } from "next";
 
 import { useState, ChangeEvent } from "react";
-import DateInput from "../components/inputs/DateInput";
 
+import DateInput from "../components/inputs/DateInput";
+import TimeInput from "../components/inputs/TimeInput";
 import TextInput from "../components/inputs/TextInput";
+import NumberInput from "../components/inputs/NumberInput";
 
 import { getISODate, getISOTime } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
-import TimeInput from "../components/inputs/TimeInput";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -15,6 +16,7 @@ const Form: NextPage = () => {
   const [text, setText] = useState("");
   const [date, setDate] = useState(getISODate(today));
   const [time, setTime] = useState("");
+  const [capacity, setCapacity] = useState("");
 
   console.log(time);
 
@@ -29,6 +31,10 @@ const Form: NextPage = () => {
 
   const updateTime = (e: ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
+  };
+
+  const updateCapacity = (e: ChangeEvent<HTMLInputElement>) => {
+    setCapacity(e.target.value);
   };
 
   return (
@@ -64,6 +70,17 @@ const Form: NextPage = () => {
           errorMessage="Tiden må være i fremtiden."
           required
           handleChange={updateTime}
+        />
+        <NumberInput
+          value={capacity}
+          inputId="capacity"
+          inputName="event_capacity"
+          label="Antall deltakere*"
+          placeholder="0"
+          errorMessage="Antall deltakere kan ikke være tom eller null."
+          max="250"
+          required
+          handleChange={updateCapacity}
         />
       </div>
     </div>
