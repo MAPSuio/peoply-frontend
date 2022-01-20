@@ -9,11 +9,13 @@ import NumberInput from "../components/inputs/NumberInput";
 
 import { getISODate, getISOTime } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
+import TextInputLong from "../components/inputs/TextInputLong";
 
 const Form: NextPage = () => {
   const today = new Date();
 
-  const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState(getISODate(today));
   const [time, setTime] = useState("");
   const [capacity, setCapacity] = useState("");
@@ -22,7 +24,11 @@ const Form: NextPage = () => {
 
   // TODO: Convert these functions into a general function.
   const updateTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+    setTitle(e.target.value);
+  };
+
+  const updateDescription = (e: ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
   };
 
   const updateDate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +48,7 @@ const Form: NextPage = () => {
       <div className={styles.formContainer}>
         <h1 className={styles.header}>This is an awesome form</h1>
         <TextInput
-          value={text}
+          value={title}
           inputId="title"
           inputName="event_title"
           label="Tittel på arrangementet*"
@@ -51,6 +57,18 @@ const Form: NextPage = () => {
           errorMessage="Tittelen kan ikke være tom."
           required
           handleChange={updateTitle}
+        />
+        <TextInputLong
+          value={description}
+          inputId="description"
+          inputName="event_description"
+          rows={12}
+          label="Beskrivelse av arrangementet*"
+          placeholder="Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
+          maxLength={2500}
+          errorMessage="Beskrivelsen kan ikke være tom"
+          required
+          handleChange={updateDescription}
         />
         <DateInput
           value={date}
