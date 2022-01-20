@@ -19,9 +19,6 @@
   }
 
   .avatarContainer {
-    column-gap: 1rem;
-    display: flex;
-
     button {
       @include resetButton();
       color: $text-color-emphasis;

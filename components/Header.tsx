@@ -2,17 +2,10 @@ import useUser from "../hooks/useUser";
 
 import styles from "../styles/Header.module.scss";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import Avatar from "./Avatar";
 
 export default function Header() {
-  const { user, logout } = useUser();
-  const router = useRouter();
-
-  const logoutHandler = async () => {
-    logout();
-    router.push("/");
-  };
+  const { user } = useUser();
 
   return (
     <div className={styles.wrapper}>
@@ -27,7 +20,6 @@ export default function Header() {
                   <Avatar user={user} />{" "}
                 </a>
               </Link>
-              <button onClick={logoutHandler}>Log out</button>{" "}
             </>
           ) : (
             <Link href="/login">Log in</Link>
