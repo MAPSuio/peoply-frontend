@@ -74,4 +74,38 @@ function getISODate(date: Date): string {
   return isoString;
 }
 
-export { formatDateRange, formatTimeRange, olderThanToday, getISODate };
+// Formats a date(time) into hh:mm:ss.
+function getISOTime(date: Date): string {
+  const isoString = date.toLocaleTimeString().slice(0, -3);
+
+  return isoString;
+}
+
+// Checks if a given time and date is later than the current time (valid).
+function laterThanNow(date: string, timeStamp: string): boolean {
+  const hours = parseInt(timeStamp.slice(0, 3));
+  const minutes = parseInt(timeStamp.slice(3));
+  const dateStampWithDate = new Date(date);
+  const today = new Date();
+
+  today.setSeconds(0);
+  today.setMilliseconds(0);
+  dateStampWithDate.setHours(hours, minutes, 0, 0);
+
+  console.log("The current date and time is:", today);
+  console.log("The selected timestamp is:", timeStamp);
+  console.log("The selected hours are:", hours);
+  console.log("The selected minutes are:", minutes);
+  console.log("The selected date and time is:", dateStampWithDate);
+
+  return dateStampWithDate >= today;
+}
+
+export {
+  formatDateRange,
+  formatTimeRange,
+  olderThanToday,
+  getISODate,
+  getISOTime,
+  laterThanNow,
+};

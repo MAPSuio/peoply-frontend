@@ -1,0 +1,41 @@
+.inputContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 500px;
+  width: 100%;
+}
+
+.label {
+  margin-bottom: $spacer-very-small;
+}
+
+.timeInput {
+  background-color: $background-color-input;
+  border: 1px solid transparent;
+  color: $text-color-emphasis;
+  font-size: $font-size-input;
+  padding: $spacer-very-small $spacer-small;
+}
+
+.errorContainer {
+  display: flex;
+  margin-top: $spacer-very-small;
+}
+
+.errorText {
+  color: $error-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+}
+
+.valid {
+  border: 1px solid $success-color;
+}
+
+.notValid {
+  border: 1px solid $error-color;
+}
+
+.required {
+  color: $text-color-emphasis;
+}
