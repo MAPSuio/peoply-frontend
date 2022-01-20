@@ -2,6 +2,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono");
 
 html {
+  /* To make sure the date picker and similar elements are dark on desktop.  */
+  color-scheme: dark;
   /* make room for scrollbar at all times to prevent content from moving */
   overflow-y: scroll;
 }

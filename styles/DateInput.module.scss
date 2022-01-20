@@ -1,0 +1,42 @@
+.inputContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 500px;
+  width: 100%;
+}
+
+.labelContainer {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.label {
+  margin-bottom: $spacer-very-small;
+}
+
+.lengthText {
+  font-size: $font-size-tertiary;
+}
+
+.dateInput {
+  background-color: $background-color-input;
+  border: 1px solid transparent;
+  color: $text-color-emphasis;
+  font-size: $font-size-input;
+  padding: $spacer-very-small $spacer-small;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  background-image: url('../assets/svgs/calendar_icon.svg');
+}
+
+
+
+.valid {
+  border: 1px solid $success-color;
+}
+
+.required {
+  color: $text-color-emphasis;
+}
