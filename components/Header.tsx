@@ -18,10 +18,15 @@ export default function Header() {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <h1>Peoply</h1>
+
         <div className={styles.avatarContainer}>
           {user ? (
             <>
-              <Avatar user={user} />{" "}
+              <Link href="/me" passHref>
+                <a>
+                  <Avatar user={user} />{" "}
+                </a>
+              </Link>
               <button onClick={logoutHandler}>Log out</button>{" "}
             </>
           ) : (
