@@ -70,7 +70,7 @@ const Login: NextPage = () => {
       ) : (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
-            <BackButton onClick={() => router.push("/", {})} />
+            <BackButton onClick={() => router.push("/")} />
             <div className={styles.loginHeaderContainer}>
               <h1>Logg inn</h1>
               <p>Logg inn eller opprett en bruker</p>

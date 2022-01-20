@@ -1,4 +1,6 @@
 .container {
+  @include resetButton();
+  cursor: pointer;
   display: flex;
   font-family: $mono-font;
   font-variant-ligatures: no-common-ligatures;

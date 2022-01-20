@@ -22,7 +22,7 @@ const Me: NextPage = () => {
   if (!loading && user) {
     return (
       <div className={styles.container}>
-        <BackButton onClick={() => router.push("/", {})} />
+        <BackButton onClick={() => router.push("/")} />
         <div className={styles.profile}>
           <Avatar user={user} size="large" />
           <h1
