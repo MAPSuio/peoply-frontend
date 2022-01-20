@@ -11,20 +11,15 @@ export default function Header() {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <h1>Peoply</h1>
-
-        <div className={styles.avatarContainer}>
-          {user ? (
-            <>
-              <Link href="/me" passHref>
-                <a>
-                  <Avatar user={user} />{" "}
-                </a>
-              </Link>
-            </>
-          ) : (
-            <Link href="/login">Log in</Link>
-          )}
-        </div>
+        {user ? (
+          <Link href="/me" passHref>
+            <a>
+              <Avatar user={user} />{" "}
+            </a>
+          </Link>
+        ) : (
+          <Link href="/login">Log in</Link>
+        )}
       </div>
     </div>
   );

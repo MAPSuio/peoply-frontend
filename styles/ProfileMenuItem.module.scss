@@ -5,10 +5,10 @@
   font-family: $mono-font;
   font-variant-ligatures: no-common-ligatures;
   justify-content: space-between;
-  padding: 1rem;
+  padding: $spacer-small;
 
   p {
-    color: white;
+    color: $text-color-emphasis;
   }
   
   svg {
@@ -17,7 +17,7 @@
   }
 
   .left {
-    column-gap: 1rem;
+    column-gap: $spacer-small;
     display: flex;
   }
 

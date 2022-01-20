@@ -20,39 +20,39 @@ export default function ProfileMenu() {
         text="Rediger profil"
         Icon={UserIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnclick="/login"
+        linkOrOnClick="/login"
       />
       <ProfileMenuItem
         text="Instillinger"
         Icon={SettingsIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnclick={() => ""}
+        linkOrOnClick={() => ""}
       />
       <ProfileMenuItem
         text="Betalingsinformasjon"
         Icon={CreditCardIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnclick={() => ""}
+        linkOrOnClick={() => ""}
       />
       <ProfileMenuItem
         text="Organisasjoner"
         Icon={BriefcaseIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnclick={() => ""}
+        linkOrOnClick={() => ""}
       />
       <span className={styles.divider} />
       <ProfileMenuItem
         text="Kontakt oss"
         Icon={MailIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnclick={() => ""}
+        linkOrOnClick={() => ""}
       />
       <ProfileMenuItem
         text="Log ut"
         Icon={LogoutIcon}
         danger
         ActionIcon={CloseIcon}
-        linkOrOnclick={async () => logout().then(() => router.push("/"))}
+        linkOrOnClick={() => logout().then(() => router.push("/"))}
       />
     </div>
   );

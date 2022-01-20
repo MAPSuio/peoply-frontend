@@ -17,12 +17,4 @@
     color: $text-color-emphasis;
     margin: 0;
   }
-
-  .avatarContainer {
-    button {
-      @include resetButton();
-      color: $text-color-emphasis;
-    }
-  }
-
 }

@@ -6,7 +6,7 @@ interface ProfileMenuItemProps {
   Icon: React.FunctionComponent;
   ActionIcon: React.FunctionComponent;
   danger?: boolean;
-  linkOrOnclick: string | (() => void);
+  linkOrOnClick: string | (() => void);
 }
 
 export default function ProfileMenuItem({
@@ -14,11 +14,11 @@ export default function ProfileMenuItem({
   Icon,
   ActionIcon,
   danger,
-  linkOrOnclick,
+  linkOrOnClick,
 }: ProfileMenuItemProps) {
-  if (typeof linkOrOnclick === "string") {
+  if (typeof linkOrOnClick === "string") {
     return (
-      <Link href={linkOrOnclick} passHref>
+      <Link href={linkOrOnClick} passHref>
         <a className={styles.container}>
           <div className={styles.left}>
             <Icon />
@@ -30,7 +30,7 @@ export default function ProfileMenuItem({
     );
   }
   return (
-    <button onClick={linkOrOnclick} className={styles.container}>
+    <button onClick={linkOrOnClick} className={styles.container}>
       <div className={styles.left}>
         <Icon />
         <p className={danger ? styles.danger : ""}>{text}</p>

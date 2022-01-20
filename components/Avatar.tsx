@@ -25,7 +25,6 @@ export default function Avatar({ user, size }: UserProps) {
         <span className={styles.name}>
           {`${user.first_name.charAt(0)}${user.last_name.charAt(0)}`}
         </span>
-        {/* <span className={styles.indicator}></span> */}
       </div>
     </div>
   );
