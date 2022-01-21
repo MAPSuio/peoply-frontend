@@ -35,3 +35,8 @@
   font-family: $mono-font;
   font-variant-ligatures: no-common-ligatures;
 }
+
+@mixin label() {
+  font-weight: $font-weight-regular;
+  margin-bottom: $spacer-very-small;
+}

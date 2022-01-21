@@ -5,4 +5,15 @@
   display: flex;
   justify-content: center;
   padding: 4px;
+  stroke: $success-color;
+}
+
+.placeBottomCenter {
+  background-color: $success-color;
+  bottom: 0;
+  box-shadow: $shadow-check;
+  left: 50%;
+  position: absolute;
+  stroke: $black-color;
+  transform: translate(-50%, 50%);
 }

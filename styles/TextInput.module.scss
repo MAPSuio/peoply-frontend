@@ -1,7 +1,7 @@
 .inputContainer {
   display: flex;
   flex-flow: column nowrap;
-  max-width: 500px;
+  max-width: $max-width-input;
   width: 100%;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .label {
-  margin-bottom: $spacer-very-small;
+  @include label();
 }
 
 .lengthText {
