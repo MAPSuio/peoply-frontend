@@ -29,11 +29,7 @@ const Me: NextPage = () => {
             className={styles.name}
           >{`${user.first_name} ${user.last_name}`}</h1>
           <p className={styles.location}>Oslo, NO</p>
-          <p className={styles.description}>
-            Descriptions is here can you see this shit or what Descriptions is
-            here can you see this shit or what Descriptions is here can you see
-            this shit
-          </p>
+          <p className={styles.description}>Example description here</p>
         </div>
         <ProfileMenu />
       </div>
