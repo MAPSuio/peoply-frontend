@@ -1,0 +1,15 @@
+.container {
+  background-color: $background-color-card;
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  width: 100%;
+
+  span {
+    @include divider();
+    align-self: center;
+    margin: 1rem 0;
+    width: 90%;
+  }
+}

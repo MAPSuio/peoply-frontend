@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -23,9 +23,13 @@ import SwiperCore, {
 SwiperCore.use([Scrollbar, Mousewheel, FreeMode, Navigation]);
 import Header from "../components/Header";
 import { useState } from "react";
-import Head from "next/head";
+import HeadComponent from "../components/HeadComponent";
+import { useRouter } from "next/router";
 
-const Home: NextPage = () => {
+const Home: NextPage = ({
+  baseUrl,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
   const [today] = useState(new Date().toISOString());
   const { data: futureEvents, error: futureEventsError } = useSWR(
     `/events?afterDate=${today}`,
@@ -38,9 +42,11 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Peoply - Home</title>
-      </Head>
+      <HeadComponent
+        title="Peoply - Home"
+        description="Home page of Peoply"
+        url={`${baseUrl}${router.asPath}`}
+      />
       <Header />
       <div className={styles.container}>
         <EventSwiper
@@ -87,6 +93,15 @@ const EventSwiper = ({ header, seeAllUrl, events, error }: any) => {
       </Swiper>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const baseUrl = process.env.BASE_URL;
+  return {
+    props: {
+      baseUrl,
+    },
+  };
 };
 
 export default Home;

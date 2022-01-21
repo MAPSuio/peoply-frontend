@@ -1,0 +1,26 @@
+.container {
+  @include resetButton();
+  @include monoFont();
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: $spacer-small;
+
+  p {
+    color: $text-color-emphasis;
+  }
+  
+  svg {
+    height: 1rem;
+    width: 1rem;
+  }
+
+  .left {
+    column-gap: $spacer-small;
+    display: flex;
+  }
+
+  .danger {
+    color: $danger-color;
+  }
+}

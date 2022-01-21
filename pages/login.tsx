@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import CheckCircle from "../components/CheckCircle";
 import PrimaryButton from "../components/PrimaryButton";
@@ -7,10 +7,12 @@ import useUser from "../hooks/useUser";
 import styles from "../styles/Login.module.scss";
 import MobileLoginIllustration from "../components/svgs/MobileLoginIllustration";
 import ContinueWithVippsButton from "../components/svgs/ContinueWithVippsButton";
-import Head from "next/head";
 import Link from "next/link";
+import HeadComponent from "../components/HeadComponent";
 
-const Login: NextPage = () => {
+const Login: NextPage = ({
+  baseUrl,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { user } = useUser();
   const router = useRouter();
 
@@ -23,9 +25,11 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Peoply - Logg inn</title>
-      </Head>
+      <HeadComponent
+        title="Peoply - Home"
+        description="Home page of Peoply"
+        url={`${baseUrl}${router.asPath}`}
+      />
       {user ? (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
@@ -70,7 +74,7 @@ const Login: NextPage = () => {
       ) : (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
-            <BackButton onClick={() => router.push("/", {})} />
+            <BackButton onClick={() => router.push("/")} />
             <div className={styles.loginHeaderContainer}>
               <h1>Logg inn</h1>
               <p>Logg inn eller opprett en bruker</p>
@@ -92,6 +96,15 @@ const Login: NextPage = () => {
       )}
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const baseUrl = process.env.BASE_URL;
+  return {
+    props: {
+      baseUrl,
+    },
+  };
 };
 
 export default Login;
