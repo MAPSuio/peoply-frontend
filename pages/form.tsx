@@ -6,10 +6,12 @@ import DateInput from "../components/inputs/DateInput";
 import TimeInput from "../components/inputs/TimeInput";
 import TextInput from "../components/inputs/TextInput";
 import NumberInput from "../components/inputs/NumberInput";
-
-import { getISODate, getISOTime } from "../utils/functions";
-import styles from "../styles/Form.module.scss";
+import CategoryInput from "../components/inputs/CategoryInput";
 import TextInputLong from "../components/inputs/TextInputLong";
+import Tag from "../components/Tag";
+
+import { getISODate } from "../utils/functions";
+import styles from "../styles/Form.module.scss";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -19,6 +21,7 @@ const Form: NextPage = () => {
   const [date, setDate] = useState(getISODate(today));
   const [time, setTime] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [activeCategories, setActiveCategories] = useState([1, 2]);
 
   console.log(time);
 
@@ -41,6 +44,14 @@ const Form: NextPage = () => {
 
   const updateCapacity = (e: ChangeEvent<HTMLInputElement>) => {
     setCapacity(e.target.value);
+  };
+
+  const updateCategories = (categoryId: number) => {
+    if (activeCategories.includes(categoryId)) {
+      setActiveCategories(activeCategories.filter((id) => categoryId !== id));
+    } else {
+      setActiveCategories([...activeCategories, categoryId]);
+    }
   };
 
   return (
@@ -75,7 +86,7 @@ const Form: NextPage = () => {
           inputId="dateStart"
           inputName="event_date_start"
           label="Dato start*"
-          errorMessage="Datoen kan ikke være eldre enn dagens dato"
+          errorMessage="Datoen kan ikke være eldre enn dagens dato."
           required
           handleChange={updateDate}
         />
@@ -99,6 +110,17 @@ const Form: NextPage = () => {
           max="250"
           required
           handleChange={updateCapacity}
+        />
+        <CategoryInput
+          categories={[
+            { id: 1, text: "LGBTQ" },
+            { id: 2, text: "Trening" },
+            { id: 3, text: "Matservering" },
+            { id: 4, text: "Alkohol" },
+          ]}
+          activeCategories={activeCategories}
+          errorMessage="Du må velge minst en kategori."
+          onClick={updateCategories}
         />
       </div>
     </div>

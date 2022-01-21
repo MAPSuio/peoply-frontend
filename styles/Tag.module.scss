@@ -1,0 +1,19 @@
+.tagContainer {
+  align-items: center;
+  background-color: $background-color-tag;
+  border-radius: $border-radius-round;
+  color: $text-color-primary;
+  cursor: pointer;
+  display: flex;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  justify-content: center;
+  padding: $spacer-very-small $spacer-small;
+}
+
+.active {
+  background-color: $primary-color-400;
+  box-shadow: $shadow-tag;
+  color: $text-color-emphasis;
+  font-weight: $font-weight-bold;
+}
