@@ -12,7 +12,7 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: $font-weight-bold;
-  max-width: 500px;
+  max-width: $max-width-button;
   padding: $spacer-small 0;
   width: 100%;
 }

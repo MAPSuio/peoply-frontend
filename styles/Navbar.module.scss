@@ -6,7 +6,7 @@
   max-width: $max-width;
   padding-bottom: $spacer-small;
   position: fixed;
-  transition: transform 0.4s ease;
+  transition: transform $animation-duration ease;
   width: 100vw;
   z-index: 999;
 
@@ -27,7 +27,7 @@
     .item {
       cursor: pointer;
       filter: invert(40%) sepia(0%) saturate(175%) hue-rotate(43deg) brightness(113%) contrast(84%);
-      transition: all 0.15s ease;
+      transition: all $animation-duration ease;
 
       @include desktop() {
         &:hover {

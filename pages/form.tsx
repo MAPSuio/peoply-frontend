@@ -8,7 +8,10 @@ import TextInput from "../components/inputs/TextInput";
 import NumberInput from "../components/inputs/NumberInput";
 import CategoryInput from "../components/inputs/CategoryInput";
 import TextInputLong from "../components/inputs/TextInputLong";
-import Tag from "../components/Tag";
+import RadioInput from "../components/inputs/RadioInput";
+import PrivateIcon from "../components/svgs/PrivateIcon";
+import PublicIcon from "../components/svgs/PublicIcon";
+import Navbar from "../components/Navbar";
 
 import { getISODate } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
@@ -22,6 +25,7 @@ const Form: NextPage = () => {
   const [time, setTime] = useState("");
   const [capacity, setCapacity] = useState("");
   const [activeCategories, setActiveCategories] = useState([1, 2]);
+  const [privateEvent, setPrivateEvent] = useState(false);
 
   console.log(time);
 
@@ -51,6 +55,14 @@ const Form: NextPage = () => {
       setActiveCategories(activeCategories.filter((id) => categoryId !== id));
     } else {
       setActiveCategories([...activeCategories, categoryId]);
+    }
+  };
+
+  const updateVisibility = (id: number) => {
+    if (id === 2) {
+      setPrivateEvent(true);
+    } else {
+      setPrivateEvent(false);
     }
   };
 
@@ -121,6 +133,28 @@ const Form: NextPage = () => {
           activeCategories={activeCategories}
           errorMessage="Du må velge minst en kategori."
           onClick={updateCategories}
+        />
+        <RadioInput
+          optionsAndIcons={[
+            {
+              id: 1,
+              text: "offentlig",
+              hintText:
+                "Synlig for offentligheten. Vises for alle i appen, inkludert personer uten brukerkonto.",
+              icon: PublicIcon,
+              active: !privateEvent,
+            },
+            {
+              id: 2,
+              text: "privat",
+              hintText:
+                "Ikke synlig for offentligheten, men kan deles med lenke og/eller invitasjon",
+              icon: PrivateIcon,
+              active: privateEvent,
+            },
+          ]}
+          onClick={updateVisibility}
+          label="Privat eller offentlig arrangement?*"
         />
       </div>
     </div>

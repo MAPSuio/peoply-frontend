@@ -9,7 +9,6 @@ export default function SmallCheckIcon() {
     >
       <path
         d="M11.6667 3.5L5.25004 9.91667L2.33337 7"
-        stroke="#7EFB8E"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

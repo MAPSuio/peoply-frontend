@@ -27,7 +27,7 @@ const CategoryInput = ({
 
   return (
     <div className={styles.categoryInputWrapper}>
-      <p className={styles.categoryText}>Kategori(er)</p>
+      <p className={styles.categoryLabel}>Kategori(er)</p>
       <div className={categoryContainerStyles}>
         {categories.map((cat) => {
           return (

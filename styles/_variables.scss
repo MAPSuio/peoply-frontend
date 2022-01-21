@@ -6,6 +6,7 @@ $primary-color-muted: #594F78;
 // Status colors.
 $success-color: #7EFB8E;
 $success-color-muted: #406155;
+$success-color-input: #4C6F66;
 $error-color: #FF586C;
 
 // Background colors.
@@ -26,6 +27,7 @@ $text-color-black: #2C263C;
 // Misc colors.
 $red-color: #FF8585;
 $danger-color: #FF586C;
+$black-color: #000000;
 
 // Divider colors.
 $divider-color: #404F5F;
@@ -35,7 +37,10 @@ $divider-color: #404F5F;
 
 // Misc.
 $max-width: 1200px;
+$max-width-input: 500px;
+$max-width-button: 500px;
 $background-blur: 8px;
+$animation-duration: 0.3s;
 
 // Border radii.
 $border-radius-regular: 12px;
@@ -44,6 +49,8 @@ $border-radius-round: 100px;
 
 // Shadows
 $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
+$shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);
+$shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;
@@ -65,6 +72,7 @@ $font-size-tertiary: 0.75rem;
 
 // Line heights.
 $line-height-title: 1;
+$line-height-hint-text: 1.2;
 $line-height-text: 1.5;
 
 // Spacers
@@ -82,6 +90,3 @@ $spacer-very-large: 8rem;
 // Break points.
 $first-break: 500px;
 $second-break: 1000px;
-
-// Box shadows
-$box-shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);

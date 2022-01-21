@@ -1,0 +1,17 @@
+.radioInputWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.radioButtonsContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.labelText {
+  @include label();
+  color: $text-color-emphasis;
+}

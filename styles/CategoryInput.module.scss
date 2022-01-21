@@ -1,15 +1,12 @@
 .categoryInputWrapper {
   display: flex;
   flex-flow: column nowrap;
-  max-width: 500px;
+  max-width: $max-width-input;
   width: 100%;
 }
 
-.categoryText {
-  color: $text-color-primary;
-  font-size: $font-size-primary;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacer-very-small;
+.categoryLabel {
+  @include label();
 }
 
 .categoryInputContainer {
