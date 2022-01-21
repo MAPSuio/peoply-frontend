@@ -1,9 +1,8 @@
 .container {
   @include resetButton();
+  @include monoFont();
   cursor: pointer;
   display: flex;
-  font-family: $mono-font;
-  font-variant-ligatures: no-common-ligatures;
   justify-content: space-between;
   padding: $spacer-small;
 
