@@ -86,7 +86,7 @@ const Form: NextPage = () => {
           inputId="dateStart"
           inputName="event_date_start"
           label="Dato start*"
-          errorMessage="Datoen kan ikke være eldre enn dagens dato"
+          errorMessage="Datoen kan ikke være eldre enn dagens dato."
           required
           handleChange={updateDate}
         />
@@ -119,6 +119,7 @@ const Form: NextPage = () => {
             { id: 4, text: "Alkohol" },
           ]}
           activeCategories={activeCategories}
+          errorMessage="Du må velge minst en kategori."
           onClick={updateCategories}
         />
       </div>

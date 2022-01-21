@@ -18,3 +18,18 @@
   flex-flow: row wrap;
   gap: $spacer-very-small-plus;
 }
+
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+}
+
+.errorContainer {
+  display: flex;
+  margin-top: $spacer-very-small;
+}
+
+.errorText {
+  color: $error-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+}
