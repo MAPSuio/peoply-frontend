@@ -15,6 +15,7 @@ $background-color-price-tag: #FFFFFF;
 $background-color-glass: rgba(115, 130, 149, 0.7);
 $background-color-navbar: #49515C;
 $background-color-input: #3F4C5C;
+$background-color-tag: #303A47;
 
 // Text colors.
 $text-color-emphasis: #FFFFFF;
@@ -39,6 +40,9 @@ $background-blur: 8px;
 $border-radius-regular: 12px;
 $border-radius-icon: 8px;
 $border-radius-round: 100px;
+
+// Shadows
+$shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;

@@ -1,0 +1,20 @@
+.categoryInputWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 500px;
+  width: 100%;
+}
+
+.categoryText {
+  color: $text-color-primary;
+  font-size: $font-size-primary;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacer-very-small;
+}
+
+.categoryInputContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: $spacer-very-small-plus;
+}
