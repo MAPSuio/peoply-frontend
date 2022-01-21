@@ -24,3 +24,14 @@
   background: $color; /* The Fallback */
   background: rgba($color, $opacity);
 }
+
+@mixin divider() {
+  border: 1px solid $divider-color;
+  height: 0;
+  width: 100%;
+}
+
+@mixin monoFont() {
+  font-family: $mono-font;
+  font-variant-ligatures: no-common-ligatures;
+}

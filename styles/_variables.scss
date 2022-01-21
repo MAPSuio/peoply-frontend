@@ -24,6 +24,7 @@ $text-color-black: #2C263C;
 
 // Misc colors.
 $red-color: #FF8585;
+$danger-color: #FF586C;
 
 // Divider colors.
 $divider-color: #404F5F;
@@ -77,3 +78,6 @@ $spacer-very-large: 8rem;
 // Break points.
 $first-break: 500px;
 $second-break: 1000px;
+
+// Box shadows
+$box-shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);
