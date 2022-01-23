@@ -1,4 +1,5 @@
 .container {
+  @include resetButton();
   align-items: center;
   align-self: flex-start;
   column-gap: $spacer-very-small-plus;

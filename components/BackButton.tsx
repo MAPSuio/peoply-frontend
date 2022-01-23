@@ -7,9 +7,9 @@ interface BackButtonProps {
 
 export default function BackButton({ onClick }: BackButtonProps) {
   return (
-    <div onClick={onClick} tabIndex={1} className={styles.container}>
+    <button onClick={onClick} tabIndex={1} className={styles.container}>
       <ChevronIcon />
       <span>Tilbake</span>
-    </div>
+    </button>
   );
 }

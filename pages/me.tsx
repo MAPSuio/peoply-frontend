@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import useBack from "../hooks/useBack";
 import Avatar from "../components/Avatar";
 import BackButton from "../components/BackButton";
 import ProfileMenu from "../components/ProfileMenu";
@@ -8,6 +9,7 @@ import styles from "../styles/me.module.scss";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
+  const goBack = useBack();
 
   const router = useRouter();
 
@@ -22,7 +24,7 @@ const Me: NextPage = () => {
   if (!loading && user) {
     return (
       <div className={styles.container}>
-        <BackButton onClick={() => router.push("/")} />
+        <BackButton onClick={goBack} />
         <div className={styles.profile}>
           <Avatar user={user} size="large" />
           <h1
