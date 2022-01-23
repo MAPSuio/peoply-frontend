@@ -18,6 +18,8 @@ import styles from "../styles/Form.module.scss";
 import ImageInput from "../components/inputs/ImageInput";
 import { read } from "fs";
 import ProgressBar from "../components/ProgressBar";
+import SummaryCard from "../components/SummaryCard";
+import TitleCircle from "../components/TitleCircle";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -31,6 +33,7 @@ const Form: NextPage = () => {
   const [privateEvent, setPrivateEvent] = useState(false);
   const [image, setImage] = useState(null);
   const [currentStep, setCurrentStep] = useState(2);
+  const [activeInputPage, setActiveInputPage] = useState(0);
 
   console.log(time);
 
@@ -78,6 +81,11 @@ const Form: NextPage = () => {
       // @ts-ignore
       setImage(e.target.files[0]);
     }
+  };
+
+  const updateActiveInputPage = (inputId: number) => {
+    console.log(inputId);
+    setActiveInputPage(inputId);
   };
 
   return (
@@ -180,6 +188,13 @@ const Form: NextPage = () => {
           onChange={updateImage}
         />
         <ProgressBar currentStep={currentStep} stepCount={7} />
+        <SummaryCard
+          inputId={1}
+          Icon={TitleCircle}
+          onClick={updateActiveInputPage}
+        >
+          <h2>Here come that text</h2>
+        </SummaryCard>
       </div>
     </div>
   );

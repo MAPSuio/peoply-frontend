@@ -1,0 +1,18 @@
+.summaryCardContainer {
+  @include card();
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input;
+  padding: $spacer-small;
+  width: 100%;
+}
+
+.iconContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-bottom: $spacer-small;
+  width: 100%;
+}

@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 html {
   /* To make sure the date picker and similar elements are dark on desktop.  */
   color-scheme: dark;
@@ -17,7 +21,6 @@ body {
 }
 
 a {
-  box-sizing: border-box;
   color: $primary-color-200;
   font-weight: 700;
   text-decoration: none;
