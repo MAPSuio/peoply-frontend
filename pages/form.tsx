@@ -72,6 +72,8 @@ const Form: NextPage = () => {
   /* TODO: Fix this TS error. */
   const updateImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       setImage(e.target.files[0]);
     }
   };
