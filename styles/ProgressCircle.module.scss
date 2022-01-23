@@ -1,0 +1,18 @@
+.container {
+  align-items: center;
+  background-color: $background-color-progress-circle;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+  stroke: none;
+}
+
+.active {
+  background-color: $background-color-progress-circle-active;
+}
+
+.success {
+  background-color: $success-color;
+  stroke: $black-color;
+}

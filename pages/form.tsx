@@ -17,6 +17,7 @@ import { getISODate } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
 import ImageInput from "../components/inputs/ImageInput";
 import { read } from "fs";
+import ProgressBar from "../components/ProgressBar";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -29,6 +30,7 @@ const Form: NextPage = () => {
   const [activeCategories, setActiveCategories] = useState([1, 2]);
   const [privateEvent, setPrivateEvent] = useState(false);
   const [image, setImage] = useState(null);
+  const [currentStep, setCurrentStep] = useState(2);
 
   console.log(time);
 
@@ -177,6 +179,7 @@ const Form: NextPage = () => {
           errorMessage="Bildet kan ikke være så stort."
           onChange={updateImage}
         />
+        <ProgressBar currentStep={currentStep} stepCount={7} />
       </div>
     </div>
   );

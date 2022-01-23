@@ -1,0 +1,13 @@
+.progressConnector {
+  background-color: $background-color-progress-connector;
+  height: 2px;
+  width: 16px;
+}
+
+.active {
+  background-color: $background-color-progress-connector-active;
+}
+
+.success {
+  background-color: $success-color;
+}

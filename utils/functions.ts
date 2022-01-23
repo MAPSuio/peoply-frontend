@@ -95,6 +95,10 @@ function laterThanNow(date: string, timeStamp: string): boolean {
   return dateStampWithDate >= today;
 }
 
+function arrayFromRange(size: number): Array<number> {
+  return Array.from(Array(size).keys());
+}
+
 export {
   formatDateRange,
   formatTimeRange,
@@ -102,4 +106,5 @@ export {
   getISODate,
   getISOTime,
   laterThanNow,
+  arrayFromRange,
 };
