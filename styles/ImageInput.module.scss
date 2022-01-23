@@ -1,0 +1,62 @@
+.imageInputContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+}
+
+.label {
+  @include label();
+}
+
+.primaryButton {
+  align-self: center;
+  margin-top: $spacer-medium;
+}
+
+.imageInput {
+  display: none;
+}
+
+.imageInputButton {
+  @include resetButton;
+  align-items: center;
+  background-color: $background-color-input-muted;
+  display: flex;
+  font-weight: $font-weight-regular;
+  justify-content: center;
+  padding: $spacer-small 0;
+}
+
+.imageInputButtonLabel {
+  color: inherit;
+  margin-left: $spacer-very-small;
+}
+
+.imageContainer {
+  border-radius: $border-radius-regular;
+  height: 250px;
+  margin-bottom: $spacer-very-small-plus;
+  max-width: $max-width-input;
+  overflow: hidden;
+  position: relative;
+
+  @include desktop() {
+    height: 350px;
+  }
+}
+
+.errorContainer {
+  display: flex;
+  margin-top: $spacer-very-small;
+}
+
+.errorText {
+  color: $error-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+}
