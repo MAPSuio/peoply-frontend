@@ -15,6 +15,8 @@ import Navbar from "../components/Navbar";
 
 import { getISODate } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
+import ImageInput from "../components/inputs/ImageInput";
+import { read } from "fs";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -26,6 +28,7 @@ const Form: NextPage = () => {
   const [capacity, setCapacity] = useState("");
   const [activeCategories, setActiveCategories] = useState([1, 2]);
   const [privateEvent, setPrivateEvent] = useState(false);
+  const [image, setImage] = useState(null);
 
   console.log(time);
 
@@ -63,6 +66,13 @@ const Form: NextPage = () => {
       setPrivateEvent(true);
     } else {
       setPrivateEvent(false);
+    }
+  };
+
+  /* TODO: Fix this TS error. */
+  const updateImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
     }
   };
 
@@ -155,6 +165,15 @@ const Form: NextPage = () => {
           ]}
           onClick={updateVisibility}
           label="Privat eller offentlig arrangement?*"
+        />
+        <ImageInput
+          inputId="image"
+          inputName="event_image"
+          label="Last opp et bilde til arrangementet"
+          buttonLabel="Endre bilde"
+          value={image}
+          errorMessage="Bildet kan ikke være så stort."
+          onChange={updateImage}
         />
       </div>
     </div>
