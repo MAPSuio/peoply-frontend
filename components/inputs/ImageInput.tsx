@@ -39,6 +39,8 @@ const ImageInput = ({
 
   const clickImageInput = () => {
     /* TODO: Fix TS error here. */
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     imageInput.current.click();
   };
 
