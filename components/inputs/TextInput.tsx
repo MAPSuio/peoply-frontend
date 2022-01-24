@@ -29,21 +29,31 @@ const TextInput = ({
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
+  const validText = value.length > 0;
+
+  const getInputContainerStyles = () => {
+    if (validText) {
+      return `${styles.inputContainer} ${styles.noErrorPadding}`;
+    } else {
+      return styles.inputContainer;
+    }
+  };
+
   const getTextInputStyles = () => {
     if (focused && validText) {
       return `${styles.textInput} ${styles.valid}`;
     } else if (focused && !validText) {
       return `${styles.textInput} ${styles.notValid}`;
     } else {
-      return styles.textInput;
+      return `${styles.textInput}`;
     }
   };
 
-  const validText = value.length > 0;
   const textInputStyles = getTextInputStyles();
+  const inputContainerStyles = getInputContainerStyles();
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={inputContainerStyles}>
       <div className={styles.labelContainer}>
         <label
           className={`${styles.label} ${styles.required}`}

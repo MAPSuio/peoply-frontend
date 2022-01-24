@@ -15,4 +15,12 @@
   max-width: $max-width-button;
   padding: $spacer-small 0;
   width: 100%;
+
+  &:disabled {
+    background-color: $button-color-disabled;
+    box-shadow: none;
+    color: $text-color-primary;
+    cursor: initial;
+    font-weight: $font-weight-regular;
+  }
 }

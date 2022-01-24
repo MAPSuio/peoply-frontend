@@ -1,0 +1,39 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.headerContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: $spacer-large;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: $spacer-very-small;
+}
+
+.subTitle {
+  margin-bottom: $spacer-small;
+}
+
+.inputContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.primaryButton {
+  bottom: $spacer-medium;
+  position: fixed;
+  width: $page-width-mobile;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}

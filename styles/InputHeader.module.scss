@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: $spacer-small;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.title {
+  color: $text-color-primary;
+  font-size: $font-size-heading-large;
+  font-weight: $font-weight-regular;
+  margin-right: $spacer-very-small;
+}

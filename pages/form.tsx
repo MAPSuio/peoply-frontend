@@ -11,15 +11,16 @@ import TextInputLong from "../components/inputs/TextInputLong";
 import RadioInput from "../components/inputs/RadioInput";
 import PrivateIcon from "../components/svgs/PrivateIcon";
 import PublicIcon from "../components/svgs/PublicIcon";
-import Navbar from "../components/Navbar";
 
 import { getISODate } from "../utils/functions";
 import styles from "../styles/Form.module.scss";
 import ImageInput from "../components/inputs/ImageInput";
-import { read } from "fs";
 import ProgressBar from "../components/ProgressBar";
-import SummaryCard from "../components/SummaryCard";
-import TitleCircle from "../components/TitleCircle";
+import InputPage from "../components/InputPage";
+import InputHeader from "../components/InputHeader";
+import CalendarCircle from "../components/CalendarCircle";
+import EditIcon from "../components/svgs/EditIcon";
+import { Value } from "sass";
 
 const Form: NextPage = () => {
   const today = new Date();
@@ -32,8 +33,7 @@ const Form: NextPage = () => {
   const [activeCategories, setActiveCategories] = useState([1, 2]);
   const [privateEvent, setPrivateEvent] = useState(false);
   const [image, setImage] = useState(null);
-  const [currentStep, setCurrentStep] = useState(2);
-  const [activeInputPage, setActiveInputPage] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   console.log(time);
 
@@ -83,9 +83,8 @@ const Form: NextPage = () => {
     }
   };
 
-  const updateActiveInputPage = (inputId: number) => {
-    console.log(inputId);
-    setActiveInputPage(inputId);
+  const updateCurrentStep = (step: number) => {
+    setCurrentStep(step);
   };
 
   return (
@@ -187,14 +186,61 @@ const Form: NextPage = () => {
           errorMessage="Bildet kan ikke være så stort."
           onChange={updateImage}
         />
-        <ProgressBar currentStep={currentStep} stepCount={7} />
-        <SummaryCard
-          inputId={1}
-          Icon={TitleCircle}
-          onClick={updateActiveInputPage}
-        >
-          <h2>Here come that text</h2>
-        </SummaryCard>
+        {currentStep === 0 && (
+          <InputPage
+            step={0}
+            title="Opprett nytt arrangement"
+            subTitle="Hva vil du kalle arrangementet ditt for?"
+            currentStep={currentStep}
+            stepCount={7}
+            buttonText="Gå til dato og tidspunkt"
+            validData={title.length > 0}
+            firstPage
+            buttonOnClick={updateCurrentStep}
+          >
+            <InputHeader title="Tittel">
+              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+            </InputHeader>
+            <TextInput
+              value={title}
+              inputId="title"
+              inputName="event_title"
+              label="Tittel på arrangementet*"
+              placeholder="Here there will be a placeholder"
+              maxLength={100}
+              errorMessage="Tittelen kan ikke være tom."
+              required
+              handleChange={updateTitle}
+            />
+          </InputPage>
+        )}
+        {currentStep === 1 && (
+          <InputPage
+            step={1}
+            title="Opprett enda et nytt arrangement"
+            subTitle="Hva vil du kalle arrangementet ditt for?"
+            currentStep={currentStep}
+            stepCount={7}
+            buttonText="Gå til dato og tidspunkt"
+            validData={title.length > 0}
+            buttonOnClick={updateCurrentStep}
+          >
+            <InputHeader title="Tittel 2">
+              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+            </InputHeader>
+            <TextInput
+              value={title}
+              inputId="title"
+              inputName="event_title"
+              label="Tittel på arrangementet*"
+              placeholder="Here there will be a placeholder"
+              maxLength={100}
+              errorMessage="Tittelen kan ikke være tom."
+              required
+              handleChange={updateTitle}
+            />
+          </InputPage>
+        )}
       </div>
     </div>
   );
