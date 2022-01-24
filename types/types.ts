@@ -13,11 +13,32 @@ export interface User {
   image?: string;
 }
 
+export interface GeolocationPostitionObject {
+  coords: {
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+    altitude: number;
+    altitudeAccuracy: number;
+    heading: number;
+    speed: number;
+  };
+  timestamp: number;
+}
+
 export interface UserContextType {
   user?: User;
   loading: boolean;
   error?: string;
   logout: () => Promise<Response>;
+}
+
+export interface GeolocationContextType {
+  activated?: boolean;
+  geolocation?: GeolocationPosition;
+  loading: boolean;
+  error?: string;
+  activateGeolocation: () => void;
 }
 
 export interface UserOrganizationRoles {
