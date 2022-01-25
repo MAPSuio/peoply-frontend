@@ -15,10 +15,14 @@ module.exports = withPWA({
     // redirect: true,
   },
 
-
   reactStrictMode: true,
   sassOptions: {
     prependData: `@import "variables"; @import "mixins";`,
+  },
+
+  images: {
+    domains: [process.env.BLOB_DOMAIN],
+    // formats: ["webp", "png", "jpg", "jpeg", "gif"],
   },
 
   // generate manifest using https://www.simicart.com/
