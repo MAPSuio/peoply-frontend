@@ -33,11 +33,11 @@ const RadioButton = ({
 
   return (
     <div className={styles.buttonWrapper}>
-      <div className={radioButtonStyles} onClick={() => onClick(id)}>
+      <button className={radioButtonStyles} onClick={() => onClick(id)}>
         <Icon />
         <p className={styles.radioButtonText}>{text}</p>
         {selected && <SmallCheckCircle placeBottomCenter />}
-      </div>
+      </button>
       {hintText && <p className={hintTextStyles}>{hintText}</p>}
     </div>
   );

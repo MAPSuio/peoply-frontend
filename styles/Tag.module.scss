@@ -1,4 +1,5 @@
 .tagContainer {
+  @include resetButton();
   align-items: center;
   background-color: $background-color-tag;
   border-radius: $border-radius-round;

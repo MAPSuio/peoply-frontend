@@ -7,6 +7,7 @@
 }
 
 .buttonContainer {
+  @include resetButton();
   align-items: center;
   background-color: $background-color-input;
   border-radius: $border-radius-regular;
@@ -17,6 +18,7 @@
   padding: $spacer-small 0 $spacer-medium 0;
   position: relative;
   transition: background-color $animation-duration ease;
+  width: 100%;
 }
 
 
