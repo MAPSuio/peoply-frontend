@@ -17,7 +17,11 @@
       height: 40%;
       overflow: hidden;
       width: 100%;
+      // z-index: 1;
 
+      // img {
+      //   border-radius: 0.75rem;
+      // }
     }
 
     .eventCardInfoContainer {
@@ -26,6 +30,8 @@
       bottom: 0;
       height: 60%;
       width: 100%;
+      // z-index: 2;
+
 
       .eventCardInfo {
         border-radius: 0.75rem;

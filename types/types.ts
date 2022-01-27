@@ -88,4 +88,5 @@ export interface EventData {
   description: string;
   capacity?: number;
   private: boolean;
+  image?: string;
 }

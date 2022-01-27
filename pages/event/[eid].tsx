@@ -44,6 +44,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
     description: eventDescription,
     capacity: eventCapacity,
     private: eventPrivate,
+    image: eventImage,
   } = eventData;
 
   const imageHeight = windowWidth > 500 ? "30%" : "65%";

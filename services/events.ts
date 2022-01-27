@@ -36,6 +36,7 @@ async function getEventData(eid: number) {
     description: eventData.description,
     capacity: eventData.capacity,
     private: eventData.private,
+    image: eventData.image,
   };
 
   return event;
