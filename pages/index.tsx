@@ -4,7 +4,6 @@ import useSWR from "swr";
 
 import EventCard from "../components/EventCard";
 import styles from "../styles/Home.module.scss";
-import fetcher from "../hooks/fetcher";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -25,6 +24,7 @@ import Header from "../components/Header";
 import { useState } from "react";
 import HeadComponent from "../components/HeadComponent";
 import { useRouter } from "next/router";
+import { fetchFromPeoplyApi } from "../services/fetchers";
 
 const Home: NextPage = ({
   baseUrl,
@@ -33,11 +33,11 @@ const Home: NextPage = ({
   const [today] = useState(new Date().toISOString());
   const { data: futureEvents, error: futureEventsError } = useSWR(
     `/events?afterDate=${today}`,
-    fetcher,
+    fetchFromPeoplyApi,
   );
   const { data: previousEvents, error: previousEventsError } = useSWR(
     `/events?beforeDate=${today}&orderDirection=desc`,
-    fetcher,
+    fetchFromPeoplyApi,
   );
 
   return (

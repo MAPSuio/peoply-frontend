@@ -9,9 +9,3 @@ export async function refreshAccessToken() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`;
   return fetch(url, { method: "GET", credentials: "include" });
 }
-
-/* will fetch user data (access token is required) */
-export async function fetchUser() {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/me`;
-  return fetch(url, { method: "GET", credentials: "include" });
-}
