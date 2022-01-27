@@ -6,7 +6,7 @@ interface RadioInputInterface {
   optionsAndIcons: Array<{
     id: number;
     text: string;
-    hintText: string;
+    hintText?: string;
     icon: React.FunctionComponent;
     active: boolean;
   }>;

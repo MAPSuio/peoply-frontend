@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 
 import ProgressBar from "./ProgressBar";
 import PrimaryButton from "./PrimaryButton";
+import BackButton from "./BackButton";
 
 import styles from "../styles/InputPage.module.scss";
-import BackButton from "./BackButton";
 
 interface InputPageProps {
   step: number;
@@ -13,6 +13,7 @@ interface InputPageProps {
   currentStep: number;
   stepCount: number;
   buttonText: string;
+  placeButtonStatic?: boolean;
   validData: boolean;
   firstPage?: boolean;
   buttonOnClick: (step: number) => void;
@@ -26,6 +27,7 @@ const InputPage = ({
   currentStep,
   stepCount,
   buttonText,
+  placeButtonStatic,
   validData,
   firstPage,
   buttonOnClick,
@@ -41,6 +43,16 @@ const InputPage = ({
     }
   };
 
+  const getButtonStyles = () => {
+    if (placeButtonStatic) {
+      return `${styles.primaryButton} ${styles.placeStatic}`;
+    } else {
+      return styles.primaryButton;
+    }
+  };
+
+  const buttonStyles = getButtonStyles();
+
   return (
     <div className={styles.container}>
       <BackButton onClick={goBack} className={styles.marginBottomMedium} />
@@ -53,7 +65,7 @@ const InputPage = ({
       <PrimaryButton
         onClick={() => buttonOnClick(step + 1)}
         text={buttonText}
-        className={styles.primaryButton}
+        className={buttonStyles}
         disabled={!validData}
       />
     </div>

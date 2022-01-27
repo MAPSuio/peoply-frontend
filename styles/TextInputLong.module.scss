@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+}
+
 .labelContainer {
   align-items: center;
   display: flex;

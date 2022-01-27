@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+}
+
 .label {
   @include label();
 }
@@ -14,7 +18,9 @@
   border: 1px solid transparent;
   color: $text-color-emphasis;
   font-size: $font-size-input;
+  max-width: $max-width-input-date;
   padding: $spacer-very-small $spacer-small;
+  width: 100%;
 }
 
 .dateInput::-webkit-calendar-picker-indicator {

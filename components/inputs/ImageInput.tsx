@@ -13,7 +13,7 @@ interface ImageInputProps {
   inputName: string;
   label: string;
   buttonLabel: string;
-  value: File | null;
+  value?: File;
   errorMessage: string;
   required?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -48,7 +48,9 @@ const ImageInput = ({
   const fileMaxSize = 50000000;
   const fileTooLarge = value && value.size > fileMaxSize;
 
-  const imageSource = value ? URL.createObjectURL(value) : PlaceholderImage;
+  const imageSource = value
+    ? value && URL.createObjectURL(value)
+    : PlaceholderImage;
   const imageInputStyles = getImageInputStyles();
 
   return (

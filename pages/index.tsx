@@ -3,6 +3,8 @@ import Link from "next/link";
 import useSWR from "swr";
 
 import EventCard from "../components/EventCard";
+import Navbar from "../components/Navbar";
+
 import styles from "../styles/Home.module.scss";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -62,6 +64,7 @@ const Home: NextPage = ({
           error={previousEventsError}
         />
       </div>
+      <Navbar />
     </>
   );
 };

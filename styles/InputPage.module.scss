@@ -34,6 +34,35 @@
   width: $page-width-mobile;
 }
 
+.placeStatic {
+  bottom: 0;
+  margin-bottom: 0;
+  margin-bottom: $spacer-medium;
+  margin-top: $spacer-large;
+  position: static;
+  width: 100%;
+}
+
+@media screen and (max-height: 600px) {
+  .primaryButton {
+    margin-bottom: $spacer-medium;
+    margin-top: $spacer-large;
+    position: static;
+  }
+}
+
+@media screen and (min-height: 900px) {
+  .primaryButton {
+    bottom: $spacer-large;
+  }
+}
+
+@media screen and (min-height: 1300px) {
+  .primaryButton {
+    bottom: 50%;
+  }
+}
+
 .marginBottomMedium {
   margin-bottom: $spacer-medium;
 }

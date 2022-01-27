@@ -7,7 +7,7 @@
   padding-bottom: $spacer-small;
   position: fixed;
   transition: transform $animation-duration ease;
-  width: 100vw;
+  width: 100%;
   z-index: 999;
 
   .container {
@@ -16,12 +16,9 @@
     backdrop-filter: blur(8px);
     border-radius: $border-radius-round;
     display: flex;
-    height: 2rem;
     justify-content: space-between;
-    margin: 0 $spacer-very-small;
-    max-width: 200px;
-    padding: $spacer-very-small-plus $spacer-medium-plus;
-    padding-top: $spacer-small;
+    max-width: 250px;
+    padding: $spacer-very-small-plus $spacer-medium;
     width: 100%;
 
     .item {
@@ -38,7 +35,6 @@
 
     .active {
       filter: drop-shadow(0px 3px 6px rgba(231, 231, 231, 0.5));
-
     }
 
     .underline {
@@ -52,7 +48,7 @@
     }
 
     .button {
-      margin-top: -1.75rem;
+      margin-top: -$spacer-medium;
     }
   }
 }

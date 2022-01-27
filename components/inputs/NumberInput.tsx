@@ -9,7 +9,7 @@ interface NumberInputProps {
   inputName: string;
   label: string;
   placeholder: string;
-  max: string;
+  max?: string;
   errorMessage: string;
   required?: boolean;
   handleChange: (e: any) => void;
@@ -28,6 +28,16 @@ const NumberInput = ({
 }: NumberInputProps) => {
   const [focused, setFocused] = useState(false);
 
+  const validNumber = parseInt(value) > 0;
+
+  const getInputContainerStyles = () => {
+    if (validNumber || !focused) {
+      return `${styles.inputContainer} ${styles.noErrorPadding}`;
+    } else {
+      return styles.inputContainer;
+    }
+  };
+
   const getNumberInputStyles = () => {
     if (focused && validNumber) {
       return `${styles.numberInput} ${styles.valid}`;
@@ -38,11 +48,11 @@ const NumberInput = ({
     }
   };
 
-  const validNumber = parseInt(value) > 0;
   const numberInputStyles = getNumberInputStyles();
+  const inputContainerStyles = getInputContainerStyles();
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={inputContainerStyles}>
       <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
         {label}
       </label>

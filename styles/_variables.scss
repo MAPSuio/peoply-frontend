@@ -47,6 +47,9 @@ $divider-color: #404F5F;
 // Misc.
 $max-width: 1200px;
 $max-width-input: 500px;
+$max-width-input-date: 200px;
+$max-width-input-time: 150px;
+$max-width-input-number: 100px;
 $max-width-button: 500px;
 $page-width-mobile: 90%;
 $background-blur: 8px;
@@ -54,6 +57,7 @@ $animation-duration: 0.3s;
 
 // Border radii.
 $border-radius-regular: 12px;
+$border-radius-inside-card: 6px;
 $border-radius-icon: 8px;
 $border-radius-round: 100px;
 
@@ -61,6 +65,7 @@ $border-radius-round: 100px;
 $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
 $shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);
 $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
+$shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;
@@ -84,6 +89,10 @@ $font-size-tertiary: 0.75rem;
 $line-height-title: 1;
 $line-height-hint-text: 1.2;
 $line-height-text: 1.5;
+
+// Letter spacing
+$letter-spacing-header-large: -0.05em;
+$letter-spacing-header: -0.03em;
 
 // Spacers
 $spacer-mini: 0.25rem;

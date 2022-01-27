@@ -48,8 +48,8 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
-        <div className={`${isActive("/create") ? styles.active : ""}`}>
-          <Link href="/test" passHref>
+        <div className={`${isActive("/event/create") ? styles.active : ""}`}>
+          <Link href="/event/create" passHref>
             <a>
               <AddIcon classNames={styles.button} />
             </a>

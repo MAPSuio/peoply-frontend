@@ -60,10 +60,12 @@ h1 {
   color: $text-color-emphasis;
   font-size: $font-size-title;
   font-weight: $font-weight-bold;
+  letter-spacing: $letter-spacing-header-large;
 }
 
 h2 {
   font-size: $font-size-heading-medium;
+  letter-spacing: $letter-spacing-header;
 }
 
 button, input, select, textarea {

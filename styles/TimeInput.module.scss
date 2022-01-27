@@ -9,11 +9,16 @@
   @include label();
 }
 
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+}
+
 .timeInput {
   background-color: $background-color-input;
   border: 1px solid transparent;
   color: $text-color-emphasis;
   font-size: $font-size-input;
+  max-width: $max-width-input-time;
   padding: $spacer-very-small $spacer-small;
 }
 

@@ -7,6 +7,7 @@ import styles from "../../styles/DateInput.module.scss";
 
 interface DateInputProps {
   value: string;
+  valid?: boolean;
   inputId: string;
   inputName: string;
   label: string;
@@ -17,6 +18,7 @@ interface DateInputProps {
 
 const DateInput = ({
   value,
+  valid,
   inputId,
   inputName,
   label,
@@ -26,10 +28,18 @@ const DateInput = ({
 }: DateInputProps) => {
   const [focused, setFocused] = useState(false);
 
+  const getInputContainerStyles = () => {
+    if (valid || !focused) {
+      return `${styles.inputContainer} ${styles.noErrorPadding}`;
+    } else {
+      return styles.inputContainer;
+    }
+  };
+
   const getDateInputStyles = () => {
-    if (focused && validDate) {
+    if (valid) {
       return `${styles.dateInput} ${styles.valid}`;
-    } else if (focused && !validDate) {
+    } else if (focused) {
       return `${styles.dateInput} ${styles.notValid}`;
     } else {
       return styles.dateInput;
@@ -37,11 +47,11 @@ const DateInput = ({
   };
 
   const todayISO = getISODate(new Date());
-  const validDate = olderThanToday(new Date(value));
   const dateInputStyles = getDateInputStyles();
+  const inputContainerStyles = getInputContainerStyles();
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={inputContainerStyles}>
       <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
         {label}
       </label>
@@ -56,7 +66,7 @@ const DateInput = ({
         min={todayISO}
         required={required}
       ></input>
-      {!validDate && focused && (
+      {!valid && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon />
           <p className={styles.errorText}>{errorMessage}</p>

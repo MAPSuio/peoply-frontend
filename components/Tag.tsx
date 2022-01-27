@@ -4,7 +4,7 @@ interface TagProps {
   id: number;
   text: string;
   activeCategories: Array<number>;
-  onClick: (categoryId: number) => void;
+  onClick?: (categoryId: number) => void;
 }
 
 const Tag = ({ id, text, activeCategories, onClick }: TagProps) => {
@@ -22,11 +22,15 @@ const Tag = ({ id, text, activeCategories, onClick }: TagProps) => {
   const active = isActive();
   const tagStyles = getTagStyles();
 
-  return (
-    <div className={tagStyles} onClick={() => onClick(id)}>
-      {text}
-    </div>
-  );
+  if (onClick) {
+    return (
+      <div className={tagStyles} onClick={() => onClick(id)}>
+        {text}
+      </div>
+    );
+  } else {
+    return <div className={tagStyles}>{text}</div>;
+  }
 };
 
 export default Tag;

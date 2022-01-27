@@ -90,3 +90,16 @@ export interface EventData {
   private: boolean;
   image?: string;
 }
+
+export interface Category {
+  category_id: number;
+  category: string;
+  event_categories: Array<EventCategories>;
+}
+
+export interface EventCategories {
+  category_id: number;
+  category: Category;
+  event_id: string;
+  event: Event;
+}

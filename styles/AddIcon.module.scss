@@ -1,43 +1,22 @@
 .container {
   background-color: $primary-color-400;
   border-radius: $border-radius-round;
-  height: 3.5rem;
+  height: 56px;
   position: relative;
-  width: 3.5rem;
+  transition: all $animation-duration ease;
+  width: 56px;
 
   @include desktop() {
     &:hover {
-      span {
-        &:first-child {
-          transform: scale(1.2);
-        }
-
-        &:last-child {
-          transform: rotate(90deg) scale(1.1);
-        }
-      }
+      box-shadow: $shadow-add;
+      transform: scale(1.1);
     }
   }
 
-  span {
-    background-color: #FFFFFF;
-    display: block;
-    height: 3px;
+  > svg {
+    bottom: 50%;
+    left: 50%;
     position: absolute;
-    transition: transform $animation-duration ease;
-    width: 30%;
-
-    /* vertical bar */
-    &:first-child {
-      left: 35%;
-      top: 50%;
-    }
-
-    /* horizontal bar */
-    &:last-child {
-      left: 35%;
-      top: 50%;
-      transform: rotate(90deg);
-    }
+    transform: translate(-50%, 50%);
   }
 }

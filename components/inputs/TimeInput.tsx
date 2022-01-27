@@ -7,7 +7,7 @@ import { laterThanNow } from "../../utils/functions";
 
 interface TimeInputProps {
   value: string;
-  date: string;
+  valid?: boolean;
   inputId: string;
   inputName: string;
   label: string;
@@ -18,7 +18,7 @@ interface TimeInputProps {
 
 const TimeInput = ({
   value,
-  date,
+  valid,
   inputId,
   inputName,
   label,
@@ -28,21 +28,29 @@ const TimeInput = ({
 }: TimeInputProps) => {
   const [focused, setFocused] = useState(false);
 
+  const getInputContainerStyles = () => {
+    if (valid || !focused) {
+      return `${styles.inputContainer} ${styles.noErrorPadding}`;
+    } else {
+      return styles.inputContainer;
+    }
+  };
+
   const getTimeInputStyles = () => {
-    if (focused && validTime) {
+    if (valid) {
       return `${styles.timeInput} ${styles.valid}`;
-    } else if (focused && !validTime) {
+    } else if (focused && !valid) {
       return `${styles.timeInput} ${styles.notValid}`;
     } else {
       return styles.timeInput;
     }
   };
 
-  const validTime = laterThanNow(date, value);
   const timeInputStyles = getTimeInputStyles();
+  const inputContainerStyles = getInputContainerStyles();
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={inputContainerStyles}>
       <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
         {label}
       </label>
@@ -56,7 +64,7 @@ const TimeInput = ({
         onClick={() => setFocused(true)}
         required={required}
       ></input>
-      {!validTime && focused && (
+      {!valid && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon />
           <p className={styles.errorText}>{errorMessage}</p>

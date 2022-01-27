@@ -32,7 +32,7 @@ const TextInput = ({
   const validText = value.length > 0;
 
   const getInputContainerStyles = () => {
-    if (validText) {
+    if (validText || !focused) {
       return `${styles.inputContainer} ${styles.noErrorPadding}`;
     } else {
       return styles.inputContainer;
@@ -40,9 +40,9 @@ const TextInput = ({
   };
 
   const getTextInputStyles = () => {
-    if (focused && validText) {
+    if (validText) {
       return `${styles.textInput} ${styles.valid}`;
-    } else if (focused && !validText) {
+    } else if (focused) {
       return `${styles.textInput} ${styles.notValid}`;
     } else {
       return `${styles.textInput}`;

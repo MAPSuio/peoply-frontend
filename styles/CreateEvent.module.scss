@@ -1,0 +1,54 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  width: $page-width-mobile;
+}
+
+.column {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small-plus;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.gapLarge {
+  gap: $spacer-large;
+}
+
+.dateContainer {
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.marginBottomSmall {
+  margin-bottom: $spacer-medium;
+}
+
+.marginBottomVeryLarge {
+  margin-bottom: $spacer-very-large;
+}
+
+.noExtraOptionPadding {
+  padding-bottom: calc($spacer-small + $font-size-primary + $spacer-very-small + $font-size-primary + $spacer-medium);
+}
+
+.addDateContainer {
+  @include resetButton();
+  display: flex;
+  margin-top: $spacer-very-small;
+  padding: $spacer-very-small 0;
+}
+
+.addDateText {
+  color: $primary-color-200;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  margin-left: $spacer-very-small;
+}

@@ -1,0 +1,159 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.headerContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: $spacer-large;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: $spacer-very-small;
+}
+
+.subTitle {
+  margin-bottom: $spacer-small;
+}
+
+.summaryContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium;
+  width: 100%;
+}
+
+.primaryButton {
+  bottom: $spacer-medium;
+  position: fixed;
+  width: $page-width-mobile;
+}
+
+.placeStatic {
+  bottom: 0;
+  margin-bottom: 0;
+  margin-bottom: $spacer-medium;
+  margin-top: $spacer-large;
+  position: static;
+  width: 100%;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
+.titleText {
+  color: $text-color-emphasis;
+  font-size: $font-size-secondary;
+  font-weight: $font-weight-regular;
+  line-height: 1.5;
+}
+
+.dateText {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  font-weight: $font-weight-regular;
+}
+
+.placeText {
+  font-family: $mono-font;
+  font-weight: $font-weight-regular;
+  margin-right: $spacer-very-small;
+}
+
+.descriptionText {
+  font-size: $font-size-secondary;
+  line-height: 1.5;
+}
+
+.addressContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.descriptionContainer {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  margin-bottom: $spacer-medium;
+  overflow: hidden;
+  text-align: left;
+}
+
+.categoryContainer {
+  align-items: left;
+  display: flex;
+  flex-flow: column nowrap;
+  text-align: left;
+}
+
+.categoryTagsContainer {
+  display: flex;
+  flex-flow: row wrap;
+  gap: $spacer-very-small-plus;
+  justify-content: left;
+}
+
+.dataContainer {
+  align-items: left;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+}
+
+.dataItemContainer {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.dataLabel {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  margin-left: $spacer-very-small;
+}
+
+/* .imageContainer {
+  border-radius: $border-radius-inside-card;
+
+  > * {
+    border-radius: $border-radius-inside-card;
+  }
+} */
+
+.imageContainer {
+  border-radius: $border-radius-regular;
+  height: 250px;
+  margin-bottom: $spacer-very-small-plus;
+  max-width: $max-width-input;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  @include desktop() {
+    height: 350px;
+  }
+}
+
+
+.categoryLabel {
+  font-size: $font-size-secondary;
+  font-weight: bold;
+  margin-bottom: $spacer-very-small;
+}
+
+.textColorPrimary {
+  color: $text-color-primary;
+}
+
+.marginBottomVerySmall {
+  margin-bottom: $spacer-very-small;
+}
