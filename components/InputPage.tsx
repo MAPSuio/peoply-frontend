@@ -14,7 +14,10 @@ interface InputPageProps {
   stepCount: number;
   buttonText: string;
   placeButtonStatic?: boolean;
-  validData: boolean;
+  validDataMap: Map<string, boolean>;
+  page: string;
+  setEventImageValid?: (eventImageValid: boolean) => void;
+  setEventExtraInfoValid?: (eventExtraInfoValid: boolean) => void;
   firstPage?: boolean;
   buttonOnClick: (step: number) => void;
   children: React.ReactNode;
@@ -28,7 +31,10 @@ const InputPage = ({
   stepCount,
   buttonText,
   placeButtonStatic,
-  validData,
+  validDataMap,
+  page,
+  setEventImageValid,
+  setEventExtraInfoValid,
   firstPage,
   buttonOnClick,
   children,
@@ -53,13 +59,27 @@ const InputPage = ({
 
   const buttonStyles = getButtonStyles();
 
+  const validData = validDataMap.get(page);
+
+  if (setEventImageValid) {
+    setEventImageValid(true);
+  }
+
+  if (setEventExtraInfoValid) {
+    setEventExtraInfoValid(true);
+  }
+
   return (
     <div className={styles.container}>
       <BackButton onClick={goBack} className={styles.marginBottomMedium} />
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
-        <ProgressBar currentStep={currentStep} stepCount={stepCount} />
+        <ProgressBar
+          currentStep={currentStep}
+          stepCount={stepCount}
+          validDataMap={validDataMap}
+        />
       </div>
       <div className={styles.inputContainer}>{children}</div>
       <PrimaryButton

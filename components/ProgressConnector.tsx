@@ -1,13 +1,16 @@
 import styles from "../styles/ProgressConnector.module.scss";
 
 interface ProgressConnectorProps {
-  nextActive?: boolean;
+  nextSuccess?: boolean;
   success?: boolean;
 }
 
-const ProgressConnector = ({ nextActive, success }: ProgressConnectorProps) => {
+const ProgressConnector = ({
+  nextSuccess,
+  success,
+}: ProgressConnectorProps) => {
   const getProgressConnectorStyles = () => {
-    if (nextActive) {
+    if (success && !nextSuccess) {
       return `${styles.progressConnector} ${styles.active}`;
     } else if (success) {
       return `${styles.progressConnector} ${styles.success}`;

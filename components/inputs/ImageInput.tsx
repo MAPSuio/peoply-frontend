@@ -4,7 +4,7 @@ import { useRef, ChangeEvent } from "react";
 
 import EditIcon from "../svgs/EditIcon";
 
-import PlaceholderImage from "../../assets/images/max.jpg";
+import PlaceholderImage from "../../assets/images/cat.jpg";
 import styles from "../../styles/ImageInput.module.scss";
 import ErrorIcon from "../svgs/ErrorIcon";
 

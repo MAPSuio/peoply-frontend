@@ -1,3 +1,5 @@
+import { InputPages } from "../types/types";
+
 function formatDateRange(startDate: Date, endDate: Date): string {
   let dateString: string;
   // if start date, month and year is today
@@ -217,6 +219,28 @@ function getInputPageData(step: number): {
   }
 }
 
+/* Get the name of the input page at a given step in the flow. */
+function getInputPageName(step: number): string {
+  switch (step) {
+    case 0:
+      return InputPages.TitlePage;
+    case 1:
+      return InputPages.DatePage;
+    case 2:
+      return InputPages.AddressPage;
+    case 3:
+      return InputPages.DescriptionPage;
+    case 4:
+      return InputPages.ImagePage;
+    case 5:
+      return InputPages.ExtraInfoPage;
+    case 6:
+      return InputPages.SummaryPage;
+    default:
+      return InputPages.TitlePage;
+  }
+}
+
 /* Gets the text for a category with the given ID. */
 function getCategoryText(
   categories: Array<{ category_id: number; category: string }>,
@@ -255,8 +279,6 @@ function dateInputEndValid(
     new Date(dateStringStart),
     new Date(dateStringEnd),
   );
-
-  console.log({ dateEndvalid });
 
   return dateEndvalid;
 }
@@ -340,4 +362,5 @@ export {
   allEventInputsValid,
   getDateString,
   getCategoryText,
+  getInputPageName,
 };

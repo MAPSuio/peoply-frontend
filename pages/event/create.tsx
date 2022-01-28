@@ -47,6 +47,7 @@ import {
 
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
+import { InputPages } from "../../types/types";
 
 const CreateEvent: NextPage = () => {
   const [eventTitle, setEventTitle] = useState("");
@@ -63,7 +64,9 @@ const CreateEvent: NextPage = () => {
   const [eventPrivate, setEventPrivate] = useState(false);
   const [eventHasCapacity, setEventHasCapacity] = useState(false);
   const [eventCapacity, setEventCapacity] = useState("");
+  const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
   const [eventImage, setEventImage] = useState();
+  const [eventImageValid, setEventImageValid] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
   /* The number of input screens. */
@@ -181,7 +184,6 @@ const CreateEvent: NextPage = () => {
     0,
     10000,
   );
-  const eventImageValid = true;
 
   let validEvent: boolean;
   if (hasEventDateEnd) {
@@ -237,6 +239,30 @@ const CreateEvent: NextPage = () => {
   /* TODO: Perhaps move the returned components into their own wrapper components. */
   const getCurrentInputPage = (step: number) => {
     const { title, subTitle, buttonText } = getInputPageData(step);
+    const titleInputPageValid = eventTitleValid;
+    const dateInputPageValid = hasEventDateEnd
+      ? eventDateStartValid &&
+        eventTimeStartValid &&
+        eventDateEndValid &&
+        eventTimeEndValid
+      : eventDateStartValid && eventTimeStartValid;
+    const addressInputPageValid = eventAddressValid;
+    const descriptionInputPageValid =
+      eventDescriptionValid && eventActiveCategoriesValid;
+    const imageInputPageValid = eventImageValid;
+    const extraInfoInputPageValid = eventCapacityValid;
+
+    const validDataMap: Map<string, boolean> = new Map();
+    validDataMap.set(InputPages.TitlePage, titleInputPageValid);
+    validDataMap.set(InputPages.DatePage, dateInputPageValid);
+    validDataMap.set(InputPages.AddressPage, addressInputPageValid);
+    validDataMap.set(InputPages.DescriptionPage, descriptionInputPageValid);
+    validDataMap.set(InputPages.ImagePage, imageInputPageValid);
+    validDataMap.set(
+      InputPages.ExtraInfoPage,
+      extraInfoInputPageValid && eventExtraInfoValid,
+    );
+    validDataMap.set(InputPages.SummaryPage, validEvent);
 
     switch (step) {
       case 0:
@@ -248,7 +274,8 @@ const CreateEvent: NextPage = () => {
             currentStep={currentStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            validData={eventTitle.length > 0}
+            validDataMap={validDataMap}
+            page={InputPages.TitlePage}
             firstPage
             buttonOnClick={inputPageOnClick}
           >
@@ -277,14 +304,8 @@ const CreateEvent: NextPage = () => {
             currentStep={currentStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            validData={
-              hasEventDateEnd
-                ? eventDateStartValid &&
-                  eventTimeStartValid &&
-                  eventDateEndValid &&
-                  eventTimeEndValid
-                : eventDateStartValid && eventTimeStartValid
-            }
+            validDataMap={validDataMap}
+            page={InputPages.DatePage}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic={hasEventDateEnd}
           >
@@ -375,7 +396,8 @@ const CreateEvent: NextPage = () => {
             currentStep={currentStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            validData={eventAddress.length > 0}
+            validDataMap={validDataMap}
+            page={InputPages.AddressPage}
             buttonOnClick={inputPageOnClick}
           >
             <InputHeader title="Adresse">
@@ -403,7 +425,8 @@ const CreateEvent: NextPage = () => {
             currentStep={currentStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            validData={eventDescription.length > 0}
+            validDataMap={validDataMap}
+            page={InputPages.DescriptionPage}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
@@ -441,7 +464,9 @@ const CreateEvent: NextPage = () => {
             currentStep={currentStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            validData
+            validDataMap={validDataMap}
+            page={InputPages.ImagePage}
+            setEventImageValid={setEventImageValid}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
@@ -469,10 +494,9 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
-            validData={
-              !eventHasCapacity ||
-              (eventHasCapacity && parseInt(eventCapacity) > 0)
-            }
+            validDataMap={validDataMap}
+            page={InputPages.ExtraInfoPage}
+            setEventExtraInfoValid={setEventExtraInfoValid}
             buttonOnClick={inputPageOnClick}
           >
             <div className={`${styles.column} ${styles.gapLarge}`}>
@@ -552,7 +576,8 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
-            validData={validEvent}
+            validDataMap={validDataMap}
+            page={InputPages.SummaryPage}
             buttonOnClick={inputPageOnClick}
             createEventFunction={summaryPageOnClick}
             eventData={eventData}

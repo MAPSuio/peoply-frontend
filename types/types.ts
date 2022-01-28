@@ -103,3 +103,13 @@ export interface EventCategories {
   event_id: string;
   event: Event;
 }
+
+export enum InputPages {
+  TitlePage = "titlePage",
+  DatePage = "datePage",
+  AddressPage = "addressPage",
+  DescriptionPage = "descriptionPage",
+  ImagePage = "imagePage",
+  ExtraInfoPage = "extraInfoPage",
+  SummaryPage = "summaryPage",
+}

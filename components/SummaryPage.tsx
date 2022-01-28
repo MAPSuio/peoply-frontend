@@ -21,7 +21,7 @@ import LimitIconSmall from "./svgs/LimitIconSmall";
 import LinkIcon from "./svgs/LinkIcon";
 
 /* Assets */
-import PlaceholderImage from "../assets/images/max.jpg";
+import PlaceholderImage from "../assets/images/cat.jpg";
 
 /* Utils */
 import { formatDateAndTime, getDateString } from "../utils/functions";
@@ -36,7 +36,8 @@ interface SummaryPageProps {
   stepCount: number;
   buttonText: string;
   placeButtonStatic?: boolean;
-  validData: boolean;
+  validDataMap: Map<string, boolean>;
+  page: string;
   buttonOnClick: (step: number) => void;
   createEventFunction: (formData: FormData) => void;
   eventData: {
@@ -64,7 +65,8 @@ const SummaryPage = ({
   stepCount,
   buttonText,
   placeButtonStatic,
-  validData,
+  validDataMap,
+  page,
   buttonOnClick,
   createEventFunction,
   eventData,
@@ -112,6 +114,8 @@ const SummaryPage = ({
 
   const buttonStyles = getButtonStyles();
 
+  const validData = validDataMap.get(page);
+
   /* Format dates for displaying in summary card. */
   const dateStringStart = getDateString(eventData.evDateStart);
   const dateStringEnd = eventData.evHasDateEnd
@@ -136,7 +140,11 @@ const SummaryPage = ({
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
-        <ProgressBar currentStep={currentStep} stepCount={stepCount} />
+        <ProgressBar
+          currentStep={currentStep}
+          stepCount={stepCount}
+          validDataMap={validDataMap}
+        />
       </div>
       <div className={styles.summaryContainer}>
         <SummaryCard inputId={0} Icon={TitleCircle} onClick={buttonOnClick}>
