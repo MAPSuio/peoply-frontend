@@ -133,7 +133,7 @@ const SummaryPage = ({
   return (
     <div className={styles.container}>
       <BackButton
-        onClick={() => buttonOnClick(stepCount - 1)}
+        onClick={() => buttonOnClick(stepCount - 2)}
         className={styles.marginBottomMedium}
       />
       <div className={styles.headerContainer}>

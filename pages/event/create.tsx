@@ -159,7 +159,7 @@ const CreateEvent: NextPage = () => {
   };
 
   const inputPageOnClick = (step: number) => {
-    if (step !== stepCount + 1) setCurrentStep(step);
+    if (step !== stepCount) setCurrentStep(step);
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
