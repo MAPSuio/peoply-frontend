@@ -26,6 +26,10 @@
   font-size: $font-size-tertiary;
   line-height: $line-height-hint-text;
   transition: color $animation-duration ease;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
 }
 
 .emphasis {
@@ -40,4 +44,8 @@
   color: $text-color-emphasis;
   margin-top: $spacer-very-small;
   text-transform: capitalize;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+  }
 }

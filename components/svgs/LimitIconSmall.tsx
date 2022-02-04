@@ -1,6 +1,11 @@
-const LimitIconSmall = () => {
+interface LimitIconSmallProps {
+  className?: string;
+}
+
+const LimitIconSmall = ({ className }: LimitIconSmallProps) => {
   return (
     <svg
+      className={className}
       width="14"
       height="14"
       viewBox="0 0 14 14"

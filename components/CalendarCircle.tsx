@@ -1,18 +1,16 @@
-import CalendarIcon from "./svgs/CalendarIcon";
+import CalendarIconCreate from "./svgs/CalendarIconCreate";
+
+import styles from "../styles/CalendarCircle.module.scss";
 
 interface CalendarCircleProps {
-  width?: number;
-  height?: number;
-  strokeWidth?: number;
+  className?: string;
 }
 
-const CalendarCircle = ({
-  width,
-  height,
-  strokeWidth,
-}: CalendarCircleProps) => {
+const CalendarCircle = ({ className }: CalendarCircleProps) => {
   return (
-    <CalendarIcon width={width} height={height} strokeWidth={strokeWidth} />
+    <div className={styles.container}>
+      <CalendarIconCreate className={className} />
+    </div>
   );
 };
 

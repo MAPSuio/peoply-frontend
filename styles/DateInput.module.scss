@@ -7,20 +7,29 @@
 
 .noErrorPadding {
   padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
 }
 
 .label {
   @include label();
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
 }
 
 .dateInput {
-  background-color: $background-color-input;
-  border: 1px solid transparent;
-  color: $text-color-emphasis;
-  font-size: $font-size-input;
+  @include input();
   max-width: $max-width-input-date;
-  padding: $spacer-very-small $spacer-small;
   width: 100%;
+
+  @include desktop() {
+    max-width: $max-width-input-date-desktop;
+  }
 }
 
 .dateInput::-webkit-calendar-picker-indicator {
@@ -28,14 +37,11 @@
 }
 
 .errorContainer {
-  display: flex;
-  margin-top: $spacer-very-small;
+  @include errorContainer();
 }
 
 .errorText {
-  color: $error-color;
-  font-size: $font-size-tertiary;
-  margin-left: $spacer-very-small;
+  @include errorText();
 }
 
 .valid {
@@ -48,4 +54,8 @@
 
 .required {
   color: $text-color-emphasis;
+}
+
+.errorIconDimensions {
+  @include errorIconDimensions();
 }

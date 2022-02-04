@@ -11,3 +11,10 @@
 .success {
   background-color: $success-color;
 }
+
+@include createEventDesktop() {
+  .progressConnector {
+    height: 64px;
+    width: 2px;
+  }
+}

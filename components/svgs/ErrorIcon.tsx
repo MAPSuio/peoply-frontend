@@ -1,6 +1,11 @@
-export default function ErrorIcon() {
+interface ErrorIconProps {
+  className?: string;
+}
+
+export default function ErrorIcon({ className }: ErrorIconProps) {
   return (
     <svg
+      className={className}
       width="12"
       height="12"
       viewBox="0 0 12 12"

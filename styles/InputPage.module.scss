@@ -9,7 +9,6 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  margin-bottom: $spacer-large;
   text-align: center;
 }
 
@@ -18,10 +17,35 @@
 }
 
 .subTitle {
+  font-size: $font-size-secondary;
   margin-bottom: $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+
+  @include createEventDesktop() {
+    margin-bottom: $spacer-large;
+  }
 }
 
 .inputContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.progressBarContainer {
+  margin-bottom: $spacer-large;
+
+  @include createEventDesktop() {
+    margin-bottom: 0;
+  }
+}
+
+.childrenContainer {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
@@ -65,4 +89,11 @@
 
 .marginBottomMedium {
   margin-bottom: $spacer-medium;
+}
+
+@include desktop() {
+  .title {
+    font-size: $font-size-title-desktop;
+    margin-bottom: $spacer-small;
+  }
 }

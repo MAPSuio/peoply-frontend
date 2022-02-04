@@ -12,7 +12,7 @@ export default function BackButton({ onClick, className }: BackButtonProps) {
     : `${styles.container}`;
 
   return (
-    <button onClick={onClick} tabIndex={1} className={classes}>
+    <button onClick={onClick} tabIndex={0} className={classes}>
       <ChevronIcon />
       <span>Tilbake</span>
     </button>

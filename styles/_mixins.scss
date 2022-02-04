@@ -1,5 +1,11 @@
 @mixin desktop() {
-  @media (min-width: 600px) {
+  @media screen and (min-width: 600px) {
+    @content;
+  }
+}
+
+@mixin createEventDesktop() {
+  @media screen and (min-width: 1000px) {
     @content;
   }
 }
@@ -37,6 +43,87 @@
 }
 
 @mixin label() {
+  font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+@mixin labelContainer() {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
+}
+
+@mixin input() {
+  background-color: $background-color-input;
+  border: 1px solid transparent;
+  color: $text-color-emphasis;
+  font-size: $font-size-input;
+  font-weight: $font-weight-regular;
+  padding: $spacer-very-small $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-input-desktop;
+    padding: $spacer-very-small-plus $spacer-small;
+  }
+}
+
+@mixin errorText() {
+  color: $error-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+@mixin errorContainer() {
+  display: flex;
+  margin-top: $spacer-very-small;
+
+  @include desktop() {
+    margin-top: $spacer-very-small-plus;
+  }
+}
+
+@mixin createCircle() {
+  align-items: center;
+  background-color: $primary-color-muted;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: $spacer-mini;
+
+  @include desktop() {
+    padding: $spacer-very-small;
+  }
+}
+
+@mixin errorIconDimensions() {
+  height: $font-size-tertiary;
+  width: $font-size-tertiary;
+
+  @include desktop() {
+    height: $font-size-tertiary-desktop;
+    width: $font-size-tertiary-desktop;
+  }
+}
+
+@mixin dataIconDimensions() {
+  height: $font-size-secondary;
+  width: $font-size-secondary;
+
+  @include desktop() {
+    height: $font-size-secondary-desktop;
+    width: $font-size-secondary-desktop;
+  }
 }

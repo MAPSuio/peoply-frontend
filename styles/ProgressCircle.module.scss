@@ -1,3 +1,7 @@
+.wrapper {
+  position: relative;
+}
+
 .container {
   align-items: center;
   background-color: $background-color-progress-circle;
@@ -5,7 +9,28 @@
   display: flex;
   justify-content: center;
   padding: 4px;
+  position: relative;
   stroke: none;
+}
+
+.label {
+  display: none;
+  white-space: nowrap;
+
+  @include createEventDesktop() {
+    display: block;
+    font-size: $font-size-tertiary;
+    line-height: 1.5;
+    min-width: 85px;
+    position: absolute;
+    right: -$spacer-very-small;
+    top: 50%;
+    transform: translate(100%, -50%);
+  }
+}
+
+.labelActive {
+  color: $text-color-emphasis;
 }
 
 .active {
@@ -15,4 +40,10 @@
 .success {
   background-color: $success-color;
   stroke: $black-color;
+}
+
+@include createEventDesktop() {
+  .container {
+    padding: 8px;
+  }
 }

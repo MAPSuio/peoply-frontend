@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import ErrorIcon from "../svgs/ErrorIcon";
 
-import { getISODate, olderThanToday } from "../../utils/functions";
+import { getISODate } from "../../utils/functions";
 import styles from "../../styles/DateInput.module.scss";
 
 interface DateInputProps {
@@ -68,7 +68,7 @@ const DateInput = ({
       ></input>
       {!valid && focused && (
         <div className={styles.errorContainer}>
-          <ErrorIcon />
+          <ErrorIcon className={styles.errorIconDimensions} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

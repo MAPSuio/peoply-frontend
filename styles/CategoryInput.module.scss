@@ -7,6 +7,12 @@
 
 .categoryLabel {
   @include label();
+
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
 }
 
 .categoryInputContainer {
@@ -18,15 +24,20 @@
 
 .noErrorPadding {
   padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
 }
 
 .errorContainer {
-  display: flex;
-  margin-top: $spacer-very-small;
+  @include errorContainer();
 }
 
 .errorText {
-  color: $error-color;
-  font-size: $font-size-tertiary;
-  margin-left: $spacer-very-small;
+  @include errorText();
+}
+
+.errorIconDimensions {
+  @include errorIconDimensions();
 }

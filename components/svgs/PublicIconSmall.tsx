@@ -1,6 +1,11 @@
-const PublicIconSmall = () => {
+interface PublicIconSmallProps {
+  className?: string;
+}
+
+const PublicIconSmall = ({ className }: PublicIconSmallProps) => {
   return (
     <svg
+      className={className}
       width="14"
       height="14"
       viewBox="0 0 14 14"

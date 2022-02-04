@@ -1,6 +1,11 @@
-const MinusIcon = () => {
+interface MinusIconProps {
+  className?: string;
+}
+
+const MinusIcon = ({ className }: MinusIconProps) => {
   return (
     <svg
+      className={className}
       width="14"
       height="14"
       viewBox="0 0 14 14"

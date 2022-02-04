@@ -10,12 +10,29 @@
   width: $page-width-mobile;
 }
 
-.column {
+.dateColumn {
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-small-plus;
   max-width: $max-width-input;
   width: 100%;
+
+  @include desktop() {
+    flex-flow: row nowrap;
+    gap: $spacer-medium;
+  }
+}
+
+.column {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+  max-width: $max-width-input;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small-plus;
+  }
 }
 
 .gapLarge {
@@ -23,11 +40,15 @@
 }
 
 .dateContainer {
-  max-width: $max-width-input;
   width: 100%;
 }
 
-.marginBottomSmall {
+.textContainer {
+  max-width: $max-width-input-text;
+  width: 100%;
+}
+
+.marginBottomMedium {
   margin-bottom: $spacer-medium;
 }
 
@@ -42,7 +63,6 @@
 .addDateContainer {
   @include resetButton();
   display: flex;
-  margin-top: $spacer-very-small;
   padding: $spacer-very-small 0;
 }
 
@@ -51,4 +71,30 @@
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-left: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.inputHeaderIconDimensions {
+  height: 14px;
+  stroke-width: 2;
+  width: 14px;
+
+  @include desktop() {
+    height: 20px;
+    stroke-width: 2.5;
+    width: 20px;
+  }
+}
+
+.addDateDimensions {
+  height: $font-size-secondary;
+  width: $font-size-secondary;
+
+  @include desktop() {
+    height: $font-size-secondary-desktop;
+    width: $font-size-secondary-desktop;
+  }
 }

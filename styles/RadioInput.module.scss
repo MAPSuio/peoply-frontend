@@ -14,4 +14,9 @@
 .labelText {
   @include label();
   color: $text-color-emphasis;
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
 }

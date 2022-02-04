@@ -59,7 +59,7 @@ const ImageInput = ({
       <div className={styles.imageContainer}>
         <Image
           src={imageSource}
-          alt="En sykt kjekk kar"
+          alt="A very cute cat"
           objectFit="cover"
           layout="fill"
           objectPosition="center"
@@ -81,7 +81,7 @@ const ImageInput = ({
       </button>
       {fileTooLarge && (
         <div className={styles.errorContainer}>
-          <ErrorIcon />
+          <ErrorIcon className={styles.errorIconDimensions} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

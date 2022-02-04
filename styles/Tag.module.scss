@@ -7,10 +7,14 @@
   cursor: pointer;
   display: flex;
   font-family: $mono-font;
-  font-size: $font-size-secondary;
+  font-size: $font-size-tertiary;
   justify-content: center;
   padding: $spacer-very-small $spacer-small;
   text-transform: capitalize;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
 }
 
 .active {

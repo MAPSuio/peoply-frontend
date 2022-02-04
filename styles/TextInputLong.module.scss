@@ -7,12 +7,14 @@
 
 .noErrorPadding {
   padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
 }
 
 .labelContainer {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  @include labelContainer();
 }
 
 .label {
@@ -21,15 +23,15 @@
 
 .lengthText {
   font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
 }
 
 .textInputLong {
-  background-color: $background-color-input;
-  border: 1px solid transparent;
-  color: $text-color-emphasis;
-  font-size: $font-size-input;
+  @include input();
   line-height: $line-height-text;
-  padding: $spacer-very-small $spacer-small;
 }
 
 .textInputLong::placeholder {
@@ -37,14 +39,11 @@
 }
 
 .errorContainer {
-  display: flex;
-  margin-top: $spacer-very-small;
+  @include errorContainer();
 }
 
 .errorText {
-  color: $error-color;
-  font-size: $font-size-tertiary;
-  margin-left: $spacer-very-small;
+  @include errorText();
 }
 
 .valid {

@@ -18,7 +18,6 @@ import PrivateIconSmall from "./svgs/PrivateIconSmall";
 import PublicIconSmall from "./svgs/PublicIconSmall";
 import NoLimitIconSmall from "./svgs/NoLimitIconSmall";
 import LimitIconSmall from "./svgs/LimitIconSmall";
-import LinkIcon from "./svgs/LinkIcon";
 
 /* Assets */
 import PlaceholderImage from "../assets/images/cat.jpg";
@@ -140,19 +139,21 @@ const SummaryPage = ({
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
-        <ProgressBar
-          currentStep={currentStep}
-          stepCount={stepCount}
-          validDataMap={validDataMap}
-        />
       </div>
       <div className={styles.summaryContainer}>
-        <SummaryCard inputId={0} Icon={TitleCircle} onClick={buttonOnClick}>
+        <div className={styles.progressBarContainer}>
+          <ProgressBar
+            currentStep={currentStep}
+            stepCount={stepCount}
+            validDataMap={validDataMap}
+          />
+        </div>
+        <SummaryCard inputId={0} Icon={<TitleCircle />} onClick={buttonOnClick}>
           <p className={styles.titleText}>{eventData.evTitle}</p>
         </SummaryCard>
         <SummaryCard
           inputId={1}
-          Icon={CalendarCircleSummmary}
+          Icon={<CalendarCircleSummmary />}
           onClick={buttonOnClick}
         >
           <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
@@ -168,17 +169,14 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={2}
-          Icon={PlaceCircleSummary}
+          Icon={<PlaceCircleSummary />}
           onClick={buttonOnClick}
         >
-          <div className={styles.addressContainer}>
-            <a className={styles.placeText}>{eventData.evAddress}</a>
-            {<LinkIcon />}
-          </div>
+          <a className={styles.placeText}>{eventData.evAddress}</a>
         </SummaryCard>
         <SummaryCard
           inputId={3}
-          Icon={InfoCircleSummary}
+          Icon={<InfoCircleSummary />}
           onClick={buttonOnClick}
         >
           <div className={styles.descriptionContainer}>
@@ -205,7 +203,7 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={4}
-          Icon={ImageCircleSummary}
+          Icon={<ImageCircleSummary />}
           onClick={buttonOnClick}
         >
           <div className={styles.imageContainer}>
@@ -220,30 +218,31 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={5}
-          Icon={DataCircleSummary}
+          Icon={<DataCircleSummary />}
           onClick={buttonOnClick}
         >
           <div className={styles.dataContainer}>
             {eventData.evPrivate ? (
               <div className={styles.dataItemContainer}>
-                <PrivateIconSmall /> <p className={styles.dataLabel}>Privat</p>
+                <PrivateIconSmall className={styles.dataIconDimensions} />{" "}
+                <p className={styles.dataLabel}>Privat</p>
               </div>
             ) : (
               <div className={styles.dataItemContainer}>
-                <PublicIconSmall />
+                <PublicIconSmall className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Offentlig</p>
               </div>
             )}
             {eventData.evHasCapacity ? (
               <div className={styles.dataItemContainer}>
-                <LimitIconSmall />
+                <LimitIconSmall className={styles.dataIconDimensions} />
                 <p
                   className={styles.dataLabel}
                 >{`${eventData.evCapacity} plasser`}</p>
               </div>
             ) : (
               <div className={styles.dataItemContainer}>
-                <NoLimitIconSmall />
+                <NoLimitIconSmall className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Ingen kapasitet</p>
               </div>
             )}

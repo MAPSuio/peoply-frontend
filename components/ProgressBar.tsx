@@ -1,7 +1,11 @@
 import ProgressCircle from "./ProgressCircle";
 import ProgressConnector from "./ProgressConnector";
 
-import { arrayFromRange, getInputPageName } from "../utils/functions";
+import {
+  arrayFromRange,
+  getInputPageName,
+  getProgressCircleLabel,
+} from "../utils/functions";
 import styles from "../styles/ProgressBar.module.scss";
 
 interface ProgressBarProps {
@@ -22,6 +26,7 @@ const ProgressBar = ({
       {steps.map((step) => {
         const pageName = getInputPageName(step);
         const pageNameNext = getInputPageName(step + 1);
+        const label = getProgressCircleLabel(step);
         const active = step === currentStep;
         const success = validDataMap.get(pageName);
         const nextSuccess = validDataMap.get(pageNameNext);
@@ -29,7 +34,12 @@ const ProgressBar = ({
 
         return (
           <>
-            <ProgressCircle key={step} success={success} active={active} />
+            <ProgressCircle
+              key={step}
+              success={success}
+              active={active}
+              label={label}
+            />
             {!last && (
               <ProgressConnector
                 key={step}

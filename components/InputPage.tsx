@@ -75,13 +75,17 @@ const InputPage = ({
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
-        <ProgressBar
-          currentStep={currentStep}
-          stepCount={stepCount}
-          validDataMap={validDataMap}
-        />
       </div>
-      <div className={styles.inputContainer}>{children}</div>
+      <div className={styles.inputContainer}>
+        <div className={styles.progressBarContainer}>
+          <ProgressBar
+            currentStep={currentStep}
+            stepCount={stepCount}
+            validDataMap={validDataMap}
+          />
+        </div>
+        <div className={styles.childrenContainer}>{children}</div>
+      </div>
       <PrimaryButton
         onClick={() => buttonOnClick(step + 1)}
         text={buttonText}

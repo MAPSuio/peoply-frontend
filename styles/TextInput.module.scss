@@ -1,18 +1,20 @@
 .inputContainer {
   display: flex;
   flex-flow: column nowrap;
-  max-width: $max-width-input;
+  max-width: $max-width-input-text;
   width: 100%;
 }
 
 .labelContainer {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  @include labelContainer();
 }
 
 .noErrorPadding {
   padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
 }
 
 .label {
@@ -21,14 +23,14 @@
 
 .lengthText {
   font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
 }
 
 .textInput {
-  background-color: $background-color-input;
-  border: 1px solid transparent;
-  color: $text-color-emphasis;
-  font-size: $font-size-input;
-  padding: $spacer-very-small $spacer-small;
+  @include input();
 }
 
 .textInput::placeholder {
@@ -36,14 +38,15 @@
 }
 
 .errorContainer {
-  display: flex;
-  margin-top: $spacer-very-small;
+  @include errorContainer();
 }
 
 .errorText {
-  color: $error-color;
-  font-size: $font-size-tertiary;
-  margin-left: $spacer-very-small;
+  @include errorText();
+}
+
+.errorIconDimensions {
+  @include errorIconDimensions();
 }
 
 .valid {
@@ -57,4 +60,3 @@
 .required {
   color: $text-color-emphasis;
 }
-  

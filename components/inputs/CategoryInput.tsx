@@ -43,7 +43,7 @@ const CategoryInput = ({
       </div>
       {!valid && (
         <div className={styles.errorContainer}>
-          <ErrorIcon />
+          <ErrorIcon className={styles.errorIconDimensions} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

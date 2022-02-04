@@ -9,8 +9,11 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  margin-bottom: $spacer-large;
   text-align: center;
+}
+
+.progressBarContainer {
+  margin-bottom: $spacer-large;
 }
 
 .title {
@@ -53,6 +56,10 @@
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
   line-height: 1.5;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
 }
 
 .dateText {
@@ -60,23 +67,30 @@
   font-family: $mono-font;
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
 }
 
 .placeText {
   font-family: $mono-font;
+  font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
   margin-right: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
 }
 
 .descriptionText {
   font-size: $font-size-secondary;
   line-height: 1.5;
-}
 
-.addressContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
 }
 
 .descriptionContainer {
@@ -119,6 +133,10 @@
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-left: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
 }
 
 /* .imageContainer {
@@ -148,6 +166,11 @@
   font-size: $font-size-secondary;
   font-weight: bold;
   margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+    margin-bottom: $spacer-very-small-plus;
+  }
 }
 
 .textColorPrimary {
@@ -156,4 +179,24 @@
 
 .marginBottomVerySmall {
   margin-bottom: $spacer-very-small;
+}
+
+.dataIconDimensions {
+  @include dataIconDimensions();
+}
+
+@include desktop() {
+  .title {
+    font-size: $font-size-title-desktop;
+    margin-bottom: $spacer-small;
+  }
+
+  .subTitle {
+    font-size: $font-size-secondary-desktop;
+    margin-bottom: $spacer-medium;
+  }
+
+  .progressBarContainer {
+    margin-bottom: 0;
+  }
 }

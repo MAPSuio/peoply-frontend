@@ -47,11 +47,15 @@ $divider-color: #404F5F;
 // Misc.
 $max-width: 1200px;
 $max-width-input: 500px;
+$max-width-input-text: 500px;
 $max-width-input-date: 200px;
-$max-width-input-time: 150px;
+$max-width-input-date-desktop: 250px;
+$max-width-input-time: 120px;
+$max-width-input-time-desktop: 150px;
 $max-width-input-number: 100px;
 $max-width-button: 500px;
 $page-width-mobile: 90%;
+$page-width-desktop: 80%;
 $background-blur: 8px;
 $animation-duration: 0.3s;
 
@@ -76,7 +80,7 @@ $font-weight-regular: 400;
 $font-weight-medium: 500;
 $font-weight-bold: 700;
 
-// Font sizes.
+/* Mobile font sizes. */
 $font-size-title: 2.25rem;
 $font-size-heading-large: 1.5rem;
 $font-size-heading-medium: 1.125rem;
@@ -84,6 +88,15 @@ $font-size-primary: 1rem;
 $font-size-input: 16px;
 $font-size-secondary: 0.875rem;
 $font-size-tertiary: 0.75rem;
+
+/* Desktop font sizes. */
+$font-size-title-desktop: 4rem;
+$font-size-heading-large-desktop: 2.25rem;
+$font-size-heading-medium-desktop: 1.75rem;
+$font-size-primary-desktop: 1.125rem;
+$font-size-input-desktop: 1.125rem;
+$font-size-secondary-desktop: 1rem;
+$font-size-tertiary-desktop: 0.875rem;
 
 // Line heights.
 $line-height-title: 1;

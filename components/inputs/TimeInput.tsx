@@ -66,7 +66,7 @@ const TimeInput = ({
       ></input>
       {!valid && focused && (
         <div className={styles.errorContainer}>
-          <ErrorIcon />
+          <ErrorIcon className={styles.errorIconDimensions} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

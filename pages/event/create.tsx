@@ -20,7 +20,13 @@ import SummaryPage from "../../components/SummaryPage";
 import InputPage from "../../components/InputPage";
 import InputHeader from "../../components/InputHeader";
 
+import TitleCircle from "../../components/TitleCircle";
 import CalendarCircle from "../../components/CalendarCircle";
+import AddressCircle from "../../components/AddressCircle";
+import InfoCircle from "../../components/InfoCircle";
+import ImageCircle from "../../components/ImageCircle";
+import EyeCircle from "../../components/EyeCircle";
+import NumberCircle from "../../components/NumberCircle";
 import NoLimitIcon from "../../components/svgs/NoLimitIcon";
 import LimitIcon from "../../components/svgs/LimitIcon";
 import PrivateIcon from "../../components/svgs/PrivateIcon";
@@ -70,7 +76,7 @@ const CreateEvent: NextPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   /* The number of input screens. */
-  const stepCount = 6;
+  const stepCount = 7;
 
   const router = useRouter();
 
@@ -185,6 +191,7 @@ const CreateEvent: NextPage = () => {
     10000,
   );
 
+  const lastStep = currentStep === 6;
   let validEvent: boolean;
   if (hasEventDateEnd) {
     validEvent = allEventInputsValid([
@@ -198,6 +205,7 @@ const CreateEvent: NextPage = () => {
       eventActiveCategoriesValid,
       eventCapacityValid,
       eventImageValid,
+      lastStep,
     ]);
   } else {
     validEvent = allEventInputsValid([
@@ -209,6 +217,7 @@ const CreateEvent: NextPage = () => {
       eventActiveCategoriesValid,
       eventCapacityValid,
       eventImageValid,
+      lastStep,
     ]);
   }
 
@@ -279,20 +288,22 @@ const CreateEvent: NextPage = () => {
             firstPage
             buttonOnClick={inputPageOnClick}
           >
-            <InputHeader title="Tittel">
-              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
-            </InputHeader>
-            <TextInput
-              value={eventTitle}
-              inputId="title"
-              inputName="event_title"
-              label="Tittel på arrangementet"
-              placeholder="F.eks. Peoply launch party"
-              maxLength={100}
-              errorMessage="Tittelen kan ikke være tom"
-              required
-              handleChange={updateEventTitle}
-            />
+            <div className={styles.textContainer}>
+              <InputHeader title="Tittel">
+                <TitleCircle className={styles.inputHeaderIconDimensions} />
+              </InputHeader>
+              <TextInput
+                value={eventTitle}
+                inputId="title"
+                inputName="event_title"
+                label="Tittel på arrangementet*"
+                placeholder="F.eks. Peoply launch party"
+                maxLength={100}
+                errorMessage="Tittelen kan ikke være tom"
+                required
+                handleChange={updateEventTitle}
+              />
+            </div>
           </InputPage>
         );
       case 1:
@@ -310,19 +321,21 @@ const CreateEvent: NextPage = () => {
             placeButtonStatic={hasEventDateEnd}
           >
             <div
-              className={`${styles.dateContainer} ${styles.marginBottomSmall}`}
+              className={`${styles.dateContainer} ${styles.marginBottomMedium}`}
             >
-              <InputHeader title="Startdato- og tidspunkt">
-                <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+              <InputHeader title="Startdato og -tidspunkt">
+                <CalendarCircle className={styles.inputHeaderIconDimensions} />
               </InputHeader>
-              <div className={`${styles.column} ${styles.marginBottomSmall}`}>
+              <div
+                className={`${styles.dateColumn} ${styles.marginBottomMedium}`}
+              >
                 <DateInput
                   value={eventDateStart}
                   valid={eventDateStartValid}
                   inputId="dateStart"
                   inputName="event_date_start"
                   label="Dato start*"
-                  errorMessage="Datoen kan ikke være eldre enn dagens dato."
+                  errorMessage="Datoen må være i dag eller fremtiden."
                   required
                   handleChange={updateEventDateStart}
                 />
@@ -342,7 +355,7 @@ const CreateEvent: NextPage = () => {
                   className={styles.addDateContainer}
                   onClick={() => setHasEventDateEnd(true)}
                 >
-                  <PlusIcon />
+                  <PlusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
@@ -351,24 +364,26 @@ const CreateEvent: NextPage = () => {
                   className={styles.addDateContainer}
                   onClick={() => setHasEventDateEnd(false)}
                 >
-                  <MinusIcon />
+                  <MinusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
             </div>
             {hasEventDateEnd && (
               <div className={styles.dateContainer}>
-                <InputHeader title="Sluttdato- og tidspunkt">
-                  <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+                <InputHeader title="Sluttdato og -tidspunkt">
+                  <CalendarCircle
+                    className={styles.inputHeaderIconDimensions}
+                  />
                 </InputHeader>
-                <div className={styles.column}>
+                <div className={styles.dateColumn}>
                   <DateInput
                     value={eventDateEnd}
                     valid={eventDateEndValid}
                     inputId="dateEnd"
                     inputName="event_date_end"
                     label="Dato slutt*"
-                    errorMessage="Datoen kan ikke være eldre enn startdato."
+                    errorMessage="Sluttdato kan ikke være eldre enn startdato."
                     required
                     handleChange={updateEventDateEnd}
                   />
@@ -400,20 +415,22 @@ const CreateEvent: NextPage = () => {
             page={InputPages.AddressPage}
             buttonOnClick={inputPageOnClick}
           >
-            <InputHeader title="Adresse">
-              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
-            </InputHeader>
-            <TextInput
-              value={eventAddress}
-              inputId="address"
-              inputName="event_address"
-              label="Adressen til arrangementet*"
-              placeholder="F.eks. Gaustadalléen 23B, 0373 Oslo"
-              maxLength={100}
-              errorMessage="Du må oppgi en adresse eller et sted."
-              required
-              handleChange={updateEventAddress}
-            />
+            <div className={styles.textContainer}>
+              <InputHeader title="Adresse">
+                <AddressCircle className={styles.inputHeaderIconDimensions} />
+              </InputHeader>
+              <TextInput
+                value={eventAddress}
+                inputId="address"
+                inputName="event_address"
+                label="Adressen til arrangementet*"
+                placeholder="F.eks. Gaustadalléen 23B, 0373 Oslo"
+                maxLength={100}
+                errorMessage="Du må oppgi en adresse eller et sted."
+                required
+                handleChange={updateEventAddress}
+              />
+            </div>
           </InputPage>
         );
       case 3:
@@ -430,28 +447,30 @@ const CreateEvent: NextPage = () => {
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
-            <InputHeader title="Beskrivelse">
-              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
-            </InputHeader>
-            <div className={styles.column}>
-              <TextInputLong
-                value={eventDescription}
-                inputId="description"
-                inputName="event_description"
-                rows={12}
-                label="Beskrivelse av arrangementet*"
-                placeholder="F.eks. Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
-                maxLength={2500}
-                errorMessage="Beskrivelsen kan ikke være tom"
-                required
-                handleChange={updateEventDescription}
-              />
-              <CategoryInput
-                categories={categories}
-                activeCategories={eventActiveCategories}
-                errorMessage="Du må velge minst en kategori."
-                onClick={updateEventCategories}
-              />
+            <div className={styles.textContainer}>
+              <InputHeader title="Beskrivelse">
+                <InfoCircle className={styles.inputHeaderIconDimensions} />
+              </InputHeader>
+              <div className={styles.column}>
+                <TextInputLong
+                  value={eventDescription}
+                  inputId="description"
+                  inputName="event_description"
+                  rows={12}
+                  label="Beskrivelse av arrangementet*"
+                  placeholder="F.eks. Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
+                  maxLength={2500}
+                  errorMessage="Beskrivelsen kan ikke være tom"
+                  required
+                  handleChange={updateEventDescription}
+                />
+                <CategoryInput
+                  categories={categories}
+                  activeCategories={eventActiveCategories}
+                  errorMessage="Du må velge minst en kategori."
+                  onClick={updateEventCategories}
+                />
+              </div>
             </div>
           </InputPage>
         );
@@ -471,7 +490,7 @@ const CreateEvent: NextPage = () => {
             placeButtonStatic
           >
             <InputHeader title="Bilde">
-              <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+              <ImageCircle className={styles.inputHeaderIconDimensions} />
             </InputHeader>
             <ImageInput
               value={eventImage}
@@ -502,7 +521,7 @@ const CreateEvent: NextPage = () => {
             <div className={`${styles.column} ${styles.gapLarge}`}>
               <div>
                 <InputHeader title="Synlighet">
-                  <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+                  <EyeCircle className={styles.inputHeaderIconDimensions} />
                 </InputHeader>
                 <RadioInput
                   optionsAndIcons={[
@@ -531,7 +550,7 @@ const CreateEvent: NextPage = () => {
                 className={!eventHasCapacity ? styles.noExtraOptionPadding : ""}
               >
                 <InputHeader title="Antallsbegrensning">
-                  <CalendarCircle width={24} height={24} strokeWidth={1.5} />
+                  <NumberCircle className={styles.inputHeaderIconDimensions} />
                 </InputHeader>
                 <RadioInput
                   optionsAndIcons={[

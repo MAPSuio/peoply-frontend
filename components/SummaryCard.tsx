@@ -4,7 +4,7 @@ import styles from "../styles/SummaryCard.module.scss";
 
 interface SummaryCardProps {
   inputId: number;
-  Icon: React.FunctionComponent;
+  Icon: JSX.Element;
   children: React.ReactNode;
   onClick: (inputId: number) => void;
 }
@@ -21,7 +21,7 @@ const SummaryCard = ({
       className={styles.summaryCardContainer}
     >
       <div className={styles.iconContainer}>
-        <Icon />
+        {Icon}
         <EditIcon width={14} height={14} />
       </div>
       {children}

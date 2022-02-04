@@ -113,3 +113,13 @@ export enum InputPages {
   ExtraInfoPage = "extraInfoPage",
   SummaryPage = "summaryPage",
 }
+
+export enum CircleLabels {
+  Title = "Tittel",
+  Date = "Tid og dato",
+  Location = "Addresse/sted",
+  Description = "Beskrivelse",
+  Image = "Bilde",
+  Extra = "Øvrig informasjon",
+  Summary = "Oppsummering 🥳",
+}

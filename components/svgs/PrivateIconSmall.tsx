@@ -1,6 +1,11 @@
-const PrivateIconSmall = () => {
+interface PrivateIconSmallProps {
+  className?: string;
+}
+
+const PrivateIconSmall = ({ className }: PrivateIconSmallProps) => {
   return (
     <svg
+      className={className}
       width="14"
       height="14"
       viewBox="0 0 14 14"

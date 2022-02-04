@@ -10,7 +10,7 @@
   box-shadow: 0px 8px 20px rgba(124, 77, 255, 0.3);
   color: $text-color-emphasis;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: $font-size-primary;
   font-weight: $font-weight-bold;
   max-width: $max-width-button;
   padding: $spacer-small 0;
@@ -22,5 +22,9 @@
     color: $text-color-primary;
     cursor: initial;
     font-weight: $font-weight-regular;
+  }
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
   }
 }

@@ -1,4 +1,4 @@
-import { InputPages } from "../types/types";
+import { InputPages, CircleLabels } from "../types/types";
 
 function formatDateRange(startDate: Date, endDate: Date): string {
   let dateString: string;
@@ -241,6 +241,28 @@ function getInputPageName(step: number): string {
   }
 }
 
+/* Get the label of a given progress circle. */
+function getProgressCircleLabel(step: number): string {
+  switch (step) {
+    case 0:
+      return CircleLabels.Title;
+    case 1:
+      return CircleLabels.Date;
+    case 2:
+      return CircleLabels.Location;
+    case 3:
+      return CircleLabels.Description;
+    case 4:
+      return CircleLabels.Image;
+    case 5:
+      return CircleLabels.Extra;
+    case 6:
+      return CircleLabels.Summary;
+    default:
+      return "There is no default";
+  }
+}
+
 /* Gets the text for a category with the given ID. */
 function getCategoryText(
   categories: Array<{ category_id: number; category: string }>,
@@ -363,4 +385,5 @@ export {
   getDateString,
   getCategoryText,
   getInputPageName,
+  getProgressCircleLabel,
 };
