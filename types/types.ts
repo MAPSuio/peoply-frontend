@@ -67,6 +67,32 @@ export interface Arranger {
   event_arrangers: Array<Arranger>;
 }
 
+export interface EventArranger {
+  event_id: string;
+  event: Event;
+  arranger_id: string;
+  arranger: Arranger;
+  role: string;
+}
+
+export interface Favorite {
+  user_id: string;
+  user: User;
+  event_id: string;
+  event: Event;
+  favorite_date: string;
+}
+
+export interface Registration {
+  event_id: string;
+  event: Event;
+  user_id: string;
+  user: User;
+  reg_date: string;
+  reg_status: string;
+  attendance: boolean;
+}
+
 export interface Event {
   event_id: string;
   event_numeric_id: number;
@@ -76,8 +102,11 @@ export interface Event {
   description: string;
   capacity?: number;
   private: boolean;
-  event_arrangers: Array<Arranger>;
+  image?: string;
+  event_arrangers: Array<EventArranger>;
   registrations: Array<User>;
+  event_categories: Array<EventCategory>;
+  favorites: Array<Favorite>;
 }
 
 export interface EventData {
@@ -91,13 +120,23 @@ export interface EventData {
   image?: string;
 }
 
+export interface MyEventData {
+  eventId: number;
+  start_date: string;
+  end_date: string;
+  title: string;
+  capacity?: number;
+  image?: string;
+  registrations: Array<Registration>;
+}
+
 export interface Category {
   category_id: number;
   category: string;
-  event_categories: Array<EventCategories>;
+  event_categories: Array<EventCategory>;
 }
 
-export interface EventCategories {
+export interface EventCategory {
   category_id: number;
   category: Category;
   event_id: string;

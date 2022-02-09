@@ -1,0 +1,14 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  max-width: $max-width;
+  width: 100%;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: $page-width-mobile;
+}

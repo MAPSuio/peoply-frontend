@@ -34,8 +34,13 @@
 
 .primaryButton {
   bottom: $spacer-medium;
+  font-size: $font-size-primary;
   position: fixed;
   width: $page-width-mobile;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+  }
 }
 
 .placeStatic {

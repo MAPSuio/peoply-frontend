@@ -1,11 +1,12 @@
 import styles from "../styles/PrimaryButton.module.scss";
 
 interface PrimaryButtonProps {
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   text: string;
-  className: string;
+  className?: string;
   disabled?: boolean;
   isLink?: boolean;
+  small?: boolean;
 }
 
 export default function PrimaryButton({
@@ -14,13 +15,18 @@ export default function PrimaryButton({
   className,
   disabled,
   isLink,
+  small,
 }: PrimaryButtonProps) {
+  const buttonStyles = small
+    ? `${styles.button} ${styles.small}`
+    : styles.button;
+
   if (isLink) {
     return (
       <a className={styles.buttonContainer}>
         <button
           onClick={onClick}
-          className={`${styles.button} ${className}`}
+          className={`${buttonStyles} ${className}`}
           disabled={disabled}
         >
           {text}
@@ -31,7 +37,7 @@ export default function PrimaryButton({
   return (
     <button
       onClick={onClick}
-      className={`${styles.button} ${className}`}
+      className={`${buttonStyles} ${className}`}
       disabled={disabled}
     >
       {text}

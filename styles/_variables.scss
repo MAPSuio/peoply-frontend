@@ -2,6 +2,7 @@
 $primary-color-400: #7C4DFF;
 $primary-color-200: #B89BFE;
 $primary-color-muted: #594F78;
+$primary-color-400-hovered: #8356FF;
 
 // Status colors.
 $success-color: #7EFB8E;
@@ -54,14 +55,16 @@ $max-width-input-time: 120px;
 $max-width-input-time-desktop: 150px;
 $max-width-input-number: 100px;
 $max-width-button: 500px;
+$max-width-card: 500px;
 $page-width-mobile: 90%;
 $page-width-desktop: 80%;
+$img-height-card: 350px;
 $background-blur: 8px;
 $animation-duration: 0.3s;
 
 // Border radii.
 $border-radius-regular: 12px;
-$border-radius-inside-card: 6px;
+$border-radius-inside-card: 8px;
 $border-radius-icon: 8px;
 $border-radius-round: 100px;
 
@@ -70,6 +73,8 @@ $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
 $shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);
 $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 $shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
+$shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
+$shadow-button-hover: 0px 10px 25px rgba(124, 77, 255, 0.5);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;
@@ -93,6 +98,7 @@ $font-size-tertiary: 0.75rem;
 $font-size-title-desktop: 4rem;
 $font-size-heading-large-desktop: 2.25rem;
 $font-size-heading-medium-desktop: 1.75rem;
+$font-size-heading-small-desktop: 1.375rem;
 $font-size-primary-desktop: 1.125rem;
 $font-size-input-desktop: 1.125rem;
 $font-size-secondary-desktop: 1rem;

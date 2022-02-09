@@ -99,7 +99,7 @@ const Login: NextPage = ({
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl = process.env.BASE_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   return {
     props: {
       baseUrl,

@@ -7,13 +7,14 @@
 .button {
   @include resetButton();
   background-color: $primary-color-400;
-  box-shadow: 0px 8px 20px rgba(124, 77, 255, 0.3);
+  box-shadow: $shadow-button;
   color: $text-color-emphasis;
   cursor: pointer;
   font-size: $font-size-primary;
   font-weight: $font-weight-bold;
   max-width: $max-width-button;
   padding: $spacer-small 0;
+  transition: all $animation-duration ease;
   width: 100%;
 
   &:disabled {
@@ -26,5 +27,20 @@
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
+
+    &:hover {
+      background-color: $primary-color-400-hovered;
+      box-shadow: $shadow-button-hover;
+    }
+  }
+}
+
+.small {
+  font-size: $font-size-secondary;
+  padding: $spacer-very-small-plus $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+    padding: $spacer-small $spacer-small-plus;
   }
 }
