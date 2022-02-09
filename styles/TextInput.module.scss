@@ -45,8 +45,9 @@
   @include errorText();
 }
 
-.errorIconDimensions {
+.errorIcon {
   @include errorIconDimensions();
+  stroke: $error-color;
 }
 
 .valid {

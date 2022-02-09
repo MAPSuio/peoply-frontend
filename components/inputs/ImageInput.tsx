@@ -81,7 +81,7 @@ const ImageInput = ({
       </button>
       {fileTooLarge && (
         <div className={styles.errorContainer}>
-          <ErrorIcon className={styles.errorIconDimensions} />
+          <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

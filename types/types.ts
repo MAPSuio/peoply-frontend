@@ -40,6 +40,14 @@ export interface GeolocationContextType {
   error?: string;
   activateGeolocation: () => void;
 }
+export interface Snack {
+  label: string;
+  type?: SnackTypes;
+}
+
+export interface SnackContextType {
+  addSnack: any;
+}
 
 export interface UserOrganizationRoles {
   organization_id: string;
@@ -161,4 +169,10 @@ export enum CircleLabels {
   Image = "Bilde",
   Extra = "Øvrig informasjon",
   Summary = "Oppsummering 🥳",
+}
+
+export enum SnackTypes {
+  Success,
+  Warning,
+  Error,
 }

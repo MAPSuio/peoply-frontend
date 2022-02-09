@@ -1,7 +1,7 @@
+/* Assets. */
 import SmallCheckIcon from "./svgs/SmallCheckIcon";
 
-import useWindowDimensions from "../hooks/useWindowDimensions";
-
+/* Styles. */
 import styles from "../styles/ProgressCircle.module.scss";
 
 interface ProgressCircleProps {
@@ -21,16 +21,12 @@ const ProgressCircle = ({ success, active, label }: ProgressCircleProps) => {
     }
   };
 
-  const { width: windowWidth } = useWindowDimensions();
   const progressCircleStyles = getProgressCircleStyles();
 
   return (
     <div className={styles.wrapper}>
       <div className={progressCircleStyles}>
-        <SmallCheckIcon
-          width={windowWidth < 600 ? 8 : 14}
-          height={windowWidth < 600 ? 8 : 14}
-        />
+        <SmallCheckIcon className={styles.smallCheckIcon} />
       </div>
       <p
         className={

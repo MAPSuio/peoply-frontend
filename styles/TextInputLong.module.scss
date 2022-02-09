@@ -46,6 +46,11 @@
   @include errorText();
 }
 
+.errorIcon {
+  @include errorIconDimensions();
+  stroke: $error-color;
+}
+
 .valid {
   border: 1px solid $success-color;
 }

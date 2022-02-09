@@ -9,6 +9,7 @@ $success-color: #7EFB8E;
 $success-color-muted: #406155;
 $success-color-input: #4C6F66;
 $error-color: #FF586C;
+$warning-color: #FFF08E;
 
 // Background colors.
 $background-color-primary: #1E2630;
@@ -75,6 +76,10 @@ $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 $shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
 $shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
 $shadow-button-hover: 0px 10px 25px rgba(124, 77, 255, 0.5);
+$shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.3);
+$shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.3);
+$shadow-snack-warning: 0px 5px 12px rgba(255, 240, 142, 0.3);
+$shadow-snack-error: 0px 5px 12px rgba(255, 88, 105, 0.3);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;

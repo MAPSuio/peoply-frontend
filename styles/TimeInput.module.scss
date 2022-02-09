@@ -51,6 +51,7 @@
   color: $text-color-emphasis;
 }
 
-.errorIconDimensions {
+.errorIcon {
   @include errorIconDimensions();
+  stroke: $error-color;
 }

@@ -37,6 +37,11 @@
   margin-left: $spacer-very-small;
 }
 
+.errorIcon {
+  @include errorIconDimensions();
+  stroke: $error-color;
+}
+
 .valid {
   border: 1px solid $success-color;
 }

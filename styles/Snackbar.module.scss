@@ -1,0 +1,130 @@
+.container {
+  align-items: center;
+  background-color: $background-color-input;
+  border-radius: $border-radius-regular;
+  bottom: 128px;
+  box-shadow: $shadow-snack;
+  color: $text-color-emphasis;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  margin: 0 auto;
+  max-width: $max-width-input;
+  padding: $spacer-small;
+  position: fixed;
+  right: 0;
+  width: $page-width-mobile;
+}
+
+.animation {
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-name: snack-enter-reduced-motion;
+  animation-timing-function: ease;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: snack-enter-reduced-motion, snack-enter-full-motion;
+  }
+}
+
+.label {
+  color: $text-color-emphasis;
+  font-size: $font-size-secondary;
+  font-weight: $font-weight-regular;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.success {
+  background-color: $success-color;
+  box-shadow: none;
+
+  .label {
+    color: $text-color-black;
+  }
+}
+
+.successShadow {
+  box-shadow: $shadow-snack-success;
+}
+
+.warning {
+  background-color: $warning-color;
+  box-shadow: none;
+
+  .label {
+    color: $text-color-black;
+  }
+}
+
+.warningShadow {
+  box-shadow: $shadow-snack-warning;
+}
+
+.error {
+  background-color: $error-color;
+  box-shadow: none;
+
+  .label {
+    color: $text-color-black;
+  }
+}
+
+.errorShadow {
+  box-shadow: $shadow-snack-error;
+}
+
+.icon {
+  height: $font-size-secondary;
+  margin-right: $spacer-small;
+  stroke: $text-color-emphasis;
+  width: $font-size-secondary;
+
+  @include desktop() {
+    height: $font-size-secondary-desktop;
+    width: $font-size-secondary-desktop;
+  }
+}
+
+.successIcon {
+  stroke: $text-color-black;
+}
+
+.warningIcon {
+  stroke: $text-color-black;
+}
+
+.errorIcon {
+  stroke: $text-color-black;
+}
+
+.labelContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+/* The reduced motion version of the animation. */
+@keyframes snack-enter-reduced-motion {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* The full motion version of the animation. */
+@keyframes snack-enter-full-motion {
+  from {
+    transform: scale(0.7);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}

@@ -63,6 +63,11 @@
   @include errorContainer();
 }
 
+.errorIcon {
+  @include errorIconDimensions();
+  stroke: $error-color;
+}
+
 .errorText {
   @include errorText();
 }

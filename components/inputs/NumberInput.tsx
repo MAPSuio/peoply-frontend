@@ -72,7 +72,7 @@ const NumberInput = ({
       ></input>
       {!validNumber && focused && (
         <div className={styles.errorContainer}>
-          <ErrorIcon />
+          <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>
         </div>
       )}

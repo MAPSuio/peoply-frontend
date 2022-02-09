@@ -13,6 +13,16 @@
   stroke: none;
 }
 
+.smallCheckIcon {
+  height: 8px;
+  width: 8px;
+
+  @include desktop() {
+    height: 14px;
+    width: 14px;
+  }
+}
+
 .label {
   display: none;
   white-space: nowrap;
