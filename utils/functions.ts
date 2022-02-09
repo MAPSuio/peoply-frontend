@@ -256,12 +256,12 @@ function getProgressCircleLabel(step: number): string {
 
 /* Gets the text for a category with the given ID. */
 function getCategoryText(
-  categories: Array<{ category_id: number; category: string }>,
+  categories: Array<{ id: number; name: string }>,
   id: number,
 ): string {
-  const category = categories.find((cat) => cat.category_id === id);
+  const category = categories.find((cat) => cat.id === id);
 
-  return category?.category || "";
+  return category?.name || "";
 }
 
 /* Checks if a text input is valid. */

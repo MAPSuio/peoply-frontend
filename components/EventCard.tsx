@@ -8,8 +8,8 @@ import Link from "next/link";
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 
 const EventCard = ({ event }: any) => {
-  const startDate = new Date(event.start_date);
-  const endDate = new Date(event.end_date);
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
 
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);
@@ -17,8 +17,8 @@ const EventCard = ({ event }: any) => {
   return (
     <Link
       href={{
-        pathname: "/event/[event_id]",
-        query: { event_id: event.event_numeric_id },
+        pathname: "/event/[eventId]",
+        query: { eventId: event.numericId },
       }}
       passHref={true}
     >

@@ -22,8 +22,8 @@ async function getEventData(eid: number) {
   const eventData = await res.json();
 
   // Extract event data and format in new object.
-  const startDate = new Date(eventData.start_date);
-  const endDate = new Date(eventData.end_date);
+  const startDate = new Date(eventData.startDate);
+  const endDate = new Date(eventData.endDate);
 
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);

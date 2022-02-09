@@ -48,7 +48,7 @@ interface SummaryPageProps {
     evTimeStart: string;
     evTimeEnd: string;
     evHasDateEnd: boolean;
-    evCategories: Array<{ category_id: number; category: string }>;
+    evCategories: Array<{ id: number; name: string }>;
     evActiveCategories: Array<number>;
     evPrivate: boolean;
     evHasCapacity: boolean;
@@ -88,8 +88,8 @@ const SummaryPage = ({
       ? formatDateAndTime(eventData.evDateEnd, eventData.evTimeEnd)
       : startDate;
 
-    formData.append("start_date", startDate);
-    formData.append("end_date", endDate);
+    formData.append("startDate", startDate);
+    formData.append("endDate", endDate);
 
     /* Append title and description. */
     formData.append("title", eventData.evTitle);
@@ -103,7 +103,7 @@ const SummaryPage = ({
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventData.evActiveCategories);
-    formData.append("category_ids", categoryStrings);
+    formData.append("categoryIds", categoryStrings);
 
     /* Append event image. */
     if (eventData.evImage) {
@@ -192,9 +192,9 @@ const SummaryPage = ({
             <div className={styles.categoryTagsContainer}>
               {eventData.evCategories.map((cat) => (
                 <Tag
-                  key={cat.category_id}
-                  id={cat.category_id}
-                  text={cat.category}
+                  key={cat.id}
+                  id={cat.id}
+                  text={cat.name}
                   activeCategories={eventData.evActiveCategories}
                 />
               ))}

@@ -223,8 +223,8 @@ const CreateEvent: NextPage = () => {
 
   const summaryCategories = eventActiveCategories.map((catId) => {
     return {
-      category_id: catId,
-      category: getCategoryText(categories, catId),
+      id: catId,
+      name: getCategoryText(categories, catId),
     };
   });
 
@@ -295,7 +295,7 @@ const CreateEvent: NextPage = () => {
               <TextInput
                 value={eventTitle}
                 inputId="title"
-                inputName="event_title"
+                inputName="eventTitle"
                 label="Tittel på arrangementet*"
                 placeholder="F.eks. Peoply launch party"
                 maxLength={100}
@@ -333,7 +333,7 @@ const CreateEvent: NextPage = () => {
                   value={eventDateStart}
                   valid={eventDateStartValid}
                   inputId="dateStart"
-                  inputName="event_date_start"
+                  inputName="eventDateStart"
                   label="Dato start*"
                   errorMessage="Datoen må være i dag eller fremtiden."
                   required
@@ -343,7 +343,7 @@ const CreateEvent: NextPage = () => {
                   value={eventTimeStart}
                   valid={eventTimeStartValid}
                   inputId="timeStart"
-                  inputName="event_time_start"
+                  inputName="eventTimeStart"
                   label="Tidspunkt start*"
                   errorMessage="Tiden må være i fremtiden."
                   required
@@ -381,7 +381,7 @@ const CreateEvent: NextPage = () => {
                     value={eventDateEnd}
                     valid={eventDateEndValid}
                     inputId="dateEnd"
-                    inputName="event_date_end"
+                    inputName="eventDateEnd"
                     label="Dato slutt*"
                     errorMessage="Sluttdato kan ikke være eldre enn startdato."
                     required
@@ -391,7 +391,7 @@ const CreateEvent: NextPage = () => {
                     value={eventTimeEnd}
                     valid={eventTimeEndValid}
                     inputId="timeEnd"
-                    inputName="event_time_End"
+                    inputName="eventTimeEnd"
                     label="Tidspunkt slutt*"
                     errorMessage="Tiden kan ikke være før starttiden."
                     required
@@ -422,7 +422,7 @@ const CreateEvent: NextPage = () => {
               <TextInput
                 value={eventAddress}
                 inputId="address"
-                inputName="event_address"
+                inputName="eventAddress"
                 label="Adressen til arrangementet*"
                 placeholder="F.eks. Gaustadalléen 23B, 0373 Oslo"
                 maxLength={100}
@@ -455,7 +455,7 @@ const CreateEvent: NextPage = () => {
                 <TextInputLong
                   value={eventDescription}
                   inputId="description"
-                  inputName="event_description"
+                  inputName="eventDescription"
                   rows={12}
                   label="Beskrivelse av arrangementet*"
                   placeholder="F.eks. Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
@@ -495,7 +495,7 @@ const CreateEvent: NextPage = () => {
             <ImageInput
               value={eventImage}
               inputId="image"
-              inputName="event_image"
+              inputName="eventImage"
               label="Last opp et bilde til arrangementet"
               buttonLabel="Endre bilde"
               errorMessage="Bildet kan ikke være så stort."
@@ -574,7 +574,7 @@ const CreateEvent: NextPage = () => {
                   <NumberInput
                     value={eventCapacity}
                     inputId="capacity"
-                    inputName="event_capacity"
+                    inputName="eventCapacity"
                     label="Antall deltakere*"
                     placeholder="0"
                     errorMessage="Antall deltakere kan ikke være tom eller null."

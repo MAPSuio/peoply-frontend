@@ -4,7 +4,7 @@ import ErrorIcon from "../svgs/ErrorIcon";
 import styles from "../../styles/CategoryInput.module.scss";
 
 interface CategoryInputProps {
-  categories: Array<{ category_id: number; category: string }>;
+  categories: Array<{ id: number; name: string }>;
   activeCategories: Array<number>;
   errorMessage: string;
   onClick: (categoryId: number) => void;
@@ -32,9 +32,9 @@ const CategoryInput = ({
         {categories.map((cat) => {
           return (
             <Tag
-              key={cat.category_id}
-              id={cat.category_id}
-              text={cat.category}
+              key={cat.id}
+              id={cat.id}
+              text={cat.name}
               activeCategories={activeCategories}
               onClick={onClick}
             />

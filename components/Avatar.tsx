@@ -23,7 +23,7 @@ export default function Avatar({ user, size }: UserProps) {
     <div>
       <div className={`${styles.avatar} ${getSizeStyling()}`}>
         <span className={styles.name}>
-          {`${user.first_name.charAt(0)}${user.last_name.charAt(0)}`}
+          {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
         </span>
       </div>
     </div>

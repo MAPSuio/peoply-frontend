@@ -174,7 +174,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export async function getStaticPaths() {
   const top10000Events = await getTopXEvents(10000);
   const paths = top10000Events.map((event: Event) => ({
-    params: { eid: `${event.event_numeric_id}` },
+    params: { eid: `${event.numericId}` },
   }));
 
   return { paths, fallback: "blocking" };

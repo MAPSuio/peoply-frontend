@@ -29,18 +29,18 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
     e.stopPropagation();
 
     navigator.clipboard.writeText(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.event_numeric_id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.numericId}`,
     );
   };
 
-  const startDate = new Date(event.start_date);
-  const endDate = new Date(event.end_date);
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
 
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);
 
   const { data: registrations, error: registrationsError } = useSWR(
-    `/events/${event.event_id}/registrations`,
+    `/events/${event.id}/registrations`,
     fetchFromPeoplyApi,
   );
   const regCt = registrations ? registrations.length : 0;
@@ -49,8 +49,8 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
   return (
     <Link
       href={{
-        pathname: "/event/[event_id]",
-        query: { event_id: event.event_numeric_id },
+        pathname: "/event/[eventId]",
+        query: { eventId: event.numericId },
       }}
       passHref={true}
     >

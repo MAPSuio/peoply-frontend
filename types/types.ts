@@ -1,14 +1,14 @@
-enum OrgRole {
-  admin = "ADMIN",
+enum OrganizationRole {
+  ADMIN = "ADMIN",
 }
 
 export interface User {
-  first_name: string;
-  last_name: string;
-  birth_date: string;
-  user_id: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  id: string;
   email: string;
-  arranger_id: string;
+  arrangerId: string;
   phone: string;
   image?: string;
 }
@@ -50,70 +50,70 @@ export interface SnackContextType {
 }
 
 export interface UserOrganizationRoles {
-  organization_id: string;
-  user_id: string;
+  organizationId: string;
+  userId: string;
   organization: Organization;
   user: User;
-  role: OrgRole;
+  role: OrganizationRole;
 }
 
 export interface Organization {
-  organization_id: string;
+  id: string;
   arranger: Arranger;
-  arranger_id: string;
+  arrangerId: string;
   name: string;
-  org_nr: string;
+  orgNr: string;
   image?: string;
-  organization_roles: Array<UserOrganizationRoles>;
+  organizationRole: Array<UserOrganizationRoles>;
 }
 
 export interface Arranger {
-  arranger_id: string;
-  is_business: boolean;
+  id: string;
+  isBusiness: boolean;
   organization?: Organization;
   user?: User;
-  event_arrangers: Array<Arranger>;
+  eventArranger: Array<EventArranger>;
 }
 
 export interface EventArranger {
-  event_id: string;
+  eventId: string;
   event: Event;
-  arranger_id: string;
+  arrangerId: string;
   arranger: Arranger;
   role: string;
 }
 
 export interface Favorite {
-  user_id: string;
+  userId: string;
   user: User;
-  event_id: string;
+  eventId: string;
   event: Event;
-  favorite_date: string;
+  favoritedDate: string;
 }
 
 export interface Registration {
-  event_id: string;
+  eventId: string;
   event: Event;
-  user_id: string;
+  userId: string;
   user: User;
-  reg_date: string;
-  reg_status: string;
+  regDate: string;
+  regStatus: string;
   attendance: boolean;
 }
 
 export interface Event {
-  event_id: string;
-  event_numeric_id: number;
-  start_date: Date;
-  end_date: Date;
+  id: string;
+  numericId: number;
+  startDate: Date;
+  endDate: Date;
   title: string;
   description: string;
   capacity?: number;
   private: boolean;
   image?: string;
-  event_arrangers: Array<EventArranger>;
-  registrations: Array<User>;
-  event_categories: Array<EventCategory>;
+  eventArrangers: Array<EventArranger>;
+  registrations: Array<Registration>;
+  eventCategories: Array<EventCategory>;
   favorites: Array<Favorite>;
 }
 
@@ -129,9 +129,9 @@ export interface EventData {
 }
 
 export interface MyEventData {
-  eventId: number;
-  start_date: string;
-  end_date: string;
+  id: number;
+  startDate: string;
+  endDate: string;
   title: string;
   capacity?: number;
   image?: string;
@@ -139,15 +139,15 @@ export interface MyEventData {
 }
 
 export interface Category {
-  category_id: number;
-  category: string;
-  event_categories: Array<EventCategory>;
+  id: number;
+  name: string;
+  eventCategories: Array<EventCategory>;
 }
 
 export interface EventCategory {
-  category_id: number;
+  categoryId: number;
   category: Category;
-  event_id: string;
+  eventId: string;
   event: Event;
 }
 

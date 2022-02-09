@@ -29,7 +29,7 @@ const Me: NextPage = () => {
           <Avatar user={user} size="large" />
           <h1
             className={styles.name}
-          >{`${user.first_name} ${user.last_name}`}</h1>
+          >{`${user.firstName} ${user.lastName}`}</h1>
           <p className={styles.location}>Oslo, NO</p>
           <p className={styles.description}>Example description here</p>
         </div>

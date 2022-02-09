@@ -42,7 +42,7 @@ const Login: NextPage = ({
                 <p className={styles.sectionName}>Navn</p>
                 <p
                   className={styles.sectionData}
-                >{`${user.first_name} ${user.last_name}`}</p>
+                >{`${user.firstName} ${user.lastName}`}</p>
               </div>
               <div className={styles.cardSection}>
                 <p className={styles.sectionName}>Email</p>
@@ -55,7 +55,7 @@ const Login: NextPage = ({
               <div className={styles.cardSection}>
                 <p className={styles.sectionName}>Fødselsdato</p>
                 <p className={styles.sectionData}>
-                  {formatDate(new Date(user.birth_date))}
+                  {formatDate(new Date(user.birthDate))}
                 </p>
               </div>
               <div className={styles.checkContainer}>
