@@ -81,15 +81,82 @@
     }
 
     .checkContainer {
+      animation-duration: $animation-duration;
+      animation-fill-mode: both;
+      animation-name: check-reduced-motion;
+      animation-timing-function: ease;
       bottom: -20px;
       height: 40px;
       left: calc(50% - 20px);
       position: absolute;
       width: 40px;
+
+      @media (prefers-reduced-motion: no-preference) {
+        animation-name: check-reduced-motion, check-full-motion;
+      }
+    }
+
+    .checkIcon {
+      animation-duration: $animation-duration;
+      animation-fill-mode: both;
+      animation-name: check-circle-reduced-motion;
+      animation-timing-function: ease;
+      stroke: $text-color-black;
     }
   }
 
   .primaryButton {
     margin-top: $spacer-very-large;
+  }
+}
+
+/* The reduced motion version of the animation. */
+@keyframes check-reduced-motion {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* The full motion version of the animation. */
+@keyframes check-full-motion {
+  0% {
+    transform: scale(0.7);
+  }
+
+  50% {
+    transform: scale(1.0);
+  }
+
+  75% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes check-circle-reduced-motion {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+    transform: scale(1.0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.0);
   }
 }

@@ -59,7 +59,7 @@ const Login: NextPage = ({
                 </p>
               </div>
               <div className={styles.checkContainer}>
-                <CheckCircle />
+                <CheckCircle className={styles.checkIcon} />
               </div>
             </div>
             <Link href="/" passHref>
