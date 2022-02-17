@@ -1,4 +1,4 @@
-import { InputPages, CircleLabels } from "../types/types";
+import { InputPages, CircleLabels, Weekdays } from "../types/types";
 
 function formatDateRange(startDate: Date, endDate: Date): string {
   let dateString: string;
@@ -97,6 +97,30 @@ function getDateString(date: string): string {
   const day = date.slice(8, 10);
 
   return `${day}.${month}.${year}`;
+}
+
+/* Gets the weekday of a given date. */
+function getWeekday(date: Date): string {
+  const day = date.getDay();
+
+  switch (day) {
+    case 0:
+      return Weekdays.SUNDAY;
+    case 1:
+      return Weekdays.MONDAY;
+    case 2:
+      return Weekdays.TUESDAY;
+    case 3:
+      return Weekdays.WEDNESDAY;
+    case 4:
+      return Weekdays.THURSDAY;
+    case 5:
+      return Weekdays.FRIDAY;
+    case 6:
+      return Weekdays.SATURDAY;
+    default:
+      return "Whatever day";
+  }
 }
 
 /* Formats a date (yyyy-mm-dd) and time (hh:mm) into an ISO date. */
@@ -214,21 +238,21 @@ function getInputPageData(step: number): {
 function getInputPageName(step: number): string {
   switch (step) {
     case 0:
-      return InputPages.TitlePage;
+      return InputPages.TITLEPAGE;
     case 1:
-      return InputPages.DatePage;
+      return InputPages.DATEPAGE;
     case 2:
-      return InputPages.AddressPage;
+      return InputPages.ADDRESSPAGE;
     case 3:
-      return InputPages.DescriptionPage;
+      return InputPages.DESCRIPTIONPAGE;
     case 4:
-      return InputPages.ImagePage;
+      return InputPages.IMAGEPAGE;
     case 5:
-      return InputPages.ExtraInfoPage;
+      return InputPages.EXTRAINFOPAGE;
     case 6:
-      return InputPages.SummaryPage;
+      return InputPages.SUMMARYPAGE;
     default:
-      return InputPages.TitlePage;
+      return InputPages.TITLEPAGE;
   }
 }
 
@@ -236,19 +260,19 @@ function getInputPageName(step: number): string {
 function getProgressCircleLabel(step: number): string {
   switch (step) {
     case 0:
-      return CircleLabels.Title;
+      return CircleLabels.TITLE;
     case 1:
-      return CircleLabels.Date;
+      return CircleLabels.DATE;
     case 2:
-      return CircleLabels.Location;
+      return CircleLabels.LOCATION;
     case 3:
-      return CircleLabels.Description;
+      return CircleLabels.DESCRIPTION;
     case 4:
-      return CircleLabels.Image;
+      return CircleLabels.IMAGE;
     case 5:
-      return CircleLabels.Extra;
+      return CircleLabels.EXTRA;
     case 6:
-      return CircleLabels.Summary;
+      return CircleLabels.SUMMARY;
     default:
       return "There is no default";
   }
@@ -377,4 +401,6 @@ export {
   getCategoryText,
   getInputPageName,
   getProgressCircleLabel,
+  olderThanStart,
+  getWeekday,
 };

@@ -2,14 +2,14 @@
 import Link from "next/link";
 import Image from "next/image";
 
-/* Types. */
-import { Event } from "../types/types";
+/* Hooks. */
+import useSnack from "../hooks/useSnack";
 
 /* Utils. */
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 
-/* Styles. */
-import styles from "../styles/MyEventCard.module.scss";
+/* Types. */
+import { Event, SnackTypes } from "../types/types";
 
 /* Assets. */
 import PlaceholderImage from "../assets/images/cat.jpg";
@@ -20,17 +20,24 @@ import PrimaryButton from "./PrimaryButton";
 import useSWR from "swr";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 
+/* Styles. */
+import styles from "../styles/MyEventCard.module.scss";
+
 interface MyEventCardProps {
   event: Event;
 }
 
 const MyEventCard = ({ event }: MyEventCardProps) => {
+  const { addSnack } = useSnack();
+
   const buttonOnClick = (e: MouseEvent) => {
     e.stopPropagation();
 
     navigator.clipboard.writeText(
       `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.numericId}`,
     );
+
+    addSnack("Lenken ble kopiert!", SnackTypes.SUCCESS);
   };
 
   const startDate = new Date(event.startDate);

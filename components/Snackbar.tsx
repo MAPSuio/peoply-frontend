@@ -16,31 +16,31 @@ interface SnackbarProps {
 const Snackbar = ({ label, type, first }: SnackbarProps) => {
   const getIcon = () => {
     switch (type) {
-      case SnackTypes.Success:
+      case SnackTypes.SUCCESS:
         return (
           <CheckIconRound className={`${styles.icon} ${styles.successIcon}`} />
         );
-      case SnackTypes.Warning:
+      case SnackTypes.WARNING:
         return (
           <WarningIcon className={`${styles.icon} ${styles.successIcon}`} />
         );
-      case SnackTypes.Error:
+      case SnackTypes.ERROR:
         return <ErrorIcon className={`${styles.icon} ${styles.errorIcon}`} />;
     }
   };
 
   const getSnackStyles = () => {
-    if (type === SnackTypes.Success && first) {
+    if (type === SnackTypes.SUCCESS && first) {
       return `${styles.container} ${styles.success} ${styles.successShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.Success) {
+    } else if (type === SnackTypes.SUCCESS) {
       return `${styles.container} ${styles.success}`;
-    } else if (type === SnackTypes.Warning && first) {
+    } else if (type === SnackTypes.WARNING && first) {
       return `${styles.container} ${styles.warning} ${styles.warningShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.Warning) {
+    } else if (type === SnackTypes.WARNING) {
       return `${styles.container} ${styles.warning}`;
-    } else if (type === SnackTypes.Error && first) {
+    } else if (type === SnackTypes.ERROR && first) {
       return `${styles.container} ${styles.error} ${styles.errorShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.Error) {
+    } else if (type === SnackTypes.ERROR) {
       return `${styles.container} ${styles.error}`;
     } else {
       return `${styles.container}`;

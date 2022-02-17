@@ -262,16 +262,16 @@ const CreateEvent: NextPage = () => {
     const extraInfoInputPageValid = eventCapacityValid;
 
     const validDataMap: Map<string, boolean> = new Map();
-    validDataMap.set(InputPages.TitlePage, titleInputPageValid);
-    validDataMap.set(InputPages.DatePage, dateInputPageValid);
-    validDataMap.set(InputPages.AddressPage, addressInputPageValid);
-    validDataMap.set(InputPages.DescriptionPage, descriptionInputPageValid);
-    validDataMap.set(InputPages.ImagePage, imageInputPageValid);
+    validDataMap.set(InputPages.TITLEPAGE, titleInputPageValid);
+    validDataMap.set(InputPages.DATEPAGE, dateInputPageValid);
+    validDataMap.set(InputPages.ADDRESSPAGE, addressInputPageValid);
+    validDataMap.set(InputPages.DESCRIPTIONPAGE, descriptionInputPageValid);
+    validDataMap.set(InputPages.IMAGEPAGE, imageInputPageValid);
     validDataMap.set(
-      InputPages.ExtraInfoPage,
+      InputPages.EXTRAINFOPAGE,
       extraInfoInputPageValid && eventExtraInfoValid,
     );
-    validDataMap.set(InputPages.SummaryPage, validEvent);
+    validDataMap.set(InputPages.SUMMARYPAGE, validEvent);
 
     switch (step) {
       case 0:
@@ -284,7 +284,7 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.TitlePage}
+            page={InputPages.TITLEPAGE}
             firstPage
             buttonOnClick={inputPageOnClick}
           >
@@ -316,7 +316,7 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.DatePage}
+            page={InputPages.DATEPAGE}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic={hasEventDateEnd}
           >
@@ -412,7 +412,7 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.AddressPage}
+            page={InputPages.ADDRESSPAGE}
             buttonOnClick={inputPageOnClick}
           >
             <div className={styles.textContainer}>
@@ -443,7 +443,7 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.DescriptionPage}
+            page={InputPages.DESCRIPTIONPAGE}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
@@ -484,7 +484,7 @@ const CreateEvent: NextPage = () => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.ImagePage}
+            page={InputPages.IMAGEPAGE}
             setEventImageValid={setEventImageValid}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
@@ -514,7 +514,7 @@ const CreateEvent: NextPage = () => {
             buttonText={buttonText}
             placeButtonStatic
             validDataMap={validDataMap}
-            page={InputPages.ExtraInfoPage}
+            page={InputPages.EXTRAINFOPAGE}
             setEventExtraInfoValid={setEventExtraInfoValid}
             buttonOnClick={inputPageOnClick}
           >
@@ -596,7 +596,7 @@ const CreateEvent: NextPage = () => {
             buttonText={buttonText}
             placeButtonStatic
             validDataMap={validDataMap}
-            page={InputPages.SummaryPage}
+            page={InputPages.SUMMARYPAGE}
             buttonOnClick={inputPageOnClick}
             createEventFunction={summaryPageOnClick}
             eventData={eventData}

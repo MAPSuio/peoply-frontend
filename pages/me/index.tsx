@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import useBack from "../hooks/useBack";
-import Avatar from "../components/Avatar";
-import BackButton from "../components/BackButton";
-import ProfileMenu from "../components/ProfileMenu";
-import useUser from "../hooks/useUser";
-import styles from "../styles/me.module.scss";
+import useBack from "../../hooks/useBack";
+import Avatar from "../../components/Avatar";
+import BackButton from "../../components/BackButton";
+import ProfileMenu from "../../components/ProfileMenu";
+import useUser from "../../hooks/useUser";
+import styles from "../../styles/me.module.scss";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();

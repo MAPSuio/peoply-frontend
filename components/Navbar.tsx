@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.scss";
 import AddIcon from "../components/AddIcon";
 import HomeIcon from "./svgs/HomeIcon";
+import CalendarIconSummary from "./svgs/CalendarIconSummary";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -57,13 +58,13 @@ export default function Navbar() {
         </div>
         <div
           className={`${styles.item} ${
-            isActive("/login") ? styles.active : ""
+            isActive("/me/events") ? styles.active : ""
           }`}
         >
-          <Link href="/login" passHref>
+          <Link href="/me/events" passHref>
             <a>
-              <HomeIcon />
-              {isActive("/login") ? (
+              <CalendarIconSummary className={styles.icon} />
+              {isActive("/me/events") ? (
                 <span className={styles.underline}></span>
               ) : (
                 ""

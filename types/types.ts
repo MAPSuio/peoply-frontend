@@ -152,27 +152,50 @@ export interface EventCategory {
 }
 
 export enum InputPages {
-  TitlePage = "titlePage",
-  DatePage = "datePage",
-  AddressPage = "addressPage",
-  DescriptionPage = "descriptionPage",
-  ImagePage = "imagePage",
-  ExtraInfoPage = "extraInfoPage",
-  SummaryPage = "summaryPage",
+  TITLEPAGE = "titlePage",
+  DATEPAGE = "datePage",
+  ADDRESSPAGE = "addressPage",
+  DESCRIPTIONPAGE = "descriptionPage",
+  IMAGEPAGE = "imagePage",
+  EXTRAINFOPAGE = "extraInfoPage",
+  SUMMARYPAGE = "summaryPage",
 }
 
 export enum CircleLabels {
-  Title = "Tittel",
-  Date = "Tid og dato",
-  Location = "Addresse/sted",
-  Description = "Beskrivelse",
-  Image = "Bilde",
-  Extra = "Øvrig informasjon",
-  Summary = "Oppsummering 🥳",
+  TITLE = "Tittel",
+  DATE = "Tid og dato",
+  LOCATION = "Addresse/sted",
+  DESCRIPTION = "Beskrivelse",
+  IMAGE = "Bilde",
+  EXTRA = "Øvrig informasjon",
+  SUMMARY = "Oppsummering 🥳",
 }
 
 export enum SnackTypes {
-  Success,
-  Warning,
-  Error,
+  SUCCESS,
+  WARNING,
+  ERROR,
+}
+
+export enum RegStatus {
+  Invited = "INVITED",
+  Going = "GOING",
+  NotGoing = "NOT_GOING",
+  Waitlisted = "WAITLISTED",
+}
+
+export enum SectionTypes {
+  REGISTERED,
+  FAVORITES,
+  MYEVENTS,
+}
+
+export enum Weekdays {
+  SUNDAY = "Søndag",
+  MONDAY = "Mandag",
+  TUESDAY = "Tirsdag",
+  WEDNESDAY = "Onsdag",
+  THURSDAY = "Torsdag",
+  FRIDAY = "Fredag",
+  SATURDAY = "Lørdag",
 }

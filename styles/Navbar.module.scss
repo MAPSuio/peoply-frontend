@@ -38,7 +38,7 @@
     }
 
     .underline {
-      background-color: #FFFFFF;
+      background-color: $text-color-emphasis;
       border-radius: $border-radius-round;
       display: block;
       height: 2px;
@@ -55,4 +55,8 @@
 
 .hidden {
   transform: translateY(100px);
+}
+
+.icon {
+  stroke: $text-color-emphasis;
 }
