@@ -91,6 +91,7 @@
 
 .addDateDimensions {
   height: $font-size-secondary;
+  stroke: $primary-color-200;
   width: $font-size-secondary;
 
   @include desktop() {

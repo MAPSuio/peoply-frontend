@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import useSWR from "swr";
+import ExpandableCard from "../components/ExpandableCard";
 import MyEventCard from "../components/MyEventCard";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 
@@ -17,6 +18,19 @@ const Test: NextPage = () => {
       <div className={styles.container}>
         <h1>Event card</h1>
         {event && <MyEventCard event={event} />}
+        <ExpandableCard title="Her kommer tittel">
+          <p>
+            Peoply lagrer kun persondataen som kommer fra innloggingen gjennom
+            Vipps. Dette inkluderer:
+          </p>
+          <ul>
+            <li>Fornavn</li>
+            <li>Etternavn</li>
+            <li>Telefonnummer</li>
+            <li>Fødselsdato</li>
+            <li>Email</li>
+          </ul>
+        </ExpandableCard>
       </div>
     </div>
   );

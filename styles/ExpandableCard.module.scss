@@ -1,0 +1,72 @@
+.button {
+  @include resetButton();
+  @include card();
+  display: flex;
+  flex-flow: column nowrap;
+  font-family: $main-font;
+  max-width: $max-width-button;
+  padding: $spacer-small;
+  width: 100%;
+}
+
+.titleContainer {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.title {
+  color: $text-color-emphasis;
+  font-size: $font-size-primary;
+  font-weight: $font-weight-medium;
+  margin-right: $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+  }
+}
+
+.icon {
+  height: 24px;
+  stroke: $text-color-emphasis;
+  width: 24px;
+}
+
+.childrenContainer {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small;
+  margin-top: $spacer-small;
+  text-align: left;
+
+  > * {
+    font-size: $font-size-secondary;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+  }
+
+  > p {
+    color: $text-color-primary;
+    line-height: $line-height-text;
+  }
+
+  > ul, ol {
+    color: $text-color-primary;
+    padding-left: $spacer-medium;
+  }
+}
+
+/* The reduced motion version of the animation. */
+@keyframes enter-reduced-motion {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

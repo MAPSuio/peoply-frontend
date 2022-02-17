@@ -14,13 +14,11 @@ const PlusIcon = ({ className }: PlusIconProps) => {
     >
       <path
         d="M7 2.91669V11.0834"
-        stroke="#B89BFE"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M2.91669 7H11.0834"
-        stroke="#B89BFE"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
