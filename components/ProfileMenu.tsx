@@ -42,13 +42,13 @@ export default function ProfileMenu() {
       />
       <span className={styles.divider} />
       <ProfileMenuItem
-        text="Kontakt oss"
+        text="Spørsmål og kontakt"
         Icon={MailIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={() => ""}
+        linkOrOnClick="/support"
       />
       <ProfileMenuItem
-        text="Log ut"
+        text="Logg ut"
         Icon={LogoutIcon}
         danger
         ActionIcon={CloseIcon}

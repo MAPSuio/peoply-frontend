@@ -1,0 +1,108 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  width: $page-width-mobile;
+}
+
+.sectionContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium;
+}
+
+.title {
+  font-size: $font-size-title;
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-title-desktop;
+    margin-bottom: $spacer-small;
+  }
+}
+
+.subTitle {
+  font-size: $font-size-secondary;
+  margin-bottom: $spacer-medium-plus;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.title, .subTitle {
+  text-align: center;
+}
+
+.sectionHeader {
+  color: $text-color-primary;
+  font-size: $font-size-heading-large;
+  margin-bottom: $spacer-very-small-plus;
+}
+
+.emphasis {
+  color: $text-color-emphasis;
+}
+
+.regularWeight {
+  font-weight: $font-weight-regular;
+}
+
+.cardContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small;
+  }
+}
+
+.section {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-card;
+  width: 100%;
+}
+
+.reducedPadding {
+  padding-left: $spacer-small-plus;
+
+  > li:not(:last-child) {
+    margin-bottom: $spacer-mini;
+  }
+}
+
+.marginBottomVerySmall {
+  margin-bottom: $spacer-very-small;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
+.contactText {
+  color: $text-color-emphasis;
+  font-size: $font-size-primary;
+  line-height: $line-height-text;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+  }
+}
+
+.emailLink {
+  font-weight: $font-weight-regular;
+  text-decoration: underline;
+}

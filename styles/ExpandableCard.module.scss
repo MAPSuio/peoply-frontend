@@ -21,6 +21,7 @@
   font-size: $font-size-primary;
   font-weight: $font-weight-medium;
   margin-right: $spacer-small;
+  text-align: left;
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
@@ -37,7 +38,7 @@
   align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
-  gap: $spacer-very-small;
+  gap: $spacer-very-small-plus;
   margin-top: $spacer-small;
   text-align: left;
 
