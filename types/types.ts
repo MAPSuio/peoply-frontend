@@ -119,6 +119,7 @@ export interface Event {
 
 export interface EventData {
   eventId: number;
+  eventUuid: string;
   dateString: string;
   timeString: string;
   title: string;
@@ -136,6 +137,12 @@ export interface MyEventData {
   capacity?: number;
   image?: string;
   registrations: Array<Registration>;
+}
+
+export interface FavoriteData {
+  userId: string;
+  eventId: string;
+  favoritedDate: string;
 }
 
 export interface Category {

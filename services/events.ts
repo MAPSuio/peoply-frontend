@@ -1,5 +1,5 @@
 import { formatDateRange, formatTimeRange } from "../utils/functions";
-import { EventData, RegStatus } from "../types/types";
+import { EventData, RegStatus, FavoriteData } from "../types/types";
 import useSnack from "../hooks/useSnack";
 
 /* Fetches and returns the top X most popular events. */
@@ -86,13 +86,13 @@ async function registerForEventTest(userId: string) {
   }
 }
 
-// Fetch and format data for an event specified by an event ID.
+/* Fetch and format data for an event specified by an event ID. */
 async function getEventData(eid: number) {
   const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/events/${eid}`;
   const res = await fetch(eventUrl, { method: "GET" });
   const eventData = await res.json();
 
-  // Extract event data and format in new object.
+  /* Extract event data and format in new object. */
   const startDate = new Date(eventData.startDate);
   const endDate = new Date(eventData.endDate);
 
@@ -101,6 +101,7 @@ async function getEventData(eid: number) {
 
   const event: EventData = {
     eventId: eid,
+    eventUuid: eventData.id,
     dateString: dateString,
     timeString: timeString,
     title: eventData.title,
@@ -113,9 +114,69 @@ async function getEventData(eid: number) {
   return event;
 }
 
+async function getUserFavorite(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites/${eventId}`;
+  const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
+
+  /* no favorite */
+  if (res.status === 204) {
+    return null;
+  }
+
+  const favoriteData = await res.json();
+  const favorite: FavoriteData = {
+    userId: favoriteData.userId,
+    eventId: favoriteData.eventId,
+    favoritedDate: favoriteData.favoritedDate,
+  };
+
+  return favorite;
+}
+
+/* add event as favorite. returns true/false if done succesfull */
+async function addFavorite(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites`;
+  const requestBody = {
+    id: eventId,
+  };
+
+  const res = await fetch(eventUrl, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  return res.status === 200;
+}
+
+/*remove event as favorite. returns true/false if done succesfull */
+async function removeFavorite(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites`;
+  const requestBody = {
+    id: eventId,
+  };
+
+  const res = await fetch(eventUrl, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  return res.status === 200;
+}
+
 export {
   getTopXEvents,
   getEventData,
+  getUserFavorite,
+  addFavorite,
+  removeFavorite,
   getMyEvents,
   getEventsGoing,
   getEventsFavorited,

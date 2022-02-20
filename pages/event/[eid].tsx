@@ -13,10 +13,16 @@ import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 
 import styles from "../../styles/Event.module.scss";
-import { getEventData, getTopXEvents } from "../../services/events";
+import {
+  addFavorite,
+  getEventData,
+  getTopXEvents,
+  getUserFavorite,
+  removeFavorite,
+} from "../../services/events";
 import { Event, EventData } from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeadComponent from "../../components/HeadComponent";
 import { useRouter } from "next/router";
 import { GetStaticProps } from "next";
@@ -32,12 +38,12 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
   const goBack = useBack();
   const { width: windowWidth } = useWindowDimensions();
   const router = useRouter();
-
-  // TODO: Fetch actual favorited status from the API.
   const [favorited, setFavorited] = useState(false);
+  const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
 
-  // Extract the relevant event data.
+  /* Extract the relevant event data. */
   const {
+    eventUuid: eventUuid,
     dateString: eventDate,
     timeString: eventTime,
     title: eventTitle,
@@ -46,6 +52,18 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
     private: eventPrivate,
     image: eventImage,
   } = eventData;
+
+  /* check if the user has this event as a favorite */
+  useEffect(() => {
+    const getFavoriteStatus = async () => {
+      if (user) {
+        const favorite = await getUserFavorite(user.id, eventUuid);
+        setFavorited(favorite !== null);
+        setFavoriteFetched(true);
+      }
+    };
+    getFavoriteStatus();
+  }, [eventUuid, user]);
 
   const imageHeight = windowWidth > 500 ? "30%" : "65%";
 
@@ -63,7 +81,20 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
           <HeartIconGlass
             className={styles.favoriteIcon}
-            onClick={() => setFavorited(!favorited)}
+            onClick={() => {
+              if (favoriteFetched) {
+                if (user) {
+                  if (!favorited) {
+                    addFavorite(user.id, eventUuid);
+                  } else {
+                    removeFavorite(user.id, eventUuid);
+                  }
+                  setFavorited(!favorited);
+                } else {
+                  router.push("/login");
+                }
+              }
+            }}
             favorited={favorited}
           />
           <Image
@@ -148,7 +179,7 @@ interface IParams extends ParsedUrlQuery {
   eid: string;
 }
 
-// Build the 10000 most popular events at build time.
+/* Build the 10000 most popular events at build time. */
 export const getStaticProps: GetStaticProps = async (context) => {
   const { eid } = context.params as IParams;
   const eidNumber = parseInt(eid);
