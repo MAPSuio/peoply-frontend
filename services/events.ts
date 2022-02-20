@@ -1,6 +1,11 @@
 import { formatDateRange, formatTimeRange } from "../utils/functions";
-import { EventData, RegStatus, FavoriteData } from "../types/types";
-import useSnack from "../hooks/useSnack";
+import {
+  EventData,
+  RegStatus,
+  FavoriteData,
+  Registration,
+  RegistrationData,
+} from "../types/types";
 
 /* Fetches and returns the top X most popular events. */
 async function getTopXEvents(numEvents: number) {
@@ -33,7 +38,7 @@ async function getMyEvents(userId: string) {
 
 /* Fetches and returns events the user is signed up for. */
 async function getEventsGoing(userId: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations?regStatus=${RegStatus.Going}&includeEvent=true`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`;
   const res = await fetch(url, { method: "GET", credentials: "include" });
 
   if (res.ok) {
@@ -65,7 +70,7 @@ async function registerForEventTest(userId: string) {
 
   const data = {
     eventId: "3630e0aa-db9a-46b2-9efc-3138956a1a45",
-    regStatus: RegStatus.Going,
+    regStatus: RegStatus.GOING,
   };
 
   const res = await fetch(url, {
@@ -171,6 +176,90 @@ async function removeFavorite(userId: string, eventId: string) {
   return res.status === 200;
 }
 
+async function getUserRegistration(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations/${eventId}`;
+  const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
+
+  /* no registration */
+  if (res.status === 204) {
+    return null;
+  }
+
+  const registrationData = await res.json();
+  const registration: RegistrationData = {
+    eventId: registrationData.eventId,
+    userId: registrationData.userId,
+    regDate: registrationData.regDate,
+    regStatus: registrationData.regStatus,
+    attendance: registrationData.attendance,
+  };
+
+  return registration;
+}
+
+/* add event as favorite. returns true/false if done succesfull */
+async function registerUser(
+  userId: string,
+  eventId: string,
+  status: RegStatus,
+) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const requestBody = {
+    eventId: eventId,
+    regStatus: status,
+  };
+
+  const res = await fetch(eventUrl, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  return res.status === 201;
+}
+
+/* add event as favorite. returns true/false if done succesfull */
+async function unregisterUser(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const requestBody = {
+    eventId: eventId,
+    regStatus: RegStatus.NOTGOING,
+  };
+
+  const res = await fetch(eventUrl, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  return res.status === 200;
+}
+
+/* add event as favorite. returns true/false if done succesfull */
+async function deleteRegistrationUser(userId: string, eventId: string) {
+  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const requestBody = {
+    eventId: eventId,
+  };
+
+  const res = await fetch(eventUrl, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  return res.status === 200;
+}
+
 export {
   getTopXEvents,
   getEventData,
@@ -181,4 +270,8 @@ export {
   getEventsGoing,
   getEventsFavorited,
   registerForEventTest,
+  getUserRegistration,
+  registerUser,
+  unregisterUser,
+  deleteRegistrationUser,
 };

@@ -34,6 +34,8 @@ $text-color-black: #2C263C;
 // Misc colors.
 $red-color: #FF8585;
 $danger-color: #FF586C;
+$danger-color-button: #FF8C96;
+$danger-color-button-hover: #FF9DA5;
 $black-color: #000000;
 $button-color-disabled: #5F5373;
 
@@ -76,6 +78,8 @@ $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 $shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
 $shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
 $shadow-button-hover: 0px 10px 25px rgba(124, 77, 255, 0.5);
+$shadow-button-danger: 0px 8px 20px rgba(255, 140, 150, 0.3);
+$shadow-button-danger-hover: 0px 8px 20px rgba(255, 140, 150, 0.5);
 $shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.2);
 $shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.2);
 $shadow-snack-warning: 0px 5px 12px rgba(255, 240, 142, 0.2);

@@ -1,8 +1,8 @@
 import Image from "next/image";
+import { Router, useRouter } from "next/router";
+import { GetStaticProps } from "next";
 
-import useUser from "../../hooks/useUser";
-import useBack from "../../hooks/useBack";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { useEffect, useState } from "react";
 
 import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
@@ -11,22 +11,29 @@ import SmallCheckCircle from "../../components/SmallCheckCircle";
 import PrimaryButton from "../../components/PrimaryButton";
 import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
+import HeadComponent from "../../components/HeadComponent";
 
-import styles from "../../styles/Event.module.scss";
+import useUser from "../../hooks/useUser";
+import useBack from "../../hooks/useBack";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
+
 import {
   addFavorite,
+  deleteRegistrationUser,
   getEventData,
   getTopXEvents,
   getUserFavorite,
+  getUserRegistration,
+  registerUser,
   removeFavorite,
 } from "../../services/events";
-import { Event, EventData } from "../../types/types";
+
+import { Event, EventData, RegStatus, SnackTypes } from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
-import { useEffect, useState } from "react";
-import HeadComponent from "../../components/HeadComponent";
-import { useRouter } from "next/router";
-import { GetStaticProps } from "next";
 import { ParsedUrlQuery } from "querystring";
+
+import styles from "../../styles/Event.module.scss";
+import useSnack from "../../hooks/useSnack";
 
 interface EventProps {
   eventData: EventData;
@@ -40,6 +47,9 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
   const router = useRouter();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
+  const [registered, setRegistered] = useState(false);
+  const [registeredFetched, setRegisteredFetched] = useState(false);
+  const { addSnack } = useSnack();
 
   /* Extract the relevant event data. */
   const {
@@ -62,8 +72,53 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
         setFavoriteFetched(true);
       }
     };
+
+    const getRegisteredStatus = async () => {
+      if (user) {
+        const registration = await getUserRegistration(user.id, eventUuid);
+        setRegisteredFetched(true);
+
+        if (registration === null) {
+          return;
+        }
+
+        if (registration.regStatus === RegStatus.GOING) {
+          setRegistered(true);
+        }
+      }
+    };
+
+    getRegisteredStatus();
     getFavoriteStatus();
   }, [eventUuid, user]);
+
+  const registerForEvent = async () => {
+    if (user) {
+      const success = await registerUser(user.id, eventUuid, RegStatus.GOING);
+      if (success) {
+        addSnack("Meldt på arrangement", SnackTypes.SUCCESS);
+        setRegistered(true);
+      } else {
+        addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+      }
+      return success;
+    }
+    return false;
+  };
+
+  const unregisterForEvent = async () => {
+    if (user) {
+      const success = await deleteRegistrationUser(user.id, eventUuid);
+      if (success) {
+        addSnack("Meldt av arrangement", SnackTypes.SUCCESS);
+        setRegistered(false);
+      } else {
+        addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
+      }
+      return success;
+    }
+    return false;
+  };
 
   const imageHeight = windowWidth > 500 ? "30%" : "65%";
 
@@ -91,6 +146,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
                   }
                   setFavorited(!favorited);
                 } else {
+                  /* user is not logged in */
                   router.push("/login");
                 }
               }
@@ -165,10 +221,37 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
             <h2 className={styles.descHeader}>Informasjon</h2>
             <p className={styles.descText}>{eventDescription}</p>
           </div>
-          <PrimaryButton
-            text="Meld deg på arrangementet"
-            className={styles.primaryButton}
-          />
+          {registered ? (
+            <PrimaryButton
+              text="Meld deg av arrangementet"
+              className={`${styles.primaryButton} ${styles.dangerButton}`}
+              onClick={() => {
+                if (registeredFetched) {
+                  if (user) {
+                    unregisterForEvent();
+                  } else {
+                    /* User is not logged in. */
+                    router.push("/login");
+                  }
+                }
+              }}
+            />
+          ) : (
+            <PrimaryButton
+              text="Meld deg på arrangementet"
+              className={styles.primaryButton}
+              onClick={() => {
+                if (registeredFetched) {
+                  if (user) {
+                    registerForEvent();
+                  } else {
+                    /* User is not logged in. */
+                    router.push("/login");
+                  }
+                }
+              }}
+            />
+          )}
         </div>
       </div>
     </>

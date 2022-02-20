@@ -90,6 +90,17 @@
   margin-top: $spacer-very-large;
 }
 
+.dangerButton {
+  background-color: $danger-color-button;
+  box-shadow: $shadow-button-danger;
+  color: $text-color-black;
+
+  &:hover {
+    background-color: $danger-color-button-hover;
+    box-shadow: $shadow-button-danger-hover;
+  }
+}
+
 .flexContainer {
   display: flex;
   flex-flow: column nowrap;

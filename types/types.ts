@@ -145,6 +145,14 @@ export interface FavoriteData {
   favoritedDate: string;
 }
 
+export interface RegistrationData {
+  eventId: string;
+  userId: string;
+  regDate: Date;
+  regStatus: RegStatus;
+  attendance: boolean;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -185,10 +193,10 @@ export enum SnackTypes {
 }
 
 export enum RegStatus {
-  Invited = "INVITED",
-  Going = "GOING",
-  NotGoing = "NOT_GOING",
-  Waitlisted = "WAITLISTED",
+  INVITED = "INVITED",
+  GOING = "GOING",
+  NOTGOING = "NOT_GOING",
+  WAITLISTED = "WAITLISTED",
 }
 
 export enum SectionTypes {
