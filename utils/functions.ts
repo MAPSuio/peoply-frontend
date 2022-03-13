@@ -192,11 +192,11 @@ function getInputPageData(step: number): {
       return {
         title: "Dato og tidspunkt",
         subTitle: "Når skal arrangementet ditt finne sted?",
-        buttonText: "Gå til addresse/sted",
+        buttonText: "Gå til adresse/sted",
       };
     case 2:
       return {
-        title: "Addresse/sted",
+        title: "Adresse/sted",
         subTitle: "Hvor skal arrangementet finne sted?",
         buttonText: "Gå til beskrivelse",
       };

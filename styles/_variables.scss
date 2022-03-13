@@ -1,19 +1,24 @@
 // Primary color variations.
 $primary-color-400: #7C4DFF;
+$primary-color-400-hover: #8356FF;
 $primary-color-200: #B89BFE;
+$primary-color-200-hover: #C3A9FF;
 $primary-color-muted: #594F78;
-$primary-color-400-hovered: #8356FF;
 
 // Status colors.
 $success-color: #7EFB8E;
+$success-color-hover: #9BFFA9;
 $success-color-muted: #406155;
 $success-color-input: #4C6F66;
 $error-color: #FF586C;
 $warning-color: #FFF08E;
+$warning-color-hover: #FFF2A0;
 
 // Background colors.
 $background-color-primary: #1E2630;
 $background-color-card: #303A47;
+$background-color-modal-transparent: rgba(48, 58, 71, 0.8);
+$background-color-modal: #526275;
 $background-color-price-tag: #FFFFFF;
 $background-color-glass: rgba(115, 130, 149, 0.7);
 $background-color-navbar: #49515C;
@@ -78,8 +83,14 @@ $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 $shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
 $shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
 $shadow-button-hover: 0px 10px 25px rgba(124, 77, 255, 0.5);
+$shadow-button-light: 0px 8px 20px rgba(184, 155, 254, 0.3);
+$shadow-button-light-hover: 0px 10px 25px rgba(184, 155, 254, 0.5);
 $shadow-button-danger: 0px 8px 20px rgba(255, 140, 150, 0.3);
 $shadow-button-danger-hover: 0px 8px 20px rgba(255, 140, 150, 0.5);
+$shadow-button-success: 0px 8px 20px rgba(126, 251, 142, 0.3);
+$shadow-button-success-hover: 0px 8px 20px rgba(126, 251, 142, 0.5);
+$shadow-button-warning: 0px 8px 20px rgba(255, 240, 142, 0.3);
+$shadow-button-warning-hover: 0px 8px 20px rgba(255, 240, 142, 0.5);
 $shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.2);
 $shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.2);
 $shadow-snack-warning: 0px 5px 12px rgba(255, 240, 142, 0.2);

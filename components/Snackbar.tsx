@@ -3,9 +3,11 @@ import CheckIconRound from "./svgs/CheckIconRound";
 import ErrorIcon from "./svgs/ErrorIcon";
 import WarningIcon from "./svgs/WarningIcon";
 
+/* Types. */
+import { SnackTypes } from "../types/types";
+
 /* Styles. */
 import styles from "../styles/Snackbar.module.scss";
-import { SnackTypes } from "../types/types";
 
 interface SnackbarProps {
   label: string;

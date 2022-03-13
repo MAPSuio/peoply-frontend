@@ -29,9 +29,14 @@
     font-size: $font-size-primary-desktop;
 
     &:hover {
-      background-color: $primary-color-400-hovered;
+      background-color: $primary-color-400-hover;
       box-shadow: $shadow-button-hover;
     }
+  }
+
+  &:active {
+    box-shadow: none !important;  // TODO: Remove the !important here.
+    transform: translateY(2px);  // TODO: This property is very dangerous.
   }
 }
 

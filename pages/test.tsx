@@ -1,10 +1,12 @@
 import { NextPage } from "next";
 import useSWR from "swr";
 import ExpandableCard from "../components/ExpandableCard";
+import Modal from "../components/Modal";
 import MyEventCard from "../components/MyEventCard";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 
 import styles from "../styles/Test.module.scss";
+import { ModalTypes } from "../types/types";
 
 const Test: NextPage = () => {
   /* Fetch test event. */
@@ -31,6 +33,12 @@ const Test: NextPage = () => {
             <li>Email</li>
           </ul>
         </ExpandableCard>
+        <Modal
+          label="Her kommer tittel"
+          description="In maiores voluptatem rerum ut nemo ipsa ut omnis. Ut cupiditate consequatur qui quo. Sunt ea illo facere. Fuga veritatis nisi ut. Adipisci autem quia quisquam mollitia ut minima nobis. Quia et aperiam dolorem."
+          buttonText="Her kommer det en action"
+          buttonOnClick={() => console.log("Her kommer gutta")}
+        />
       </div>
     </div>
   );

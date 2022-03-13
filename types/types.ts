@@ -192,6 +192,12 @@ export enum SnackTypes {
   ERROR,
 }
 
+export enum ModalTypes {
+  SUCCESS,
+  WARNING,
+  DANGER,
+}
+
 export enum RegStatus {
   INVITED = "INVITED",
   GOING = "GOING",
