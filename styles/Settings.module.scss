@@ -1,0 +1,46 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  width: $page-width-mobile;
+}
+
+.title {
+  font-size: $font-size-title;
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-title-desktop;
+  }
+}
+
+.subTitle {
+  font-size: $font-size-secondary;
+  margin-bottom: $spacer-large;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
+.imageContainer {
+  margin-bottom: $spacer-small;
+  max-width: 250px;
+
+  @media screen and (min-width: 600px) and (min-height: 900px) {
+    margin-bottom: $spacer-medium;
+    max-width: 300px;
+  }
+}
