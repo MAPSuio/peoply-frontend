@@ -9,7 +9,7 @@ import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 
 /* Styles. */
-import styles from "../../styles/settings.module.scss";
+import styles from "../../styles/Settings.module.scss";
 import useBack from "../../hooks/useBack";
 
 const Settings: NextPage = () => {

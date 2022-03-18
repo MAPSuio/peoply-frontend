@@ -10,6 +10,7 @@ $success-color: #7EFB8E;
 $success-color-hover: #9BFFA9;
 $success-color-muted: #406155;
 $success-color-input: #4C6F66;
+$success-color-switch: #00E054;
 $error-color: #FF586C;
 $warning-color: #FFF08E;
 $warning-color-hover: #FFF2A0;
@@ -29,6 +30,8 @@ $background-color-progress-circle: #3F4C5C;
 $background-color-progress-circle-active: #ABB5C1;
 $background-color-progress-connector: #303A47;
 $background-color-progress-connector-active: #738295;
+$background-color-switch-container: #303A47;
+$background-color-switch: #63768D;
 
 // Text colors.
 $text-color-emphasis: #FFFFFF;
@@ -95,6 +98,8 @@ $shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.2);
 $shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.2);
 $shadow-snack-warning: 0px 5px 12px rgba(255, 240, 142, 0.2);
 $shadow-snack-error: 0px 5px 12px rgba(255, 88, 105, 0.2);
+$shadow-slider: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+$shadow-switch: 0px 4px 10px rgba(0, 0, 0, 0.2);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;

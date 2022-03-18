@@ -1,0 +1,53 @@
+.switchContainer {
+  align-items: center;
+  background-color: $background-color-switch-container;
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  max-width: $max-width-input;
+  padding: $spacer-small;
+  width: 100%;
+}
+
+.label {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  margin-right: $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.switch {
+  @include resetButton();
+  background-color: $background-color-switch;
+  border-radius: $border-radius-round;
+  box-shadow: $shadow-slider;
+  height: 32px;
+  position: relative;
+  transition: all $animation-duration ease;
+  width: 56px;
+}
+
+.switchControl {
+  background-color: #FFFFFF;
+  border-radius: $border-radius-round;
+  bottom: 1px;
+  box-shadow: $shadow-switch;
+  height: 30px;
+  left: 1px;
+  position: absolute;
+  transition: all $animation-duration ease;
+  width: 30px;
+}
+
+.checked {
+  background-color: $success-color-switch;
+}
+
+.checked > .switchControl {
+  transform: translateX(24px);
+}
