@@ -1,0 +1,23 @@
+.checkboxContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: $spacer-very-small 0;
+}
+
+.checkbox {
+  accent-color: $primary-color-400;
+  height: 24px;
+  margin-right: $spacer-very-small;
+  width: 24px;
+}
+
+.label {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}

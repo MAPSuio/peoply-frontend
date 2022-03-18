@@ -1,6 +1,8 @@
 import { NextPage } from "next";
+import { useState } from "react";
 import useSWR from "swr";
 import ExpandableCard from "../components/ExpandableCard";
+import CheckboxInput from "../components/inputs/CheckboxInput";
 import Modal from "../components/Modal";
 import MyEventCard from "../components/MyEventCard";
 import { fetchFromPeoplyApi } from "../services/fetchers";
@@ -16,8 +18,6 @@ const Test: NextPage = () => {
     "/events/1",
     fetchFromPeoplyApi,
   );
-
-  const [checked, setChecked] = useState(true);
 
   return (
     <div className={styles.wrapper}>
@@ -42,11 +42,6 @@ const Test: NextPage = () => {
           description="In maiores voluptatem rerum ut nemo ipsa ut omnis. Ut cupiditate consequatur qui quo. Sunt ea illo facere. Fuga veritatis nisi ut. Adipisci autem quia quisquam mollitia ut minima nobis. Quia et aperiam dolorem."
           buttonText="Her kommer det en action"
           buttonOnClick={() => console.log("Her kommer gutta")}
-        />
-        <SwitchInput
-          label="Her kommer en label"
-          checked={checked}
-          onClick={() => setChecked(!checked)}
         />
       </div>
     </div>
