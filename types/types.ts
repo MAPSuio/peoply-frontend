@@ -198,6 +198,11 @@ export enum ModalTypes {
   DANGER,
 }
 
+export enum SettingTypes {
+  WARNING,
+  DANGER,
+}
+
 export enum RegStatus {
   INVITED = "INVITED",
   GOING = "GOING",

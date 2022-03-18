@@ -5,11 +5,9 @@ import ExpandableCard from "../components/ExpandableCard";
 import CheckboxInput from "../components/inputs/CheckboxInput";
 import Modal from "../components/Modal";
 import MyEventCard from "../components/MyEventCard";
+import SettingsButton from "../components/SettingsButton";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 import styles from "../styles/Test.module.scss";
-import { ModalTypes } from "../types/types";
-import { useState } from "react";
-import PublicIcon from "../components/svgs/DollarIcon";
 
 const Test: NextPage = () => {
   /* Fetch test event. */

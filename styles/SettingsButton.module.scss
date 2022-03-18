@@ -1,0 +1,42 @@
+.button {
+  align-items: center;
+  background-color: $background-color-settings-button;
+  border-radius: $border-radius-regular;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  max-width: $max-width-input;
+  padding: $spacer-small;
+  width: 100%;
+
+  svg {
+    height: $font-size-secondary;
+    stroke: $text-color-emphasis;
+    width: $font-size-secondary;
+
+    @include desktop() {
+      height: $font-size-secondary-desktop;
+      width: $font-size-secondary-desktop;
+    }
+  }
+}
+
+.buttonText {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  margin-right: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.warning {
+  color: $warning-color;
+}
+
+.danger {
+  color: $danger-color;
+}

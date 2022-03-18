@@ -9,9 +9,10 @@
   p {
     color: $text-color-emphasis;
   }
-  
+
   svg {
     height: 1rem;
+    stroke: $text-color-emphasis;
     width: 1rem;
   }
 
