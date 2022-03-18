@@ -1,0 +1,21 @@
+.radioInputWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.radioButtonsContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.labelText {
+  font-size: $font-size-heading-medium;
+  margin-bottom: $spacer-very-small-plus;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
+}

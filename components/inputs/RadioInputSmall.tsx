@@ -1,8 +1,11 @@
-import RadioButton from "../RadioButton";
+/* Components. */
+import RadioButtonSmall from "../RadioButtonSmall";
 
-import styles from "../../styles/RadioInput.module.scss";
+/* Styles. */
+import styles from "../../styles/RadioInputSmall.module.scss";
+import React from "react";
 
-interface RadioInputProps {
+interface RadioInputSmallProps {
   optionsAndIcons: Array<{
     id: number;
     text: string;
@@ -14,7 +17,11 @@ interface RadioInputProps {
   onClick: (id: number) => void;
 }
 
-const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {
+const RadioInputSmall = ({
+  optionsAndIcons,
+  label,
+  onClick,
+}: RadioInputSmallProps) => {
   return (
     <div className={styles.radioInputWrapper}>
       <p className={styles.labelText}>{label}</p>
@@ -26,7 +33,7 @@ const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {
           const optionIcon = option.icon;
           const isSelected = option.active;
           return (
-            <RadioButton
+            <RadioButtonSmall
               key={optionId}
               id={optionId}
               text={optionText}
@@ -42,4 +49,4 @@ const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {
   );
 };
 
-export default RadioInput;
+export default RadioInputSmall;
