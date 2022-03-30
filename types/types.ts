@@ -10,6 +10,7 @@ export interface User {
   email: string;
   arrangerId: string;
   phone: string;
+  description: string;
   image?: string;
 }
 
@@ -30,7 +31,9 @@ export interface UserContextType {
   user?: User;
   loading: boolean;
   error?: string;
+
   logout: () => Promise<Response>;
+  reload: () => void;
 }
 
 export interface GeolocationContextType {

@@ -1,0 +1,152 @@
+
+.wrapper {
+  align-items: center;
+  backdrop-filter: blur(3px);
+  background-color: $background-color-modal-transparent;
+  bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  margin: 0 auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+.container {
+  align-items: center;
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-name: modal-enter-reduced-motion;
+  animation-timing-function: ease;
+  background-color: $background-color-modal;
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  //   padding-bottom: $spacer-very-small;
+  padding-top: $spacer-medium;
+  position: relative;
+  width: $page-width-mobile;
+
+  @include desktop() {
+    max-width: 400px;
+    width: $page-width-desktop;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: modal-enter-reduced-motion, modal-enter-full-motion;
+  }
+}
+
+.exitIcon {
+  @include resetButton();
+  position: absolute;
+  right: $spacer-very-small;
+  stroke: $text-color-emphasis;
+  top: $spacer-very-small;
+}
+
+.title, .description {
+  color: $text-color-emphasis;
+  max-width: $max-width-input;
+  text-align: center;
+}
+
+.title {
+  font-size: $font-size-heading-large;
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-heading-large-desktop;
+    margin-bottom: $spacer-very-small-plus;
+  }
+}
+
+.button {
+  background-color: $primary-color-200;
+  border-radius: $border-radius-inside-card;
+  box-shadow: $shadow-button-light;
+  color: $text-color-black;
+  margin-top: $spacer-medium;
+
+  @include desktop() {
+    &:hover {
+      background-color: $primary-color-200-hover;
+      box-shadow: $shadow-button-light-hover;
+    }
+  }
+}
+
+.warning {
+  background-color: $warning-color;
+  box-shadow: $shadow-button-warning;
+  color: $text-color-black;
+
+  @include desktop() {
+    &:hover {
+      background-color: $warning-color-hover;
+      box-shadow: $shadow-button-warning-hover;
+    }
+  }
+}
+
+.success {
+  background-color: $success-color;
+  box-shadow: $shadow-button-success;
+  color: $text-color-black;
+
+  @include desktop() {
+    &:hover {
+      background-color: $success-color-hover;
+      box-shadow: $shadow-button-success-hover;
+    }
+  }
+}
+
+.danger {
+  background-color: $danger-color-button;
+  box-shadow: $shadow-button-danger;
+  color: $text-color-black;
+
+  @include desktop() {
+    &:hover {
+      background-color: $danger-color-button-hover;
+      box-shadow: $shadow-button-danger-hover;
+    }
+  }
+}
+
+.description {
+  font-size: $font-size-secondary;
+  line-height: $line-height-hint-text;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+/* The reduced motion version of the animation. */
+@keyframes modal-enter-reduced-motion {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* The full motion version of the animation. */
+@keyframes modal-enter-full-motion {
+  from {
+    transform: scale(0.7);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}

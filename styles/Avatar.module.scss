@@ -1,11 +1,14 @@
 .avatar {
   align-items: center;
-  background-color: #FFFFFF;
   border-radius: 100px;
   box-shadow: $shadow-avatar;
   display: flex;
   justify-content: center;
   position: relative;
+
+  &.default {
+    background-color: #FFFFFF;
+  }
 
   .indicator {
     background-color: $success-color;
@@ -15,6 +18,14 @@
     position: absolute;
     top: 37px;
     width: 10px;
+  }
+
+  img {
+    border-radius: 50%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateZ(0);
+    width: 100%;
   }
 }
 
@@ -32,6 +43,24 @@
 
 .large {
   font-size: 2rem;
-  height: 102px;
-  width: 102px;
+  height: 140px;
+  width: 140px;
+
+  @include desktop() {
+    font-size: 3rem;
+    height: 180px;
+    width: 180px;
+  }
+}
+
+.edit {
+  left: 102px;
+  position: absolute;
+  top: 105px;
+
+  @include desktop() {
+    left: 135px;
+    top: 140px;
+  }
+
 }

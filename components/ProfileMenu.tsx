@@ -20,7 +20,7 @@ export default function ProfileMenu() {
         text="Rediger profil"
         Icon={UserIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick="/login"
+        linkOrOnClick="/me/edit"
       />
       <ProfileMenuItem
         text="Instillinger"

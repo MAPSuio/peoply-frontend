@@ -10,7 +10,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  margin-top: $spacer-medium-plus;
+  margin-top: $spacer-medium;
   width: 100%;
 
   .name {
@@ -26,13 +26,20 @@
   }
 
   .description {
+    -webkit-box-orient: vertical;
     color: $text-color-primary;
+    display: -webkit-box;
     font-size: $font-size-secondary;
+    -webkit-line-clamp: 5; /* number of lines to show */
+    line-clamp: 5;
     line-height: $line-height-text;
     margin-bottom: $spacer-medium-plus;
     margin-top: $spacer-small;
     max-width: 400px;
+    overflow: hidden;
     text-align: center;
-    width: 80%;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+    width: 80%
   }
 }

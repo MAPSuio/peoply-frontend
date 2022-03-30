@@ -21,6 +21,7 @@ export function UserProvider({
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     /* will attempt to fetch and set the user state */
@@ -35,7 +36,7 @@ export function UserProvider({
     };
 
     checkAuth();
-  }, []);
+  }, [reload]);
 
   /* will clear user state and request to remove the cookies */
   const logoutHandler = async () => {
@@ -49,8 +50,9 @@ export function UserProvider({
       loading,
       logout: logoutHandler,
       error,
+      reload: () => setReload(!reload),
     }),
-    [user, loading, error],
+    [user, loading, error, reload],
   );
 
   return (

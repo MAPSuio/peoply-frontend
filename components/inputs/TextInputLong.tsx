@@ -14,7 +14,9 @@ interface TextInputLongProps {
   maxLength: number;
   errorMessage: string;
   required?: boolean;
+  className?: string;
   handleChange: (e: any) => void;
+  validate?: boolean;
 }
 
 const TextInputLong = ({
@@ -26,15 +28,17 @@ const TextInputLong = ({
   placeholder,
   maxLength,
   errorMessage,
+  className,
   required,
   handleChange,
+  validate,
 }: TextInputLongProps) => {
   const [focused, setFocused] = useState(false);
 
   const validText = value.length > 0;
 
   const getInputContainerStyles = () => {
-    if (validText || !focused) {
+    if (validate && (validText || !focused)) {
       return `${styles.inputContainer} ${styles.noErrorPadding}`;
     } else {
       return styles.inputContainer;
@@ -42,9 +46,9 @@ const TextInputLong = ({
   };
 
   const getTextInputLongStyles = () => {
-    if (validText) {
+    if (validate && validText) {
       return `${styles.textInputLong} ${styles.valid}`;
-    } else if (focused) {
+    } else if (validate && focused) {
       return `${styles.textInputLong} ${styles.notValid}`;
     } else {
       return styles.textInputLong;
@@ -55,7 +59,7 @@ const TextInputLong = ({
   const inputContainerStyles = getInputContainerStyles();
 
   return (
-    <div className={inputContainerStyles}>
+    <div className={`${inputContainerStyles} ${className}`}>
       <div className={styles.labelContainer}>
         <label
           className={`${styles.label} ${styles.required}`}
@@ -78,7 +82,7 @@ const TextInputLong = ({
         maxLength={maxLength}
         required={required}
       ></textarea>
-      {!validText && focused && (
+      {validate && !validText && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>

@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: $spacer-small;
+  width: 100%;
+
+  .imageInput {
+    display: none
+  }
+
+  button {
+    @include resetButton();
+    align-items: center;
+    border-radius: 0;
+    display: flex;
+    font-weight: $font-weight-bold;
+    gap: $spacer-very-small-plus;
+    justify-content: center;
+    min-width: 300px;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .removeImage {
+    color: $danger-color;
+  }
+
+  .divider {
+    @include divider();
+    align-self: center;
+    border: 0; // reset border from divider()
+    border-top: 1px solid $divider-color;
+    width: 100%;
+  }
+}

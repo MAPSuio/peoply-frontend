@@ -1,12 +1,15 @@
 import { User } from "../types/types";
 import styles from "../styles/Avatar.module.scss";
+import EditCircle from "./EditCircle";
+import Image from "next/image";
 
 interface UserProps {
   user: User;
   size?: "small" | "medium" | "large";
+  edit?: boolean; // whether or not to show edit icon
 }
 
-export default function Avatar({ user, size }: UserProps) {
+export default function Avatar({ user, size, edit }: UserProps) {
   const getSizeStyling = () => {
     switch (size) {
       case "small":
@@ -19,12 +22,22 @@ export default function Avatar({ user, size }: UserProps) {
         return styles.medium;
     }
   };
+
   return (
     <div>
-      <div className={`${styles.avatar} ${getSizeStyling()}`}>
-        <span className={styles.name}>
-          {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
-        </span>
+      <div
+        className={`${styles.avatar} ${getSizeStyling()} ${
+          user.image ? "" : styles.default
+        }`}
+      >
+        {user.image ? (
+          <Image layout="fill" src={user.image} alt="profile picture" />
+        ) : (
+          <span className={styles.name}>
+            {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
+          </span>
+        )}
+        {edit && <EditCircle className={styles.edit} />}
       </div>
     </div>
   );

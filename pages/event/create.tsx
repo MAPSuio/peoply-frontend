@@ -478,6 +478,7 @@ const CreateEvent: NextPage = () => {
                   errorMessage="Beskrivelsen kan ikke være tom"
                   required
                   handleChange={updateEventDescription}
+                  validate
                 />
                 <CategoryInput
                   categories={categories}
