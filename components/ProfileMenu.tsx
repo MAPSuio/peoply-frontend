@@ -26,7 +26,7 @@ export default function ProfileMenu() {
         text="Instillinger"
         Icon={SettingsIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={() => ""}
+        linkOrOnClick="/settings"
       />
       <ProfileMenuItem
         text="Betalingsinformasjon"

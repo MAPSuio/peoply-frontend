@@ -13,7 +13,7 @@ interface RadioInputSmallProps {
     icon: React.FunctionComponent;
     active: boolean;
   }>;
-  label: string;
+  label?: string;
   onClick: (id: number) => void;
 }
 
@@ -24,7 +24,7 @@ const RadioInputSmall = ({
 }: RadioInputSmallProps) => {
   return (
     <div className={styles.radioInputWrapper}>
-      <p className={styles.labelText}>{label}</p>
+      {label && <p className={styles.labelText}>{label}</p>}
       <div className={styles.radioButtonsContainer}>
         {optionsAndIcons.map((option) => {
           const optionId = option.id;

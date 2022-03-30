@@ -31,8 +31,19 @@
   }
 }
 
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
+.inputHeader {
+  color: $text-color-primary;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-regular;
+  letter-spacing: 0.12em;
+  margin-bottom: $spacer-very-small-plus;
+  text-transform: uppercase;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
 }
 
 .imageContainer {
@@ -43,4 +54,42 @@
     margin-bottom: $spacer-medium;
     max-width: 300px;
   }
+}
+
+.section {
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+.notificationContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-mini;
+  width: 100%;
+}
+
+.userContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
+}
+
+.contentContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium-plus;
+  width: 100%;
+}
+
+.marginBottomSmall {
+  margin-bottom: $spacer-small;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
+.marginLeftMedium {
+  margin-left: $spacer-medium;
 }
