@@ -127,3 +127,14 @@
     width: $font-size-secondary-desktop;
   }
 }
+
+@mixin uppercase() {
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-medium;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}

@@ -18,15 +18,7 @@ import RadioInput from "../../components/inputs/RadioInput";
 
 import SummaryPage from "../../components/SummaryPage";
 import InputPage from "../../components/InputPage";
-import InputHeader from "../../components/InputHeader";
 
-import TitleCircle from "../../components/TitleCircle";
-import CalendarCircle from "../../components/CalendarCircle";
-import AddressCircle from "../../components/AddressCircle";
-import InfoCircle from "../../components/InfoCircle";
-import ImageCircle from "../../components/ImageCircle";
-import EyeCircle from "../../components/EyeCircle";
-import NumberCircle from "../../components/NumberCircle";
 import NoLimitIcon from "../../components/svgs/NoLimitIcon";
 import LimitIcon from "../../components/svgs/LimitIcon";
 import UnlistedIcon from "../../components/svgs/UnlistedIcon";
@@ -51,9 +43,11 @@ import {
   getCategoryText,
 } from "../../utils/functions";
 
+/* Types. */
+import { InputPages, Visibility } from "../../types/types";
+
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
-import { InputPages, Visibility } from "../../types/types";
 
 const CreateEvent: NextPage = () => {
   const [eventTitle, setEventTitle] = useState("");
@@ -301,9 +295,6 @@ const CreateEvent: NextPage = () => {
             buttonOnClick={inputPageOnClick}
           >
             <div className={styles.textContainer}>
-              <InputHeader title="Tittel">
-                <TitleCircle className={styles.inputHeaderIconDimensions} />
-              </InputHeader>
               <TextInput
                 value={eventTitle}
                 inputId="title"
@@ -336,9 +327,6 @@ const CreateEvent: NextPage = () => {
             <div
               className={`${styles.dateContainer} ${styles.marginBottomMedium}`}
             >
-              <InputHeader title="Startdato og -tidspunkt">
-                <CalendarCircle className={styles.inputHeaderIconDimensions} />
-              </InputHeader>
               <div
                 className={`${styles.dateColumn} ${styles.marginBottomMedium}`}
               >
@@ -384,11 +372,6 @@ const CreateEvent: NextPage = () => {
             </div>
             {hasEventDateEnd && (
               <div className={styles.dateContainer}>
-                <InputHeader title="Sluttdato og -tidspunkt">
-                  <CalendarCircle
-                    className={styles.inputHeaderIconDimensions}
-                  />
-                </InputHeader>
                 <div className={styles.dateColumn}>
                   <DateInput
                     value={eventDateEnd}
@@ -430,9 +413,6 @@ const CreateEvent: NextPage = () => {
             buttonOnClick={inputPageOnClick}
           >
             <div className={styles.textContainer}>
-              <InputHeader title="Adresse">
-                <AddressCircle className={styles.inputHeaderIconDimensions} />
-              </InputHeader>
               <TextInput
                 value={eventAddress}
                 inputId="address"
@@ -463,9 +443,6 @@ const CreateEvent: NextPage = () => {
             placeButtonStatic
           >
             <div className={styles.textContainer}>
-              <InputHeader title="Beskrivelse">
-                <InfoCircle className={styles.inputHeaderIconDimensions} />
-              </InputHeader>
               <div className={styles.column}>
                 <TextInputLong
                   value={eventDescription}
@@ -506,9 +483,6 @@ const CreateEvent: NextPage = () => {
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
-            <InputHeader title="Bilde">
-              <ImageCircle className={styles.inputHeaderIconDimensions} />
-            </InputHeader>
             <ImageInput
               value={eventImage}
               inputId="image"
@@ -538,9 +512,6 @@ const CreateEvent: NextPage = () => {
           >
             <div className={`${styles.column} ${styles.gapLarge}`}>
               <div>
-                <InputHeader title="Synlighet">
-                  <EyeCircle className={styles.inputHeaderIconDimensions} />
-                </InputHeader>
                 <RadioInput
                   optionsAndIcons={[
                     {
@@ -567,9 +538,6 @@ const CreateEvent: NextPage = () => {
               <div
                 className={!eventHasCapacity ? styles.noExtraOptionPadding : ""}
               >
-                <InputHeader title="Antallsbegrensning">
-                  <NumberCircle className={styles.inputHeaderIconDimensions} />
-                </InputHeader>
                 <RadioInput
                   optionsAndIcons={[
                     {

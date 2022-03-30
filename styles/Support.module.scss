@@ -45,8 +45,8 @@
 
 .sectionHeader {
   color: $text-color-primary;
-  font-size: $font-size-heading-large;
   margin-bottom: $spacer-very-small-plus;
+  @include uppercase();
 }
 
 .emphasis {
