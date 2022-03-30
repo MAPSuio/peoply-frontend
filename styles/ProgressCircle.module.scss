@@ -1,5 +1,9 @@
 .wrapper {
+  @include resetButton();
   position: relative;
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .container {
@@ -25,6 +29,7 @@
 
 .label {
   display: none;
+  text-align: left;
   white-space: nowrap;
 
   @include createEventDesktop() {

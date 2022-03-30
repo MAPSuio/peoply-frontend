@@ -32,6 +32,7 @@ interface SummaryPageProps {
   title: string;
   subTitle: string;
   currentStep: number;
+  reachedStep: number;
   stepCount: number;
   buttonText: string;
   placeButtonStatic?: boolean;
@@ -39,6 +40,7 @@ interface SummaryPageProps {
   page: string;
   buttonOnClick: (step: number) => void;
   createEventFunction: (formData: FormData) => void;
+  changeStep: (step: number) => void;
   eventData: {
     evTitle: string;
     evDescription: string;
@@ -61,6 +63,7 @@ const SummaryPage = ({
   title,
   subTitle,
   currentStep,
+  reachedStep,
   stepCount,
   buttonText,
   placeButtonStatic,
@@ -68,6 +71,7 @@ const SummaryPage = ({
   page,
   buttonOnClick,
   createEventFunction,
+  changeStep,
   eventData,
 }: SummaryPageProps) => {
   const getButtonStyles = () => {
@@ -144,8 +148,10 @@ const SummaryPage = ({
         <div className={styles.progressBarContainer}>
           <ProgressBar
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             validDataMap={validDataMap}
+            changeStep={changeStep}
           />
         </div>
         <SummaryCard inputId={0} Icon={<TitleCircle />} onClick={buttonOnClick}>

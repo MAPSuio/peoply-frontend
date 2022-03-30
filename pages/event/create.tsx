@@ -74,6 +74,7 @@ const CreateEvent: NextPage = () => {
   const [eventImage, setEventImage] = useState();
   const [eventImageValid, setEventImageValid] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [reachedStep, setReachedStep] = useState(0);
 
   /* The number of input screens. */
   const stepCount = 7;
@@ -160,6 +161,7 @@ const CreateEvent: NextPage = () => {
 
   const inputPageOnClick = (step: number) => {
     if (step !== stepCount) setCurrentStep(step);
+    if (step > reachedStep) setReachedStep(step);
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
@@ -281,6 +283,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -313,6 +316,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -409,6 +413,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -440,6 +445,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -481,6 +487,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -510,6 +517,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
@@ -592,6 +600,7 @@ const CreateEvent: NextPage = () => {
             title={title}
             subTitle={subTitle}
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
@@ -599,6 +608,7 @@ const CreateEvent: NextPage = () => {
             page={InputPages.SUMMARYPAGE}
             buttonOnClick={inputPageOnClick}
             createEventFunction={summaryPageOnClick}
+            changeStep={inputPageOnClick}
             eventData={eventData}
           />
         );

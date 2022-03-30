@@ -8,9 +8,19 @@ interface ProgressCircleProps {
   success?: boolean;
   active?: boolean;
   label: string;
+  step: number;
+  reachedStep: number;
+  changeStep: (step: number) => void;
 }
 
-const ProgressCircle = ({ success, active, label }: ProgressCircleProps) => {
+const ProgressCircle = ({
+  success,
+  active,
+  label,
+  step,
+  reachedStep,
+  changeStep,
+}: ProgressCircleProps) => {
   const getProgressCircleStyles = () => {
     if (success) {
       return `${styles.container} ${styles.success}`;
@@ -22,9 +32,12 @@ const ProgressCircle = ({ success, active, label }: ProgressCircleProps) => {
   };
 
   const progressCircleStyles = getProgressCircleStyles();
-
   return (
-    <div className={styles.wrapper}>
+    <button
+      disabled={reachedStep < step} // disabled when step is not reached
+      className={styles.wrapper}
+      onClick={() => changeStep(step)}
+    >
       <div className={progressCircleStyles}>
         <SmallCheckIcon className={styles.smallCheckIcon} />
       </div>
@@ -35,7 +48,7 @@ const ProgressCircle = ({ success, active, label }: ProgressCircleProps) => {
       >
         {label}
       </p>
-    </div>
+    </button>
   );
 };
 

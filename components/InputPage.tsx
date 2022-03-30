@@ -11,6 +11,7 @@ interface InputPageProps {
   title: string;
   subTitle: string;
   currentStep: number;
+  reachedStep: number;
   stepCount: number;
   buttonText: string;
   placeButtonStatic?: boolean;
@@ -28,6 +29,7 @@ const InputPage = ({
   title,
   subTitle,
   currentStep,
+  reachedStep,
   stepCount,
   buttonText,
   placeButtonStatic,
@@ -80,8 +82,10 @@ const InputPage = ({
         <div className={styles.progressBarContainer}>
           <ProgressBar
             currentStep={currentStep}
+            reachedStep={reachedStep}
             stepCount={stepCount}
             validDataMap={validDataMap}
+            changeStep={buttonOnClick}
           />
         </div>
         <div className={styles.childrenContainer}>{children}</div>

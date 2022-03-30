@@ -10,14 +10,18 @@ import styles from "../styles/ProgressBar.module.scss";
 
 interface ProgressBarProps {
   currentStep: number;
+  reachedStep: number;
   stepCount: number;
   validDataMap: Map<string, boolean>;
+  changeStep: (step: number) => void;
 }
 
 const ProgressBar = ({
   currentStep,
+  reachedStep,
   stepCount,
   validDataMap,
+  changeStep,
 }: ProgressBarProps) => {
   const steps = arrayFromRange(stepCount);
 
@@ -39,6 +43,9 @@ const ProgressBar = ({
               success={success}
               active={active}
               label={label}
+              step={step}
+              reachedStep={reachedStep}
+              changeStep={changeStep}
             />
             {!last && (
               <ProgressConnector
