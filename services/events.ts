@@ -3,9 +3,9 @@ import {
   EventData,
   RegStatus,
   FavoriteData,
-  Registration,
   RegistrationData,
 } from "../types/types";
+import { fetchFromPeoplyApi } from "./fetchers";
 
 /* Fetches and returns the top X most popular events. */
 async function getTopXEvents(numEvents: number) {
@@ -25,7 +25,6 @@ async function getTopXEvents(numEvents: number) {
 async function getMyEvents(userId: string) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/arranging`;
   const res = await fetch(url, { method: "GET", credentials: "include" });
-  console.log("Test");
 
   if (res.ok) {
     const myEvents = await res.json();
@@ -39,7 +38,10 @@ async function getMyEvents(userId: string) {
 /* Fetches and returns events the user is signed up for. */
 async function getEventsGoing(userId: string) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`;
-  const res = await fetch(url, { method: "GET", credentials: "include" });
+  const res = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
 
   if (res.ok) {
     const eventsGoing = await res.json();
@@ -60,7 +62,6 @@ async function getEventsFavorited(userId: string) {
 
     return eventsFavorited;
   } else {
-    console.log({ res });
     throw new Error("Could not fetch the events.");
   }
 }
@@ -94,8 +95,11 @@ async function registerForEventTest(userId: string) {
 /* Fetch and format data for an event specified by an event ID. */
 async function getEventData(eid: number) {
   const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/events/${eid}`;
-  const res = await fetch(eventUrl, { method: "GET" });
-  const eventData = await res.json();
+  const res = await fetchFromPeoplyApi(`/events/${eid}`, {
+    method: "get",
+  });
+
+  const eventData = res;
 
   /* Extract event data and format in new object. */
   const startDate = new Date(eventData.startDate);
@@ -112,7 +116,7 @@ async function getEventData(eid: number) {
     title: eventData.title,
     description: eventData.description,
     capacity: eventData.capacity,
-    private: eventData.private,
+    visibility: eventData.visibility,
     image: eventData.image,
   };
 
@@ -144,7 +148,6 @@ async function addFavorite(userId: string, eventId: string) {
   const requestBody = {
     id: eventId,
   };
-
   const res = await fetch(eventUrl, {
     method: "POST",
     credentials: "include",

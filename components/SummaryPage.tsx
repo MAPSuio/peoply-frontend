@@ -27,6 +27,7 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
+import { Visibility } from "../types/types";
 
 interface SummaryPageProps {
   title: string;
@@ -52,7 +53,7 @@ interface SummaryPageProps {
     evHasDateEnd: boolean;
     evCategories: Array<{ id: number; name: string }>;
     evActiveCategories: Array<number>;
-    evPrivate: boolean;
+    evVisibility: Visibility;
     evHasCapacity: boolean;
     evCapacity: string;
     evImage?: File;
@@ -103,7 +104,7 @@ const SummaryPage = ({
     if (eventData.evHasCapacity) {
       formData.append("capacity", eventData.evCapacity);
     }
-    formData.append("private", `${eventData.evPrivate}`);
+    formData.append("visibility", `${eventData.evVisibility}`);
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventData.evActiveCategories);
@@ -228,16 +229,18 @@ const SummaryPage = ({
           onClick={buttonOnClick}
         >
           <div className={styles.dataContainer}>
-            {eventData.evPrivate ? (
+            {eventData.evVisibility === Visibility.UNLISTED ? (
               <div className={styles.dataItemContainer}>
                 <PrivateIconSmall className={styles.dataIconDimensions} />{" "}
-                <p className={styles.dataLabel}>Privat</p>
+                <p className={styles.dataLabel}>Ikke oppført</p>
               </div>
-            ) : (
+            ) : eventData.evVisibility === Visibility.PUBLIC ? (
               <div className={styles.dataItemContainer}>
                 <PublicIconSmall className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Offentlig</p>
               </div>
+            ) : (
+              <>{/* TODO: implement Private */}</>
             )}
             {eventData.evHasCapacity ? (
               <div className={styles.dataItemContainer}>

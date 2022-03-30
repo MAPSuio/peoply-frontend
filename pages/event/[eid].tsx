@@ -59,7 +59,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
     title: eventTitle,
     description: eventDescription,
     capacity: eventCapacity,
-    private: eventPrivate,
+    visibility: eventVisibility,
     image: eventImage,
   } = eventData;
 

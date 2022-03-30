@@ -29,7 +29,7 @@ import EyeCircle from "../../components/EyeCircle";
 import NumberCircle from "../../components/NumberCircle";
 import NoLimitIcon from "../../components/svgs/NoLimitIcon";
 import LimitIcon from "../../components/svgs/LimitIcon";
-import PrivateIcon from "../../components/svgs/PrivateIcon";
+import UnlistedIcon from "../../components/svgs/UnlistedIcon";
 import PublicIcon from "../../components/svgs/PublicIcon";
 import PlusIcon from "../../components/svgs/PlusIcon";
 import MinusIcon from "../../components/svgs/MinusIcon";
@@ -53,7 +53,7 @@ import {
 
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
-import { InputPages } from "../../types/types";
+import { InputPages, Visibility } from "../../types/types";
 
 const CreateEvent: NextPage = () => {
   const [eventTitle, setEventTitle] = useState("");
@@ -67,7 +67,9 @@ const CreateEvent: NextPage = () => {
   const [eventActiveCategories, setEventActiveCategories] = useState<number[]>(
     [],
   );
-  const [eventPrivate, setEventPrivate] = useState(false);
+  const [eventVisibility, setEventVisibility] = useState<Visibility>(
+    Visibility.PUBLIC,
+  );
   const [eventHasCapacity, setEventHasCapacity] = useState(false);
   const [eventCapacity, setEventCapacity] = useState("");
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
@@ -140,10 +142,17 @@ const CreateEvent: NextPage = () => {
   };
 
   const updateVisibility = (id: number) => {
-    if (id === 2) {
-      setEventPrivate(true);
-    } else {
-      setEventPrivate(false);
+    switch (id) {
+      case 1:
+        setEventVisibility(Visibility.PUBLIC);
+        break;
+
+      case 2:
+        setEventVisibility(Visibility.UNLISTED);
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -241,7 +250,7 @@ const CreateEvent: NextPage = () => {
     evHasDateEnd: hasEventDateEnd,
     evCategories: summaryCategories,
     evActiveCategories: eventActiveCategories,
-    evPrivate: eventPrivate,
+    evVisibility: eventVisibility,
     evHasCapacity: eventHasCapacity,
     evCapacity: eventCapacity,
     evImage: eventImage,
@@ -539,19 +548,19 @@ const CreateEvent: NextPage = () => {
                       hintText:
                         "Synlig for offentligheten. Vises for alle i appen, inkludert personer uten brukerkonto.",
                       icon: PublicIcon,
-                      active: !eventPrivate,
+                      active: eventVisibility === Visibility.PUBLIC,
                     },
                     {
                       id: 2,
-                      text: "privat",
+                      text: "ikke oppført",
                       hintText:
-                        "Ikke synlig for offentligheten, men kan deles med lenke og/eller invitasjon",
-                      icon: PrivateIcon,
-                      active: eventPrivate,
+                        "Ikke synlig for offentligheten, men alle med lenken kan se arrangementet, inkludert personer uten brukerkonto.",
+                      icon: UnlistedIcon,
+                      active: eventVisibility === Visibility.UNLISTED,
                     },
                   ]}
                   onClick={updateVisibility}
-                  label="Privat eller offentlig arrangement?*"
+                  label="Privat eller ikke oppført arrangement?*"
                 />
               </div>
               <div

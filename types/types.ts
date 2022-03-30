@@ -125,7 +125,7 @@ export interface EventData {
   title: string;
   description: string;
   capacity?: number;
-  private: boolean;
+  visibility: boolean;
   image?: string;
 }
 
@@ -196,6 +196,11 @@ export enum ModalTypes {
   SUCCESS,
   WARNING,
   DANGER,
+}
+export enum Visibility {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+  UNLISTED = "UNLISTED",
 }
 
 export enum SettingTypes {
