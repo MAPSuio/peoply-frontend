@@ -69,7 +69,19 @@ const Home: NextPage = ({
   );
 };
 
-const EventSwiper = ({ header, seeAllUrl, events, error }: any) => {
+interface EventSwiperProps {
+  header: string;
+  seeAllUrl: { pathname: string };
+  events: Event[];
+  error: Error | null;
+}
+
+const EventSwiper = ({
+  header,
+  seeAllUrl,
+  events,
+  error,
+}: EventSwiperProps) => {
   return (
     <div className={styles.swiperContainer}>
       <div className={styles.swiperHeader}>
@@ -86,7 +98,7 @@ const EventSwiper = ({ header, seeAllUrl, events, error }: any) => {
         slidesPerView={"auto"}
       >
         {events?.map((event: any) => (
-          <SwiperSlide key={event.numericId} className={styles.mySwiperSlide}>
+          <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
             <EventCard event={event} />
           </SwiperSlide>
         ))}

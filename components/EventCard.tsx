@@ -6,8 +6,13 @@ import SmileIcon from "./svgs/SmileIcon";
 import eventPlaceholder from "../assets/images/undraw_partying.png";
 import Link from "next/link";
 import { formatDateRange, formatTimeRange } from "../utils/functions";
+import { Event } from "../types/types";
 
-const EventCard = ({ event }: any) => {
+interface EventCardProps {
+  event: Event;
+}
+
+const EventCard = ({ event }: EventCardProps) => {
   const startDate = new Date(event.startDate);
   const endDate = new Date(event.endDate);
 
@@ -18,7 +23,7 @@ const EventCard = ({ event }: any) => {
     <Link
       href={{
         pathname: "/event/[eventId]",
-        query: { eventId: event.numericId },
+        query: { eventId: event.urlId },
       }}
       passHref={true}
     >

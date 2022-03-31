@@ -93,7 +93,7 @@ async function registerForEventTest(userId: string) {
 }
 
 /* Fetch and format data for an event specified by an event ID. */
-async function getEventData(eid: number) {
+async function getEventData(eid: string) {
   const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/events/${eid}`;
   const res = await fetchFromPeoplyApi(`/events/${eid}`, {
     method: "get",

@@ -106,7 +106,7 @@ export interface Registration {
 
 export interface Event {
   id: string;
-  numericId: number;
+  urlId: string;
   startDate: Date;
   endDate: Date;
   title: string;
@@ -121,7 +121,7 @@ export interface Event {
 }
 
 export interface EventData {
-  eventId: number;
+  eventId: string;
   eventUuid: string;
   dateString: string;
   timeString: string;

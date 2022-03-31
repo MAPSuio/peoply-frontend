@@ -265,9 +265,8 @@ interface IParams extends ParsedUrlQuery {
 /* Build the 10000 most popular events at build time. */
 export const getStaticProps: GetStaticProps = async (context) => {
   const { eid } = context.params as IParams;
-  const eidNumber = parseInt(eid);
 
-  const eventData = await getEventData(eidNumber);
+  const eventData = await getEventData(eid);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   if (!eventData) {
@@ -288,7 +287,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export async function getStaticPaths() {
   const top10000Events = await getTopXEvents(10000);
   const paths = top10000Events.map((event: Event) => ({
-    params: { eid: `${event.numericId}` },
+    params: { eid: `${event.urlId}` },
   }));
 
   return { paths, fallback: "blocking" };

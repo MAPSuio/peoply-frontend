@@ -34,7 +34,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
     e.stopPropagation();
 
     navigator.clipboard.writeText(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.numericId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.urlId}`,
     );
 
     addSnack("Lenken ble kopiert!", SnackTypes.SUCCESS);
@@ -57,7 +57,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
     <Link
       href={{
         pathname: "/event/[eventId]",
-        query: { eventId: event.numericId },
+        query: { eventId: event.urlId },
       }}
       passHref={true}
     >
