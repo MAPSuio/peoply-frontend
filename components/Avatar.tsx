@@ -31,7 +31,13 @@ export default function Avatar({ user, size, edit }: UserProps) {
         }`}
       >
         {user.image ? (
-          <Image layout="fill" src={user.image} alt="profile picture" />
+          <Image
+            layout="fill"
+            src={user.image}
+            alt="profile picture"
+            sizes="35vw"
+            quality={50}
+          />
         ) : (
           <span className={styles.name}>
             {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}

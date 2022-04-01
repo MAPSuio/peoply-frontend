@@ -138,3 +138,26 @@
     font-size: $font-size-tertiary-desktop;
   }
 }
+
+/* meant for container with h1 and p used on most pages */
+@mixin headingContainer() {
+  margin: $spacer-medium-plus 0;
+  text-align: center;
+
+  h1 {
+    font-size: $font-size-title;
+    margin-bottom: $spacer-very-small;
+
+    @include desktop() {
+      font-size: $font-size-title-desktop;
+    }
+  }
+
+  p {
+    font-size: $font-size-secondary;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+  }
+}

@@ -64,6 +64,7 @@ export interface Organization {
   id: string;
   arranger: Arranger;
   arrangerId: string;
+  description?: string;
   name: string;
   orgNr: string;
   image?: string;

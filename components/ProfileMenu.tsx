@@ -38,7 +38,7 @@ export default function ProfileMenu() {
         text="Organisasjoner"
         Icon={BriefcaseIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={() => ""}
+        linkOrOnClick={"me/orgs"}
       />
       <span className={styles.divider} />
       <ProfileMenuItem

@@ -1,0 +1,39 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 90%;
+
+  .header {
+    @include headingContainer();
+  }
+
+  .imageContainer {
+    margin-top: $spacer-medium-plus;
+    max-width: 500px;
+    padding-right: 15px;
+  }
+
+  .subheader {
+    margin-top: $spacer-small-plus;
+    text-align: center;
+
+    h2 {
+      font-size: $font-size-heading-medium;
+      margin-bottom: $spacer-very-small;
+      @include desktop() {
+        font-size: $font-size-heading-medium-desktop;
+      }
+    }
+  }
+
+  .confirm {
+    bottom: 4rem;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    width: 90%;
+  }
+
+}
