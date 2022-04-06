@@ -18,7 +18,7 @@ import TimeIcon from "./svgs/TimeIcon";
 import PlaceIcon from "./svgs/PlaceIcon";
 import PrimaryButton from "./PrimaryButton";
 import useSWR from "swr";
-import { fetchFromPeoplyApi } from "../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 /* Styles. */
 import styles from "../styles/MyEventCard.module.scss";
@@ -48,7 +48,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
 
   const { data: registrations, error: registrationsError } = useSWR(
     `/events/${event.id}/registrations`,
-    fetchFromPeoplyApi,
+    fetchFromPeoplyApiJson,
   );
   const regCt = registrations ? registrations.length : 0;
   const capacity = event.capacity;

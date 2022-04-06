@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { fetchFromPeoplyApi } from "../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/EditProfileImageMenu.module.scss";
 import TrashIcon from "./svgs/TrashIcon";
 import UploadIcon from "./svgs/UploadIcon";
@@ -23,7 +23,7 @@ const EditProfileImageMenu = ({ onClose }: EditProfileImageMenuProps) => {
     if (image) {
       const formData = new FormData();
       formData.append("profileImage", image, image.name);
-      await fetchFromPeoplyApi("/users/me", {
+      await fetchFromPeoplyApiJson("/users/me", {
         method: "PATCH",
         body: formData,
       });
@@ -34,7 +34,7 @@ const EditProfileImageMenu = ({ onClose }: EditProfileImageMenuProps) => {
   };
 
   const handleImageDelete = async () => {
-    await fetchFromPeoplyApi("/users/me", {
+    await fetchFromPeoplyApiJson("/users/me", {
       method: "PATCH",
       body: JSON.stringify({ removeImage: true }),
       headers: { "Content-Type": "application/json; charset=utf-8" },

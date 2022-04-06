@@ -5,12 +5,12 @@ import {
   FavoriteData,
   RegistrationData,
 } from "../types/types";
-import { fetchFromPeoplyApi } from "./fetchers";
+import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
 /* Fetches and returns the top X most popular events. */
 async function getTopXEvents(numEvents: number) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/events?take=${numEvents}`;
-  const res = await fetch(url, { method: "GET" });
+  const url = `/events?take=${numEvents}`;
+  const res = await fetchFromPeoplyApi(url, { method: "GET" });
 
   if (res.ok) {
     const topXEvents = await res.json();
@@ -21,62 +21,16 @@ async function getTopXEvents(numEvents: number) {
   }
 }
 
-/* Fetches and returns the events the user hosts. */
-async function getMyEvents(userId: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/arranging`;
-  const res = await fetch(url, { method: "GET", credentials: "include" });
-
-  if (res.ok) {
-    const myEvents = await res.json();
-
-    return myEvents;
-  } else {
-    throw new Error("Could not fetch the events.");
-  }
-}
-
-/* Fetches and returns events the user is signed up for. */
-async function getEventsGoing(userId: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`;
-  const res = await fetch(url, {
-    method: "GET",
-    credentials: "include",
-  });
-
-  if (res.ok) {
-    const eventsGoing = await res.json();
-
-    return eventsGoing;
-  } else {
-    throw new Error("Could not fetch the events.");
-  }
-}
-
-/* Fetches and returns events the user has favorited. */
-async function getEventsFavorited(userId: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites?includeEvent=true`;
-  const res = await fetch(url, { method: "GET", credentials: "include" });
-
-  if (res.ok) {
-    const eventsFavorited = await res.json();
-
-    return eventsFavorited;
-  } else {
-    throw new Error("Could not fetch the events.");
-  }
-}
-
 async function registerForEventTest(userId: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const url = `/users/${userId}/registrations`;
 
   const data = {
     eventId: "3630e0aa-db9a-46b2-9efc-3138956a1a45",
     regStatus: RegStatus.GOING,
   };
 
-  const res = await fetch(url, {
+  const res = await fetchFromPeoplyApi(url, {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -94,8 +48,8 @@ async function registerForEventTest(userId: string) {
 
 /* Fetch and format data for an event specified by an event ID. */
 async function getEventData(eid: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/events/${eid}`;
-  const res = await fetchFromPeoplyApi(`/events/${eid}`, {
+  const eventUrl = `/events/${eid}`;
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "get",
   });
 
@@ -124,8 +78,10 @@ async function getEventData(eid: string) {
 }
 
 async function getUserFavorite(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites/${eventId}`;
-  const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
+  const eventUrl = `/users/${userId}/favorites/${eventId}`;
+  const res = await fetchFromPeoplyApi(eventUrl, {
+    method: "GET",
+  });
 
   /* no favorite */
   if (res.status === 204) {
@@ -144,13 +100,12 @@ async function getUserFavorite(userId: string, eventId: string) {
 
 /* add event as favorite. returns true/false if done succesfull */
 async function addFavorite(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites`;
+  const eventUrl = `/users/${userId}/favorites`;
   const requestBody = {
     id: eventId,
   };
-  const res = await fetch(eventUrl, {
+  const res = await fetchFromPeoplyApi(eventUrl, {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -162,14 +117,13 @@ async function addFavorite(userId: string, eventId: string) {
 
 /*remove event as favorite. returns true/false if done succesfull */
 async function removeFavorite(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/favorites`;
+  const eventUrl = `/users/${userId}/favorites`;
   const requestBody = {
     id: eventId,
   };
 
-  const res = await fetch(eventUrl, {
+  const res = await fetchFromPeoplyApi(eventUrl, {
     method: "DELETE",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -180,8 +134,10 @@ async function removeFavorite(userId: string, eventId: string) {
 }
 
 async function getUserRegistration(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations/${eventId}`;
-  const res = await fetch(eventUrl, { method: "GET", credentials: "include" });
+  const eventUrl = `/users/${userId}/registrations/${eventId}`;
+  const res = await fetchFromPeoplyApi(eventUrl, {
+    method: "GET",
+  });
 
   /* no registration */
   if (res.status === 204) {
@@ -206,15 +162,14 @@ async function registerUser(
   eventId: string,
   status: RegStatus,
 ) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
     regStatus: status,
   };
 
-  const res = await fetch(eventUrl, {
+  const res = await fetchFromPeoplyApi(eventUrl, {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -226,15 +181,14 @@ async function registerUser(
 
 /* add event as favorite. returns true/false if done succesfull */
 async function unregisterUser(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
     regStatus: RegStatus.NOTGOING,
   };
 
-  const res = await fetch(eventUrl, {
+  const res = await fetchFromPeoplyApi(eventUrl, {
     method: "PATCH",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -246,14 +200,13 @@ async function unregisterUser(userId: string, eventId: string) {
 
 /* add event as favorite. returns true/false if done succesfull */
 async function deleteRegistrationUser(userId: string, eventId: string) {
-  const eventUrl = `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/registrations`;
+  const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
   };
 
-  const res = await fetch(eventUrl, {
+  const res = await fetchFromPeoplyApi(eventUrl, {
     method: "DELETE",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -269,9 +222,6 @@ export {
   getUserFavorite,
   addFavorite,
   removeFavorite,
-  getMyEvents,
-  getEventsGoing,
-  getEventsFavorited,
   registerForEventTest,
   getUserRegistration,
   registerUser,

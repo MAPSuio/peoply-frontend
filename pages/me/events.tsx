@@ -12,12 +12,7 @@ import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButt
 import PrimaryButton from "../../components/PrimaryButton";
 
 /* Utils. */
-import {
-  getEventsFavorited,
-  getEventsGoing,
-  getMyEvents,
-  registerForEventTest,
-} from "../../services/events";
+import { registerForEventTest } from "../../services/events";
 import { formatDateRange, getWeekday } from "../../utils/functions";
 
 /* Hooks. */
@@ -27,7 +22,9 @@ import useSnack from "../../hooks/useSnack";
 /* Types. */
 import {
   Event,
+  Favorite,
   Registration,
+  RegStatus,
   SectionTypes,
   SnackTypes,
 } from "../../types/types";
@@ -42,17 +39,29 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import useSWR from "swr";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
-  const [activeRegistrations, setActiveRegistrations] = useState([]);
-  const [eventsGoing, setEventsGoing] = useState([]);
-  const [eventsFavorited, setEventsFavorited] = useState([]);
-  const [eventsArranging, setEventsArranging] = useState([]);
+  const [activeRegistrations, setActiveRegistrations] = useState<any[]>([]);
   const [dateAndEventsMap, setDateAndEventsMap] = useState(new Map());
   const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<any[]>([]);
   const { user, loading, error } = useUser();
   const { addSnack } = useSnack();
+
+  const { data: eventsArranging, error: myEventsError } = useSWR<Event[]>(
+    `/users/${user?.id}/arranging`,
+    fetchFromPeoplyApiJson,
+  );
+  const { data: eventsFavorited, error: myFavoritesError } = useSWR<Favorite[]>(
+    `/users/${user?.id}/favorites?includeEvent=true`,
+    fetchFromPeoplyApiJson,
+  );
+  const { data: eventsGoing, error: myGoingError } = useSWR<Registration[]>(
+    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`,
+    fetchFromPeoplyApiJson,
+  );
 
   /* Keep for future reference. Can be deleted later. */
   const register = () => {
@@ -71,13 +80,13 @@ const MyEvents = () => {
 
     switch (section) {
       case SectionTypes.REGISTERED:
-        setActiveRegistrations([...eventsGoing]);
+        if (eventsGoing) setActiveRegistrations(eventsGoing);
         break;
       case SectionTypes.FAVORITES:
-        setActiveRegistrations([...eventsFavorited]);
+        if (eventsFavorited) setActiveRegistrations(eventsFavorited);
         break;
       case SectionTypes.MYEVENTS:
-        setActiveRegistrations([...eventsArranging]);
+        if (eventsArranging) setActiveRegistrations([...eventsArranging]);
         break;
       default:
         console.log("default triggered:", activeRegistrations);
@@ -86,27 +95,14 @@ const MyEvents = () => {
   };
 
   useEffect(() => {
-    const getUserEvents = async () => {
-      if (user) {
-        const userId = user.id;
-
-        /* Get the events that the user is signed up for, has favorited, and is arranging. */
-        const eventsGoing = getEventsGoing(userId);
-        const eventsFavorited = getEventsFavorited(userId);
-        const eventsArranging = getMyEvents(userId);
-
-        /* Set event states. */
-        setEventsGoing(await eventsGoing);
-        setEventsFavorited(await eventsFavorited);
-        setEventsArranging(await eventsArranging);
-
-        /* Set the default active event section. */
-        setActiveRegistrations(await eventsGoing);
+    if (user) {
+      /* Set the default active event section. */
+      if (eventsGoing) {
+        setActiveSection(SectionTypes.REGISTERED);
+        setActiveRegistrations(eventsGoing);
       }
-    };
-
-    getUserEvents();
-  }, [user]);
+    }
+  }, [user, eventsGoing]);
 
   useEffect(() => {
     dateAndEventsMap.clear();

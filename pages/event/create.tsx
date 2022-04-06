@@ -27,7 +27,7 @@ import PlusIcon from "../../components/svgs/PlusIcon";
 import MinusIcon from "../../components/svgs/MinusIcon";
 
 /* Hooks */
-import { fetchFromPeoplyApi } from "../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 /* Utils */
 import {
@@ -83,7 +83,7 @@ const CreateEvent: NextPage = () => {
   /* Get all the possible event categories. */
   const { data: categories, error: categoriesError } = useSWR(
     "/categories",
-    fetchFromPeoplyApi,
+    fetchFromPeoplyApiJson,
   );
 
   /* TODO: Consider moving all these state update functions somewhere. */
@@ -168,7 +168,7 @@ const CreateEvent: NextPage = () => {
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
-    await fetchFromPeoplyApi("/events", { method: "post", body: formData });
+    await fetchFromPeoplyApiJson("/events", { method: "post", body: formData });
     router.push("/");
   };
 

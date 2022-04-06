@@ -9,7 +9,7 @@ import MenuModal from "../../components/MenuModal";
 import PrimaryButton from "../../components/PrimaryButton";
 import useBack from "../../hooks/useBack";
 import useUser from "../../hooks/useUser";
-import { fetchFromPeoplyApi } from "../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
 
 const EditProfile: NextPage = () => {
@@ -55,7 +55,7 @@ const EditProfile: NextPage = () => {
   };
 
   const handleConfirm = async () => {
-    await fetchFromPeoplyApi("/users/me", {
+    await fetchFromPeoplyApiJson("/users/me", {
       method: "PATCH",
       body: JSON.stringify({ description }),
       headers: { "Content-Type": "application/json; charset=utf-8" },

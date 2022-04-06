@@ -8,7 +8,7 @@ import Image from "next/image";
 import router from "next/router";
 import PrimaryButton from "../../components/PrimaryButton";
 import useSWR from "swr";
-import { fetchFromPeoplyApi } from "../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import OrgList from "../../components/OrgList";
 
 const Organizations: NextPage = () => {
@@ -18,7 +18,7 @@ const Organizations: NextPage = () => {
   /* fetch organizations for user using swr hook */
   const { data, error } = useSWR(
     `/users/${user?.id}/organizations`,
-    fetchFromPeoplyApi,
+    fetchFromPeoplyApiJson,
   );
 
   if (error) {

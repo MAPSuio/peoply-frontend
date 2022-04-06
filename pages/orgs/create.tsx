@@ -8,7 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import TextInput from "../../components/inputs/TextInput";
 import { useEffect, useState } from "react";
 import TextInputLong from "../../components/inputs/TextInputLong";
-import { fetchFromPeoplyApi } from "../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
 import { SnackTypes } from "../../types/types";
 
@@ -39,7 +39,7 @@ const Create: NextPage = () => {
 
   async function handleConfirm() {
     try {
-      await fetchFromPeoplyApi("/organizations", {
+      await fetchFromPeoplyApiJson("/organizations", {
         method: "POST",
         body: JSON.stringify({ name, description }),
         headers: { "Content-Type": "application/json; charset=utf-8" },

@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { logout } from "../services/auth";
-import { fetchFromPeoplyApi } from "../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { User, UserContextType } from "../types/types";
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
@@ -27,7 +27,7 @@ export function UserProvider({
     /* will attempt to fetch and set the user state */
     const checkAuth = async () => {
       try {
-        const user = await fetchFromPeoplyApi("/users/me");
+        const user = await fetchFromPeoplyApiJson("/users/me");
         setUser(user);
       } catch (error: any) {
         setError(error.message);

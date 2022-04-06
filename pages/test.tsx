@@ -6,14 +6,14 @@ import CheckboxInput from "../components/inputs/CheckboxInput";
 import Modal from "../components/Modal";
 import MyEventCard from "../components/MyEventCard";
 import SettingsButton from "../components/SettingsButton";
-import { fetchFromPeoplyApi } from "../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/Test.module.scss";
 
 const Test: NextPage = () => {
   /* Fetch test event. */
   const { data: event, error: eventError } = useSWR(
     "/events/1",
-    fetchFromPeoplyApi,
+    fetchFromPeoplyApiJson,
   );
 
   return (
