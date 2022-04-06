@@ -1,20 +1,17 @@
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import BackButton from "../components/BackButton";
 import ExpandableCard from "../components/ExpandableCard";
+import useBack from "../hooks/useBack";
 
 import styles from "../styles/Support.module.scss";
 
 const Support: NextPage = () => {
-  const router = useRouter();
+  const goBack = useBack();
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <BackButton
-          onClick={() => router.push("/me")}
-          className={styles.marginBottomMedium}
-        />
+        <BackButton onClick={goBack} className={styles.marginBottomMedium} />
         <h1 className={styles.title}>Spørsmål og kontakt</h1>
         <p className={styles.subTitle}>Hva ønsker du svar på?</p>
         <div className={styles.sectionContainer}>
