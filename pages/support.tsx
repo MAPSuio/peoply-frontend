@@ -275,6 +275,16 @@ const Support: NextPage = () => {
               </p>
             </div>
           </div>
+          <div className={styles.section}>
+            <span className={styles.divider} />
+            <p className={styles.infoText}>Decidable AS</p>
+            <p className={styles.infoText}>Orgnr: 927 524 627</p>
+            <p className={styles.infoText}>
+              Adresse: Hovseterveien 52 A 0702, 0768 Oslo
+            </p>
+            <p className={styles.infoText}>Tlfnummer: 993 67 518</p>
+            <p className={styles.infoText}>Email: post@decidable.no</p>
+          </div>
         </div>
       </div>
     </div>

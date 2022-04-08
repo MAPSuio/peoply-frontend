@@ -18,3 +18,9 @@
     margin: 0;
   }
 }
+
+.avatarContainer {
+  align-items: center;
+  display: flex;
+  gap: $spacer-small;
+}

@@ -106,3 +106,14 @@
   font-weight: $font-weight-regular;
   text-decoration: underline;
 }
+
+.divider {
+  background-color: $divider-color;
+  height: 1px;
+  margin-bottom: $spacer-medium;
+  width: 100%;
+}
+
+.infoText:not(:last-child) {
+  margin-bottom: $spacer-small;
+}
