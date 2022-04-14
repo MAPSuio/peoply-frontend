@@ -1,20 +1,31 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
-import CheckCircle from "../components/CheckCircle";
-import PrimaryButton from "../components/PrimaryButton";
-import BackButton from "../components/BackButton";
-import useUser from "../hooks/useUser";
-import styles from "../styles/Login.module.scss";
-import MobileLoginIllustration from "../components/svgs/MobileLoginIllustration";
-import ContinueWithVippsButton from "../components/svgs/ContinueWithVippsButton";
+import CheckCircle from "../../components/CheckCircle";
+import PrimaryButton from "../../components/PrimaryButton";
+import BackButton from "../../components/BackButton";
+import useUser from "../../hooks/useUser";
+import styles from "../../styles/Login.module.scss";
+import MobileLoginIllustration from "../../components/svgs/MobileLoginIllustration";
+import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
 import Link from "next/link";
-import HeadComponent from "../components/HeadComponent";
+import HeadComponent from "../../components/HeadComponent";
+import { useEffect, useState } from "react";
+import useBack from "../../hooks/useBack";
 
 const Login: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { user } = useUser();
   const router = useRouter();
+  const [redirectURL, setRedirectURL] = useState<string>();
+  const goBack = useBack();
+
+  useEffect(() => {
+    if (router.query.redirect) {
+      const redURL = router.query.redirect as string;
+      setRedirectURL(redURL);
+    }
+  }, [router.query.redirect]);
 
   /* formats date to fit card format (DD. Month YYYY) */
   const formatDate = (date: Date) => {
@@ -74,7 +85,7 @@ const Login: NextPage = ({
       ) : (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
-            <BackButton onClick={() => router.push("/")} />
+            <BackButton onClick={goBack} />
             <div className={styles.loginHeaderContainer}>
               <h1>Logg inn</h1>
               <p>Logg inn eller opprett en bruker</p>
@@ -83,7 +94,15 @@ const Login: NextPage = ({
               <MobileLoginIllustration />
             </div>
             <div className={styles.loginButtonContainer}>
-              <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}>
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}
+                onClick={() => {
+                  if (redirectURL) {
+                    localStorage.setItem("redirectURL", redirectURL);
+                  }
+                  return true;
+                }}
+              >
                 <ContinueWithVippsButton />
               </a>
               <p className={styles.loginButtonText}>

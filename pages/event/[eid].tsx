@@ -34,6 +34,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import styles from "../../styles/Event.module.scss";
 import useSnack from "../../hooks/useSnack";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 interface EventProps {
   eventData: EventData;
@@ -50,6 +51,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
   const [registered, setRegistered] = useState(false);
   const [registeredFetched, setRegisteredFetched] = useState(false);
   const { addSnack } = useSnack();
+  const redirectToLogin = useRedirectToLogin();
 
   /* Extract the relevant event data. */
   const {
@@ -147,8 +149,12 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
                   setFavorited(!favorited);
                 } else {
                   /* user is not logged in */
-                  router.push("/login");
+                  redirectToLogin();
                 }
+              }
+              if (!user) {
+                /* User is not logged in. */
+                redirectToLogin();
               }
             }}
             favorited={favorited}
@@ -231,8 +237,12 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
                     unregisterForEvent();
                   } else {
                     /* User is not logged in. */
-                    router.push("/login");
+                    redirectToLogin();
                   }
+                }
+                if (!user) {
+                  /* User is not logged in. */
+                  redirectToLogin();
                 }
               }}
             />
@@ -246,8 +256,12 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
                     registerForEvent();
                   } else {
                     /* User is not logged in. */
-                    router.push("/login");
+                    redirectToLogin();
                   }
+                }
+                if (!user) {
+                  /* User is not logged in. */
+                  redirectToLogin();
                 }
               }}
             />

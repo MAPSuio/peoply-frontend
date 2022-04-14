@@ -6,19 +6,20 @@ import BackButton from "../../components/BackButton";
 import ProfileMenu from "../../components/ProfileMenu";
 import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
   const goBack = useBack();
 
-  const router = useRouter();
+  const redirectToLogin = useRedirectToLogin();
 
   if (loading) {
     return <></>;
   }
 
   if (!loading && !user) {
-    router.push("/login");
+    redirectToLogin();
   }
 
   if (!loading && user) {

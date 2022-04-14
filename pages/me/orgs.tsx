@@ -10,10 +10,12 @@ import PrimaryButton from "../../components/PrimaryButton";
 import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import OrgList from "../../components/OrgList";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const Organizations: NextPage = () => {
   const { user, loading } = useUser();
   const goBack = useBack();
+  const redirectToLogin = useRedirectToLogin();
 
   /* fetch organizations for user using swr hook */
   const { data, error } = useSWR(
@@ -23,7 +25,7 @@ const Organizations: NextPage = () => {
 
   if (error) {
     if (error.status === 401) {
-      router.push("/login");
+      redirectToLogin();
     }
   }
 
@@ -32,7 +34,7 @@ const Organizations: NextPage = () => {
   }
 
   if (!loading && !user) {
-    router.push("/login");
+    redirectToLogin();
   }
 
   /* return div with class container */

@@ -8,6 +8,7 @@ import TextInputLong from "../../components/inputs/TextInputLong";
 import MenuModal from "../../components/MenuModal";
 import PrimaryButton from "../../components/PrimaryButton";
 import useBack from "../../hooks/useBack";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
@@ -18,6 +19,7 @@ const EditProfile: NextPage = () => {
   const { user, loading, reload } = useUser();
   const [description, setDescription] = useState("");
   const [validEdit, setValidEdit] = useState(false);
+  const redirectToLogin = useRedirectToLogin();
 
   useEffect(() => {
     if (user?.description) {
@@ -37,10 +39,8 @@ const EditProfile: NextPage = () => {
     }
   }, [description, user]);
 
-  const router = useRouter();
-
   if (!loading && !user) {
-    router.push("/login");
+    redirectToLogin();
   }
 
   if (!user) return <></>;

@@ -11,6 +11,7 @@ import TextInputLong from "../../components/inputs/TextInputLong";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
 import { SnackTypes } from "../../types/types";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const Create: NextPage = () => {
   const { user, loading } = useUser();
@@ -19,6 +20,7 @@ const Create: NextPage = () => {
   const [isValid, setIsValid] = useState(false);
   const goBack = useBack();
   const { addSnack } = useSnack();
+  const redirectToLogin = useRedirectToLogin();
 
   /* hook for validating form */
   useEffect(() => {
@@ -34,7 +36,7 @@ const Create: NextPage = () => {
   }
 
   if (!user) {
-    router.push("/login");
+    redirectToLogin();
   }
 
   async function handleConfirm() {

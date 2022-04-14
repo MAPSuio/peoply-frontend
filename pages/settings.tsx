@@ -27,6 +27,7 @@ import { SettingTypes } from "../types/types";
 
 /* Styles. */
 import styles from "../styles/Settings.module.scss";
+import useRedirectToLogin from "../hooks/useRedirectToLogin";
 
 const Settings: NextPage = () => {
   /* TODO: Fetch and update most of these from API. */
@@ -38,13 +39,13 @@ const Settings: NextPage = () => {
 
   const { user, loading } = useUser();
   const goBack = useBack();
-  const router = useRouter();
+  const redirectToLogin = useRedirectToLogin();
 
   if (loading) {
     /* TODO: Create actual loading skeleton. */
     return <h1>Loading...</h1>;
   } else if (!user) {
-    router.push("/login");
+    redirectToLogin();
   }
 
   const updateTheme = (id: number) => {
