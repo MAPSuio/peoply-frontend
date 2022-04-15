@@ -31,8 +31,9 @@
   background: rgba($color, $opacity);
 }
 
-@mixin divider() {
-  border: 1px solid $divider-color;
+@mixin divider($thickness: 1px) {
+  background-color: $divider-color;
+  border-top: $thickness solid $divider-color;
   height: 0;
   width: 100%;
 }

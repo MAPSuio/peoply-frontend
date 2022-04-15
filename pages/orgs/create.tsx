@@ -8,13 +8,13 @@ import PrimaryButton from "../../components/PrimaryButton";
 import TextInput from "../../components/inputs/TextInput";
 import { useEffect, useState } from "react";
 import TextInputLong from "../../components/inputs/TextInputLong";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import { fetchFromPeoplyApi } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
 import { SnackTypes } from "../../types/types";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const Create: NextPage = () => {
-  const { user, loading } = useUser();
+  const { user, loading, reload } = useUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -41,11 +41,12 @@ const Create: NextPage = () => {
 
   async function handleConfirm() {
     try {
-      await fetchFromPeoplyApiJson("/organizations", {
+      await fetchFromPeoplyApi("/organizations", {
         method: "POST",
         body: JSON.stringify({ name, description }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
+      reload();
       addSnack("Organisasjon opprettet!", SnackTypes.SUCCESS);
       router.push("/me/orgs");
     } catch (error) {

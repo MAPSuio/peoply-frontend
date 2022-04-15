@@ -7,27 +7,14 @@ import OrgImage from "../../assets/images/undraw_apartment.png";
 import Image from "next/image";
 import router from "next/router";
 import PrimaryButton from "../../components/PrimaryButton";
-import useSWR from "swr";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+
 import OrgList from "../../components/OrgList";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const Organizations: NextPage = () => {
-  const { user, loading } = useUser();
+  const { user, loading, orgs } = useUser();
   const goBack = useBack();
   const redirectToLogin = useRedirectToLogin();
-
-  /* fetch organizations for user using swr hook */
-  const { data, error } = useSWR(
-    `/users/${user?.id}/organizations`,
-    fetchFromPeoplyApiJson,
-  );
-
-  if (error) {
-    if (error.status === 401) {
-      redirectToLogin();
-    }
-  }
 
   if (loading) {
     return <></>;
@@ -46,8 +33,8 @@ const Organizations: NextPage = () => {
           <h1>Organisasjoner</h1>
           <p>Se og endre dine organisasjoner</p>
         </div>
-        {data && data.length ? (
-          <OrgList orgs={data} />
+        {orgs && orgs.length ? (
+          <OrgList orgs={orgs} />
         ) : (
           <>
             <div className={styles.imageContainer}>

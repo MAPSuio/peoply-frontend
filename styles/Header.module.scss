@@ -7,7 +7,7 @@
   justify-content: space-between;
   padding: 0 1rem;
 
-  h1 {
+  > h1 {
     font-size: 1.25rem;
     font-weight: 500;
     margin: 0;
@@ -16,6 +16,29 @@
   a {
     color: $text-color-emphasis;
     margin: 0;
+  }
+
+  .loggedIn {
+    align-items: center;
+
+    display: flex;
+    gap: $spacer-small;
+
+    button {
+      @include resetButton();
+      display: flex; // center icon
+    }
+
+    svg {
+      height: 18px;
+      stroke: #FFFFFF;
+      width: 18px;
+
+      @include desktop() {
+        height: 24px;
+        width: 24px;
+      }
+    }
   }
 }
 

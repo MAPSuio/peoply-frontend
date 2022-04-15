@@ -7,7 +7,7 @@
   width: 100%;
 
   span {
-    @include divider();
+    @include divider(2px);
     align-self: center;
     margin: 1rem 0;
     width: 90%;

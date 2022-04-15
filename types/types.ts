@@ -29,11 +29,14 @@ export interface GeolocationPostitionObject {
 
 export interface UserContextType {
   user?: User;
+  currentOrg?: Organization;
+  orgs?: Organization[];
   loading: boolean;
   error?: string;
 
   logout: () => Promise<Response>;
   reload: () => void;
+  switchContext: (org?: Organization) => void;
 }
 
 export interface GeolocationContextType {

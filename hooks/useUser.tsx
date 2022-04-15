@@ -8,7 +8,7 @@ import {
 } from "react";
 import { logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
-import { User, UserContextType } from "../types/types";
+import { Organization, User, UserContextType } from "../types/types";
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
@@ -22,6 +22,10 @@ export function UserProvider({
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [reload, setReload] = useState(false);
+  const [currentOrg, setCurrentOrg] = useState<Organization | undefined>(
+    undefined,
+  );
+  const [orgs, setOrgs] = useState<Organization[]>([]);
 
   useEffect(() => {
     /* will attempt to fetch and set the user state */
@@ -38,10 +42,55 @@ export function UserProvider({
     checkAuth();
   }, [reload]);
 
+  /* separate hook to fetch orgs independently of user */
+  useEffect(() => {
+    if (user) {
+      const fetchOrganizations = async () => {
+        try {
+          const organizations: Organization[] = await fetchFromPeoplyApiJson(
+            `/users/${user.id}/organizations`,
+          );
+          setOrgs(organizations);
+          const currentOrg = getOrgContext();
+
+          /* check if currentOrg from localstorage actually exists */
+          if (
+            currentOrg &&
+            organizations.map((org) => org.id).includes(currentOrg.id)
+          ) {
+            setCurrentOrg(currentOrg);
+          }
+        } catch (error: any) {
+          setError(error.message);
+        }
+      };
+      fetchOrganizations();
+    }
+  }, [user, reload]);
+
   /* will clear user state and request to remove the cookies */
   const logoutHandler = async () => {
     setUser(undefined);
     return logout();
+  };
+
+  /* will switch context to org if provided, otherwise switch to user */
+  const switchContext = (org?: Organization) => {
+    if (org) {
+      setCurrentOrg(org);
+      localStorage.setItem("currentOrg", JSON.stringify(org));
+    } else {
+      setCurrentOrg(undefined);
+      localStorage.removeItem("currentOrg");
+    }
+  };
+
+  const getOrgContext = () => {
+    const org = localStorage.getItem("currentOrg");
+    if (org) {
+      return JSON.parse(org);
+    }
+    return undefined;
   };
 
   const memoizedState = useMemo(
@@ -50,9 +99,12 @@ export function UserProvider({
       loading,
       logout: logoutHandler,
       error,
+      currentOrg,
+      orgs,
+      switchContext,
       reload: () => setReload(!reload),
     }),
-    [user, loading, error, reload],
+    [user, currentOrg, orgs, loading, error, reload],
   );
 
   return (
