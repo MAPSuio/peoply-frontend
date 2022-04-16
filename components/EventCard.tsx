@@ -27,10 +27,11 @@ const EventCard = ({ event }: EventCardProps) => {
       }}
       passHref={true}
     >
-      <div className={styles.eventCardContainer}>
-        <div className={styles.eventCard}>
-          <div className={styles.eventCardImageContainer}>
-            {/* {event.image ? (
+      <a>
+        <div className={styles.eventCardContainer}>
+          <div className={styles.eventCard}>
+            <div className={styles.eventCardImageContainer}>
+              {/* {event.image ? (
               <Image
                 src={event.image}
                 alt="event image"
@@ -41,49 +42,49 @@ const EventCard = ({ event }: EventCardProps) => {
                 blurDataURL={event.image} // this should be a very tiny image
               />
             ) : ( */}
-            <Image
-              src={eventPlaceholder}
-              alt="event image"
-              objectFit="contain"
-              objectPosition="top"
-              placeholder="blur"
-            />
-            {/* )} */}
-          </div>
-          <div className={styles.eventCardInfoContainer}>
-            <div className={styles.eventCardInfo}>
-              <div className={styles.eventCardInfoHeaderContainer}>
-                <h2>{event.title}</h2>
-                <div className={styles.eventCardInfoHeaderPriceContainer}>
-                  <SmileIcon />
-                  <span>Pris</span>
-                  {/* Price */}
+              <Image
+                src={eventPlaceholder}
+                alt="event image"
+                objectFit="contain"
+                objectPosition="top"
+                placeholder="blur"
+              />
+              {/* )} */}
+            </div>
+            <div className={styles.eventCardInfoContainer}>
+              <div className={styles.eventCardInfo}>
+                <div className={styles.eventCardInfoHeaderContainer}>
+                  <h2>{event.title}</h2>
+                  <div className={styles.eventCardInfoHeaderPriceContainer}>
+                    <SmileIcon />
+                    <span>Pris</span>
+                    {/* Price */}
+                  </div>
                 </div>
-              </div>
-              <div className={styles.divider}></div>
-              <div className={styles.eventCardInfoBodyContainer}>
-                <div className={styles.eventCardInfoBody}>
-                  <div>
-                    <div className={styles.eventCardInfoBodyItem}>
-                      <CalendarIcon />
-                      <div>
-                        <span>{dateString}</span>
-                        <span>{timeString}</span>
+                <div className={styles.divider}></div>
+                <div className={styles.eventCardInfoBodyContainer}>
+                  <div className={styles.eventCardInfoBody}>
+                    <div>
+                      <div className={styles.eventCardInfoBodyItem}>
+                        <CalendarIcon />
+                        <div>
+                          <span>{dateString}</span>
+                          <span>{timeString}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className={styles.eventCardInfoBodyItem}>
-                      <LocationIcon />
-                      <span>Sted</span>
-                      {/* event.location */}
+                      <div className={styles.eventCardInfoBodyItem}>
+                        <LocationIcon />
+                        <span>Sted</span>
+                        {/* event.location */}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </a>
     </Link>
   );
 };
