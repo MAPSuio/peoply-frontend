@@ -44,12 +44,18 @@ import {
 } from "../../utils/functions";
 
 /* Types. */
-import { InputPages, Visibility } from "../../types/types";
+import { Event, InputPages, Visibility } from "../../types/types";
 
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
+import useUser from "../../hooks/useUser";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import Header from "../../components/Header";
 
 const CreateEvent: NextPage = () => {
+  const { user, currentOrg, error: userError } = useUser();
+  const redirectToLogin = useRedirectToLogin();
+
   const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [eventAddress, setEventAddress] = useState("");
@@ -168,8 +174,19 @@ const CreateEvent: NextPage = () => {
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
-    await fetchFromPeoplyApiJson("/events", { method: "post", body: formData });
-    router.push("/");
+    if (currentOrg) {
+      formData.append("arrangerId", currentOrg.arrangerId);
+    } else if (user) {
+      formData.append("arrangerId", user.arrangerId);
+    } else {
+      redirectToLogin();
+      return;
+    }
+    const event: Event = await fetchFromPeoplyApiJson("/events", {
+      method: "post",
+      body: formData,
+    });
+    router.push(`/event/${event.urlId}`);
   };
 
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */
@@ -594,9 +611,14 @@ const CreateEvent: NextPage = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.container}>{getCurrentInputPage(currentStep)}</div>
-    </div>
+    <>
+      <Header />
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          {getCurrentInputPage(currentStep)}
+        </div>
+      </div>
+    </>
   );
 };
 
