@@ -61,11 +61,11 @@ export default function Avatar({ user, org, size, edit }: UserProps) {
       >
         {user.image ? (
           <Image
-            layout="fill"
             src={user.image}
-            alt="profile picture"
-            sizes="35vw"
-            quality={50}
+            width={size === "small" ? 100 : 200}
+            height={size === "small" ? 100 : 200}
+            className={getSizeStyling()}
+            alt={`profile image of ${user.firstName} ${user.lastName}`}
           />
         ) : (
           <span className={styles.name}>
