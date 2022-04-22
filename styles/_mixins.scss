@@ -4,6 +4,15 @@
   }
 }
 
+@mixin fixedButton() {
+  bottom: 2rem;
+  position: fixed;
+  z-index: 999;
+  @include desktop() {
+    bottom: 4rem;
+  }
+}
+
 @mixin createEventDesktop() {
   @media screen and (min-width: 1000px) {
     @content;

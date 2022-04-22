@@ -1,7 +1,12 @@
 .eventWrapper {
   display: flex;
   flex-flow: column nowrap;
+  padding-bottom: 5rem ;
   width: 100%;
+  
+  @include desktop() {
+    padding-bottom: 7rem;
+  }
 }
 
 .imageContainer {
@@ -86,8 +91,10 @@
 }
 
 .primaryButton {
+  @include fixedButton();
   align-self: center;
-  margin-top: $spacer-very-large;
+  margin-top: $spacer-very-large; 
+  width: 90%;
 }
 
 .dangerButton {
