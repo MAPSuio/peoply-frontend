@@ -5,6 +5,7 @@
   justify-content: center;
   max-width: $max-width;
   padding-bottom: $spacer-medium;
+  pointer-events: none;
   position: fixed;
   transition: transform $animation-duration ease;
   width: 100%;
@@ -19,6 +20,7 @@
     justify-content: space-between;
     max-width: 250px;
     padding: $spacer-very-small-plus $spacer-medium;
+    pointer-events: auto;
     width: 100%;
 
     .item {
@@ -44,7 +46,7 @@
       height: 2px;
       margin: 0 auto;
       margin-top: $spacer-mini;
-      width: 0.75rem;
+      width: .75rem;
     }
 
     .button {

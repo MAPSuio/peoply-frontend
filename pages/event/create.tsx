@@ -353,7 +353,7 @@ const CreateEvent: NextPage = () => {
                   inputId="dateStart"
                   inputName="eventDateStart"
                   label="Dato start*"
-                  errorMessage="Datoen må være i dag eller fremtiden."
+                  errorMessage="Dato må være i dag eller i fremtiden."
                   required
                   handleChange={updateEventDateStart}
                 />
@@ -396,7 +396,7 @@ const CreateEvent: NextPage = () => {
                     inputId="dateEnd"
                     inputName="eventDateEnd"
                     label="Dato slutt*"
-                    errorMessage="Sluttdato kan ikke være eldre enn startdato."
+                    errorMessage="Sluttdato kan ikke være før startdato."
                     required
                     handleChange={updateEventDateEnd}
                   />
@@ -406,7 +406,7 @@ const CreateEvent: NextPage = () => {
                     inputId="timeEnd"
                     inputName="eventTimeEnd"
                     label="Tidspunkt slutt*"
-                    errorMessage="Tiden kan ikke være før starttiden."
+                    errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
                     required
                     handleChange={updateEventTimeEnd}
                   />
