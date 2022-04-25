@@ -27,7 +27,7 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
-import { Visibility } from "../types/types";
+import { ImageCaching, Visibility } from "../types/types";
 
 interface SummaryPageProps {
   title: string;
@@ -42,21 +42,30 @@ interface SummaryPageProps {
   buttonOnClick: (step: number) => void;
   createEventFunction: (formData: FormData) => void;
   changeStep: (step: number) => void;
-  eventData: {
-    evTitle: string;
-    evDescription: string;
-    evAddress: string;
-    evDateStart: string;
-    evDateEnd: string;
-    evTimeStart: string;
-    evTimeEnd: string;
-    evHasDateEnd: boolean;
-    evCategories: Array<{ id: number; name: string }>;
-    evActiveCategories: Array<number>;
-    evVisibility: Visibility;
-    evHasCapacity: boolean;
-    evCapacity: string;
-    evImage?: File;
+  summaryCategories: {
+    id: number;
+    name: string;
+  }[];
+  eventObject: {
+    eventTitle: string;
+    eventDescription: string;
+    eventAddress: string;
+    eventDateStart: string;
+    eventDateEnd: string;
+    eventHasDateEnd: boolean;
+    eventTimeStart: string;
+    eventTimeEnd: string;
+    eventActiveCategories: number[];
+    eventVisibility: Visibility;
+    eventHasCapacity: boolean;
+    eventCapacity: string;
+    eventExtraInfoValid: boolean;
+    eventImage?: File;
+    eventImageValid: boolean;
+    currentStep: number;
+    imageStorageKey: string;
+    reachedStep: number;
+    imageCached: ImageCaching;
   };
 }
 
@@ -73,7 +82,8 @@ const SummaryPage = ({
   buttonOnClick,
   createEventFunction,
   changeStep,
-  eventData,
+  summaryCategories,
+  eventObject,
 }: SummaryPageProps) => {
   const getButtonStyles = () => {
     if (placeButtonStatic) {
@@ -86,33 +96,33 @@ const SummaryPage = ({
   const appendEventData = (formData: FormData) => {
     /* Append correctly formatted dates with timestamp. */
     const startDate = formatDateAndTime(
-      eventData.evDateStart,
-      eventData.evTimeStart,
+      eventObject.eventDateStart,
+      eventObject.eventTimeStart,
     );
-    const endDate = eventData.evHasDateEnd
-      ? formatDateAndTime(eventData.evDateEnd, eventData.evTimeEnd)
+    const endDate = eventObject.eventHasDateEnd
+      ? formatDateAndTime(eventObject.eventDateEnd, eventObject.eventTimeEnd)
       : startDate;
 
     formData.append("startDate", startDate);
     formData.append("endDate", endDate);
 
     /* Append title and description. */
-    formData.append("title", eventData.evTitle);
-    formData.append("description", eventData.evDescription);
+    formData.append("title", eventObject.eventTitle);
+    formData.append("description", eventObject.eventDescription);
 
     /* Append capacity and private. */
-    if (eventData.evHasCapacity) {
-      formData.append("capacity", eventData.evCapacity);
+    if (eventObject.eventHasCapacity) {
+      formData.append("capacity", eventObject.eventCapacity);
     }
-    formData.append("visibility", `${eventData.evVisibility}`);
+    formData.append("visibility", `${eventObject.eventVisibility}`);
 
     /* Append category IDs. */
-    const categoryStrings = JSON.stringify(eventData.evActiveCategories);
+    const categoryStrings = JSON.stringify(eventObject.eventActiveCategories);
     formData.append("categoryIds", categoryStrings);
 
     /* Append event image. */
-    if (eventData.evImage) {
-      formData.append("eventImage", eventData.evImage);
+    if (eventObject.eventImage) {
+      formData.append("eventImage", eventObject.eventImage);
     }
   };
 
@@ -121,14 +131,14 @@ const SummaryPage = ({
   const validData = validDataMap.get(page);
 
   /* Format dates for displaying in summary card. */
-  const dateStringStart = getDateString(eventData.evDateStart);
-  const dateStringEnd = eventData.evHasDateEnd
-    ? getDateString(eventData.evDateEnd)
+  const dateStringStart = getDateString(eventObject.eventDateStart);
+  const dateStringEnd = eventObject.eventHasDateEnd
+    ? getDateString(eventObject.eventDateEnd)
     : "";
 
   /* Get image source of either the supplied image or a placeholder. */
-  const imageSource = eventData.evImage
-    ? URL.createObjectURL(eventData.evImage)
+  const imageSource = eventObject.eventImage
+    ? URL.createObjectURL(eventObject.eventImage)
     : PlaceholderImage;
 
   /* Create FormData object to be posted. */
@@ -156,7 +166,7 @@ const SummaryPage = ({
           />
         </div>
         <SummaryCard inputId={0} Icon={<TitleCircle />} onClick={buttonOnClick}>
-          <p className={styles.titleText}>{eventData.evTitle}</p>
+          <p className={styles.titleText}>{eventObject.eventTitle}</p>
         </SummaryCard>
         <SummaryCard
           inputId={1}
@@ -165,12 +175,12 @@ const SummaryPage = ({
         >
           <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
             <span className={styles.textColorPrimary}>Start: </span>
-            {`${dateStringStart}, ${eventData.evTimeStart}`}
+            {`${dateStringStart}, ${eventObject.eventTimeStart}`}
           </p>
-          {eventData.evHasDateEnd && (
+          {eventObject.eventHasDateEnd && (
             <p className={styles.dateText}>
               <span className={styles.textColorPrimary}>Slutt: </span>
-              {`${dateStringEnd}, ${eventData.evTimeEnd}`}
+              {`${dateStringEnd}, ${eventObject.eventTimeEnd}`}
             </p>
           )}
         </SummaryCard>
@@ -179,7 +189,7 @@ const SummaryPage = ({
           Icon={<PlaceCircleSummary />}
           onClick={buttonOnClick}
         >
-          <a className={styles.placeText}>{eventData.evAddress}</a>
+          <a className={styles.placeText}>{eventObject.eventAddress}</a>
         </SummaryCard>
         <SummaryCard
           inputId={3}
@@ -187,7 +197,7 @@ const SummaryPage = ({
           onClick={buttonOnClick}
         >
           <div className={styles.descriptionContainer}>
-            {eventData.evDescription.split("\n").map((str) => (
+            {eventObject.eventDescription.split("\n").map((str) => (
               <p key={str} className={styles.descriptionText}>
                 {str}
                 <br></br>
@@ -197,12 +207,12 @@ const SummaryPage = ({
           <div className={styles.categoryContainer}>
             <p className={styles.categoryLabel}>Kategori(er)</p>
             <div className={styles.categoryTagsContainer}>
-              {eventData.evCategories.map((cat) => (
+              {summaryCategories.map((cat) => (
                 <Tag
                   key={cat.id}
                   id={cat.id}
                   text={cat.name}
-                  activeCategories={eventData.evActiveCategories}
+                  activeCategories={eventObject.eventActiveCategories}
                 />
               ))}
             </div>
@@ -229,12 +239,12 @@ const SummaryPage = ({
           onClick={buttonOnClick}
         >
           <div className={styles.dataContainer}>
-            {eventData.evVisibility === Visibility.UNLISTED ? (
+            {eventObject.eventVisibility === Visibility.UNLISTED ? (
               <div className={styles.dataItemContainer}>
                 <PrivateIconSmall className={styles.dataIconDimensions} />{" "}
                 <p className={styles.dataLabel}>Ikke oppført</p>
               </div>
-            ) : eventData.evVisibility === Visibility.PUBLIC ? (
+            ) : eventObject.eventVisibility === Visibility.PUBLIC ? (
               <div className={styles.dataItemContainer}>
                 <PublicIconSmall className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Offentlig</p>
@@ -242,12 +252,12 @@ const SummaryPage = ({
             ) : (
               <>{/* TODO: implement Private */}</>
             )}
-            {eventData.evHasCapacity ? (
+            {eventObject.eventHasCapacity ? (
               <div className={styles.dataItemContainer}>
                 <LimitIconSmall className={styles.dataIconDimensions} />
                 <p
                   className={styles.dataLabel}
-                >{`${eventData.evCapacity} plasser`}</p>
+                >{`${eventObject.eventCapacity} plasser`}</p>
               </div>
             ) : (
               <div className={styles.dataItemContainer}>

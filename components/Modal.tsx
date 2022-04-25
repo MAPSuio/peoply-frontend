@@ -16,7 +16,9 @@ interface ModalProps {
   description?: string;
   type?: ModalTypes;
   buttonText?: string;
+  secondaryButtonText?: string;
   buttonOnClick?: () => void;
+  secondaryButtonOnClick?: () => void;
 }
 
 const Modal = ({
@@ -24,7 +26,9 @@ const Modal = ({
   description,
   type,
   buttonText,
+  secondaryButtonText,
   buttonOnClick,
+  secondaryButtonOnClick,
 }: ModalProps) => {
   const [show, setShow] = useState(true);
 
@@ -46,6 +50,10 @@ const Modal = ({
     setShow(false);
   };
 
+  const secondaryClickFunction = () => {
+    secondaryButtonOnClick && secondaryButtonOnClick();
+    setShow(false);
+  };
   const buttonStyles = getButtonStyles();
 
   if (show) {
@@ -62,6 +70,13 @@ const Modal = ({
               className={buttonStyles}
               text={buttonText}
               onClick={clickFunction}
+            />
+          )}
+          {secondaryButtonText && (
+            <PrimaryButton
+              className={buttonStyles}
+              text={secondaryButtonText}
+              onClick={secondaryClickFunction}
             />
           )}
         </div>

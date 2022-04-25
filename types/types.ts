@@ -209,6 +209,11 @@ export enum Visibility {
   PRIVATE = "PRIVATE",
   UNLISTED = "UNLISTED",
 }
+export enum ImageCaching {
+  OK,
+  PREEMPTIVEMESSAGE,
+  REFRESHMESSAGE,
+}
 
 export enum SettingTypes {
   WARNING,

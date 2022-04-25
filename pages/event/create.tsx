@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 /* React */
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 
 /* Components */
 import DateInput from "../../components/inputs/DateInput";
@@ -15,6 +15,7 @@ import NumberInput from "../../components/inputs/NumberInput";
 import CategoryInput from "../../components/inputs/CategoryInput";
 import ImageInput from "../../components/inputs/ImageInput";
 import RadioInput from "../../components/inputs/RadioInput";
+import Modal from "../../components/Modal";
 
 import SummaryPage from "../../components/SummaryPage";
 import InputPage from "../../components/InputPage";
@@ -44,7 +45,7 @@ import {
 } from "../../utils/functions";
 
 /* Types. */
-import { Event, InputPages, Visibility } from "../../types/types";
+import { Event, InputPages, Visibility, ImageCaching } from "../../types/types";
 
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
@@ -52,32 +53,56 @@ import useUser from "../../hooks/useUser";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import Header from "../../components/Header";
 
+interface EventObjectProps {
+  eventTitle: string;
+  eventDescription: string;
+  eventAddress: string;
+  eventDateStart: string;
+  eventDateEnd: string;
+  eventHasDateEnd: boolean;
+  eventTimeStart: string;
+  eventTimeEnd: string;
+  eventActiveCategories: number[];
+  eventVisibility: Visibility;
+  eventHasCapacity: boolean;
+  eventCapacity: string;
+  eventExtraInfoValid: boolean;
+  eventImage?: File;
+  eventImageValid: boolean;
+  currentStep: number;
+  imageStorageKey: string;
+  reachedStep: number;
+  imageCached: ImageCaching;
+}
+
 const CreateEvent: NextPage = () => {
   const { user, currentOrg, error: userError } = useUser();
   const redirectToLogin = useRedirectToLogin();
-
-  const [eventTitle, setEventTitle] = useState("");
-  const [eventDescription, setEventDescription] = useState("");
-  const [eventAddress, setEventAddress] = useState("");
-  const [eventDateStart, setEventDateStart] = useState("");
-  const [eventTimeStart, setEventTimeStart] = useState("");
-  const [hasEventDateEnd, setHasEventDateEnd] = useState(false);
-  const [eventDateEnd, setEventDateEnd] = useState("");
-  const [eventTimeEnd, setEventTimeEnd] = useState("");
-  const [eventActiveCategories, setEventActiveCategories] = useState<number[]>(
-    [],
-  );
-  const [eventVisibility, setEventVisibility] = useState<Visibility>(
-    Visibility.PUBLIC,
-  );
-  const [eventHasCapacity, setEventHasCapacity] = useState(false);
-  const [eventCapacity, setEventCapacity] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
-  const [eventImage, setEventImage] = useState();
   const [eventImageValid, setEventImageValid] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [reachedStep, setReachedStep] = useState(0);
 
+  const [eventObject, setEventObject] = useState<EventObjectProps>({
+    eventTitle: "",
+    eventDescription: "",
+    eventAddress: "",
+    eventDateStart: "",
+    eventDateEnd: "",
+    eventHasDateEnd: false,
+    eventTimeStart: "",
+    eventTimeEnd: "",
+    eventActiveCategories: [],
+    eventVisibility: Visibility.PUBLIC,
+    eventHasCapacity: false,
+    eventImage: undefined,
+    eventCapacity: "",
+    eventExtraInfoValid: eventExtraInfoValid,
+    eventImageValid: eventImageValid,
+    currentStep: 0,
+    imageStorageKey: "",
+    reachedStep: 0,
+    imageCached: ImageCaching.OK,
+  });
   /* The number of input screens. */
   const stepCount = 7;
 
@@ -92,85 +117,236 @@ const CreateEvent: NextPage = () => {
     fetchFromPeoplyApiJson,
   );
 
-  /* TODO: Consider moving all these state update functions somewhere. */
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventTitle(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventTitle: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventTitle: e.target.value,
+    });
   };
 
   const updateEventDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventDescription(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventDescription: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventDescription: e.target.value,
+    });
   };
 
   const updateEventAddress = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventAddress(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventAddress: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventAddress: e.target.value,
+    });
   };
 
-  /* TODO: Fix this TS error. */
   const updateEventCategories = (categoryId: number) => {
-    if (eventActiveCategories.includes(categoryId)) {
-      setEventActiveCategories(
-        eventActiveCategories.filter((id) => categoryId !== id),
-      );
-    } else {
-      setEventActiveCategories([...eventActiveCategories, categoryId]);
+    if (!eventObject.eventActiveCategories.includes(categoryId)) {
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        eventActiveCategories: [
+          ...eventObject.eventActiveCategories,
+          categoryId,
+        ],
+      }));
     }
+    updateLocalStorage({
+      ...eventObject,
+      eventActiveCategories: [...eventObject.eventActiveCategories, categoryId],
+    });
   };
 
   const updateEventDateStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventDateStart(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventDateStart: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventDateStart: e.target.value,
+    });
   };
 
   const updateEventTimeStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventTimeStart(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventTimeStart: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventTimeStart: e.target.value,
+    });
+  };
+
+  const seteventHasDateEnd = (value: boolean) => {
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventHasDateEnd: value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventHasDateEnd: value,
+    });
   };
 
   const updateEventDateEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventDateEnd(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventDateEnd: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventDateEnd: e.target.value,
+    });
   };
 
   const updateEventTimeEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventTimeEnd(e.target.value);
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventTimeEnd: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventTimeEnd: e.target.value,
+    });
   };
 
   /* TODO: Fix this TS error. */
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      setEventImage(e.target.files[0]);
+      const fileName = e.target.files[0].name;
+      //should we add check for same filename to avoid excess writes?
+      writeImageToLocalStorage(e.target.files[0]);
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        eventImage: e.target.files[0],
+        eventImageValid: true,
+        imageStorageKey: fileName,
+      }));
+      updateLocalStorage({
+        ...eventObject,
+        eventImage: e.target.files[0],
+        eventImageValid: true,
+        imageStorageKey: fileName,
+      });
     }
   };
 
+  const updateEventImageFromStorage = (
+    imageUrl: string,
+    oldEventObject: EventObjectProps,
+  ) => {
+    fetch(imageUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], oldEventObject.imageStorageKey, {
+          type: blob.type,
+          lastModified: new Date().getTime(),
+        });
+
+        setEventObject(() => ({
+          ...oldEventObject,
+          eventImage: file,
+          eventImageValid: true,
+          currentStep: oldEventObject.currentStep,
+        }));
+      });
+  };
+
+  const updateHasCapacity = (id: number) => {
+    if (id === 2) {
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        eventHasCapacity: true,
+      }));
+    } else {
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        eventHasCapacity: false,
+      }));
+    }
+    updateLocalStorage({
+      ...eventObject,
+      eventHasCapacity: id === 2,
+    });
+  };
+
+  const updateEventCapacity = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventCapacity: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventCapacity: e.target.value,
+    });
+  };
+
   const updateVisibility = (id: number) => {
+    let visibility = Visibility.PUBLIC;
     switch (id) {
       case 1:
-        setEventVisibility(Visibility.PUBLIC);
+        setEventObject((prevEventOjbect) => ({
+          ...prevEventOjbect,
+          eventVisibility: Visibility.PUBLIC,
+        }));
         break;
 
       case 2:
-        setEventVisibility(Visibility.UNLISTED);
+        visibility = Visibility.UNLISTED;
+        setEventObject((prevEventOjbect: EventObjectProps) => ({
+          ...prevEventOjbect,
+          eventVisibility: Visibility.UNLISTED,
+        }));
         break;
 
       default:
         break;
     }
+    updateLocalStorage({
+      ...eventObject,
+      eventVisibility: visibility,
+    });
   };
 
-  const updateHasCapacity = (id: number) => {
-    if (id === 2) {
-      setEventHasCapacity(true);
-    } else {
-      setEventHasCapacity(false);
-    }
-  };
-
-  const updateEventCapacity = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventCapacity(e.target.value);
+  const updateImageCached = (cached: ImageCaching) => {
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      imageCached: cached,
+    }));
   };
 
   const inputPageOnClick = (step: number) => {
-    if (step !== stepCount) setCurrentStep(step);
-    if (step > reachedStep) setReachedStep(step);
+    if (step !== stepCount) {
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        currentStep: step,
+      }));
+    }
+    if (step > eventObject.reachedStep) {
+      setEventObject((prevEventOjbect) => ({
+        ...prevEventOjbect,
+        reachedStep: step,
+      }));
+    }
+    updateLocalStorage({
+      ...eventObject,
+      currentStep: step,
+      eventImageValid: eventImageValid,
+      eventExtraInfoValid: eventExtraInfoValid,
+    });
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
@@ -190,32 +366,41 @@ const CreateEvent: NextPage = () => {
   };
 
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */
-  const eventTitleValid = textInputValid(eventTitle, 0, 100);
-  const eventDescriptionValid = textInputValid(eventDescription, 0, 2500);
-  const eventAddressValid = textInputValid(eventAddress, 0, 100);
-  const eventDateStartValid = dateInputStartValid(eventDateStart);
+  const eventTitleValid = textInputValid(eventObject.eventTitle, 0, 100);
+  const eventDescriptionValid = textInputValid(
+    eventObject.eventDescription,
+    0,
+    2500,
+  );
+  const eventAddressValid = textInputValid(eventObject.eventAddress, 0, 100);
+  const eventDateStartValid = dateInputStartValid(eventObject.eventDateStart);
   const eventTimeStartValid = timeInputStartValid(
-    eventTimeStart,
-    eventDateStart,
+    eventObject.eventTimeStart,
+    eventObject.eventDateStart,
   );
-  const eventDateEndValid = dateInputEndValid(eventDateStart, eventDateEnd);
+  const eventDateEndValid = dateInputEndValid(
+    eventObject.eventDateStart,
+    eventObject.eventDateEnd,
+  );
   const eventTimeEndValid = timeInputEndValid(
-    eventTimeStart,
-    eventTimeEnd,
-    eventDateStart,
-    eventDateEnd,
+    eventObject.eventTimeStart,
+    eventObject.eventTimeEnd,
+    eventObject.eventDateStart,
+    eventObject.eventDateEnd,
   );
-  const eventActiveCategoriesValid = categoryInputValid(eventActiveCategories);
+  const eventActiveCategoriesValid = categoryInputValid(
+    eventObject.eventActiveCategories,
+  );
   const eventCapacityValid = radioInputValid(
-    eventHasCapacity,
-    parseInt(eventCapacity),
+    eventObject.eventHasCapacity,
+    parseInt(eventObject.eventCapacity),
     0,
     10000,
   );
 
-  const lastStep = currentStep === 6;
+  const lastStep = eventObject.currentStep === 6;
   let validEvent: boolean;
-  if (hasEventDateEnd) {
+  if (eventObject.eventHasDateEnd) {
     validEvent = allEventInputsValid([
       eventTitleValid,
       eventDescriptionValid,
@@ -243,35 +428,18 @@ const CreateEvent: NextPage = () => {
     ]);
   }
 
-  const summaryCategories = eventActiveCategories.map((catId) => {
+  const summaryCategories = eventObject.eventActiveCategories.map((catId) => {
     return {
       id: catId,
       name: getCategoryText(categories, catId),
     };
   });
 
-  const eventData = {
-    evTitle: eventTitle,
-    evDescription: eventDescription,
-    evAddress: eventAddress,
-    evDateStart: eventDateStart,
-    evDateEnd: eventDateEnd,
-    evTimeStart: eventTimeStart,
-    evTimeEnd: eventTimeEnd,
-    evHasDateEnd: hasEventDateEnd,
-    evCategories: summaryCategories,
-    evActiveCategories: eventActiveCategories,
-    evVisibility: eventVisibility,
-    evHasCapacity: eventHasCapacity,
-    evCapacity: eventCapacity,
-    evImage: eventImage,
-  };
-
   /* TODO: Perhaps move the returned components into their own wrapper components. */
   const getCurrentInputPage = (step: number) => {
     const { title, subTitle, buttonText } = getInputPageData(step);
     const titleInputPageValid = eventTitleValid;
-    const dateInputPageValid = hasEventDateEnd
+    const dateInputPageValid = eventObject.eventHasDateEnd
       ? eventDateStartValid &&
         eventTimeStartValid &&
         eventDateEndValid &&
@@ -302,8 +470,8 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -313,7 +481,7 @@ const CreateEvent: NextPage = () => {
           >
             <div className={styles.textContainer}>
               <TextInput
-                value={eventTitle}
+                value={eventObject.eventTitle}
                 inputId="title"
                 inputName="eventTitle"
                 label="Tittel på arrangementet*"
@@ -332,14 +500,14 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
             page={InputPages.DATEPAGE}
             buttonOnClick={inputPageOnClick}
-            placeButtonStatic={hasEventDateEnd}
+            placeButtonStatic={eventObject.eventHasDateEnd}
           >
             <div
               className={`${styles.dateContainer} ${styles.marginBottomMedium}`}
@@ -348,7 +516,7 @@ const CreateEvent: NextPage = () => {
                 className={`${styles.dateColumn} ${styles.marginBottomMedium}`}
               >
                 <DateInput
-                  value={eventDateStart}
+                  value={eventObject.eventDateStart}
                   valid={eventDateStartValid}
                   inputId="dateStart"
                   inputName="eventDateStart"
@@ -358,7 +526,7 @@ const CreateEvent: NextPage = () => {
                   handleChange={updateEventDateStart}
                 />
                 <TimeInput
-                  value={eventTimeStart}
+                  value={eventObject.eventTimeStart}
                   valid={eventTimeStartValid}
                   inputId="timeStart"
                   inputName="eventTimeStart"
@@ -368,30 +536,30 @@ const CreateEvent: NextPage = () => {
                   handleChange={updateEventTimeStart}
                 />
               </div>
-              {!hasEventDateEnd && (
+              {!eventObject.eventHasDateEnd && (
                 <button
                   className={styles.addDateContainer}
-                  onClick={() => setHasEventDateEnd(true)}
+                  onClick={() => seteventHasDateEnd(true)}
                 >
                   <PlusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
-              {hasEventDateEnd && (
+              {eventObject.eventHasDateEnd && (
                 <button
                   className={styles.addDateContainer}
-                  onClick={() => setHasEventDateEnd(false)}
+                  onClick={() => seteventHasDateEnd(false)}
                 >
                   <MinusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
             </div>
-            {hasEventDateEnd && (
+            {eventObject.eventHasDateEnd && (
               <div className={styles.dateContainer}>
                 <div className={styles.dateColumn}>
                   <DateInput
-                    value={eventDateEnd}
+                    value={eventObject.eventDateEnd}
                     valid={eventDateEndValid}
                     inputId="dateEnd"
                     inputName="eventDateEnd"
@@ -401,7 +569,7 @@ const CreateEvent: NextPage = () => {
                     handleChange={updateEventDateEnd}
                   />
                   <TimeInput
-                    value={eventTimeEnd}
+                    value={eventObject.eventTimeEnd}
                     valid={eventTimeEndValid}
                     inputId="timeEnd"
                     inputName="eventTimeEnd"
@@ -421,8 +589,8 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -431,7 +599,7 @@ const CreateEvent: NextPage = () => {
           >
             <div className={styles.textContainer}>
               <TextInput
-                value={eventAddress}
+                value={eventObject.eventAddress}
                 inputId="address"
                 inputName="eventAddress"
                 label="Adressen til arrangementet*"
@@ -450,8 +618,8 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -462,7 +630,7 @@ const CreateEvent: NextPage = () => {
             <div className={styles.textContainer}>
               <div className={styles.column}>
                 <TextInputLong
-                  value={eventDescription}
+                  value={eventObject.eventDescription}
                   inputId="description"
                   inputName="eventDescription"
                   rows={12}
@@ -476,7 +644,7 @@ const CreateEvent: NextPage = () => {
                 />
                 <CategoryInput
                   categories={categories}
-                  activeCategories={eventActiveCategories}
+                  activeCategories={eventObject.eventActiveCategories}
                   errorMessage="Du må velge minst en kategori."
                   onClick={updateEventCategories}
                 />
@@ -490,8 +658,8 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
@@ -501,13 +669,14 @@ const CreateEvent: NextPage = () => {
             placeButtonStatic
           >
             <ImageInput
-              value={eventImage}
+              value={eventObject.eventImage}
               inputId="image"
               inputName="eventImage"
               label="Last opp et bilde til arrangementet"
               buttonLabel="Endre bilde"
               errorMessage="Bildet kan ikke være så stort."
               onChange={updateEventImage}
+              imageCached={eventObject.imageCached}
             />
           </InputPage>
         );
@@ -517,8 +686,8 @@ const CreateEvent: NextPage = () => {
             step={step}
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
@@ -537,7 +706,7 @@ const CreateEvent: NextPage = () => {
                       hintText:
                         "Synlig for offentligheten. Vises for alle i appen, inkludert personer uten brukerkonto.",
                       icon: PublicIcon,
-                      active: eventVisibility === Visibility.PUBLIC,
+                      active: eventObject.eventVisibility === Visibility.PUBLIC,
                     },
                     {
                       id: 2,
@@ -545,7 +714,8 @@ const CreateEvent: NextPage = () => {
                       hintText:
                         "Ikke synlig for offentligheten, men alle med lenken kan se arrangementet, inkludert personer uten brukerkonto.",
                       icon: UnlistedIcon,
-                      active: eventVisibility === Visibility.UNLISTED,
+                      active:
+                        eventObject.eventVisibility === Visibility.UNLISTED,
                     },
                   ]}
                   onClick={updateVisibility}
@@ -553,7 +723,11 @@ const CreateEvent: NextPage = () => {
                 />
               </div>
               <div
-                className={!eventHasCapacity ? styles.noExtraOptionPadding : ""}
+                className={
+                  !eventObject.eventHasCapacity
+                    ? styles.noExtraOptionPadding
+                    : ""
+                }
               >
                 <RadioInput
                   optionsAndIcons={[
@@ -561,21 +735,21 @@ const CreateEvent: NextPage = () => {
                       id: 1,
                       text: "ingen",
                       icon: NoLimitIcon,
-                      active: !eventHasCapacity,
+                      active: !eventObject.eventHasCapacity,
                     },
                     {
                       id: 2,
                       text: "begrensning",
                       icon: LimitIcon,
-                      active: eventHasCapacity,
+                      active: eventObject.eventHasCapacity,
                     },
                   ]}
                   onClick={updateHasCapacity}
                   label="Privat eller offentlig arrangement?*"
                 />
-                {eventHasCapacity && (
+                {eventObject.eventHasCapacity && (
                   <NumberInput
-                    value={eventCapacity}
+                    value={eventObject.eventCapacity}
                     inputId="capacity"
                     inputName="eventCapacity"
                     label="Antall deltakere*"
@@ -594,8 +768,8 @@ const CreateEvent: NextPage = () => {
           <SummaryPage
             title={title}
             subTitle={subTitle}
-            currentStep={currentStep}
-            reachedStep={reachedStep}
+            currentStep={eventObject.currentStep}
+            reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
             placeButtonStatic
@@ -604,18 +778,111 @@ const CreateEvent: NextPage = () => {
             buttonOnClick={inputPageOnClick}
             createEventFunction={summaryPageOnClick}
             changeStep={inputPageOnClick}
-            eventData={eventData}
+            summaryCategories={summaryCategories}
+            eventObject={eventObject}
           />
         );
     }
   };
 
+  async function updateLocalStorage(writeObject: EventObjectProps) {
+    writeObject.eventExtraInfoValid = eventExtraInfoValid;
+    writeObject.eventImageValid = eventImageValid;
+
+    const eventStorageString = JSON.stringify(writeObject);
+    localStorage.setItem("eventObject", eventStorageString);
+  }
+
+  async function writeImageToLocalStorage(file: File) {
+    if (file.size > 4500000) {
+      updateImageCached(ImageCaching.PREEMPTIVEMESSAGE);
+      localStorage.removeItem("eventImage");
+      return;
+    }
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      if (reader.result) {
+        localStorage.setItem("eventImage", reader.result.toString());
+      }
+    });
+    reader.readAsDataURL(file);
+    updateImageCached(ImageCaching.OK);
+  }
+
+  function parseImageFromLocalStorage(eventObject: EventObjectProps) {
+    const eventImageDataUrl = localStorage.getItem("eventImage");
+
+    if (eventImageDataUrl) {
+      updateEventImageFromStorage(eventImageDataUrl, eventObject);
+    } else {
+      setEventObject(() => ({
+        ...eventObject,
+        eventImage: undefined,
+        currentStep: eventObject.currentStep,
+      }));
+    }
+  }
+
+  function parseLocalStorage() {
+    const existingEvent = window.localStorage.getItem("eventObject");
+    const parsedEvent = existingEvent && JSON.parse(existingEvent);
+    if (parsedEvent) {
+      setEventImageValid(parsedEvent.eventImageValid);
+      setEventExtraInfoValid(parsedEvent.eventExtraInfoValid);
+    }
+    return parsedEvent;
+  }
+
+  function startNewEventCreation() {
+    updateLocalStorage(eventObject);
+    localStorage.removeItem("eventImage");
+  }
+
+  function continueEventCreation() {
+    const oldEventObject = parseLocalStorage();
+    if (!oldEventObject) {
+      //in case of parsing error, start new event creation
+      startNewEventCreation();
+    }
+    setEventExtraInfoValid(oldEventObject.eventExtraInfoValid);
+    if (oldEventObject.imageCached === ImageCaching.PREEMPTIVEMESSAGE) {
+      setEventImageValid(false);
+      setEventObject(() => ({
+        ...oldEventObject,
+        eventImage: undefined,
+        imageCached: ImageCaching.REFRESHMESSAGE,
+        eventImageValid: false,
+        currentStep: 4,
+      }));
+    } else {
+      parseImageFromLocalStorage(oldEventObject);
+      setEventImageValid(oldEventObject.eventImageValid);
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem("eventObject")) {
+      setModalOpen(true);
+    }
+  }, []);
+
   return (
     <>
       <Header />
       <div className={styles.wrapper}>
+        {modalOpen && (
+          <Modal
+            label="Fortsett opprettelse av arrangement?"
+            description="Vi ser at du har et tidligere arrangement som ikke ble postet. Vil du fortsette der du slapp, eller opprette et nytt arrangment?"
+            buttonText="Fortsett"
+            secondaryButtonText="Opprett nytt"
+            buttonOnClick={continueEventCreation}
+            secondaryButtonOnClick={startNewEventCreation}
+          />
+        )}
         <div className={styles.container}>
-          {getCurrentInputPage(currentStep)}
+          {getCurrentInputPage(eventObject.currentStep)}
         </div>
       </div>
     </>

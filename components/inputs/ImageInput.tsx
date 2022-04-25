@@ -7,6 +7,7 @@ import EditIcon from "../svgs/EditIcon";
 import PlaceholderImage from "../../assets/images/cat.jpg";
 import styles from "../../styles/ImageInput.module.scss";
 import ErrorIcon from "../svgs/ErrorIcon";
+import { ImageCaching } from "../../types/types";
 
 interface ImageInputProps {
   inputId: string;
@@ -16,6 +17,7 @@ interface ImageInputProps {
   value?: File;
   errorMessage: string;
   required?: boolean;
+  imageCached: ImageCaching;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -28,8 +30,9 @@ const ImageInput = ({
   errorMessage,
   required,
   onChange,
+  imageCached,
 }: ImageInputProps) => {
-  const imageInput = useRef(null);
+  const imageInput = useRef<HTMLInputElement>(null);
 
   const getImageInputStyles = () => {
     return fileTooLarge
@@ -38,15 +41,17 @@ const ImageInput = ({
   };
 
   const clickImageInput = () => {
-    /* TODO: Fix TS error here. */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    imageInput.current.click();
+    imageInput?.current?.click();
   };
 
   /* Do not allow images larger than 50MB. */
   const fileMaxSize = 50000000;
+  /* Do not allow images larger than 4.5MB for storage */
+  const maxCachedSize = 4500000;
   const fileTooLarge = value && value.size > fileMaxSize;
+  const fileNotCached = !fileTooLarge && value && value.size > maxCachedSize;
+  const oldFileNotCached =
+    !fileTooLarge && imageCached === ImageCaching.REFRESHMESSAGE;
 
   const imageSource = value
     ? value && URL.createObjectURL(value)
@@ -83,6 +88,26 @@ const ImageInput = ({
         <div className={styles.errorContainer}>
           <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>
+        </div>
+      )}
+      {fileNotCached && (
+        <div className={styles.errorContainer}>
+          <ErrorIcon className={styles.errorIcon} />
+          <p className={styles.errorText}>
+            Bildet er for stort til å kunne mellomlagres, og må lastes opp på
+            nytt dersom du avslutter og kommer tilbake til
+            arrangementopprettelsen
+          </p>
+        </div>
+      )}
+
+      {oldFileNotCached && (
+        <div className={styles.errorContainer}>
+          <ErrorIcon className={styles.errorIcon} />
+          <p className={styles.errorText}>
+            Vi kunne dessverre ikke mellomlagre ditt tidligere arrangementsbilde
+            grunnet den store størrelsen. Vennligst last opp bildet på nytt.
+          </p>
         </div>
       )}
     </div>
