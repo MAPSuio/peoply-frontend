@@ -11,18 +11,18 @@ $success-color-hover: #9BFFA9;
 $success-color-muted: #406155;
 $success-color-input: #4C6F66;
 $success-color-switch: #00E054;
-$error-color: #FF586C;
-$warning-color: #FFF08E;
-$warning-color-hover: #FFF2A0;
-$danger-color: #FF586C;
+$error-color: #FF948C;
+$warning-color: #F4E57F;
+$warning-color-hover: #FFF296;
+$danger-color: #FF948C;
 $danger-color-button: #FF8C96;
 $danger-color-button-hover: #FF9DA5;
 
 // Background colors.
 $background-color-primary: #1E2630;
 $background-color-card: #303A47;
-$background-color-modal-transparent: rgba(48, 58, 71, 0.8);
-$background-color-modal: #526275;
+$background-color-modal-transparent: rgba(6, 9, 13, 0.8);
+$background-color-modal: #1E2630;
 $background-color-price-tag: #FFFFFF;
 $background-color-glass: rgba(115, 130, 149, 0.7);
 $background-color-navbar: #49515C;
@@ -36,6 +36,16 @@ $background-color-progress-connector-active: #738295;
 $background-color-settings-button: #303A47;
 $background-color-switch-container: #303A47;
 $background-color-switch: #63768D;
+$background-color-button-disabled: #2E3453;
+$background-color-button-secondary: #303A47;
+$background-color-button-secondary-hover: #3F4957;
+$background-color-button-secondary-disabled: #253140;
+$background-color-button-danger: #FF948C;
+$background-color-button-danger-hover: #FFA59E;
+$background-color-button-danger-disabled: #3B3B48;
+$background-color-button-warning: #F4E57F;
+$background-color-button-warning-hover: #FFF296;
+$background-color-button-warning-disabled: #333E44;
 
 // Text colors.
 $text-color-emphasis: #FFFFFF;
@@ -44,9 +54,8 @@ $text-color-input: #C1C3D0;
 $text-color-black: #2C263C;
 
 // Misc colors.
-$red-color: #FF8585;
+$red-color: #FF8595;
 $black-color: #000000;
-$button-color-disabled: #5F5373;
 
 // Borders.
 $image-border: 4px solid #A9AAB7;
@@ -72,6 +81,7 @@ $page-width-mobile: 90%;
 $page-width-desktop: 80%;
 $img-height-card: 350px;
 $background-blur: 8px;
+$background-blur-soft: 4px;
 $animation-duration: 0.3s;
 $z-index-modal: 9999;
 
@@ -90,16 +100,18 @@ $shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
 $shadow-button-hover: 0px 10px 25px rgba(124, 77, 255, 0.5);
 $shadow-button-light: 0px 8px 20px rgba(184, 155, 254, 0.3);
 $shadow-button-light-hover: 0px 10px 25px rgba(184, 155, 254, 0.5);
-$shadow-button-danger: 0px 8px 20px rgba(255, 140, 150, 0.3);
-$shadow-button-danger-hover: 0px 8px 20px rgba(255, 140, 150, 0.5);
+$shadow-button-secondary: 0px 8px 20px rgba(63, 76, 92, 0.3);
+$shadow-button-secondary-hover: 0px 10px 25px rgba(63, 76, 92, 0.5);
+$shadow-button-danger: 0px 8px 20px rgba(255, 148, 140, 0.2); /* new value */
+$shadow-button-danger-hover: 0px 10px 25px rgba(255, 148, 140, 0.4); /* new value */
 $shadow-button-success: 0px 8px 20px rgba(126, 251, 142, 0.3);
 $shadow-button-success-hover: 0px 8px 20px rgba(126, 251, 142, 0.5);
-$shadow-button-warning: 0px 8px 20px rgba(255, 240, 142, 0.3);
-$shadow-button-warning-hover: 0px 8px 20px rgba(255, 240, 142, 0.5);
+$shadow-button-warning: 0px 8px 20px rgba(255, 242, 150, 0.15);
+$shadow-button-warning-hover: 0px 8px 20px rgba(255, 242, 15, 0.25);
 $shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.2);
 $shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.2);
-$shadow-snack-warning: 0px 5px 12px rgba(255, 240, 142, 0.2);
-$shadow-snack-error: 0px 5px 12px rgba(255, 88, 105, 0.2);
+$shadow-snack-warning: 0px 5px 12px rgba(255, 242, 150, 0.2);
+$shadow-snack-error: 0px 5px 12px (255, 148, 140, 0.2);
 $shadow-slider: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 $shadow-switch: 0px 4px 10px rgba(0, 0, 0, 0.2);
 

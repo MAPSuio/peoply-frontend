@@ -6,7 +6,7 @@ import BackButton from "../../components/BackButton";
 import EditProfileImageMenu from "../../components/EditProfileImageMenu";
 import TextInputLong from "../../components/inputs/TextInputLong";
 import MenuModal from "../../components/MenuModal";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 import useBack from "../../hooks/useBack";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import useUser from "../../hooks/useUser";
@@ -85,7 +85,7 @@ const EditProfile: NextPage = () => {
         className={styles.description}
       />
       <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
-        <PrimaryButton
+        <Button
           disabled={!validEdit}
           text="Lagre endringer"
           onClick={handleConfirm}

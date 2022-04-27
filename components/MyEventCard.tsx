@@ -16,7 +16,7 @@ import PlaceholderImage from "../assets/images/cat.jpg";
 import UsersIcon from "./svgs/UsersIcon";
 import TimeIcon from "./svgs/TimeIcon";
 import PlaceIcon from "./svgs/PlaceIcon";
-import PrimaryButton from "./PrimaryButton";
+import Button from "./Button";
 import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
@@ -96,11 +96,12 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
                 <p className={styles.data}>Oslo</p>
               </div>
             </div>
-            <PrimaryButton
+            <Button
               text="Kopier lenke"
               small
               className={styles.iconLink}
               onClick={(e: MouseEvent) => buttonOnClick(e)}
+              noShadow
             />
           </div>
         </div>

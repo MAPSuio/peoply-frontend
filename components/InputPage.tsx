@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import ProgressBar from "./ProgressBar";
-import PrimaryButton from "./PrimaryButton";
+import Button from "./Button";
 import BackButton from "./BackButton";
 
 import styles from "../styles/InputPage.module.scss";
@@ -90,7 +90,7 @@ const InputPage = ({
         </div>
         <div className={styles.childrenContainer}>{children}</div>
       </div>
-      <PrimaryButton
+      <Button
         onClick={() => buttonOnClick(step + 1)}
         text={buttonText}
         className={buttonStyles}

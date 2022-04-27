@@ -1,7 +1,7 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import CheckCircle from "../../components/CheckCircle";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 import BackButton from "../../components/BackButton";
 import useUser from "../../hooks/useUser";
 import styles from "../../styles/Login.module.scss";
@@ -74,7 +74,7 @@ const Login: NextPage = ({
               </div>
             </div>
             <Link href="/" passHref>
-              <PrimaryButton
+              <Button
                 isLink
                 text="Fortsett til appen"
                 className={styles.primaryButton}

@@ -2,10 +2,10 @@
 import { useState } from "react";
 
 /* Components. */
-import PrimaryButton from "./PrimaryButton";
+import Button from "./Button";
 
 /* Types */
-import { ModalTypes } from "../types/types";
+import { ButtonType } from "../types/types";
 
 /* Styles */
 import styles from "../styles/Modal.module.scss";
@@ -14,7 +14,6 @@ import ExitIcon from "./svgs/ExitIcon";
 interface ModalProps {
   label: string;
   description?: string;
-  type?: ModalTypes;
   buttonText?: string;
   secondaryButtonText?: string;
   buttonOnClick?: () => void;
@@ -24,26 +23,12 @@ interface ModalProps {
 const Modal = ({
   label,
   description,
-  type,
   buttonText,
   secondaryButtonText,
   buttonOnClick,
   secondaryButtonOnClick,
 }: ModalProps) => {
   const [show, setShow] = useState(true);
-
-  const getButtonStyles = () => {
-    switch (type) {
-      case ModalTypes.SUCCESS:
-        return `${styles.button} ${styles.success}`;
-      case ModalTypes.DANGER:
-        return `${styles.button} ${styles.danger}`;
-      case ModalTypes.WARNING:
-        return `${styles.button} ${styles.warning}`;
-      default:
-        return styles.button;
-    }
-  };
 
   const clickFunction = () => {
     buttonOnClick && buttonOnClick();
@@ -54,7 +39,6 @@ const Modal = ({
     secondaryButtonOnClick && secondaryButtonOnClick();
     setShow(false);
   };
-  const buttonStyles = getButtonStyles();
 
   if (show) {
     return (
@@ -66,17 +50,20 @@ const Modal = ({
           <h1 className={styles.title}>{label}</h1>
           <p className={styles.description}>{description}</p>
           {buttonText && (
-            <PrimaryButton
-              className={buttonStyles}
+            <Button
+              className={styles.button}
               text={buttonText}
               onClick={clickFunction}
+              noShadow
             />
           )}
           {secondaryButtonText && (
-            <PrimaryButton
-              className={buttonStyles}
+            <Button
+              type={ButtonType.SECONDARY}
+              className={styles.button}
               text={secondaryButtonText}
               onClick={secondaryClickFunction}
+              noShadow
             />
           )}
         </div>

@@ -8,7 +8,7 @@ import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
 import PlaceCircle from "../../components/PlaceCircle";
 import SmallCheckCircle from "../../components/SmallCheckCircle";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 import HeadComponent from "../../components/HeadComponent";
@@ -28,7 +28,13 @@ import {
   removeFavorite,
 } from "../../services/events";
 
-import { Event, EventData, RegStatus, SnackTypes } from "../../types/types";
+import {
+  ButtonType,
+  Event,
+  EventData,
+  RegStatus,
+  SnackTypes,
+} from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
 import { ParsedUrlQuery } from "querystring";
 
@@ -112,7 +118,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
     if (user) {
       const success = await deleteRegistrationUser(user.id, eventUuid);
       if (success) {
-        addSnack("Meldt av arrangement", SnackTypes.SUCCESS);
+        addSnack("Meldt av arrangement", SnackTypes.WARNING);
         setRegistered(false);
       } else {
         addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
@@ -228,9 +234,10 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
             <p className={styles.descText}>{eventDescription}</p>
           </div>
           {registered ? (
-            <PrimaryButton
+            <Button
+              type={ButtonType.DANGER}
               text="Meld deg av arrangementet"
-              className={`${styles.primaryButton} ${styles.dangerButton}`}
+              className={styles.primaryButton}
               onClick={() => {
                 if (registeredFetched) {
                   if (user) {
@@ -247,7 +254,7 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
               }}
             />
           ) : (
-            <PrimaryButton
+            <Button
               text="Meld deg på arrangementet"
               className={styles.primaryButton}
               onClick={() => {

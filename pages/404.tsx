@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import PrimaryButton from "../components/PrimaryButton";
+import Button from "../components/Button";
 import ErrorImage from "../assets/images/undraw_404.png";
 
 import styles from "../styles/Custom404.module.scss";
@@ -23,7 +23,7 @@ const Custom404: NextPage = () => {
           />
         </div>
         <Link href="/" passHref>
-          <PrimaryButton
+          <Button
             isLink
             text="Gå til hjemskjermen"
             className={styles.homeButton}

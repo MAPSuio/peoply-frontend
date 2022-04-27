@@ -3,7 +3,7 @@ import Image from "next/image";
 
 /* Components */
 import ProgressBar from "./ProgressBar";
-import PrimaryButton from "./PrimaryButton";
+import Button from "./Button";
 import BackButton from "./BackButton";
 import SummaryCard from "./SummaryCard";
 import TitleCircle from "./TitleCircle";
@@ -268,7 +268,7 @@ const SummaryPage = ({
           </div>
         </SummaryCard>
       </div>
-      <PrimaryButton
+      <Button
         onClick={() => createEventFunction(formData)}
         text={buttonText}
         className={buttonStyles}

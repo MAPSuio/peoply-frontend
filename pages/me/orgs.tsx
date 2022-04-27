@@ -6,7 +6,7 @@ import useBack from "../../hooks/useBack";
 import OrgImage from "../../assets/images/undraw_apartment.png";
 import Image from "next/image";
 import router from "next/router";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 
 import OrgList from "../../components/OrgList";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
@@ -49,7 +49,7 @@ const Organizations: NextPage = () => {
               <p>Kom i gang ved å opprette en organisajon da vel!</p>
             </div>
             <div className={styles.confirm}>
-              <PrimaryButton
+              <Button
                 text="Opprett organisasjon"
                 onClick={() => router.push("/orgs/create")}
               />

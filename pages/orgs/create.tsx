@@ -4,7 +4,7 @@ import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
 import router from "next/router";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 import TextInput from "../../components/inputs/TextInput";
 import { useEffect, useState } from "react";
 import TextInputLong from "../../components/inputs/TextInputLong";
@@ -87,7 +87,7 @@ const Create: NextPage = () => {
         />
       </div>
       <div className={styles.confirm}>
-        <PrimaryButton
+        <Button
           disabled={!isValid}
           text="Lagre endringer"
           onClick={handleConfirm}

@@ -5,11 +5,12 @@
 }
 
 @mixin fixedButton() {
-  bottom: 2rem;
+  bottom: $spacer-medium;
   position: fixed;
   z-index: 999;
+
   @include desktop() {
-    bottom: 4rem;
+    bottom: $spacer-large;
   }
 }
 

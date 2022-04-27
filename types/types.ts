@@ -199,11 +199,6 @@ export enum SnackTypes {
   ERROR,
 }
 
-export enum ModalTypes {
-  SUCCESS,
-  WARNING,
-  DANGER,
-}
 export enum Visibility {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
@@ -241,4 +236,11 @@ export enum Weekdays {
   THURSDAY = "Torsdag",
   FRIDAY = "Fredag",
   SATURDAY = "Lørdag",
+}
+
+export enum ButtonType {
+  PRIMARY,
+  SECONDARY,
+  DANGER,
+  WARNING,
 }

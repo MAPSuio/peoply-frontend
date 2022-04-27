@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import MyEventCard from "../../components/MyEventCard";
 import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
-import PrimaryButton from "../../components/PrimaryButton";
+import Button from "../../components/Button";
 
 /* Utils. */
 import { registerForEventTest } from "../../services/events";
@@ -331,15 +331,15 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
         </div>
         {eventType === SectionTypes.MYEVENTS ? (
           <Link href="/event/create" passHref>
-            <PrimaryButton text="Opprett et nytt arrangement" isLink />
+            <Button text="Opprett et nytt arrangement" isLink />
           </Link>
         ) : eventType === SectionTypes.REGISTERED ? (
           <Link href="/" passHref>
-            <PrimaryButton text="Sjekk ut arrangementer" isLink />
+            <Button text="Sjekk ut arrangementer" isLink />
           </Link>
         ) : (
           <Link href="/" passHref>
-            <PrimaryButton text="Sjekk ut arrangementer" isLink />
+            <Button text="Sjekk ut arrangementer" isLink />
           </Link>
         )}
       </div>

@@ -1,0 +1,111 @@
+.buttonContainer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.button {
+  @include resetButton();
+  background-color: $primary-color-400;
+  box-shadow: $shadow-button;
+  color: $text-color-emphasis;
+  cursor: pointer;
+  font-size: $font-size-primary;
+  font-weight: $font-weight-bold;
+  max-width: $max-width-button;
+  padding: $spacer-small 0;
+  transition: all $animation-duration ease;
+  width: 100%;
+
+  &:disabled {
+    background-color: $background-color-button-disabled;
+    box-shadow: none;
+    color: $text-color-primary;
+    cursor: initial;
+    font-weight: $font-weight-regular;
+  }
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+
+    &:hover:not(:disabled) {
+      background-color: $primary-color-400-hover;
+      box-shadow: $shadow-button-hover;
+    }
+  }
+
+  &:active {
+    box-shadow: none !important;  // TODO: Remove the !important here.
+    transform: translateY(2px);  // TODO: This property is very dangerous.
+  }
+}
+
+.secondaryButton {
+  background-color: $background-color-button-secondary;
+  box-shadow: $shadow-button-secondary;
+  font-weight: $font-weight-regular;
+
+  &:disabled {
+    background-color: $background-color-button-secondary-disabled;
+  }
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $background-color-button-secondary-hover;
+      box-shadow: $shadow-button-secondary-hover;
+    }
+  }
+}
+
+.dangerButton {
+  background-color: $background-color-button-danger;
+  box-shadow: $shadow-button-danger;
+  color: $text-color-black;
+
+  &:disabled {
+    background-color: $background-color-button-danger-disabled;
+  }
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $background-color-button-danger-hover;
+      box-shadow: $shadow-button-danger-hover;
+    }
+  }
+}
+
+.warningButton {
+  background-color: $background-color-button-warning;
+  box-shadow: $shadow-button-warning;
+  color: $text-color-black;
+
+  &:disabled {
+    background-color: $background-color-button-warning-disabled;
+  }
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $background-color-button-warning-hover;
+      box-shadow: $shadow-button-warning-hover;
+    }
+  }
+}
+
+.small {
+  font-size: $font-size-secondary;
+  padding: $spacer-very-small-plus $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+    padding: $spacer-small $spacer-small-plus;
+  }
+}
+
+.noShadow {
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    box-shadow: none;
+  }
+}

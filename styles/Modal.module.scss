@@ -1,7 +1,7 @@
 
 .wrapper {
   align-items: center;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur($background-blur-soft);
   background-color: $background-color-modal-transparent;
   bottom: 0;
   display: flex;
@@ -47,79 +47,51 @@
   right: $spacer-very-small;
   stroke: $text-color-emphasis;
   top: $spacer-very-small;
+
+  @include desktop() {
+    right: $spacer-small;
+    top: $spacer-small;
+  }
 }
 
 .title, .description {
-  color: $text-color-emphasis;
   max-width: $max-width-input;
   text-align: center;
 }
 
 .title {
+  color: $text-color-emphasis;
   font-size: $font-size-heading-large;
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
     font-size: $font-size-heading-large-desktop;
-    margin-bottom: $spacer-very-small-plus;
+    margin-bottom: $spacer-small-plus;
   }
 }
 
 .button {
-  background-color: $primary-color-200;
   border-radius: $border-radius-inside-card;
-  box-shadow: $shadow-button-light;
-  color: $text-color-black;
+}
+
+.button:not(:last-child) {
   margin-top: $spacer-medium;
 
   @include desktop() {
-    &:hover {
-      background-color: $primary-color-200-hover;
-      box-shadow: $shadow-button-light-hover;
-    }
+    margin-top: $spacer-medium-plus;
   }
 }
 
-.warning {
-  background-color: $warning-color;
-  box-shadow: $shadow-button-warning;
-  color: $text-color-black;
+.button:last-child {
+  margin-top: $spacer-very-small;
 
   @include desktop() {
-    &:hover {
-      background-color: $warning-color-hover;
-      box-shadow: $shadow-button-warning-hover;
-    }
-  }
-}
-
-.success {
-  background-color: $success-color;
-  box-shadow: $shadow-button-success;
-  color: $text-color-black;
-
-  @include desktop() {
-    &:hover {
-      background-color: $success-color-hover;
-      box-shadow: $shadow-button-success-hover;
-    }
-  }
-}
-
-.danger {
-  background-color: $danger-color-button;
-  box-shadow: $shadow-button-danger;
-  color: $text-color-black;
-
-  @include desktop() {
-    &:hover {
-      background-color: $danger-color-button-hover;
-      box-shadow: $shadow-button-danger-hover;
-    }
+    margin-top: $spacer-very-small-plus;
   }
 }
 
 .description {
+  color: $text-color-primary;
   font-size: $font-size-secondary;
   line-height: $line-height-hint-text;
 

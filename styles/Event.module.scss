@@ -3,7 +3,7 @@
   flex-flow: column nowrap;
   padding-bottom: 5rem ;
   width: 100%;
-  
+
   @include desktop() {
     padding-bottom: 7rem;
   }
@@ -93,19 +93,7 @@
 .primaryButton {
   @include fixedButton();
   align-self: center;
-  margin-top: $spacer-very-large; 
-  width: 90%;
-}
-
-.dangerButton {
-  background-color: $danger-color-button;
-  box-shadow: $shadow-button-danger;
-  color: $text-color-black;
-
-  &:hover {
-    background-color: $danger-color-button-hover;
-    box-shadow: $shadow-button-danger-hover;
-  }
+  width: $page-width-mobile;
 }
 
 .flexContainer {
