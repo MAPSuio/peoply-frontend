@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import useBack from "../../hooks/useBack";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
@@ -8,12 +7,24 @@ import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import OrgMenu from "../../components/OrgMenu";
+import { useState } from "react";
+import UserSelect from "../../components/UserSelect";
+import { User } from "../../types/types";
 
 const Me: NextPage = () => {
   const { user, currentOrg, loading } = useUser();
   const goBack = useBack();
+  const [users, setUsers] = useState<User[]>([]);
 
   const redirectToLogin = useRedirectToLogin();
+
+  const setUser = (user: User) => {
+    setUsers([user, ...users]);
+  };
+
+  const removeUser = (user: User) => {
+    setUsers(users.filter((u) => u.id !== user.id));
+  };
 
   if (loading) {
     return <></>;
@@ -33,6 +44,11 @@ const Me: NextPage = () => {
           <p className={styles.location}>Oslo, NO</p>
           <p className={styles.description}>{currentOrg.description}</p>
         </div>
+        <UserSelect
+          onUserSelect={setUser}
+          selectedUsers={users}
+          onUserRemove={removeUser}
+        />
         <OrgMenu />
       </div>
     );

@@ -1,0 +1,94 @@
+.wrapper {
+  background-color: $background-color-card;
+  border-radius: $border-radius-inside-card;
+  margin: $spacer-small;
+  max-width: 500px;
+  position: relative;
+  width: 100%;
+
+  &.show {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+
+  .container {
+    align-items: center;
+    border-radius: $border-radius-inside-card;
+    display: flex;
+    padding: 0 $spacer-small;
+
+    &.focused {
+      outline: 2px solid #FFFFFF;
+    }
+
+    &.show {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  input {
+    background-color: $background-color-card;
+    padding: $spacer-small-plus;
+    width: calc(100% + 2px);
+
+
+    &:focus{
+      outline: none;
+    }
+
+
+  }
+
+  .results {
+    backdrop-filter: blur(3px);
+    background-color: $background-color-card;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+
+    .item {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      padding: $spacer-small $spacer-small;
+
+      a {
+        color: inherit;
+        font-weight: normal;
+        text-decoration: none;
+      }
+
+      .action {
+        @include resetButton();
+        align-items: center;
+        display: flex;
+        height: 32px;
+        justify-content: center;
+        width: 32px;
+
+        .icon {
+          height: 32px;
+          width: 32px;
+        }
+      }
+    }
+
+    .user {
+      align-items: center;
+      display: flex;
+      gap: $spacer-small;
+    }
+  }
+
+}
+
+.divider {
+  @include divider();
+}
+
+.check {
+  stroke: $success-color;
+}
