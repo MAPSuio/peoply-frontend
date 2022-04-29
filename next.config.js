@@ -1,6 +1,6 @@
-const withPWA = require('next-pwa');
+// const withPWA = require('next-pwa');
 
-module.exports = withPWA({
+module.exports = /* withPWA( */{
   /** @type {import('next').NextConfig} */
 
   i18n: {
@@ -26,9 +26,10 @@ module.exports = withPWA({
   },
 
   // generate manifest using https://www.simicart.com/
-  pwa: {
-    dest: 'public',
-    disable: process.env.NODE_ENV === 'development',
-    register: true,
-  }
-});
+  // pwa: {
+    // dest: 'public',
+    // disable: process.env.NODE_ENV === 'development',
+    // disable: true,
+    // register: true,
+  // }
+}/* ) */;
