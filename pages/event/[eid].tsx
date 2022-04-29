@@ -141,7 +141,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
         title={`Peoply - ${eventData.title}`}
         description={eventData.description}
         url={`${baseUrl}/event/${eventData.urlId}`}
-        // imageUrl=""
+        imageUrl={eventData.image}
       />
 
       <div className={styles.eventWrapper}>

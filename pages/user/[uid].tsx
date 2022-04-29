@@ -41,6 +41,7 @@ const User = ({ user, baseUrl }: UserProps) => {
         title={`Peoply - ${userData.firstName} ${userData.lastName}`}
         description={`${userData.description}`}
         url={`${baseUrl}/user/${user.id}`}
+        imageUrl={userData.image}
       />
       <div className={styles.container}>
         <BackButton onClick={goBack} />
