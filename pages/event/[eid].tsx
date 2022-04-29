@@ -177,6 +177,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
             objectFit="cover"
             objectPosition="center"
             alt="Nå er det fest!"
+            priority={true}
           />
         </div>
         <div className={styles.eventContainer}>

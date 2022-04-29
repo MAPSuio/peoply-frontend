@@ -72,6 +72,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
               objectFit="cover"
               layout="fill"
               objectPosition="center"
+              priority={true}
             />
           </div>
           <div className={styles.contentContainer}>
