@@ -1,3 +1,6 @@
+// Components.
+import LoadingWheel from "./LoadingWheel";
+
 // Types.
 import { ButtonType } from "../types/types";
 
@@ -13,6 +16,7 @@ interface ButtonProps {
   isLink?: boolean;
   small?: boolean;
   noShadow?: boolean;
+  loading?: boolean;
 }
 
 export default function Button({
@@ -24,6 +28,7 @@ export default function Button({
   isLink,
   small,
   noShadow,
+  loading,
 }: ButtonProps) {
   const buttonStyles = (() => {
     switch (type) {
@@ -58,7 +63,13 @@ export default function Button({
           className={`${buttonStyles} ${className}`}
           disabled={disabled}
         >
-          {text}
+          {loading ? (
+            <LoadingWheel
+              dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
+            />
+          ) : (
+            text
+          )}
         </button>
       </a>
     );
@@ -69,7 +80,13 @@ export default function Button({
       className={`${buttonStyles} ${className}`}
       disabled={disabled}
     >
-      {text}
+      {loading ? (
+        <LoadingWheel
+          dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
+        />
+      ) : (
+        text
+      )}
     </button>
   );
 }
