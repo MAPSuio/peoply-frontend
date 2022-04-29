@@ -31,25 +31,13 @@ const EventCard = ({ event }: EventCardProps) => {
         <div className={styles.eventCardContainer}>
           <div className={styles.eventCard}>
             <div className={styles.eventCardImageContainer}>
-              {/* {event.image ? (
               <Image
-                src={event.image}
-                alt="event image"
+                src={event.image ?? eventPlaceholder}
                 layout="fill"
-                objectFit="contain"
-                objectPosition="top"
-                placeholder="blur"
-                blurDataURL={event.image} // this should be a very tiny image
-              />
-            ) : ( */}
-              <Image
-                src={eventPlaceholder}
                 alt="event image"
-                objectFit="contain"
-                objectPosition="top"
-                placeholder="blur"
+                objectFit="cover"
+                objectPosition="center"
               />
-              {/* )} */}
             </div>
             <div className={styles.eventCardInfoContainer}>
               <div className={styles.eventCardInfo}>

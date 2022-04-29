@@ -142,7 +142,7 @@ const MyEvents = () => {
         <div className={styles.container}>
           <div className={styles.userContainer}>
             <h1 className={styles.title}>{user.firstName}</h1>
-            <ChevronDownIcon className={styles.chevronDownIcon} />
+            {/* <ChevronDownIcon className={styles.chevronDownIcon} /> */}
           </div>
           <div className={styles.sectionButtonsContainer}>
             <div className={styles.buttonsContainer}>
@@ -221,8 +221,8 @@ const MyEvents = () => {
       <div className={styles.wrapper}>
         <div className={styles.container}>
           <div className={styles.userContainer}>
-            <h1 className={styles.title}>Hans</h1>
-            <ChevronDownIcon className={styles.chevronDownIcon} />
+            <h1 className={styles.title}>Bruker</h1>
+            {/* <ChevronDownIcon className={styles.chevronDownIcon} /> */}
           </div>
           <div className={styles.sectionButtonsContainer}>
             <div className={styles.buttonsContainer}>

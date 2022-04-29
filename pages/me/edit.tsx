@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";

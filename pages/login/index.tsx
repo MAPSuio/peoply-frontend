@@ -37,9 +37,9 @@ const Login: NextPage = ({
   return (
     <>
       <HeadComponent
-        title="Peoply - Home"
-        description="Home page of Peoply"
-        url={`${baseUrl}${router.asPath}`}
+        title="Peoply - Logg inn"
+        description="Logg inn på Peoply"
+        url={`${baseUrl}/login`}
       />
       {user ? (
         <div className={styles.loginWrapper}>

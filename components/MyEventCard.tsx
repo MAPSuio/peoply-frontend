@@ -9,10 +9,10 @@ import useSnack from "../hooks/useSnack";
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 
 /* Types. */
-import { Event, SnackTypes } from "../types/types";
+import { Event, Registration, RegStatus, SnackTypes } from "../types/types";
 
 /* Assets. */
-import PlaceholderImage from "../assets/images/cat.jpg";
+import placeholderImage from "../assets/images/undraw_partying.png";
 import UsersIcon from "./svgs/UsersIcon";
 import TimeIcon from "./svgs/TimeIcon";
 import PlaceIcon from "./svgs/PlaceIcon";
@@ -46,11 +46,13 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);
 
-  const { data: registrations, error: registrationsError } = useSWR(
-    `/events/${event.id}/registrations`,
-    fetchFromPeoplyApiJson,
-  );
-  const regCt = registrations ? registrations.length : 0;
+  const { data: registrations, error: registrationsError } = useSWR<
+    Registration[]
+  >(`/events/${event.id}/registrations`, fetchFromPeoplyApiJson);
+
+  const regCt = registrations
+    ? registrations.filter((r) => r.regStatus === RegStatus.GOING).length
+    : 0;
   const capacity = event.capacity;
 
   return (
@@ -65,7 +67,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
         <div className={styles.cardContainer}>
           <div className={styles.imageContainer}>
             <Image
-              src={PlaceholderImage}
+              src={event.image ?? placeholderImage}
               alt="A very cute cat"
               objectFit="cover"
               layout="fill"

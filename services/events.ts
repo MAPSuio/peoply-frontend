@@ -1,9 +1,8 @@
-import { formatDateRange, formatTimeRange } from "../utils/functions";
 import {
-  EventData,
   RegStatus,
   FavoriteData,
   RegistrationData,
+  Event,
 } from "../types/types";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
@@ -49,30 +48,9 @@ async function registerForEventTest(userId: string) {
 /* Fetch and format data for an event specified by an event ID. */
 async function getEventData(eid: string) {
   const eventUrl = `/events/${eid}`;
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
+  const event: Event = await fetchFromPeoplyApiJson(eventUrl, {
     method: "get",
   });
-
-  const eventData = res;
-
-  /* Extract event data and format in new object. */
-  const startDate = new Date(eventData.startDate);
-  const endDate = new Date(eventData.endDate);
-
-  const dateString = formatDateRange(startDate, endDate);
-  const timeString = formatTimeRange(startDate, endDate);
-
-  const event: EventData = {
-    eventId: eid,
-    eventUuid: eventData.id,
-    dateString: dateString,
-    timeString: timeString,
-    title: eventData.title,
-    description: eventData.description,
-    capacity: eventData.capacity,
-    visibility: eventData.visibility,
-    image: eventData.image,
-  };
 
   return event;
 }
@@ -104,7 +82,7 @@ async function addFavorite(userId: string, eventId: string) {
   const requestBody = {
     id: eventId,
   };
-  const res = await fetchFromPeoplyApi(eventUrl, {
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -112,7 +90,7 @@ async function addFavorite(userId: string, eventId: string) {
     body: JSON.stringify(requestBody),
   });
 
-  return res.status === 200;
+  return res;
 }
 
 /*remove event as favorite. returns true/false if done succesfull */
@@ -122,7 +100,7 @@ async function removeFavorite(userId: string, eventId: string) {
     id: eventId,
   };
 
-  const res = await fetchFromPeoplyApi(eventUrl, {
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -130,7 +108,7 @@ async function removeFavorite(userId: string, eventId: string) {
     body: JSON.stringify(requestBody),
   });
 
-  return res.status === 200;
+  return res;
 }
 
 async function getUserRegistration(userId: string, eventId: string) {
@@ -168,7 +146,7 @@ async function registerUser(
     regStatus: status,
   };
 
-  const res = await fetchFromPeoplyApi(eventUrl, {
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -176,7 +154,7 @@ async function registerUser(
     body: JSON.stringify(requestBody),
   });
 
-  return res.status === 201;
+  return res;
 }
 
 /* add event as favorite. returns true/false if done succesfull */
@@ -187,7 +165,7 @@ async function unregisterUser(userId: string, eventId: string) {
     regStatus: RegStatus.NOTGOING,
   };
 
-  const res = await fetchFromPeoplyApi(eventUrl, {
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -195,7 +173,7 @@ async function unregisterUser(userId: string, eventId: string) {
     body: JSON.stringify(requestBody),
   });
 
-  return res.status === 200;
+  return res;
 }
 
 /* add event as favorite. returns true/false if done succesfull */
@@ -205,7 +183,7 @@ async function deleteRegistrationUser(userId: string, eventId: string) {
     eventId: eventId,
   };
 
-  const res = await fetchFromPeoplyApi(eventUrl, {
+  const res = await fetchFromPeoplyApiJson(eventUrl, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -213,7 +191,7 @@ async function deleteRegistrationUser(userId: string, eventId: string) {
     body: JSON.stringify(requestBody),
   });
 
-  return res.status === 200;
+  return res;
 }
 
 export {

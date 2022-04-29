@@ -1,5 +1,4 @@
 import styles from "../../styles/CreateOrganization.module.scss";
-import { NextPage } from "next";
 import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
@@ -12,8 +11,13 @@ import { fetchFromPeoplyApi } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
 import { SnackTypes } from "../../types/types";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import HeadComponent from "../../components/HeadComponent";
 
-const Create: NextPage = () => {
+interface CreateProps {
+  baseUrl: string;
+}
+
+const Create = ({ baseUrl }: CreateProps) => {
   const { user, loading, reload } = useUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -56,45 +60,61 @@ const Create: NextPage = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <BackButton onClick={goBack} />
-      <div className={styles.header}>
-        <h1>Opprett organisasjon</h1>
-        <p>Skap et sted folk kan høre til</p>
+    <>
+      <HeadComponent
+        title="Opprett organisasjon"
+        description="Opprett en ny organisasjon"
+        url={`${baseUrl}/orgs/create`}
+      />
+      <div className={styles.container}>
+        <BackButton onClick={goBack} />
+        <div className={styles.header}>
+          <h1>Opprett organisasjon</h1>
+          <p>Skap et sted folk kan høre til</p>
+        </div>
+        <div className={styles.form}>
+          <TextInput
+            value={name}
+            handleChange={(e) => setName(e.target.value)}
+            inputName="orgName"
+            inputId="orgName"
+            label="Organisasjonens navn"
+            placeholder="ProgSys"
+            maxLength={50}
+            errorMessage="Navnet kan ikke være tomt"
+          />
+          <TextInputLong
+            value={description}
+            handleChange={(e) => setDescription(e.target.value)}
+            inputName="orgDescription"
+            inputId="orgDescription"
+            label="Beskrivelse av organisasjonen"
+            placeholder="Progsys er linjeforeningen for studenter ved Programmering og Systemarkitektur på UiO. Vi planlegger mange morsomme arrangementer for at studentene kan bli bedre kjent."
+            rows={8}
+            maxLength={300}
+            errorMessage="Beskrivelsen kan ikke være tom"
+            validate
+          />
+        </div>
+        <div className={styles.confirm}>
+          <Button
+            disabled={!isValid}
+            text="Lagre endringer"
+            onClick={handleConfirm}
+          />
+        </div>
       </div>
-      <div className={styles.form}>
-        <TextInput
-          value={name}
-          handleChange={(e) => setName(e.target.value)}
-          inputName="orgName"
-          inputId="orgName"
-          label="Organisasjonens navn"
-          placeholder="ProgSys"
-          maxLength={50}
-          errorMessage="Navnet kan ikke være tomt"
-        />
-        <TextInputLong
-          value={description}
-          handleChange={(e) => setDescription(e.target.value)}
-          inputName="orgDescription"
-          inputId="orgDescription"
-          label="Beskrivelse av organisasjonen"
-          placeholder="Progsys er linjeforeningen for studenter ved Programmering og Systemarkitektur på UiO. Vi planlegger mange morsomme arrangementer for at studentene kan bli bedre kjent."
-          rows={8}
-          maxLength={300}
-          errorMessage="Beskrivelsen kan ikke være tom"
-          validate
-        />
-      </div>
-      <div className={styles.confirm}>
-        <Button
-          disabled={!isValid}
-          text="Lagre endringer"
-          onClick={handleConfirm}
-        />
-      </div>
-    </div>
+    </>
   );
+};
+
+export const getStaticProps = async () => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  return {
+    props: {
+      baseUrl,
+    },
+  };
 };
 
 export default Create;

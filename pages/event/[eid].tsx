@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Router, useRouter } from "next/router";
 import { GetStaticProps } from "next";
 
 import { useEffect, useState } from "react";
@@ -28,30 +27,26 @@ import {
   removeFavorite,
 } from "../../services/events";
 
-import {
-  ButtonType,
-  Event,
-  EventData,
-  RegStatus,
-  SnackTypes,
-} from "../../types/types";
+import { ButtonType, Event, RegStatus, SnackTypes } from "../../types/types";
 import placeholderImage from "../../assets/images/undraw_partying.png";
 import { ParsedUrlQuery } from "querystring";
 
 import styles from "../../styles/Event.module.scss";
 import useSnack from "../../hooks/useSnack";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import { formatDateRange, formatTimeRange } from "../../utils/functions";
+import useSWR from "swr";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 interface EventProps {
-  eventData: EventData;
+  event: Event;
   baseUrl: string;
 }
 
-const Event = ({ eventData, baseUrl }: EventProps) => {
+const Event = ({ event, baseUrl }: EventProps) => {
   const { user } = useUser();
   const goBack = useBack();
   const { width: windowWidth } = useWindowDimensions();
-  const router = useRouter();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
   const [registered, setRegistered] = useState(false);
@@ -59,31 +54,27 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
 
-  /* Extract the relevant event data. */
   const {
-    eventUuid: eventUuid,
-    dateString: eventDate,
-    timeString: eventTime,
-    title: eventTitle,
-    description: eventDescription,
-    capacity: eventCapacity,
-    visibility: eventVisibility,
-    image: eventImage,
-  } = eventData;
+    data: eventData,
+    error: eventError,
+    mutate: updateEvent,
+  } = useSWR<Event>(`/events/${event.urlId}`, fetchFromPeoplyApiJson, {
+    fallbackData: event,
+  });
 
   /* check if the user has this event as a favorite */
   useEffect(() => {
     const getFavoriteStatus = async () => {
-      if (user) {
-        const favorite = await getUserFavorite(user.id, eventUuid);
+      if (user && eventData) {
+        const favorite = await getUserFavorite(user.id, eventData.id);
         setFavorited(favorite !== null);
         setFavoriteFetched(true);
       }
     };
 
     const getRegisteredStatus = async () => {
-      if (user) {
-        const registration = await getUserRegistration(user.id, eventUuid);
+      if (user && eventData) {
+        const registration = await getUserRegistration(user.id, eventData.id);
         setRegisteredFetched(true);
 
         if (registration === null) {
@@ -98,17 +89,27 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
 
     getRegisteredStatus();
     getFavoriteStatus();
-  }, [eventUuid, user]);
+  }, [eventData, user]);
+
+  if (!eventData) {
+    return <div>Loading...</div>;
+  }
 
   const registerForEvent = async () => {
     if (user) {
-      const success = await registerUser(user.id, eventUuid, RegStatus.GOING);
+      const success = await registerUser(
+        user.id,
+        eventData.id,
+        RegStatus.GOING,
+      );
       if (success) {
         addSnack("Meldt på arrangement", SnackTypes.SUCCESS);
         setRegistered(true);
       } else {
         addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
       }
+
+      updateEvent();
       return success;
     }
     return false;
@@ -116,26 +117,30 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
 
   const unregisterForEvent = async () => {
     if (user) {
-      const success = await deleteRegistrationUser(user.id, eventUuid);
+      const success = await deleteRegistrationUser(user.id, eventData.id);
       if (success) {
         addSnack("Meldt av arrangement", SnackTypes.WARNING);
         setRegistered(false);
       } else {
         addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
       }
+      updateEvent();
       return success;
     }
     return false;
   };
 
-  const imageHeight = windowWidth > 500 ? "30%" : "65%";
+  const imageHeight =
+    windowWidth > 500
+      ? windowWidth - windowWidth * 0.65
+      : windowWidth - windowWidth * 0.35;
 
   return (
     <>
       <HeadComponent
-        title={`Peoply - ${eventTitle}`}
+        title={`Peoply - ${eventData.title}`}
         description={eventData.description}
-        url={`${baseUrl}${router.asPath}`}
+        url={`${baseUrl}/event/${eventData.urlId}`}
         // imageUrl=""
       />
 
@@ -148,9 +153,9 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
               if (favoriteFetched) {
                 if (user) {
                   if (!favorited) {
-                    addFavorite(user.id, eventUuid);
+                    addFavorite(user.id, eventData.id);
                   } else {
-                    removeFavorite(user.id, eventUuid);
+                    removeFavorite(user.id, eventData.id);
                   }
                   setFavorited(!favorited);
                 } else {
@@ -166,28 +171,42 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
             favorited={favorited}
           />
           <Image
-            src={placeholderImage}
-            width="100%"
+            src={eventData.image ?? placeholderImage}
+            width={windowWidth}
             height={imageHeight}
-            layout="responsive"
             objectFit="cover"
-            objectPosition="center top"
-            priority
+            objectPosition="center"
             alt="Nå er det fest!"
           />
         </div>
         <div className={styles.eventContainer}>
           <div className={styles.eventPriceTag}>Gratis</div>
           <div className={styles.eventInfoContainer}>
-            <p className={styles.eventTags}>Fest, alkohol, kaffe</p>
-            <h1 className={styles.marginBottomSmall}>{eventTitle}</h1>
+            <p className={styles.eventTags}>
+              {eventData.eventCategories
+                ?.map((cat) => cat.category.name)
+                .join(", ")}
+            </p>
+            <h1 className={styles.marginBottomSmall}>{eventData.title}</h1>
             <div className={styles.eventInfoCard}>
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
                 <UserCircle />
                 <p className={`${styles.infoText} ${styles.emphasis}`}>
-                  Cybernetisk selskab
+                  {eventData.eventArrangers
+                    ?.map((a) => {
+                      if (a.arranger.user) {
+                        return (
+                          a.arranger.user.firstName +
+                          " " +
+                          a.arranger.user.lastName
+                        );
+                      } else {
+                        return a.arranger.organization?.name;
+                      }
+                    })
+                    .join(", ")}
                 </p>
               </div>
               <div
@@ -198,9 +217,17 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
                   <p
                     className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
                   >
-                    {eventDate}
+                    {formatDateRange(
+                      new Date(eventData.startDate),
+                      new Date(eventData.endDate),
+                    )}
                   </p>
-                  <p className={styles.infoText}>{eventTime}</p>
+                  <p className={styles.infoText}>
+                    {formatTimeRange(
+                      new Date(eventData.startDate),
+                      new Date(eventData.endDate),
+                    )}
+                  </p>
                 </div>
               </div>
               <div
@@ -223,15 +250,21 @@ const Event = ({ eventData, baseUrl }: EventProps) => {
               >
                 <SmallCheckCircle />
                 <p className={styles.infoText}>
-                  <span className={styles.emphasis}>{eventCapacity}</span>{" "}
-                  plasser ledig
+                  <span className={styles.emphasis}>{`${
+                    eventData.registrations?.filter(
+                      (r) => r.regStatus === RegStatus.GOING,
+                    ).length
+                  }${
+                    eventData.capacity ? `/${eventData.capacity}` : ""
+                  }`}</span>{" "}
+                  påmeldte
                 </p>
               </div>
             </div>
           </div>
           <div className={styles.descContainer}>
             <h2 className={styles.descHeader}>Informasjon</h2>
-            <p className={styles.descText}>{eventDescription}</p>
+            <p className={styles.descText}>{eventData.description}</p>
           </div>
           {registered ? (
             <Button
@@ -287,10 +320,10 @@ interface IParams extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { eid } = context.params as IParams;
 
-  const eventData = await getEventData(eid);
+  const event = await getEventData(eid);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!eventData) {
+  if (!event) {
     return {
       notFound: true,
     };
@@ -299,9 +332,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
       baseUrl,
-      eventData,
+      event,
     },
-    revalidate: 60,
+    revalidate: 60 * 30, // 30 minutes
   };
 };
 

@@ -1,5 +1,5 @@
 /* Next */
-import { NextPage } from "next";
+import { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
@@ -52,6 +52,7 @@ import styles from "../../styles/CreateEvent.module.scss";
 import useUser from "../../hooks/useUser";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import Header from "../../components/Header";
+import HeadComponent from "../../components/HeadComponent";
 
 interface EventObjectProps {
   eventTitle: string;
@@ -75,7 +76,11 @@ interface EventObjectProps {
   imageCached: ImageCaching;
 }
 
-const CreateEvent: NextPage = () => {
+interface CreateEventProps {
+  baseUrl: string;
+}
+
+const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const { user, currentOrg, error: userError } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
@@ -869,6 +874,11 @@ const CreateEvent: NextPage = () => {
 
   return (
     <>
+      <HeadComponent
+        title="Peoply - Nytt arrangement"
+        description="Opprett et nytt arrangement på Peoply"
+        url={`${baseUrl}/event/create`}
+      />
       <Header />
       <div className={styles.wrapper}>
         {modalOpen && (
@@ -887,6 +897,16 @@ const CreateEvent: NextPage = () => {
       </div>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  return {
+    props: {
+      baseUrl,
+    },
+  };
 };
 
 export default CreateEvent;

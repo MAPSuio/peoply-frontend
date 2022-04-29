@@ -71,7 +71,7 @@ export interface Organization {
   name: string;
   orgNr: string;
   image?: string;
-  organizationRole: Array<UserOrganizationRoles>;
+  organizationRole: UserOrganizationRoles[];
 }
 
 export interface Arranger {
@@ -79,7 +79,7 @@ export interface Arranger {
   isBusiness: boolean;
   organization?: Organization;
   user?: User;
-  eventArranger: Array<EventArranger>;
+  eventArranger: EventArranger[];
 }
 
 export interface EventArranger {
@@ -111,29 +111,17 @@ export interface Registration {
 export interface Event {
   id: string;
   urlId: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   title: string;
   description: string;
   capacity?: number;
   private: boolean;
   image?: string;
-  eventArrangers: Array<EventArranger>;
-  registrations: Array<Registration>;
-  eventCategories: Array<EventCategory>;
-  favorites: Array<Favorite>;
-}
-
-export interface EventData {
-  eventId: string;
-  eventUuid: string;
-  dateString: string;
-  timeString: string;
-  title: string;
-  description: string;
-  capacity?: number;
-  visibility: boolean;
-  image?: string;
+  eventArrangers?: EventArranger[];
+  registrations?: Registration[];
+  eventCategories?: EventCategory[];
+  favorites?: Favorite[];
 }
 
 export interface MyEventData {
@@ -143,7 +131,7 @@ export interface MyEventData {
   title: string;
   capacity?: number;
   image?: string;
-  registrations: Array<Registration>;
+  registrations: Registration[];
 }
 
 export interface FavoriteData {
@@ -163,7 +151,7 @@ export interface RegistrationData {
 export interface Category {
   id: number;
   name: string;
-  eventCategories: Array<EventCategory>;
+  eventCategories: EventCategory[];
 }
 
 export interface EventCategory {
