@@ -30,7 +30,6 @@ const Offline: NextPage = () => {
           <Link href="/">
             <a className={styles.a}>
               <Button
-                isLink
                 text="Gå til hjemskjermen"
                 className={styles.homeButton}
               />
