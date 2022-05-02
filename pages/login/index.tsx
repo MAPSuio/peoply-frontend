@@ -76,7 +76,6 @@ const Login: NextPage = ({
             <Link href="/">
               <a>
                 <Button
-                  isLink
                   text="Fortsett til appen"
                   className={styles.primaryButton}
                 />

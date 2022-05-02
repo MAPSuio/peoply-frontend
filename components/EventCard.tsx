@@ -20,60 +20,51 @@ const EventCard = ({ event }: EventCardProps) => {
   const timeString = formatTimeRange(startDate, endDate);
 
   return (
-    <Link
-      href={{
-        pathname: "/event/[eventId]",
-        query: { eventId: event.urlId },
-      }}
-    >
-      <a>
-        <div className={styles.eventCardContainer}>
-          <div className={styles.eventCard}>
-            <div className={styles.eventCardImageContainer}>
-              <Image
-                src={event.image ?? eventPlaceholder}
-                layout="fill"
-                alt="event image"
-                objectFit="cover"
-                objectPosition="center"
-                priority={true}
-              />
+    <div className={styles.eventCardContainer}>
+      <div className={styles.eventCard}>
+        <div className={styles.eventCardImageContainer}>
+          <Image
+            src={event.image ?? eventPlaceholder}
+            layout="fill"
+            alt="event image"
+            objectFit="cover"
+            objectPosition="center"
+            priority={true}
+          />
+        </div>
+        <div className={styles.eventCardInfoContainer}>
+          <div className={styles.eventCardInfo}>
+            <div className={styles.eventCardInfoHeaderContainer}>
+              <h2>{event.title}</h2>
+              <div className={styles.eventCardInfoHeaderPriceContainer}>
+                <SmileIcon />
+                <span>Pris</span>
+                {/* Price */}
+              </div>
             </div>
-            <div className={styles.eventCardInfoContainer}>
-              <div className={styles.eventCardInfo}>
-                <div className={styles.eventCardInfoHeaderContainer}>
-                  <h2>{event.title}</h2>
-                  <div className={styles.eventCardInfoHeaderPriceContainer}>
-                    <SmileIcon />
-                    <span>Pris</span>
-                    {/* Price */}
-                  </div>
-                </div>
-                <div className={styles.divider}></div>
-                <div className={styles.eventCardInfoBodyContainer}>
-                  <div className={styles.eventCardInfoBody}>
+            <div className={styles.divider}></div>
+            <div className={styles.eventCardInfoBodyContainer}>
+              <div className={styles.eventCardInfoBody}>
+                <div>
+                  <div className={styles.eventCardInfoBodyItem}>
+                    <CalendarIcon />
                     <div>
-                      <div className={styles.eventCardInfoBodyItem}>
-                        <CalendarIcon />
-                        <div>
-                          <span>{dateString}</span>
-                          <span>{timeString}</span>
-                        </div>
-                      </div>
-                      <div className={styles.eventCardInfoBodyItem}>
-                        <LocationIcon />
-                        <span>Sted</span>
-                        {/* event.location */}
-                      </div>
+                      <span>{dateString}</span>
+                      <span>{timeString}</span>
                     </div>
+                  </div>
+                  <div className={styles.eventCardInfoBodyItem}>
+                    <LocationIcon />
+                    <span>Sted</span>
+                    {/* event.location */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </a>
-    </Link>
+      </div>
+    </div>
   );
 };
 

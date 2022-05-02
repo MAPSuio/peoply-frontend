@@ -14,7 +14,6 @@ interface ButtonProps {
   onClick?: ((e: any) => void) | ((e: any) => Promise<void>);
   className?: string;
   disabled?: boolean;
-  isLink?: boolean;
   small?: boolean;
   noShadow?: boolean;
   loading?: boolean;
