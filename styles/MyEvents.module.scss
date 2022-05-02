@@ -110,6 +110,14 @@
   flex-flow: row nowrap;
   justify-content: space-between;
   width: 100%;
+
+  .button {
+    @include resetButton();
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+  }
 }
 
 .eventContainer {
