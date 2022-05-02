@@ -24,11 +24,7 @@ const Custom404: NextPage = () => {
         </div>
         <Link href="/">
           <a className={styles.a}>
-            <Button
-              isLink
-              text="Gå til hjemskjermen"
-              className={styles.homeButton}
-            />
+            <Button text="Gå til hjemskjermen" className={styles.homeButton} />
           </a>
         </Link>
       </div>
