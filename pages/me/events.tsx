@@ -48,7 +48,6 @@ const MyEvents = () => {
   const [dateAndEventsMap, setDateAndEventsMap] = useState(new Map());
   const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<any[]>([]);
   const { user, loading, error } = useUser();
-  const { addSnack } = useSnack();
 
   const { data: eventsArranging, error: myEventsError } = useSWR<Event[]>(
     `/users/${user?.id}/arranging`,
@@ -62,18 +61,6 @@ const MyEvents = () => {
     `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`,
     fetchFromPeoplyApiJson,
   );
-
-  /* Keep for future reference. Can be deleted later. */
-  const register = () => {
-    registerForEventTest(user!.id).then((res) => {
-      if (!res) {
-        addSnack(
-          "Du er allerede meldt på det arrangementet.",
-          SnackTypes.ERROR,
-        );
-      }
-    });
-  };
 
   const changeActiveSection = (section: SectionTypes) => {
     setActiveSection(section);

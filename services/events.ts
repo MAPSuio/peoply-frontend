@@ -82,15 +82,20 @@ async function addFavorite(userId: string, eventId: string) {
   const requestBody = {
     id: eventId,
   };
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
 
-  return res;
+  try {
+    const res = await fetchFromPeoplyApi(eventUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    return res.status === 201;
+  } catch (error) {
+    return false;
+  }
 }
 
 /*remove event as favorite. returns true/false if done succesfull */
@@ -100,15 +105,18 @@ async function removeFavorite(userId: string, eventId: string) {
     id: eventId,
   };
 
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  return res;
+  try {
+    const res = await fetchFromPeoplyApi(eventUrl, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+    return res.status === 200;
+  } catch (error) {
+    return false;
+  }
 }
 
 async function getUserRegistration(userId: string, eventId: string) {

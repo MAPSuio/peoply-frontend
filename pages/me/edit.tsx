@@ -8,9 +8,11 @@ import MenuModal from "../../components/MenuModal";
 import Button from "../../components/Button";
 import useBack from "../../hooks/useBack";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
+import { SnackTypes } from "../../types/types";
 
 const EditProfile: NextPage = () => {
   const goBack = useBack();
@@ -20,6 +22,7 @@ const EditProfile: NextPage = () => {
   const [validEdit, setValidEdit] = useState(false);
   const redirectToLogin = useRedirectToLogin();
 
+  const { addSnack } = useSnack();
   useEffect(() => {
     if (user?.description) {
       setDescription(user.description);
@@ -54,12 +57,17 @@ const EditProfile: NextPage = () => {
   };
 
   const handleConfirm = async () => {
-    await fetchFromPeoplyApiJson("/users/me", {
-      method: "PATCH",
-      body: JSON.stringify({ description }),
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-    });
-    reload();
+    try {
+      await fetchFromPeoplyApiJson("/users/me", {
+        method: "PATCH",
+        body: JSON.stringify({ description }),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+      reload();
+      addSnack("Profil oppdatert", SnackTypes.SUCCESS);
+    } catch (error) {
+      addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
+    }
   };
 
   return (
@@ -79,7 +87,7 @@ const EditProfile: NextPage = () => {
         rows={5}
         label="Beskrivelse"
         placeholder=""
-        maxLength={150}
+        maxLength={120}
         errorMessage=""
         className={styles.description}
       />

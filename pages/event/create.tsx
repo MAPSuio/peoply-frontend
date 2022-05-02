@@ -45,13 +45,20 @@ import {
 } from "../../utils/functions";
 
 /* Types. */
-import { Event, InputPages, Visibility, ImageCaching } from "../../types/types";
+import {
+  Event,
+  InputPages,
+  Visibility,
+  ImageCaching,
+  SnackTypes,
+} from "../../types/types";
 
 /* Styles */
 import styles from "../../styles/CreateEvent.module.scss";
 import useUser from "../../hooks/useUser";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import Header from "../../components/Header";
+import useSnack from "../../hooks/useSnack";
 import HeadComponent from "../../components/HeadComponent";
 
 interface EventObjectProps {
@@ -112,7 +119,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const stepCount = 7;
 
   const router = useRouter();
-
+  const { addSnack } = useSnack();
   /* Might be useful later. */
   const today = new Date();
 
@@ -355,19 +362,27 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
-    if (currentOrg) {
-      formData.append("arrangerId", currentOrg.arrangerId);
-    } else if (user) {
-      formData.append("arrangerId", user.arrangerId);
-    } else {
-      redirectToLogin();
-      return;
+    {
+      if (currentOrg) {
+        formData.append("arrangerId", currentOrg.arrangerId);
+      } else if (user) {
+        formData.append("arrangerId", user.arrangerId);
+      } else {
+        redirectToLogin();
+        return;
+      }
+      try {
+        const event: Event = await fetchFromPeoplyApiJson("/events", {
+          method: "post",
+          body: formData,
+        });
+        addSnack("Event created successfully", SnackTypes.SUCCESS);
+        router.push(`/event/${event.urlId}`);
+      } catch (e) {
+        // snackbar showing error
+        addSnack("Error creating event", SnackTypes.ERROR);
+      }
     }
-    const event: Event = await fetchFromPeoplyApiJson("/events", {
-      method: "post",
-      body: formData,
-    });
-    router.push(`/event/${event.urlId}`);
   };
 
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */

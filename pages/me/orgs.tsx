@@ -46,7 +46,7 @@ const Organizations: NextPage = () => {
             </div>
             <div className={styles.subheader}>
               <h2>Ingen organisasjoner funnet</h2>
-              <p>Kom i gang ved å opprette en organisajon da vel!</p>
+              <p>Kom i gang ved å opprette en organisasjon da vel!</p>
             </div>
             <div className={styles.confirm}>
               <Button

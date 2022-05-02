@@ -24,8 +24,11 @@ export async function fetchFromPeoplyApi(
     } else {
       throw new Error(`${refresh.status}, ` + refresh.statusText);
     }
-  } else if (!response.ok) {
+  }
+
+  if (!response.ok) {
     throw new Error(`${response.status}, ` + response.statusText);
   }
+
   return response;
 }

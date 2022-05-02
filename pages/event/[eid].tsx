@@ -95,39 +95,61 @@ const Event = ({ event, baseUrl }: EventProps) => {
     return <div>Loading...</div>;
   }
 
+  const addFavoriteFunc = async () => {
+    if (user) {
+      let success;
+      if (!favorited) {
+        success = await addFavorite(user.id, eventData.id);
+        if (!success)
+          addSnack("Klarte ikke å legge til favoritt", SnackTypes.ERROR);
+      } else {
+        success = await removeFavorite(user.id, eventData.id);
+        if (!success)
+          addSnack("Klarte ikke å fjerne favoritt", SnackTypes.ERROR);
+      }
+
+      if (await success) setFavorited(!favorited);
+    } else {
+      /* User is not logged in. */
+      redirectToLogin();
+    }
+  };
+
   const registerForEvent = async () => {
     if (user) {
-      const success = await registerUser(
-        user.id,
-        eventData.id,
-        RegStatus.GOING,
-      );
+      let success = false;
+      try {
+        success = await registerUser(user.id, eventData.id, RegStatus.GOING);
+      } catch (e) {}
+
       if (success) {
-        addSnack("Meldt på arrangement", SnackTypes.SUCCESS);
         setRegistered(true);
+        updateEvent();
       } else {
         addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
       }
-
-      updateEvent();
       return success;
+    } else {
+      redirectToLogin();
     }
-    return false;
   };
 
   const unregisterForEvent = async () => {
     if (user) {
-      const success = await deleteRegistrationUser(user.id, eventData.id);
+      let success = false;
+      try {
+        success = await deleteRegistrationUser(user.id, eventData.id);
+      } catch (e) {}
       if (success) {
-        addSnack("Meldt av arrangement", SnackTypes.WARNING);
         setRegistered(false);
+        updateEvent();
       } else {
         addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
       }
-      updateEvent();
       return success;
+    } else {
+      redirectToLogin();
     }
-    return false;
   };
 
   const imageHeight =
@@ -149,26 +171,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
           <HeartIconGlass
             className={styles.favoriteIcon}
-            onClick={() => {
-              if (favoriteFetched) {
-                if (user) {
-                  if (!favorited) {
-                    addFavorite(user.id, eventData.id);
-                  } else {
-                    removeFavorite(user.id, eventData.id);
-                  }
-                  setFavorited(!favorited);
-                } else {
-                  /* user is not logged in */
-                  redirectToLogin();
-                }
-              }
-              if (!user) {
-                /* User is not logged in. */
-                redirectToLogin();
-              }
-            }}
+            onClick={addFavoriteFunc}
             favorited={favorited}
+            loading={!favoriteFetched}
           />
           <Image
             src={eventData.image ?? placeholderImage}
@@ -271,40 +276,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
             <Button
               type={ButtonType.DANGER}
               text="Meld deg av arrangementet"
-              className={styles.primaryButton}
-              onClick={() => {
-                if (registeredFetched) {
-                  if (user) {
-                    unregisterForEvent();
-                  } else {
-                    /* User is not logged in. */
-                    redirectToLogin();
-                  }
-                }
-                if (!user) {
-                  /* User is not logged in. */
-                  redirectToLogin();
-                }
-              }}
+              className={`${styles.primaryButton} ${styles.dangerButton}`}
+              onClick={unregisterForEvent}
+              loading={!registeredFetched}
             />
           ) : (
             <Button
               text="Meld deg på arrangementet"
               className={styles.primaryButton}
-              onClick={() => {
-                if (registeredFetched) {
-                  if (user) {
-                    registerForEvent();
-                  } else {
-                    /* User is not logged in. */
-                    redirectToLogin();
-                  }
-                }
-                if (!user) {
-                  /* User is not logged in. */
-                  redirectToLogin();
-                }
-              }}
+              onClick={registerForEvent}
+              loading={!registeredFetched}
             />
           )}
         </div>

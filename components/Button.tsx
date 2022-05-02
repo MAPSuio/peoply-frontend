@@ -6,17 +6,19 @@ import { ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/Button.module.scss";
+import { useState } from "react";
 
 interface ButtonProps {
   text: string;
   type?: ButtonType;
-  onClick?: (e: any) => void;
+  onClick?: ((e: any) => void) | ((e: any) => Promise<void>);
   className?: string;
   disabled?: boolean;
   isLink?: boolean;
   small?: boolean;
   noShadow?: boolean;
   loading?: boolean;
+  loadingIconLatency?: number;
 }
 
 export default function Button({
@@ -29,7 +31,10 @@ export default function Button({
   small,
   noShadow,
   loading,
+  loadingIconLatency = 150,
 }: ButtonProps) {
+  const [onClickLoadingState, setOnClickLoadingState] = useState(false);
+  const [onClickDisableState, setOnClickDisableState] = useState(false);
   const buttonStyles = (() => {
     switch (type) {
       case ButtonType.PRIMARY:
@@ -59,11 +64,16 @@ export default function Button({
     return (
       <a className={styles.buttonContainer}>
         <button
-          onClick={onClick}
           className={`${buttonStyles} ${className}`}
-          disabled={disabled}
+          disabled={loading || onClickDisableState || disabled}
+          onClick={(e) => {
+            // the button will be in a loading state forever after clicking the button
+            setOnClickLoadingState(true);
+            setOnClickDisableState(true);
+            if (onClick) onClick(e);
+          }}
         >
-          {loading ? (
+          {loading || onClickLoadingState ? (
             <LoadingWheel
               dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
             />
@@ -73,20 +83,41 @@ export default function Button({
         </button>
       </a>
     );
+  } else {
+    return (
+      <button
+        onClick={async (e) => {
+          let onClickResult: any = null;
+
+          // show loading wheel after `loadingIconLatency` ms
+          setOnClickDisableState(true);
+          setTimeout(() => {
+            //if the function is done, dont show loading wheel
+            if (onClickResult === null) {
+              setOnClickLoadingState(true);
+            }
+          }, loadingIconLatency);
+
+          // Call onClick function
+          if (onClick) {
+            onClickResult = await onClick(e);
+          }
+
+          // turn off disabled and loading
+          setOnClickLoadingState(false);
+          setOnClickDisableState(false);
+        }}
+        className={`${buttonStyles} ${className}`}
+        disabled={loading || onClickDisableState || disabled}
+      >
+        {loading || onClickLoadingState ? (
+          <LoadingWheel
+            dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
+          />
+        ) : (
+          text
+        )}
+      </button>
+    );
   }
-  return (
-    <button
-      onClick={onClick}
-      className={`${buttonStyles} ${className}`}
-      disabled={disabled}
-    >
-      {loading ? (
-        <LoadingWheel
-          dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
-        />
-      ) : (
-        text
-      )}
-    </button>
-  );
 }

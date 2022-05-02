@@ -43,7 +43,7 @@ const Create = ({ baseUrl }: CreateProps) => {
     redirectToLogin();
   }
 
-  async function handleConfirm() {
+  const handleConfirm = async () => {
     try {
       await fetchFromPeoplyApi("/organizations", {
         method: "POST",
@@ -51,13 +51,12 @@ const Create = ({ baseUrl }: CreateProps) => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       reload();
-      addSnack("Organisasjon opprettet!", SnackTypes.SUCCESS);
+      addSnack("Organisasjon opprettet", SnackTypes.SUCCESS);
       router.push("/me/orgs");
     } catch (error) {
-      addSnack("Noe gikk galt!", SnackTypes.ERROR);
-      router.push("/me/orgs");
+      addSnack("Klarte ikke å lage organisasjon", SnackTypes.ERROR);
     }
-  }
+  };
 
   return (
     <>
