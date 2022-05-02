@@ -161,14 +161,6 @@
   stroke: $text-color-emphasis;
 }
 
-.button {
-  @include resetButton();
-  display: flex;
-  justify-content: center;
-  position: relative;
-  width: 100%;
-}
-
 .imageContainer {
   margin-bottom: $spacer-small;
   max-width: 250px;
