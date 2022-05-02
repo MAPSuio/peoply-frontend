@@ -42,6 +42,9 @@ jobs:
 
 
     steps:
+      - uses: actions/checkout@v2
+
+
       - name: Set up Node.js version ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
