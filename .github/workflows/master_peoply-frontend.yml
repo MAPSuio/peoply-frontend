@@ -39,7 +39,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+
+
     steps:
+      - name: Set up Node.js version ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
