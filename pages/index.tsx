@@ -99,7 +99,16 @@ const EventSwiper = ({
       >
         {events?.map((event: any) => (
           <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
-            <EventCard event={event} />
+            <Link
+              href={{
+                pathname: "/event/[eventId]",
+                query: { eventId: event.urlId },
+              }}
+            >
+              <a>
+                <EventCard event={event} />
+              </a>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
