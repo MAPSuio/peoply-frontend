@@ -22,12 +22,14 @@ const Custom404: NextPage = () => {
             placeholder="blur"
           />
         </div>
-        <Link href="/" passHref>
-          <Button
-            isLink
-            text="Gå til hjemskjermen"
-            className={styles.homeButton}
-          />
+        <Link href="/">
+          <a className={styles.a}>
+            <Button
+              isLink
+              text="Gå til hjemskjermen"
+              className={styles.homeButton}
+            />
+          </a>
         </Link>
       </div>
     </div>

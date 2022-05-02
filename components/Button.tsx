@@ -27,7 +27,6 @@ export default function Button({
   onClick,
   className,
   disabled,
-  isLink,
   small,
   noShadow,
   loading,
@@ -60,64 +59,39 @@ export default function Button({
     }
   })();
 
-  if (isLink) {
-    return (
-      <a className={styles.buttonContainer}>
-        <button
-          className={`${buttonStyles} ${className}`}
-          disabled={loading || onClickDisableState || disabled}
-          onClick={(e) => {
-            // the button will be in a loading state forever after clicking the button
+  return (
+    <button
+      onClick={async (e) => {
+        let onClickResult: any = null;
+
+        // show loading wheel after `loadingIconLatency` ms
+        setOnClickDisableState(true);
+        setTimeout(() => {
+          //if the function is done, dont show loading wheel
+          if (onClickResult === null) {
             setOnClickLoadingState(true);
-            setOnClickDisableState(true);
-            if (onClick) onClick(e);
-          }}
-        >
-          {loading || onClickLoadingState ? (
-            <LoadingWheel
-              dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
-            />
-          ) : (
-            text
-          )}
-        </button>
-      </a>
-    );
-  } else {
-    return (
-      <button
-        onClick={async (e) => {
-          let onClickResult: any = null;
-
-          // show loading wheel after `loadingIconLatency` ms
-          setOnClickDisableState(true);
-          setTimeout(() => {
-            //if the function is done, dont show loading wheel
-            if (onClickResult === null) {
-              setOnClickLoadingState(true);
-            }
-          }, loadingIconLatency);
-
-          // Call onClick function
-          if (onClick) {
-            onClickResult = await onClick(e);
           }
+        }, loadingIconLatency);
 
-          // turn off disabled and loading
-          setOnClickLoadingState(false);
-          setOnClickDisableState(false);
-        }}
-        className={`${buttonStyles} ${className}`}
-        disabled={loading || onClickDisableState || disabled}
-      >
-        {loading || onClickLoadingState ? (
-          <LoadingWheel
-            dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
-          />
-        ) : (
-          text
-        )}
-      </button>
-    );
-  }
+        // Call onClick function
+        if (onClick) {
+          onClickResult = await onClick(e);
+        }
+
+        // turn off disabled and loading
+        setOnClickLoadingState(false);
+        setOnClickDisableState(false);
+      }}
+      className={`${buttonStyles} ${className}`}
+      disabled={loading || onClickDisableState || disabled}
+    >
+      {loading || onClickLoadingState ? (
+        <LoadingWheel
+          dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
+        />
+      ) : (
+        text
+      )}
+    </button>
+  );
 }

@@ -25,7 +25,6 @@ const EventCard = ({ event }: EventCardProps) => {
         pathname: "/event/[eventId]",
         query: { eventId: event.urlId },
       }}
-      passHref={true}
     >
       <a>
         <div className={styles.eventCardContainer}>

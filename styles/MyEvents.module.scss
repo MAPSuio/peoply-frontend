@@ -12,6 +12,13 @@
   justify-content: center;
   margin-top: $spacer-medium-plus;
   width: 100%;
+
+  .button {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .userContainer {

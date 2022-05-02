@@ -317,16 +317,22 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
           />
         </div>
         {eventType === SectionTypes.MYEVENTS ? (
-          <Link href="/event/create" passHref>
-            <Button text="Opprett et nytt arrangement" isLink />
+          <Link href="/event/create">
+            <a className={styles.button}>
+              <Button text="Opprett et nytt arrangement" />
+            </a>
           </Link>
         ) : eventType === SectionTypes.REGISTERED ? (
-          <Link href="/" passHref>
-            <Button text="Sjekk ut arrangementer" isLink />
+          <Link href="/">
+            <a className={styles.button}>
+              <Button text="Sjekk ut arrangementer" />
+            </a>
           </Link>
         ) : (
-          <Link href="/" passHref>
-            <Button text="Sjekk ut arrangementer" isLink />
+          <Link href="/">
+            <a className={styles.button}>
+              <Button text="Sjekk ut arrangementer" />
+            </a>
           </Link>
         )}
       </div>

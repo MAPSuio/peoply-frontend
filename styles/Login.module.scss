@@ -104,9 +104,14 @@
       stroke: $text-color-black;
     }
   }
-
-  .primaryButton {
-    margin-top: $spacer-very-large;
+  a {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    .primaryButton {
+      margin-top: $spacer-very-large;
+    }
   }
 }
 

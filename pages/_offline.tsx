@@ -27,12 +27,14 @@ const Offline: NextPage = () => {
               alt="En alien som blir tatt av et romskip"
             />
           </div>
-          <Link href="/" passHref>
-            <Button
-              isLink
-              text="Gå til hjemskjermen"
-              className={styles.homeButton}
-            />
+          <Link href="/">
+            <a className={styles.a}>
+              <Button
+                isLink
+                text="Gå til hjemskjermen"
+                className={styles.homeButton}
+              />
+            </a>
           </Link>
         </div>
       </div>

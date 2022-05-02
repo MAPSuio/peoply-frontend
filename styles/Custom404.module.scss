@@ -36,6 +36,14 @@
   width: 90%;
 }
 
+.a {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+
 
 @media screen and (max-height: 680px) {
   .imageContainer {

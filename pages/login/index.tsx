@@ -73,12 +73,14 @@ const Login: NextPage = ({
                 <CheckCircle className={styles.checkIcon} />
               </div>
             </div>
-            <Link href="/" passHref>
-              <Button
-                isLink
-                text="Fortsett til appen"
-                className={styles.primaryButton}
-              />
+            <Link href="/">
+              <a>
+                <Button
+                  isLink
+                  text="Fortsett til appen"
+                  className={styles.primaryButton}
+                />
+              </a>
             </Link>
           </div>
         </div>

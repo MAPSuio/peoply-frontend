@@ -61,9 +61,8 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
         pathname: "/event/[eventId]",
         query: { eventId: event.urlId },
       }}
-      passHref={true}
     >
-      <div className={styles.cardWrapper}>
+      <a className={styles.cardWrapper}>
         <div className={styles.cardContainer}>
           <div className={styles.imageContainer}>
             <Image
@@ -108,7 +107,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
             />
           </div>
         </div>
-      </div>
+      </a>
     </Link>
   );
 };
