@@ -29,7 +29,8 @@ const EventCard = ({ event }: EventCardProps) => {
             alt="event image"
             objectFit="cover"
             objectPosition="center"
-            sizes="256px"
+            /* This is black magic. This is the only configuration where the size is 384px on both desktop and mobile */
+            sizes="(max-width: 500px) 30vw, 384px"
           />
         </div>
         <div className={styles.eventCardInfoContainer}>

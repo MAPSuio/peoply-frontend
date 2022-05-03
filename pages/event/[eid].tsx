@@ -14,7 +14,6 @@ import HeadComponent from "../../components/HeadComponent";
 
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
-import useWindowDimensions from "../../hooks/useWindowDimensions";
 
 import {
   addFavorite,
@@ -171,8 +170,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           />
           <Image
             src={eventData.image ?? placeholderImage}
-            width={1920}
-            height={1080}
+            layout="fill"
             sizes="100vw"
             objectFit="cover"
             objectPosition="center"
