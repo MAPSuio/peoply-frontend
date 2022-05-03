@@ -171,7 +171,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           <Image
             src={eventData.image ?? placeholderImage}
             layout="fill"
-            sizes="100vw"
+            sizes="50vw"
             objectFit="cover"
             objectPosition="center"
             alt="Nå er det fest!"
