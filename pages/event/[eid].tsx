@@ -305,6 +305,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const event = await getEventData(eid);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
+  console.log("running getStaticProps", event.urlId);
+
   if (!event) {
     return {
       notFound: true,
