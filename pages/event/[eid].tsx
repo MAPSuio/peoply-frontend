@@ -46,7 +46,6 @@ interface EventProps {
 const Event = ({ event, baseUrl }: EventProps) => {
   const { user } = useUser();
   const goBack = useBack();
-  const { width: windowWidth } = useWindowDimensions();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
   const [registered, setRegistered] = useState(false);
@@ -152,11 +151,6 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
 
-  const imageHeight =
-    windowWidth > 500
-      ? windowWidth - windowWidth * 0.65
-      : windowWidth - windowWidth * 0.35;
-
   return (
     <>
       <HeadComponent
@@ -177,8 +171,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
           />
           <Image
             src={eventData.image ?? placeholderImage}
-            width={windowWidth}
-            height={imageHeight}
+            width={1920}
+            height={1080}
+            sizes="100vw"
             objectFit="cover"
             objectPosition="center"
             alt="Nå er det fest!"

@@ -29,7 +29,7 @@ const EventCard = ({ event }: EventCardProps) => {
             alt="event image"
             objectFit="cover"
             objectPosition="center"
-            priority={true}
+            sizes="256px"
           />
         </div>
         <div className={styles.eventCardInfoContainer}>
