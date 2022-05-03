@@ -8,6 +8,24 @@
   "name": "Peoply",
   "short_name": "Peoply",
   "description": "Peoply is an easy event app",
+  "shortcuts": [
+    {
+      "url": "/event/create",
+      "name": "Lag arrangement"
+    },
+    {
+      "url": "/me/events",
+      "name": "Mine arrangementer"
+    },
+    {
+      "url": "/me",
+      "name": "Min profil"
+    },
+    {
+      "url": "/me/orgs",
+      "name": "Mine organisasjoner"
+    }
+  ],
   "icons": [
     {
      "src": "\/icons/android-icon-36x36.png",
