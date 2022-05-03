@@ -27,7 +27,7 @@ export default function Navbar() {
         }
         setScrollPos(currentScrollPos);
       };
-      window.addEventListener("scroll", onscroll);
+      window.addEventListener("scroll", onscroll, { passive: true });
 
       return () => {
         window.removeEventListener("scroll", onscroll);
