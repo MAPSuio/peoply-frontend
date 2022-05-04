@@ -31,7 +31,10 @@ export function UserProvider({
     /* will attempt to fetch and set the user state */
     const checkAuth = async () => {
       try {
-        const user = await fetchFromPeoplyApiJson("/users/me");
+        // ask /me with no cache
+        const user = await fetchFromPeoplyApiJson("/users/me", {
+          headers: { "Cache-Control": "no-cache" },
+        });
         setUser(user);
       } catch (error: any) {
         setError(error.message);

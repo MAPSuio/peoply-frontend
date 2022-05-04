@@ -32,19 +32,5 @@ module.exports = withPWA({
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
     register: true,
-    runtimeCaching: [
-      {
-        urlPattern: /^https:\/\/api\.peoply\.app\/users\/me/i,
-        handler: 'NetworkOnly',
-        method: 'GET',
-          options: {
-            cacheName: 'peoply-api-user-me',
-            expiration: {
-              maxEntries: 16,
-              maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
-            }
-          }
-      },
-    ]
   }
 });
