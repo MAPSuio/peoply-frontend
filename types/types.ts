@@ -112,7 +112,7 @@ export interface Event {
   id: string;
   urlId: string;
   startDate: Date | string;
-  endDate: Date | string;
+  endDate: Date | string | null;
   title: string;
   description: string;
   capacity?: number;

@@ -41,7 +41,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
   };
 
   const startDate = new Date(event.startDate);
-  const endDate = new Date(event.endDate);
+  const endDate = event.endDate ? new Date(event.endDate) : null;
 
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);

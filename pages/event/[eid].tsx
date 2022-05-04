@@ -43,7 +43,7 @@ interface EventProps {
 }
 
 const Event = ({ event, baseUrl }: EventProps) => {
-  const { user } = useUser();
+  const { user, loading: loadingUser } = useUser();
   const goBack = useBack();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
@@ -67,6 +67,8 @@ const Event = ({ event, baseUrl }: EventProps) => {
         const favorite = await getUserFavorite(user.id, eventData.id);
         setFavorited(favorite !== null);
         setFavoriteFetched(true);
+      } else if (!loadingUser && !user && eventData) {
+        setFavoriteFetched(true);
       }
     };
 
@@ -82,12 +84,14 @@ const Event = ({ event, baseUrl }: EventProps) => {
         if (registration.regStatus === RegStatus.GOING) {
           setRegistered(true);
         }
+      } else if (!loadingUser && !user && eventData) {
+        setRegisteredFetched(true);
       }
     };
 
     getRegisteredStatus();
     getFavoriteStatus();
-  }, [eventData, user]);
+  }, [eventData, user, loadingUser]);
 
   if (!eventData) {
     return <div>Loading...</div>;
@@ -218,13 +222,17 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   >
                     {formatDateRange(
                       new Date(eventData.startDate),
-                      new Date(eventData.endDate),
+                      eventData.endDate !== null
+                        ? new Date(eventData.endDate)
+                        : null,
                     )}
                   </p>
                   <p className={styles.infoText}>
                     {formatTimeRange(
                       new Date(eventData.startDate),
-                      new Date(eventData.endDate),
+                      eventData.endDate !== null
+                        ? new Date(eventData.endDate)
+                        : null,
                     )}
                   </p>
                 </div>
