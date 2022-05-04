@@ -378,6 +378,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         });
         addSnack("Event created successfully", SnackTypes.SUCCESS);
         localStorage.removeItem("eventObject");
+        localStorage.removeItem("eventImage");
         router.push(`/event/${event.urlId}`);
       } catch (e) {
         // snackbar showing error
@@ -864,6 +865,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   function startNewEventCreation() {
     updateLocalStorage(eventObject);
     localStorage.removeItem("eventObject");
+    localStorage.removeItem("eventImage");
   }
 
   function continueEventCreation() {
