@@ -66,10 +66,10 @@ interface EventObjectProps {
   eventDescription: string;
   eventAddress: string;
   eventDateStart: string;
-  eventDateEnd: string;
+  eventDateEnd: string | null;
   eventHasDateEnd: boolean;
   eventTimeStart: string;
-  eventTimeEnd: string;
+  eventTimeEnd: string | null;
   eventActiveCategories: number[];
   eventVisibility: Visibility;
   eventHasCapacity: boolean;
@@ -99,10 +99,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventDescription: "",
     eventAddress: "",
     eventDateStart: "",
-    eventDateEnd: "",
+    eventDateEnd: null,
     eventHasDateEnd: false,
     eventTimeStart: "",
-    eventTimeEnd: "",
+    eventTimeEnd: null,
     eventActiveCategories: [],
     eventVisibility: Visibility.PUBLIC,
     eventHasCapacity: false,
@@ -364,9 +364,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const summaryPageOnClick = async (formData: FormData) => {
     {
       if (currentOrg) {
-        formData.append("arrangerId", currentOrg.arrangerId);
+        formData.set("arrangerId", currentOrg.arrangerId);
       } else if (user) {
-        formData.append("arrangerId", user.arrangerId);
+        formData.set("arrangerId", user.arrangerId);
       } else {
         redirectToLogin();
         return;
@@ -377,6 +377,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
           body: formData,
         });
         addSnack("Event created successfully", SnackTypes.SUCCESS);
+        localStorage.removeItem("eventObject");
         router.push(`/event/${event.urlId}`);
       } catch (e) {
         // snackbar showing error
@@ -398,16 +399,21 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventObject.eventTimeStart,
     eventObject.eventDateStart,
   );
-  const eventDateEndValid = dateInputEndValid(
-    eventObject.eventDateStart,
-    eventObject.eventDateEnd,
-  );
-  const eventTimeEndValid = timeInputEndValid(
-    eventObject.eventTimeStart,
-    eventObject.eventTimeEnd,
-    eventObject.eventDateStart,
-    eventObject.eventDateEnd,
-  );
+  const eventDateEndValid = eventObject.eventDateEnd
+    ? dateInputEndValid(eventObject.eventDateStart, eventObject.eventDateEnd)
+    : true;
+
+  const eventTimeEndValid =
+    eventObject.eventTimeEnd && eventObject.eventDateEnd // if both are there
+      ? timeInputEndValid(
+          eventObject.eventTimeStart,
+          eventObject.eventTimeEnd,
+          eventObject.eventDateStart,
+          eventObject.eventDateEnd,
+        )
+      : !eventObject.eventTimeEnd && !eventObject.eventDateEnd // if both are not there
+      ? true
+      : false;
   const eventActiveCategoriesValid = categoryInputValid(
     eventObject.eventActiveCategories,
   );
@@ -507,7 +513,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 label="Tittel på arrangementet*"
                 placeholder="F.eks. Peoply launch party"
                 maxLength={100}
-                errorMessage="Tittelen kan ikke være tom"
+                minLength={3}
+                errorMessage={`Tittelen må være mellom ${3} og ${100} tegn`}
                 required
                 handleChange={updateEventTitle}
               />
@@ -579,7 +586,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
               <div className={styles.dateContainer}>
                 <div className={styles.dateColumn}>
                   <DateInput
-                    value={eventObject.eventDateEnd}
+                    value={eventObject.eventDateEnd || ""}
                     valid={eventDateEndValid}
                     inputId="dateEnd"
                     inputName="eventDateEnd"
@@ -589,7 +596,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     handleChange={updateEventDateEnd}
                   />
                   <TimeInput
-                    value={eventObject.eventTimeEnd}
+                    value={eventObject.eventTimeEnd || ""}
                     valid={eventTimeEndValid}
                     inputId="timeEnd"
                     inputName="eventTimeEnd"
@@ -856,7 +863,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   function startNewEventCreation() {
     updateLocalStorage(eventObject);
-    localStorage.removeItem("eventImage");
+    localStorage.removeItem("eventObject");
   }
 
   function continueEventCreation() {

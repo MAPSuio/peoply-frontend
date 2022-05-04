@@ -1,6 +1,6 @@
 import { InputPages, CircleLabels, Weekdays } from "../types/types";
 
-function formatDateRange(startDate: Date, endDate: Date): string {
+function formatDateRange(startDate: Date, endDate: Date | null): string {
   let dateString: string;
   // if start date, month and year is today
   if (
@@ -9,23 +9,23 @@ function formatDateRange(startDate: Date, endDate: Date): string {
     startDate.getFullYear() === new Date().getFullYear()
   ) {
     dateString = `I dag`;
-  } else if (startDate.getFullYear() !== endDate.getFullYear()) {
+  } else if (endDate && startDate.getFullYear() !== endDate.getFullYear()) {
     dateString = `${startDate.getDate()} ${startDate.toLocaleString("default", {
       month: "short",
-    })} ${startDate.getFullYear()}–${endDate.getDate()} ${endDate.toLocaleString(
+    })} ${startDate.getFullYear()}-${endDate.getDate()} ${endDate.toLocaleString(
       "default",
       {
         month: "short",
       },
     )} ${endDate.getFullYear()}`;
-  } else if (startDate.getMonth() !== endDate.getMonth()) {
+  } else if (endDate && startDate.getMonth() !== endDate.getMonth()) {
     dateString = `${startDate.getDate()} ${startDate.toLocaleString("default", {
       month: "short",
     })} - ${endDate.getDate()}. ${endDate.toLocaleString("default", {
       month: "short",
     })} ${endDate.getFullYear()}`;
-  } else if (startDate.getDate() !== endDate.getDate()) {
-    dateString = `${startDate.getDate()}–${endDate.getDate()}. ${endDate.toLocaleString(
+  } else if (endDate && startDate.getDate() !== endDate.getDate()) {
+    dateString = `${startDate.getDate()}-${endDate.getDate()}. ${endDate.toLocaleString(
       "default",
       {
         month: "short",
@@ -39,14 +39,28 @@ function formatDateRange(startDate: Date, endDate: Date): string {
   return dateString;
 }
 
-function formatTimeRange(startDate: Date, endDate: Date): string {
+function formatTimeRange(startDate: Date, endDate: Date | null): string {
+  if (
+    startDate.getDate() === endDate?.getDate() &&
+    startDate.getMonth() === endDate?.getMonth() &&
+    startDate.getFullYear() === endDate?.getFullYear()
+  ) {
+    return `${startDate.toLocaleString("default", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
   const timeString = `${startDate.toLocaleString("default", {
     hour: "2-digit",
     minute: "2-digit",
-  })}–${endDate.toLocaleString("default", {
-    hour: "2-digit",
-    minute: "2-digit",
-  })}`;
+  })}${
+    endDate
+      ? `-${endDate.toLocaleString("default", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`
+      : ""
+  }`;
   return timeString;
 }
 

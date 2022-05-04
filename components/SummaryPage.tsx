@@ -51,10 +51,10 @@ interface SummaryPageProps {
     eventDescription: string;
     eventAddress: string;
     eventDateStart: string;
-    eventDateEnd: string;
+    eventDateEnd: string | null;
     eventHasDateEnd: boolean;
     eventTimeStart: string;
-    eventTimeEnd: string;
+    eventTimeEnd: string | null;
     eventActiveCategories: number[];
     eventVisibility: Visibility;
     eventHasCapacity: boolean;
@@ -99,30 +99,33 @@ const SummaryPage = ({
       eventObject.eventDateStart,
       eventObject.eventTimeStart,
     );
-    const endDate = eventObject.eventHasDateEnd
-      ? formatDateAndTime(eventObject.eventDateEnd, eventObject.eventTimeEnd)
-      : startDate;
+    const endDate =
+      eventObject.eventHasDateEnd &&
+      eventObject.eventDateEnd &&
+      eventObject.eventTimeEnd
+        ? formatDateAndTime(eventObject.eventDateEnd, eventObject.eventTimeEnd)
+        : null;
 
-    formData.append("startDate", startDate);
-    formData.append("endDate", endDate);
+    formData.set("startDate", startDate);
+    endDate && formData.append("endDate", endDate);
 
     /* Append title and description. */
-    formData.append("title", eventObject.eventTitle);
-    formData.append("description", eventObject.eventDescription);
+    formData.set("title", eventObject.eventTitle);
+    formData.set("description", eventObject.eventDescription);
 
     /* Append capacity and private. */
     if (eventObject.eventHasCapacity) {
-      formData.append("capacity", eventObject.eventCapacity);
+      formData.set("capacity", eventObject.eventCapacity);
     }
-    formData.append("visibility", `${eventObject.eventVisibility}`);
+    formData.set("visibility", `${eventObject.eventVisibility}`);
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventObject.eventActiveCategories);
-    formData.append("categoryIds", categoryStrings);
+    formData.set("categoryIds", categoryStrings);
 
     /* Append event image. */
     if (eventObject.eventImage) {
-      formData.append("eventImage", eventObject.eventImage);
+      formData.set("eventImage", eventObject.eventImage);
     }
   };
 
@@ -132,9 +135,10 @@ const SummaryPage = ({
 
   /* Format dates for displaying in summary card. */
   const dateStringStart = getDateString(eventObject.eventDateStart);
-  const dateStringEnd = eventObject.eventHasDateEnd
-    ? getDateString(eventObject.eventDateEnd)
-    : "";
+  const dateStringEnd =
+    eventObject.eventHasDateEnd && eventObject.eventDateEnd
+      ? getDateString(eventObject.eventDateEnd)
+      : "";
 
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = eventObject.eventImage

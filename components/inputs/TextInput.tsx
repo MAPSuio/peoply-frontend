@@ -10,7 +10,8 @@ interface TextInputProps {
   inputName: string;
   label: string;
   placeholder: string;
-  maxLength: number;
+  maxLength?: number;
+  minLength?: number;
   errorMessage: string;
   required?: boolean;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -23,13 +24,21 @@ const TextInput = ({
   label,
   placeholder,
   maxLength,
+  minLength,
   errorMessage,
   required,
   handleChange,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  const validText = value.length > 0;
+  const validText =
+    minLength && maxLength
+      ? value.length >= minLength && value.length <= maxLength
+      : minLength
+      ? value.length >= minLength
+      : maxLength
+      ? value.length <= maxLength
+      : true;
 
   const getInputContainerStyles = () => {
     if (validText || !focused) {
@@ -72,7 +81,7 @@ const TextInput = ({
         placeholder={placeholder}
         onChange={handleChange}
         onClick={() => setFocused(true)}
-        minLength={1}
+        minLength={minLength}
         maxLength={maxLength}
         required={required}
         autoComplete="off"

@@ -14,7 +14,7 @@ interface EventCardProps {
 
 const EventCard = ({ event }: EventCardProps) => {
   const startDate = new Date(event.startDate);
-  const endDate = new Date(event.endDate);
+  const endDate = event.endDate ? new Date(event.endDate) : null;
 
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);
