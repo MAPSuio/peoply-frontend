@@ -43,9 +43,23 @@ function formatTimeRange(startDate: Date, endDate: Date | null): string {
   if (
     startDate.getDate() === endDate?.getDate() &&
     startDate.getMonth() === endDate?.getMonth() &&
+    startDate.getFullYear() === endDate?.getFullYear() &&
+    startDate.getHours() === endDate?.getHours() &&
+    startDate.getMinutes() === endDate?.getMinutes()
+  ) {
+    return `${startDate.toLocaleString("default", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  } else if (
+    startDate.getDate() === endDate?.getDate() &&
+    startDate.getMonth() === endDate?.getMonth() &&
     startDate.getFullYear() === endDate?.getFullYear()
   ) {
     return `${startDate.toLocaleString("default", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })} - ${endDate.toLocaleString("default", {
       hour: "2-digit",
       minute: "2-digit",
     })}`;
