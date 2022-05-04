@@ -10,18 +10,24 @@ function formatDateRange(startDate: Date, endDate: Date | null): string {
   ) {
     dateString = `I dag`;
   } else if (endDate && startDate.getFullYear() !== endDate.getFullYear()) {
-    dateString = `${startDate.getDate()} ${startDate.toLocaleString("default", {
-      month: "short",
-    })} ${startDate.getFullYear()}-${endDate.getDate()} ${endDate.toLocaleString(
+    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
+      "default",
+      {
+        month: "short",
+      },
+    )} ${startDate.getFullYear()}-${endDate.getDate()}. ${endDate.toLocaleString(
       "default",
       {
         month: "short",
       },
     )} ${endDate.getFullYear()}`;
   } else if (endDate && startDate.getMonth() !== endDate.getMonth()) {
-    dateString = `${startDate.getDate()} ${startDate.toLocaleString("default", {
-      month: "short",
-    })} - ${endDate.getDate()}. ${endDate.toLocaleString("default", {
+    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
+      "default",
+      {
+        month: "short",
+      },
+    )} - ${endDate.getDate()}. ${endDate.toLocaleString("default", {
       month: "short",
     })} ${endDate.getFullYear()}`;
   } else if (endDate && startDate.getDate() !== endDate.getDate()) {
@@ -32,9 +38,12 @@ function formatDateRange(startDate: Date, endDate: Date | null): string {
       },
     )} ${endDate.getFullYear()}`;
   } else {
-    dateString = `${startDate.getDate()} ${startDate.toLocaleString("default", {
-      month: "short",
-    })} ${startDate.getFullYear()}`;
+    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
+      "default",
+      {
+        month: "short",
+      },
+    )} ${startDate.getFullYear()}`;
   }
   return dateString;
 }
