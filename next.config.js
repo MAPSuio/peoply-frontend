@@ -35,7 +35,7 @@ module.exports = withPWA({
     runtimeCaching: [
       {
         urlPattern: /^https:\/\/api\.peoply\.app\/users\/me/i,
-        handler: 'NetworkFirst',
+        handler: 'NetworkOnly',
         method: 'GET',
           options: {
             cacheName: 'peoply-api-user-me',
