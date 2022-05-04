@@ -3,8 +3,8 @@ import styles from "../styles/ProfileMenuItem.module.scss";
 
 interface ProfileMenuItemProps {
   text: string;
-  Icon: React.FunctionComponent;
-  ActionIcon: React.FunctionComponent;
+  Icon: React.ElementType;
+  ActionIcon: React.ElementType;
   danger?: boolean;
   linkOrOnClick: string | (() => void);
 }

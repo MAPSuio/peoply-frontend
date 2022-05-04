@@ -1,5 +1,6 @@
-enum OrganizationRole {
+export enum OrganizationRole {
   ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
 }
 
 export interface User {
@@ -25,6 +26,11 @@ export interface GeolocationPostitionObject {
     speed: number;
   };
   timestamp: number;
+}
+
+export interface OrganizationInvitation {
+  userId: string;
+  role: OrganizationRole;
 }
 
 export interface UserContextType {

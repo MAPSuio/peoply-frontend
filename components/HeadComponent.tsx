@@ -4,7 +4,7 @@ interface HeadComponentProps {
   title: string;
   description: string;
   imageUrl?: string;
-  url: string;
+  url?: string;
 }
 
 const HeadComponent = ({

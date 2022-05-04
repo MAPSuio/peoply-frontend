@@ -1,0 +1,32 @@
+.container {
+  @include card();
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: $spacer-very-small $spacer-small;
+  width: 100%;
+
+
+  svg {
+    stroke: #FFFFFF;
+  }
+
+  .info {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+
+    .name {
+      > p:first-child {
+        color: #FFFFFF;
+        font-size: $font-size-primary;
+        margin-bottom: $spacer-mini
+      }
+
+      > p:last-child {
+        font-size: $font-size-tertiary;
+        margin-bottom: $spacer-mini;
+      }
+    }
+  }
+}

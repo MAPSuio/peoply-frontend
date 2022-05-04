@@ -1,0 +1,47 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 5rem;
+  width: 90%;
+  @include desktop() {
+    margin-bottom: 7rem;
+  }
+
+  .header {
+    @include headingContainer();
+  }
+
+  .selected {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacer-very-small;
+    margin-bottom: $spacer-small;
+    max-width: 600px;
+    width: 100%;
+
+    .selectedUser {
+      align-items: center;
+      background-color: $background-color-card;
+      border-radius: $border-radius-round;
+      cursor: pointer;
+      display: flex;
+      font-size: $font-size-tertiary;
+      gap: $spacer-mini;
+      padding: $spacer-mini $spacer-small;
+
+      svg {
+        filter: brightness(0) invert(1);
+      }
+
+    }
+  }
+}
+
+.primaryButton {
+  @include fixedButton();
+  width: 90%;
+  z-index: -1;
+}

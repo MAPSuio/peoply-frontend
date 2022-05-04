@@ -13,12 +13,14 @@ interface UserSearchProps {
   onUserSelect: (user: User) => void;
   onUserRemove: (user: User) => void;
   selectedUsers: User[];
+  excludeUsers?: User[];
 }
 
 export default function UserSelect({
   onUserSelect,
   onUserRemove,
   selectedUsers,
+  excludeUsers,
 }: UserSearchProps) {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,11 +32,17 @@ export default function UserSelect({
   /* hook to fetch whenever search term changes */
   useEffect(() => {
     const performSearch = async () => {
-      const result = await fetchFromPeoplyApiJson(`/users?name=${search}`, {
-        method: "GET",
-      });
+      const result: User[] = await fetchFromPeoplyApiJson(
+        `/users?name=${search}`,
+        {
+          method: "GET",
+        },
+      );
       setLoading(false);
-      setUsers(result);
+      /* filter out excluded users */
+      setUsers(
+        result.filter(({ id }) => !excludeUsers?.map((u) => u.id).includes(id)),
+      );
     };
     if (search.length >= 1) {
       setLoading(true);
@@ -44,7 +52,7 @@ export default function UserSelect({
       );
       setQueuedSearch(req);
     }
-  }, [search]);
+  }, [search, excludeUsers]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;

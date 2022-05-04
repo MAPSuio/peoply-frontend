@@ -2,7 +2,7 @@ interface UsersIconProps {
   className?: string;
 }
 
-const UsersIcon = ({ className }: UsersIconProps) => {
+export default function UsersIcon({ className }: UsersIconProps) {
   return (
     <svg
       className={className}
@@ -34,6 +34,4 @@ const UsersIcon = ({ className }: UsersIconProps) => {
       />
     </svg>
   );
-};
-
-export default UsersIcon;
+}

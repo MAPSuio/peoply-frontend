@@ -1,0 +1,41 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 5rem;
+  width: 90%;
+  @include desktop() {
+    margin-bottom: 7rem;
+  }
+
+  .header {
+    @include headingContainer();
+  }
+
+  .memberList {
+    max-width: 450px;
+    width: 90%;
+
+    h2 {
+      color: $text-color-primary;
+      font-size: $font-size-tertiary;
+      font-weight: $font-weight-medium;
+      letter-spacing: 1.5px;
+      margin-bottom: $spacer-very-small-plus;
+      text-transform: uppercase;
+    }
+
+    .admins {
+      margin-bottom: $spacer-medium;
+    }
+  }
+}
+
+
+.primaryButton {
+  @include fixedButton();
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
