@@ -1,8 +1,11 @@
+// Next.js.
 import Image from "next/image";
 import { GetStaticProps } from "next";
 
+// React.
 import { useEffect, useState } from "react";
 
+// Components.
 import UserCircle from "../../components/UserCircle";
 import DateCircle from "../../components/DateCircle";
 import PlaceCircle from "../../components/PlaceCircle";
@@ -12,9 +15,14 @@ import BackButtonGlass from "../../components/BackButtonGlass";
 import HeartIconGlass from "../../components/HeartIconGlass";
 import HeadComponent from "../../components/HeadComponent";
 
+// Hooks.
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
+import useSnack from "../../hooks/useSnack";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import useSWR from "swr";
 
+// Services.
 import {
   addFavorite,
   deleteRegistrationUser,
@@ -26,16 +34,26 @@ import {
   removeFavorite,
 } from "../../services/events";
 
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+
+// Utils.
+import {
+  formatDateRange,
+  formatTimeRange,
+  getISODate,
+  getISOTime,
+  laterThanNow,
+} from "../../utils/functions";
+
+// Types.
 import { ButtonType, Event, RegStatus, SnackTypes } from "../../types/types";
+
+// Assets.
 import placeholderImage from "../../assets/images/undraw_partying.png";
 import { ParsedUrlQuery } from "querystring";
 
+// Styles.
 import styles from "../../styles/Event.module.scss";
-import useSnack from "../../hooks/useSnack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
-import { formatDateRange, formatTimeRange } from "../../utils/functions";
-import useSWR from "swr";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 interface EventProps {
   event: Event;
@@ -97,6 +115,19 @@ const Event = ({ event, baseUrl }: EventProps) => {
     return <div>Loading...</div>;
   }
 
+  // Check if the event is open for registrations.
+  const openForRegistrations = () => {
+    const endDate = eventData.endDate && new Date(eventData.endDate);
+
+    if (endDate) {
+      const date = getISODate(endDate);
+      const time = getISOTime(endDate);
+      return laterThanNow(date, time);
+    }
+
+    return true;
+  };
+
   const addFavoriteFunc = async () => {
     if (user) {
       let success;
@@ -119,18 +150,23 @@ const Event = ({ event, baseUrl }: EventProps) => {
 
   const registerForEvent = async () => {
     if (user) {
-      let success = false;
-      try {
-        success = await registerUser(user.id, eventData.id, RegStatus.GOING);
-      } catch (e) {}
+      if (openForRegistrations()) {
+        let success = false;
+        try {
+          success = await registerUser(user.id, eventData.id, RegStatus.GOING);
+        } catch (e) {}
 
-      if (success) {
-        setRegistered(true);
-        updateEvent();
+        if (success) {
+          setRegistered(true);
+          updateEvent();
+          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+        } else {
+          addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+        }
+        return success;
       } else {
-        addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+        addSnack("Dette arrangementet er ferdig.", SnackTypes.ERROR);
       }
-      return success;
     } else {
       redirectToLogin();
     }
@@ -145,12 +181,49 @@ const Event = ({ event, baseUrl }: EventProps) => {
       if (success) {
         setRegistered(false);
         updateEvent();
+        addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
       } else {
         addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
       }
       return success;
     } else {
       redirectToLogin();
+    }
+  };
+
+  // Get the appropriate button for the current user's registration status and event date.
+  const getButton = () => {
+    if (!openForRegistrations()) {
+      return (
+        <Button
+          text="Dette arrangementet er ferdig"
+          className={`${styles.primaryButton} ${styles.dangerButton}`}
+          onClick={unregisterForEvent}
+          loading={!registeredFetched}
+          disabled
+        />
+      );
+    }
+
+    if (registered) {
+      return (
+        <Button
+          type={ButtonType.DANGER}
+          text="Meld deg av arrangementet"
+          className={`${styles.primaryButton} ${styles.dangerButton}`}
+          onClick={unregisterForEvent}
+          loading={!registeredFetched}
+        />
+      );
+    } else {
+      return (
+        <Button
+          text="Meld deg på arrangementet"
+          className={styles.primaryButton}
+          onClick={registerForEvent}
+          loading={!registeredFetched}
+        />
+      );
     }
   };
 
@@ -273,22 +346,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
             <h2 className={styles.descHeader}>Informasjon</h2>
             <p className={styles.descText}>{eventData.description}</p>
           </div>
-          {registered ? (
-            <Button
-              type={ButtonType.DANGER}
-              text="Meld deg av arrangementet"
-              className={`${styles.primaryButton} ${styles.dangerButton}`}
-              onClick={unregisterForEvent}
-              loading={!registeredFetched}
-            />
-          ) : (
-            <Button
-              text="Meld deg på arrangementet"
-              className={styles.primaryButton}
-              onClick={registerForEvent}
-              loading={!registeredFetched}
-            />
-          )}
+          {getButton()}
         </div>
       </div>
     </>

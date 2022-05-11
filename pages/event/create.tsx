@@ -376,13 +376,16 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
           method: "post",
           body: formData,
         });
-        addSnack("Event created successfully", SnackTypes.SUCCESS);
+        addSnack("Ditt arrangement har blitt opprettet", SnackTypes.SUCCESS);
         localStorage.removeItem("eventObject");
         localStorage.removeItem("eventImage");
         router.push(`/event/${event.urlId}`);
       } catch (e) {
         // snackbar showing error
-        addSnack("Error creating event", SnackTypes.ERROR);
+        addSnack(
+          "Det skjedde en feil under opprettelsen av arrangementet",
+          SnackTypes.ERROR,
+        );
       }
     }
   };
