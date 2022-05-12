@@ -89,13 +89,14 @@ const Event = ({ event, baseUrl }: EventProps) => {
   /* check if the user has this event as a favorite */
   useEffect(() => {
     if (navigator && eventData?.freeformAddress) {
-      let url = `://www.google.com/maps/search/?api=1&query=`;
+      const url = `https://maps.google.com?q=`;
+      let query: string;
       if (eventData.poiName) {
-        url += encodeURIComponent(
+        query = encodeURIComponent(
           `${eventData.poiName} ${eventData.freeformAddress}`,
         );
       } else {
-        url += encodeURIComponent(eventData.freeformAddress);
+        query = encodeURIComponent(eventData.freeformAddress);
       }
 
       if (
@@ -103,9 +104,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
         navigator.platform.indexOf("iPad") > -1 ||
         navigator.platform.indexOf("iPod") > -1
       ) {
-        setMapsUrl("maps" + url);
+        setMapsUrl("maps" + url + query);
       } else {
-        setMapsUrl("https" + url);
+        setMapsUrl("https" + url + query);
       }
     }
 
