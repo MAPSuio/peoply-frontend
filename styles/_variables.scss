@@ -26,6 +26,7 @@ $background-color-modal: #1E2630;
 $background-color-price-tag: #FFFFFF;
 $background-color-glass: rgba(115, 130, 149, 0.7);
 $background-color-navbar: #49515C;
+$background-color-calendar-tag: #303A47;
 $background-color-input: #3F4C5C;
 $background-color-input-muted: #303A47;
 $background-color-tag: #303A47;
@@ -77,6 +78,8 @@ $max-width-input-time-desktop: 150px;
 $max-width-input-number: 100px;
 $max-width-button: 500px;
 $max-width-card: 500px;
+$max-width-text: 600px;
+$max-width-text-desktop: 700px;
 $page-width-mobile: 90%;
 $page-width-desktop: 80%;
 $img-height-card: 350px;
@@ -85,12 +88,16 @@ $background-blur-soft: 4px;
 $animation-duration: 0.3s;
 $z-index-modal: 9999;
 $z-index-snack: 9998;
+$event-image-height: calc(100vw / 1.78);
+$event-image-height-desktop: 400px;
+$event-image-width-desktop: 712px;
 
 // Border radii.
 $border-radius-regular: 12px;
 $border-radius-inside-card: 8px;
 $border-radius-icon: 8px;
 $border-radius-round: 100px;
+$border-radius-calendar-flair: $border-radius-regular $border-radius-regular 0 0;
 
 // Shadows
 $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
@@ -115,6 +122,8 @@ $shadow-snack-warning: 0px 5px 12px rgba(255, 242, 150, 0.2);
 $shadow-snack-error: 0px 5px 12px (255, 148, 140, 0.2);
 $shadow-slider: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 $shadow-switch: 0px 4px 10px rgba(0, 0, 0, 0.2);
+$shadow-event-image: 0px 10px 25px rgba(0, 0, 0, 0.2);
+$shadow-calendar-tag: 0px 3px 8px rgba(115, 130, 149, 0.2);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;
@@ -164,6 +173,7 @@ $spacer-medium-plus: 3rem;
 $spacer-large: 4rem;
 $spacer-large-plus: 6rem;
 $spacer-very-large: 8rem;
+$spacer-very-large-plus: 12rem;
 
 // Break points.
 $first-break: 500px;

@@ -87,6 +87,18 @@
   }
 }
 
+@mixin normalText() {
+  color: $text-color-primary;
+  font-size: $font-size-primary;
+  line-height: $line-height-text;
+  max-width: $max-width-text;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+    max-width: $max-width-text-desktop;
+  }
+}
+
 @mixin errorText() {
   color: $error-color;
   font-size: $font-size-tertiary;

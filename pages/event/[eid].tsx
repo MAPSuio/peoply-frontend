@@ -237,7 +237,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       />
 
       <div className={styles.eventWrapper}>
-        <div className={styles.imageContainer}>
+        <div className={styles.imageWrapper}>
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
           <HeartIconGlass
             className={styles.favoriteIcon}
@@ -245,25 +245,34 @@ const Event = ({ event, baseUrl }: EventProps) => {
             favorited={favorited}
             loading={!favoriteFetched}
           />
-          <Image
-            src={eventData.image ?? placeholderImage}
-            layout="fill"
-            sizes="50vw"
-            objectFit="cover"
-            objectPosition="center"
-            alt="Nå er det fest!"
-            priority={true}
-          />
+          <div className={styles.imageContainer}>
+            <Image
+              src={eventData.image ?? placeholderImage}
+              layout="fill"
+              sizes="50vw"
+              objectFit="cover"
+              alt="Et bilde som passer til arrangementet"
+              placeholder={!eventData.image ? "blur" : "empty"}
+            />
+          </div>
         </div>
         <div className={styles.eventContainer}>
+          <div className={styles.eventCalendarTagWrapper}>
+            <div className={styles.eventCalendarTag}>
+              <span className={styles.date}>{`${eventData.startDate
+                .toString()
+                .substring(8, 10)}.`}</span>
+              <span className={styles.eventCalendarTagFlair} />
+            </div>
+          </div>
           <div className={styles.eventPriceTag}>Gratis</div>
           <div className={styles.eventInfoContainer}>
             <p className={styles.eventTags}>
               {eventData.eventCategories
                 ?.map((cat) => cat.category.name)
-                .join(", ")}
+                .join(" · ")}
             </p>
-            <h1 className={styles.marginBottomSmall}>{eventData.title}</h1>
+            <h1 className={styles.title}>{eventData.title}</h1>
             <div className={styles.eventInfoCard}>
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
@@ -342,9 +351,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
               </div>
             </div>
           </div>
-          <div className={styles.descContainer}>
+          <div className={styles.descWrapper}>
             <h2 className={styles.descHeader}>Informasjon</h2>
-            <p className={styles.descText}>{eventData.description}</p>
+            <div className={styles.descriptionContainer}>
+              {eventData.description.split("\n").map((str) => (
+                <p key={str} className={styles.descText}>
+                  {str}
+                  <br></br>
+                </p>
+              ))}
+            </div>
           </div>
           {getButton()}
         </div>

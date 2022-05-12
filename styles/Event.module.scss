@@ -1,19 +1,39 @@
 .eventWrapper {
+  align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  padding-bottom: 5rem ;
+  padding-bottom: $spacer-very-large;
   width: 100%;
 
   @include desktop() {
-    padding-bottom: 7rem;
+    padding-bottom: $spacer-very-large-plus;
+  }
+}
+
+.imageWrapper {
+  display: flex;
+  height: $event-image-height;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+
+  @include desktop() {
+    height: $event-image-height-desktop;
+    width: 90%;
   }
 }
 
 .imageContainer {
-  height: calc(100vh * 0.35);
+  box-shadow: $shadow-event-image;
+  height: $event-image-height;
+  overflow: hidden;
   position: relative;
+  width: 100%;
+
   @include desktop() {
-    height: calc(100vh * 0.40);
+    border-radius: $border-radius-regular;
+    height: $event-image-height-desktop;
+    width: $event-image-width-desktop;
   }
 }
 
@@ -22,6 +42,11 @@
   position: absolute;
   top: 1rem;
   z-index: 1;
+
+  @include desktop() {
+    left: 0;
+    top: 2rem;
+  }
 }
 
 .favoriteIcon {
@@ -29,6 +54,11 @@
   right: 1rem;
   top: 1rem;
   z-index: 1;
+
+  @include desktop() {
+    right: 0;
+    top: 2rem;
+  }
 }
 
 .eventContainer {
@@ -37,6 +67,49 @@
   flex-flow: column nowrap;
   position: relative;
   width: 90%;
+}
+
+.eventCalendarTagWrapper {
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: translateY(-75%);
+}
+
+.eventCalendarTag {
+  background-color: $background-color-calendar-tag;
+  border-radius: $border-radius-regular;
+  box-shadow: $shadow-calendar-tag;
+  padding: $spacer-small $spacer-small $spacer-very-small;
+  position: relative;
+
+  @include desktop() {
+    padding: $spacer-medium $spacer-small-plus $spacer-very-small;
+  }
+}
+
+.eventCalendarTagFlair {
+  background-color: $primary-color-200;
+  border-radius: $border-radius-calendar-flair;
+  height: 14px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  @include desktop() {
+    height: 24px;
+  }
+}
+
+.date {
+  color: $text-color-emphasis;
+  font-size: $font-size-heading-large;
+  font-weight: $font-weight-bold;
+
+  @include desktop() {
+    font-size: $font-size-heading-large-desktop;
+  }
 }
 
 .eventPriceTag {
@@ -49,7 +122,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  transform: translateY(-50%);
+  transform: translateY(-75%);
 }
 
 .eventTags {
@@ -57,19 +130,41 @@
   font-size: $font-size-tertiary;
   margin-bottom: $spacer-mini;
   margin-top: $spacer-medium;
+  text-transform: capitalize;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    margin-bottom: $spacer-very-small;
+    margin-top: $spacer-medium-plus;
+  }
 }
 
 .eventInfoContainer {
-  margin-bottom: $spacer-medium-plus;
+  margin-bottom: $spacer-medium;
+
+  @include desktop() {
+    margin-bottom: $spacer-medium-plus;
+  }
 }
 
-.descContainer {
+.descWrapper {
   .descHeader {
+    font-size: $font-size-heading-large;
     margin-bottom: $spacer-very-small-plus;
+
+    @include desktop() {
+      font-size: $font-size-heading-large-desktop;
+      margin-bottom: $spacer-small;
+    }
   }
 
   .descText {
-    line-height: 1.5;
+    @include normalText();
+  }
+
+  .descriptionContainer {
+    display: flex;
+    flex-flow: column nowrap;
   }
 }
 
@@ -81,6 +176,10 @@
   justify-content: center;
   padding: $spacer-small;
 
+  @include desktop() {
+    padding: $spacer-small-plus;
+  }
+
   .infoTextContainer {
     align-items: center;
     display: flex;
@@ -90,7 +189,21 @@
       font-family: $mono-font;
       font-size: $font-size-secondary;
       margin-left: $spacer-very-small;
+
+      @include desktop() {
+        font-size: $font-size-secondary-desktop;
+      }
     }
+  }
+}
+
+.title {
+  font-size: $font-size-title;
+  margin-bottom: $spacer-small;
+
+  @include desktop() {
+    font-size: $font-size-title-desktop;
+    margin-bottom: $spacer-small-plus;
   }
 }
 
