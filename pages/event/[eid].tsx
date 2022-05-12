@@ -89,7 +89,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   /* check if the user has this event as a favorite */
   useEffect(() => {
     if (navigator && eventData?.freeformAddress) {
-      const url = `https://maps.google.com?q=`;
+      const url = `://maps.google.com?q=`;
       let query: string;
       if (eventData.poiName) {
         query = encodeURIComponent(
