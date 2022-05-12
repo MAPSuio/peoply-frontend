@@ -1,64 +1,79 @@
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
-import Avatar from "../../components/Avatar";
-import BackButton from "../../components/BackButton";
-import EditProfileImageMenu from "../../components/EditProfileImageMenu";
-import TextInputLong from "../../components/inputs/TextInputLong";
-import MenuModal from "../../components/MenuModal";
-import Button from "../../components/Button";
-import useBack from "../../hooks/useBack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
-import useSnack from "../../hooks/useSnack";
-import useUser from "../../hooks/useUser";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import styles from "../../styles/EditProfile.module.scss";
-import { SnackTypes } from "../../types/types";
+import useSWR from "swr";
+import Avatar from "../../../components/Avatar";
+import BackButton from "../../../components/BackButton";
+import Button from "../../../components/Button";
+import TextInputLong from "../../../components/inputs/TextInputLong";
+import MenuModal from "../../../components/MenuModal";
+import useBack from "../../../hooks/useBack";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import useSnack from "../../../hooks/useSnack";
+import useUser from "../../../hooks/useUser";
+import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
+import { Organization, SnackTypes } from "../../../types/types";
+import styles from "../../../styles/EditProfile.module.scss";
+import EditProfileImageMenu from "../../../components/EditProfileImageMenu";
 
-const EditProfile: NextPage = () => {
+const EditOrgProfile: NextPage = () => {
   const goBack = useBack();
   const [editImage, setEditImage] = useState(false);
   const { user, loading, reload } = useUser();
   const [description, setDescription] = useState("");
   const [validEdit, setValidEdit] = useState(false);
   const redirectToLogin = useRedirectToLogin();
+  const router = useRouter();
+  const { oid } = router.query;
+
+  const {
+    data: org,
+    error: orgError,
+    mutate,
+  } = useSWR<Organization>(
+    () => (oid ? `/organizations/${oid}` : false),
+    fetchFromPeoplyApiJson,
+  );
 
   const { addSnack } = useSnack();
   useEffect(() => {
-    if (user?.description) {
-      setDescription(user.description);
+    if (org?.description) {
+      setDescription(org.description);
     }
-  }, [user]);
+  }, [org]);
 
   useEffect(() => {
     /* we must check if it is the first time the user updates desc */
     if (
-      !(!user?.description && description === "") &&
-      user?.description !== description
+      !(!org?.description && description === "") &&
+      org?.description !== description
     ) {
       setValidEdit(true);
     } else {
       setValidEdit(false);
     }
-  }, [description, user]);
+  }, [description, org]);
 
   if (!loading && !user) {
     redirectToLogin();
   }
 
+  if (!org) return <></>;
   if (!user) return <></>;
 
   const handleEditImageModalClose = () => {
     setEditImage(false);
+    mutate();
     reload();
   };
 
-  const updateUserDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateOrgDescription = (e: ChangeEvent<HTMLInputElement>) => {
     setDescription(e.target.value);
   };
 
   const handleConfirm = async () => {
     try {
-      await fetchFromPeoplyApiJson("/users/me", {
+      await fetchFromPeoplyApiJson(`/organizations/${oid}`, {
         method: "PATCH",
         body: JSON.stringify({ description }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -77,13 +92,13 @@ const EditProfile: NextPage = () => {
         className={styles.editImageButton}
         onClick={() => setEditImage(true)}
       >
-        <Avatar user={user} size="large" edit />
+        <Avatar user={user} org={org} size="large" edit />
       </button>
       <TextInputLong
         value={description}
-        handleChange={updateUserDescription}
-        inputName="userDescription"
-        inputId="userDescription"
+        handleChange={updateOrgDescription}
+        inputName="orgDescription"
+        inputId="orgDescription"
         rows={5}
         label="Beskrivelse"
         placeholder=""
@@ -102,8 +117,8 @@ const EditProfile: NextPage = () => {
         <MenuModal label="Endre bilde" onClose={handleEditImageModalClose}>
           <EditProfileImageMenu
             onClose={handleEditImageModalClose}
-            endpoint="/users/me"
-            formDataKey="profileImage"
+            endpoint={`/organizations/${oid}`}
+            formDataKey="orgImage"
           />
         </MenuModal>
       )}
@@ -111,4 +126,4 @@ const EditProfile: NextPage = () => {
   );
 };
 
-export default EditProfile;
+export default EditOrgProfile;

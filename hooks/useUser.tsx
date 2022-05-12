@@ -61,7 +61,9 @@ export function UserProvider({
             currentOrg &&
             organizations.map((org) => org.id).includes(currentOrg.id)
           ) {
-            setCurrentOrg(currentOrg);
+            const org = organizations.find((org) => org.id === currentOrg.id);
+            switchContext(org);
+            setCurrentOrg(org);
           }
         } catch (error: any) {
           setError(error.message);

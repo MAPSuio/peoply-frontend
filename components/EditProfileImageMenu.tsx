@@ -6,10 +6,16 @@ import UploadIcon from "./svgs/UploadIcon";
 
 interface EditProfileImageMenuProps {
   onClose?: () => void;
+  endpoint: string;
+  formDataKey: string;
 }
 
 /* meant to be used as a child of MenuModal */
-const EditProfileImageMenu = ({ onClose }: EditProfileImageMenuProps) => {
+const EditProfileImageMenu = ({
+  onClose,
+  endpoint,
+  formDataKey,
+}: EditProfileImageMenuProps) => {
   const imageInput: React.RefObject<HTMLInputElement> = useRef(null);
 
   const handleUploadClick = () => {
@@ -22,8 +28,8 @@ const EditProfileImageMenu = ({ onClose }: EditProfileImageMenuProps) => {
     const image: File = e.target.files[0];
     if (image) {
       const formData = new FormData();
-      formData.append("profileImage", image, image.name);
-      await fetchFromPeoplyApiJson("/users/me", {
+      formData.append(formDataKey, image, image.name);
+      await fetchFromPeoplyApiJson(endpoint, {
         method: "PATCH",
         body: formData,
       });
@@ -34,7 +40,7 @@ const EditProfileImageMenu = ({ onClose }: EditProfileImageMenuProps) => {
   };
 
   const handleImageDelete = async () => {
-    await fetchFromPeoplyApiJson("/users/me", {
+    await fetchFromPeoplyApiJson(endpoint, {
       method: "PATCH",
       body: JSON.stringify({ removeImage: true }),
       headers: { "Content-Type": "application/json; charset=utf-8" },

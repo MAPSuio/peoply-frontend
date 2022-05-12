@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import useSnack from "../hooks/useSnack";
 import useUser from "../hooks/useUser";
 import { fetchFromPeoplyApi } from "../services/fetchers";
@@ -7,6 +6,7 @@ import { SnackTypes } from "../types/types";
 import ProfileMenuItem from "./ProfileMenuItem";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import CloseIcon from "./svgs/CloseIcon";
+import EditIcon from "./svgs/EditIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import UsersIcon from "./svgs/UsersIcon";
 
@@ -14,7 +14,6 @@ import UsersIcon from "./svgs/UsersIcon";
 export default function OrgMenu() {
   const { currentOrg, switchContext, reload } = useUser();
   const { addSnack } = useSnack();
-  const router = useRouter();
 
   const handleLogout = async () => {
     switchContext();
@@ -45,6 +44,12 @@ export default function OrgMenu() {
 
   return (
     <div className={styles.container}>
+      <ProfileMenuItem
+        text="Rediger organisasjon"
+        Icon={() => <EditIcon className={styles.icon} />}
+        ActionIcon={ChevronRightIcon}
+        linkOrOnClick={`/orgs/${currentOrg?.id}/edit`}
+      />
       <ProfileMenuItem
         text="Behandle medlemmer"
         Icon={() => <UsersIcon className={styles.icon} />}
