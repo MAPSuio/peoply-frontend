@@ -281,6 +281,15 @@ const Event = ({ event, baseUrl }: EventProps) => {
             />
           );
         }
+      } else if (eventData && eventData?.capacity === null) {
+        return (
+          <Button
+            text="Meld deg på arrangementet"
+            className={styles.primaryButton}
+            onClick={registerForEvent}
+            loading={!registeredFetched}
+          />
+        );
       }
     } else if (registrationStatus === RegStatus.WAITLISTED) {
       return (
