@@ -29,6 +29,7 @@
 }
 
 .icon {
+  flex-shrink: 0;
   height: 24px;
   stroke: $text-color-emphasis;
   width: 24px;

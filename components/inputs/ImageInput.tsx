@@ -1,13 +1,22 @@
+// Next.js.
 import Image from "next/image";
 
+// React.
 import { useRef, ChangeEvent } from "react";
 
+// Components.
 import EditIcon from "../svgs/EditIcon";
-
-import PlaceholderImage from "../../assets/images/cat.jpg";
-import styles from "../../styles/ImageInput.module.scss";
+import WarningIcon from "../svgs/WarningIcon";
 import ErrorIcon from "../svgs/ErrorIcon";
+
+// Assets.
+import PlaceholderImage from "../../assets/images/cat.jpg";
+
+// Types.
 import { ImageCaching } from "../../types/types";
+
+// Styles.
+import styles from "../../styles/ImageInput.module.scss";
 
 interface ImageInputProps {
   inputId: string;
@@ -91,9 +100,9 @@ const ImageInput = ({
         </div>
       )}
       {fileNotCached && (
-        <div className={styles.errorContainer}>
-          <ErrorIcon className={styles.errorIcon} />
-          <p className={styles.errorText}>
+        <div className={styles.warningContainer}>
+          <WarningIcon className={styles.warningIcon} />
+          <p className={styles.warningText}>
             Bildet er for stort til å kunne mellomlagres, og må lastes opp på
             nytt dersom du avslutter og kommer tilbake til
             arrangementopprettelsen

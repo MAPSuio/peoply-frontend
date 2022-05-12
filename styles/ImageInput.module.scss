@@ -71,3 +71,18 @@
 .errorText {
   @include errorText();
 }
+
+.warningContainer {
+  @include errorContainer();
+  align-items: center;
+}
+
+.warningIcon {
+  @include errorIconDimensions();
+  flex-shrink: 0;
+  stroke: $warning-color;
+}
+
+.warningText {
+  @include warningText();
+}

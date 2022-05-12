@@ -109,6 +109,16 @@
   }
 }
 
+@mixin warningText() {
+  color: $warning-color;
+  font-size: $font-size-tertiary;
+  margin-left: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
 @mixin errorContainer() {
   display: flex;
   margin-top: $spacer-very-small;

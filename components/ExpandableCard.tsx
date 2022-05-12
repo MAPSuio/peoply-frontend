@@ -10,6 +10,7 @@ interface ExpandableCardProps {
 
 const ExpandableCard = ({ title, children }: ExpandableCardProps) => {
   const [open, setOpen] = useState(false);
+
   return (
     <button className={styles.button} onClick={() => setOpen(!open)}>
       <div className={styles.titleContainer}>
