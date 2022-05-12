@@ -87,6 +87,26 @@
   }
 }
 
+@mixin loadingPositionInput() {
+  position: absolute;
+  right: $spacer-small;
+  top: 7px;
+
+  @include desktop() {
+    top: 12px;
+  }
+}
+
+@mixin cancelPositionInput() {
+  position: absolute;
+  right: $spacer-very-small;
+  top: 7px;
+
+  @include desktop() {
+    top: 12px;
+  }
+}
+
 @mixin normalText() {
   color: $text-color-primary;
   font-size: $font-size-primary;

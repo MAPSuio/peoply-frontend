@@ -60,6 +60,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../styles/Event.module.scss";
+import Link from "next/link";
 
 interface EventProps {
   event: Event;
@@ -75,6 +76,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const [registeredFetched, setRegisteredFetched] = useState(false);
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
+  const [mapsUrl, setMapsUrl] = useState<string>();
 
   const {
     data: eventData,
@@ -86,6 +88,27 @@ const Event = ({ event, baseUrl }: EventProps) => {
 
   /* check if the user has this event as a favorite */
   useEffect(() => {
+    if (navigator && eventData?.freeformAddress) {
+      let url = `://www.google.com/maps/search/?api=1&query=`;
+      if (eventData.poiName) {
+        url += encodeURIComponent(
+          `${eventData.poiName} ${eventData.freeformAddress}`,
+        );
+      } else {
+        url += encodeURIComponent(eventData.freeformAddress);
+      }
+
+      if (
+        navigator.platform.indexOf("iPhone") > -1 ||
+        navigator.platform.indexOf("iPad") > -1 ||
+        navigator.platform.indexOf("iPod") > -1
+      ) {
+        setMapsUrl("maps" + url);
+      } else {
+        setMapsUrl("https" + url);
+      }
+    }
+
     const getFavoriteStatus = async () => {
       if (user && eventData) {
         const favorite = await getUserFavorite(user.id, eventData.id);
@@ -323,19 +346,29 @@ const Event = ({ event, baseUrl }: EventProps) => {
               >
                 <UserCircle />
                 <p className={`${styles.infoText} ${styles.emphasis}`}>
-                  {eventData.eventArrangers
-                    ?.map((a) => {
-                      if (a.arranger.user) {
-                        return (
-                          a.arranger.user.firstName +
-                          " " +
-                          a.arranger.user.lastName
-                        );
-                      } else {
-                        return a.arranger.organization?.name;
-                      }
-                    })
-                    .join(", ")}
+                  {eventData.eventArrangers?.map((a) => {
+                    if (a.arranger.user) {
+                      return (
+                        <Link
+                          key={a.arranger.id}
+                          href={`/user/${a.arranger.user.id}`}
+                        >
+                          {a.arranger.user.firstName +
+                            " " +
+                            a.arranger.user.lastName}
+                        </Link>
+                      );
+                    } else if (a.arranger.organization) {
+                      return (
+                        <Link
+                          key={a.arranger.id}
+                          href={`/org/${a.arranger.organization.id}`}
+                        >
+                          {a.arranger.organization?.name}
+                        </Link>
+                      );
+                    }
+                  })}
                 </p>
               </div>
               <div
@@ -368,14 +401,28 @@ const Event = ({ event, baseUrl }: EventProps) => {
               >
                 <PlaceCircle />
                 <div className={styles.flexContainer}>
-                  <p
-                    className={`${styles.infoText} ${styles.primaryColor} ${styles.marginBottomMini}`}
-                  >
-                    Gaustadalléen 23B,
-                  </p>
-                  <p className={`${styles.infoText} ${styles.primaryColor}`}>
-                    0373 Oslo
-                  </p>
+                  {eventData.freeformAddress ? (
+                    <a href={mapsUrl} target="_blank" rel="noreferrer">
+                      <p
+                        className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+                      >
+                        {eventData.locationName}
+                      </p>
+                      {eventData.freeformAddress && (
+                        <p
+                          className={`${styles.infoText} ${styles.primaryColor}`}
+                        >
+                          {eventData.freeformAddress}
+                        </p>
+                      )}
+                    </a>
+                  ) : (
+                    <p
+                      className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+                    >
+                      {eventData.locationName}
+                    </p>
+                  )}
                 </div>
               </div>
               <div

@@ -8,7 +8,8 @@ import {
 } from "react";
 import { logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
-import { Organization, User, UserContextType } from "../types/types";
+import { fetchIpInfo } from "../services/ip";
+import { IpInfo, Organization, User, UserContextType } from "../types/types";
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
@@ -26,6 +27,13 @@ export function UserProvider({
     undefined,
   );
   const [orgs, setOrgs] = useState<Organization[]>([]);
+  const [ipInfo, setIpInfo] = useState<IpInfo>();
+
+  useEffect(() => {
+    fetchIpInfo().then((ip) => {
+      setIpInfo(ip);
+    });
+  }, []);
 
   useEffect(() => {
     /* will attempt to fetch and set the user state */
@@ -108,8 +116,9 @@ export function UserProvider({
       orgs,
       switchContext,
       reload: () => setReload(!reload),
+      ipInfo,
     }),
-    [user, currentOrg, orgs, loading, error, reload],
+    [user, currentOrg, orgs, loading, error, reload, ipInfo],
   );
 
   return (

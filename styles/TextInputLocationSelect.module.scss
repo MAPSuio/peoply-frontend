@@ -1,0 +1,124 @@
+.inputContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: $max-width-input-text;
+  position: relative;
+  width: 100%;
+}
+
+.labelContainer {
+  @include labelContainer();
+}
+
+.noErrorPadding {
+  padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
+}
+
+.label {
+  @include label();
+}
+
+.lengthText {
+  font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.inputAndIconContainer {
+  position: relative;
+}
+
+.textInput {
+  @include input();
+  width: 100%;
+}
+
+.textInput::placeholder {
+  color: $text-color-input;
+}
+
+.errorContainer {
+  @include errorContainer();
+}
+
+.errorText {
+  @include errorText();
+}
+
+.errorIcon {
+  @include errorIconDimensions();
+  stroke: $error-color;
+}
+
+.valid {
+  border: 1px solid $success-color;
+}
+
+.notValid {
+  border: 1px solid $error-color;
+}
+
+.required {
+  color: $text-color-emphasis;
+}
+
+
+.results {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  top: calc(64px + $spacer-very-small);
+  width: 100%;
+
+  @include desktop() {
+    height: 300px;
+    top: calc(82px + $spacer-very-small);
+  }
+
+  button {
+    @include resetButton();
+  }
+
+  .item {
+    background-color: $background-color-card;
+    display: flex;
+    flex-direction: column;
+    font-size: $font-size-secondary;
+    justify-content: space-between;
+    padding: $spacer-small;
+    text-align: left;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+  }
+}
+
+.cancelSearch {
+  @include cancelPositionInput();
+
+  button {
+    background-color: transparent;
+
+    svg {
+      stroke: $text-color-emphasis;
+    }
+  }
+}
+
+.loadingCircle {
+  @include loadingPositionInput();
+}
+
+.divider {
+  @include divider();
+}

@@ -60,11 +60,14 @@ import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import Header from "../../components/Header";
 import useSnack from "../../hooks/useSnack";
 import HeadComponent from "../../components/HeadComponent";
+import { Models } from "azure-maps-rest";
+import TextInputLocationSelect from "../../components/inputs/TextInputLocationSelect";
 
-interface EventObjectProps {
+export interface EventObjectProps {
   eventTitle: string;
   eventDescription: string;
-  eventAddress: string;
+  eventLocationName: string;
+  eventLocation?: Models.SearchFuzzyResult;
   eventDateStart: string;
   eventDateEnd: string | null;
   eventHasDateEnd: boolean;
@@ -88,7 +91,7 @@ interface CreateEventProps {
 }
 
 const CreateEvent = ({ baseUrl }: CreateEventProps) => {
-  const { user, currentOrg, error: userError } = useUser();
+  const { user, currentOrg, ipInfo, error: userError } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
@@ -97,7 +100,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     eventTitle: "",
     eventDescription: "",
-    eventAddress: "",
+    eventLocationName: "",
     eventDateStart: "",
     eventDateEnd: null,
     eventHasDateEnd: false,
@@ -151,14 +154,25 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     });
   };
 
-  const updateEventAddress = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventLocationName = (e: ChangeEvent<HTMLInputElement>) => {
     setEventObject((prevEventOjbect) => ({
       ...prevEventOjbect,
-      eventAddress: e.target.value,
+      eventLocationName: e.target.value,
     }));
     updateLocalStorage({
       ...eventObject,
-      eventAddress: e.target.value,
+      eventLocationName: e.target.value,
+    });
+  };
+
+  const updateEventLocation = (loc?: Models.SearchFuzzyResult) => {
+    setEventObject((prevEventOjbect) => ({
+      ...prevEventOjbect,
+      eventLocation: loc,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventLocation: loc,
     });
   };
 
@@ -397,7 +411,11 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     0,
     2500,
   );
-  const eventAddressValid = textInputValid(eventObject.eventAddress, 0, 100);
+  const eventAddressValid = textInputValid(
+    eventObject.eventLocationName,
+    0,
+    100,
+  );
   const eventDateStartValid = dateInputStartValid(eventObject.eventDateStart);
   const eventTimeStartValid = timeInputStartValid(
     eventObject.eventTimeStart,
@@ -627,18 +645,39 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             validDataMap={validDataMap}
             page={InputPages.ADDRESSPAGE}
             buttonOnClick={inputPageOnClick}
+            padding
           >
             <div className={styles.textContainer}>
               <TextInput
-                value={eventObject.eventAddress}
+                value={eventObject.eventLocationName}
+                inputId="locationName"
+                inputName="eventLocationName"
+                label="Kallenavn på stedet*"
+                placeholder="F.eks. Bliss"
+                maxLength={100}
+                minLength={1}
+                errorMessage="Du må oppgi et kallenavn på stedet."
+                required
+                handleChange={updateEventLocationName}
+              />
+              <br />
+              <br />
+              <TextInputLocationSelect
                 inputId="address"
                 inputName="eventAddress"
-                label="Adressen til arrangementet*"
-                placeholder="F.eks. Gaustadalléen 23B, 0373 Oslo"
-                maxLength={100}
-                errorMessage="Du må oppgi en adresse eller et sted."
-                required
-                handleChange={updateEventAddress}
+                label="Legg til en adresse"
+                placeholder="F.eks. Gaustadalléen 23B"
+                onLocationSelect={updateEventLocation}
+                selectedLocation={eventObject.eventLocation}
+                options={
+                  ipInfo
+                    ? {
+                        countrySet: [ipInfo.country_code],
+                        lat: ipInfo.latitude,
+                        lon: ipInfo.longitude,
+                      }
+                    : undefined
+                }
               />
             </div>
           </InputPage>

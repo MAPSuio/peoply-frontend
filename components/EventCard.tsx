@@ -56,8 +56,7 @@ const EventCard = ({ event }: EventCardProps) => {
                   </div>
                   <div className={styles.eventCardInfoBodyItem}>
                     <LocationIcon />
-                    <span>Sted</span>
-                    {/* event.location */}
+                    <span>{event.locationName}</span>
                   </div>
                 </div>
               </div>

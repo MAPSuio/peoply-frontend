@@ -45,10 +45,40 @@ export interface UserContextType {
   orgs?: Organization[];
   loading: boolean;
   error?: string;
+  ipInfo?: IpInfo;
 
   logout: () => Promise<Response>;
   reload: () => void;
   switchContext: (org?: Organization) => void;
+}
+
+export interface IpInfo {
+  ip: string;
+  version: string;
+  city: string;
+  region: string;
+  region_code: string;
+  country: string;
+  country_name: string;
+  country_code: string;
+  country_code_iso3: string;
+  country_capital: string;
+  country_tld: string;
+  continent_code: string;
+  in_eu: string;
+  postal: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  utc_offset: string;
+  country_calling_code: string;
+  currency: string;
+  currency_name: string;
+  languages: string;
+  country_area: string;
+  country_population: number;
+  asn: string;
+  org: string;
 }
 
 export interface GeolocationContextType {
@@ -163,6 +193,21 @@ export interface Event {
   capacity?: number;
   private: boolean;
   image?: string;
+  locationName: string;
+  poiName?: string;
+  country?: string;
+  countryCode?: string;
+  countryCodeISO3?: string;
+  countrySubdivision?: string;
+  localName?: string;
+  municipality?: string;
+  postalCode?: string;
+  streetName?: string;
+  streetNumber?: string;
+  freeformAddress?: string;
+  latitude?: number;
+  longitude?: number;
+
   eventArrangers?: EventArranger[];
   registrations?: Registration[];
   eventCategories?: EventCategory[];

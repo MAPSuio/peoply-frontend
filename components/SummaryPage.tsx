@@ -28,6 +28,8 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
 import { ImageCaching, Visibility } from "../types/types";
+import { Models } from "azure-maps-rest";
+import { EventObjectProps } from "../pages/event/create";
 
 interface SummaryPageProps {
   title: string;
@@ -46,27 +48,7 @@ interface SummaryPageProps {
     id: number;
     name: string;
   }[];
-  eventObject: {
-    eventTitle: string;
-    eventDescription: string;
-    eventAddress: string;
-    eventDateStart: string;
-    eventDateEnd: string | null;
-    eventHasDateEnd: boolean;
-    eventTimeStart: string;
-    eventTimeEnd: string | null;
-    eventActiveCategories: number[];
-    eventVisibility: Visibility;
-    eventHasCapacity: boolean;
-    eventCapacity: string;
-    eventExtraInfoValid: boolean;
-    eventImage?: File;
-    eventImageValid: boolean;
-    currentStep: number;
-    imageStorageKey: string;
-    reachedStep: number;
-    imageCached: ImageCaching;
-  };
+  eventObject: EventObjectProps;
 }
 
 const SummaryPage = ({
@@ -126,6 +108,79 @@ const SummaryPage = ({
     /* Append event image. */
     if (eventObject.eventImage) {
       formData.set("eventImage", eventObject.eventImage);
+    }
+
+    formData.set("locationName", eventObject.eventLocationName);
+
+    if (eventObject.eventLocation) {
+      if (eventObject?.eventLocation?.poi?.name)
+        formData.set("poiName", eventObject.eventLocation.poi.name);
+
+      if (eventObject?.eventLocation?.address?.country)
+        formData.set("country", eventObject.eventLocation.address.country);
+
+      if (eventObject?.eventLocation?.address?.countryCode)
+        formData.set(
+          "countryCode",
+          eventObject.eventLocation.address.countryCode,
+        );
+
+      if (eventObject?.eventLocation?.address?.countryCodeISO3)
+        formData.set(
+          "countryCodeISO3",
+          eventObject.eventLocation.address.countryCodeISO3,
+        );
+
+      if (eventObject?.eventLocation?.address?.countrySubdivision)
+        formData.set(
+          "countrySubdivision",
+          eventObject.eventLocation.address.countrySubdivision,
+        );
+
+      if (eventObject?.eventLocation?.address?.localName)
+        formData.set("localName", eventObject.eventLocation.address.localName);
+
+      if (eventObject?.eventLocation?.address?.municipality)
+        formData.set(
+          "municipality",
+          eventObject.eventLocation.address.municipality,
+        );
+
+      if (eventObject?.eventLocation?.address?.postalCode)
+        formData.set(
+          "postalCode",
+          eventObject.eventLocation.address.postalCode,
+        );
+
+      if (eventObject?.eventLocation?.address?.streetName)
+        formData.set(
+          "streetName",
+          eventObject.eventLocation.address.streetName,
+        );
+
+      if (eventObject?.eventLocation?.address?.streetNumber)
+        formData.set(
+          "streetNumber",
+          eventObject.eventLocation.address.streetNumber,
+        );
+
+      if (eventObject?.eventLocation?.address?.freeformAddress)
+        formData.set(
+          "freeformAddress",
+          eventObject.eventLocation.address.freeformAddress,
+        );
+
+      if (eventObject?.eventLocation?.position?.lat)
+        formData.set(
+          "latitude",
+          eventObject.eventLocation.position.lat.toString(),
+        );
+
+      if (eventObject?.eventLocation?.position?.lon)
+        formData.set(
+          "longitude",
+          eventObject.eventLocation.position.lon.toString(),
+        );
     }
   };
 
@@ -193,7 +248,17 @@ const SummaryPage = ({
           Icon={<PlaceCircleSummary />}
           onClick={buttonOnClick}
         >
-          <a className={styles.placeText}>{eventObject.eventAddress}</a>
+          <a className={styles.placeText}>{eventObject.eventLocationName}</a>
+          {eventObject.eventLocation?.poi?.name && (
+            <a className={styles.placeText}>
+              {eventObject.eventLocation?.poi?.name}
+            </a>
+          )}
+          {eventObject.eventLocation?.address?.freeformAddress && (
+            <a className={styles.placeText}>
+              {eventObject.eventLocation?.address?.freeformAddress}
+            </a>
+          )}
         </SummaryCard>
         <SummaryCard
           inputId={3}

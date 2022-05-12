@@ -20,6 +20,7 @@ interface InputPageProps {
   setEventImageValid?: (eventImageValid: boolean) => void;
   setEventExtraInfoValid?: (eventExtraInfoValid: boolean) => void;
   firstPage?: boolean;
+  padding?: boolean;
   buttonOnClick: (step: number) => void;
   children: React.ReactNode;
 }
@@ -38,6 +39,7 @@ const InputPage = ({
   setEventImageValid,
   setEventExtraInfoValid,
   firstPage,
+  padding,
   buttonOnClick,
   children,
 }: InputPageProps) => {
@@ -72,7 +74,7 @@ const InputPage = ({
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${padding && styles.padding}`}>
       <BackButton onClick={goBack} className={styles.marginBottomMedium} />
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
