@@ -16,8 +16,8 @@ import {
 import styles from "../../../styles/InviteMembersToOrg.module.scss";
 import {
   Organization,
-  OrganizationInvitation,
   OrganizationRole,
+  OutboundOrganizationInvitation,
   SnackTypes,
   User,
   UserOrganizationRoles,
@@ -74,7 +74,7 @@ export default function InviteMembersToOrg() {
 
   const onSubmit = async () => {
     if (selectedUsers.length) {
-      const invitations: OrganizationInvitation[] = selectedUsers.map(
+      const invitations: OutboundOrganizationInvitation[] = selectedUsers.map(
         (user) => ({
           userId: user.id,
           role: OrganizationRole.MEMBER,

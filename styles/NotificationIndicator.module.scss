@@ -1,0 +1,17 @@
+.container {
+
+  position: relative;
+
+  .counter {
+    align-items: center;
+    background-color: $warning-color;
+    border-radius: $border-radius-round;
+    display: flex;
+    height: 8px;
+    justify-content: center;
+    left: 2px;
+    position: absolute;
+    top: 0px;
+    width: 8px;
+  }
+}

@@ -28,9 +28,15 @@ export interface GeolocationPostitionObject {
   timestamp: number;
 }
 
-export interface OrganizationInvitation {
+export interface OutboundOrganizationInvitation {
   userId: string;
   role: OrganizationRole;
+}
+
+export interface OrganizationInvitation {
+  organizationId: string;
+  organizationRole: OrganizationRole;
+  organization: Organization;
 }
 
 export interface UserContextType {
@@ -52,6 +58,15 @@ export interface GeolocationContextType {
   error?: string;
   activateGeolocation: () => void;
 }
+
+export interface NotificationsContextType {
+  notifications?: PeoplyNotification[];
+  notificationsError?: any;
+  reload: () => void;
+  markAsRead: () => void;
+  hasUnreadNotifications: boolean;
+}
+
 export interface Snack {
   label: string;
   type?: SnackTypes;
@@ -59,6 +74,30 @@ export interface Snack {
 
 export interface SnackContextType {
   addSnack: any;
+}
+
+export enum InvitationStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  DECLINED = "DECLINED",
+  CANCELLED = "CANCELLED",
+  IGNORED = "IGNORED",
+}
+
+export enum NotificationType {
+  INVITATION_EVENT = "INVITATION_EVENT",
+  INVITATION_ORGANIZATION = "INVITATION_ORGANIZATION",
+}
+
+export interface PeoplyNotification {
+  id: string;
+  eventId: string;
+  fromUserId: string;
+  toUserId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  invitationStatus: InvitationStatus;
+  type: NotificationType;
 }
 
 export interface UserOrganizationRoles {
