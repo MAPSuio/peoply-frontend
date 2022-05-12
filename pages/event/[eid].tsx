@@ -46,7 +46,13 @@ import {
 } from "../../utils/functions";
 
 // Types.
-import { ButtonType, Event, RegStatus, SnackTypes } from "../../types/types";
+import {
+  ButtonType,
+  Event,
+  Registration,
+  RegStatus,
+  SnackTypes,
+} from "../../types/types";
 
 // Assets.
 import placeholderImage from "../../assets/images/undraw_partying.png";
@@ -65,7 +71,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const goBack = useBack();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
-  const [registered, setRegistered] = useState(false);
+  const [registrationStatus, setRegistrationStatus] = useState<RegStatus>();
   const [registeredFetched, setRegisteredFetched] = useState(false);
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
@@ -98,10 +104,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
         if (registration === null) {
           return;
         }
-
-        if (registration.regStatus === RegStatus.GOING) {
-          setRegistered(true);
-        }
+        setRegistrationStatus(registration.regStatus);
       } else if (!loadingUser && !user && eventData) {
         setRegisteredFetched(true);
       }
@@ -151,19 +154,29 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const registerForEvent = async () => {
     if (user) {
       if (openForRegistrations()) {
-        let success = false;
+        let newRegistration: Registration | undefined;
         try {
-          success = await registerUser(user.id, eventData.id, RegStatus.GOING);
-        } catch (e) {}
+          newRegistration = await registerUser(
+            user.id,
+            eventData.id,
+            RegStatus.GOING,
+          );
+        } catch (e) {
+          newRegistration = undefined;
+        }
 
-        if (success) {
-          setRegistered(true);
+        if (newRegistration) {
+          setRegistrationStatus(newRegistration.regStatus);
           updateEvent();
-          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+          if (newRegistration.regStatus === RegStatus.GOING) {
+            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+          } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
+            addSnack("Du er nå på ventliste", SnackTypes.SUCCESS);
+          }
         } else {
           addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
         }
-        return success;
+        return newRegistration;
       } else {
         addSnack("Dette arrangementet er ferdig.", SnackTypes.ERROR);
       }
@@ -179,7 +192,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
         success = await deleteRegistrationUser(user.id, eventData.id);
       } catch (e) {}
       if (success) {
-        setRegistered(false);
+        setRegistrationStatus(RegStatus.NOT_GOING);
         updateEvent();
         addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
       } else {
@@ -205,7 +218,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       );
     }
 
-    if (registered) {
+    if (registrationStatus === RegStatus.GOING) {
       return (
         <Button
           type={ButtonType.DANGER}
@@ -215,12 +228,43 @@ const Event = ({ event, baseUrl }: EventProps) => {
           loading={!registeredFetched}
         />
       );
-    } else {
+    } else if (
+      registrationStatus === RegStatus.NOT_GOING ||
+      !registrationStatus
+    ) {
+      if (eventData?.registrations && eventData?.capacity) {
+        if (
+          eventData.registrations?.filter(
+            (r) => r.regStatus === RegStatus.GOING,
+          ).length < eventData?.capacity
+        ) {
+          return (
+            <Button
+              text="Meld deg på arrangementet"
+              className={styles.primaryButton}
+              onClick={registerForEvent}
+              loading={!registeredFetched}
+            />
+          );
+        } else {
+          return (
+            <Button
+              type={ButtonType.WARNING}
+              text="Meld deg på ventliste"
+              className={styles.primaryButton}
+              onClick={registerForEvent}
+              loading={!registeredFetched}
+            />
+          );
+        }
+      }
+    } else if (registrationStatus === RegStatus.WAITLISTED) {
       return (
         <Button
-          text="Meld deg på arrangementet"
+          type={ButtonType.DANGER}
+          text="Avmeld deg fra ventliste"
           className={styles.primaryButton}
-          onClick={registerForEvent}
+          onClick={unregisterForEvent}
           loading={!registeredFetched}
         />
       );

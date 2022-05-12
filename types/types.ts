@@ -149,7 +149,7 @@ export interface Registration {
   userId: string;
   user: User;
   regDate: string;
-  regStatus: string;
+  regStatus: RegStatus;
   attendance: boolean;
 }
 
@@ -251,7 +251,7 @@ export enum SettingTypes {
 export enum RegStatus {
   INVITED = "INVITED",
   GOING = "GOING",
-  NOTGOING = "NOT_GOING",
+  NOT_GOING = "NOT_GOING",
   WAITLISTED = "WAITLISTED",
 }
 

@@ -3,6 +3,7 @@ import {
   FavoriteData,
   RegistrationData,
   Event,
+  Registration,
 } from "../types/types";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
@@ -154,7 +155,7 @@ async function registerUser(
     regStatus: status,
   };
 
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
+  const res: Registration = await fetchFromPeoplyApiJson(eventUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -170,7 +171,7 @@ async function unregisterUser(userId: string, eventId: string) {
   const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
-    regStatus: RegStatus.NOTGOING,
+    regStatus: RegStatus.NOT_GOING,
   };
 
   const res = await fetchFromPeoplyApiJson(eventUrl, {
