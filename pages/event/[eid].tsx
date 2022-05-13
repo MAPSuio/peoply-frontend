@@ -89,7 +89,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   /* check if the user has this event as a favorite */
   useEffect(() => {
     if (navigator && eventData?.freeformAddress) {
-      const url = `://maps.google.com?q=`;
+      const url = `https://maps.google.com?q=`;
       let query: string;
       if (eventData.poiName) {
         query = encodeURIComponent(
@@ -98,16 +98,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       } else {
         query = encodeURIComponent(eventData.freeformAddress);
       }
-
-      if (
-        navigator.platform.indexOf("iPhone") > -1 ||
-        navigator.platform.indexOf("iPad") > -1 ||
-        navigator.platform.indexOf("iPod") > -1
-      ) {
-        setMapsUrl("maps" + url + query);
-      } else {
-        setMapsUrl("https" + url + query);
-      }
+      setMapsUrl(url + query);
     }
 
     const getFavoriteStatus = async () => {
