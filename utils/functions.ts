@@ -27,11 +27,11 @@ function formatDateRange(startDate: Date, endDate: Date | null): string {
       {
         month: "short",
       },
-    )} - ${endDate.getDate()}. ${endDate.toLocaleString("default", {
+    )}–${endDate.getDate()}. ${endDate.toLocaleString("default", {
       month: "short",
     })} ${endDate.getFullYear()}`;
   } else if (endDate && startDate.getDate() !== endDate.getDate()) {
-    dateString = `${startDate.getDate()}-${endDate.getDate()}. ${endDate.toLocaleString(
+    dateString = `${startDate.getDate()}–${endDate.getDate()}. ${endDate.toLocaleString(
       "default",
       {
         month: "short",
@@ -68,7 +68,7 @@ function formatTimeRange(startDate: Date, endDate: Date | null): string {
     return `${startDate.toLocaleString("default", {
       hour: "2-digit",
       minute: "2-digit",
-    })} - ${endDate.toLocaleString("default", {
+    })}–${endDate.toLocaleString("default", {
       hour: "2-digit",
       minute: "2-digit",
     })}`;
@@ -78,7 +78,7 @@ function formatTimeRange(startDate: Date, endDate: Date | null): string {
     minute: "2-digit",
   })}${
     endDate
-      ? `-${endDate.toLocaleString("default", {
+      ? `–${endDate.toLocaleString("default", {
           hour: "2-digit",
           minute: "2-digit",
         })}`

@@ -43,8 +43,7 @@
 
 @mixin divider($thickness: 1px) {
   background-color: $divider-color;
-  border-top: $thickness solid $divider-color;
-  height: 0;
+  height: 1px;
   width: 100%;
 }
 

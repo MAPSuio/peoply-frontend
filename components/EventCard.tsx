@@ -1,12 +1,23 @@
+// Next.js.
 import Image from "next/image";
-import styles from "../styles/EventCard.module.scss";
-import CalendarIcon from "./svgs/CalendarIcon";
-import LocationIcon from "./svgs/LocationIcon";
-import SmileIcon from "./svgs/SmileIcon";
-import eventPlaceholder from "../assets/images/undraw_partying.png";
-import Link from "next/link";
+
+// Components.
+import SmileIconCard from "./svgs/SmileIconCard";
+import CalendarIconCard from "./svgs/CalendarIconCard";
+import UserIconCard from "./svgs/UserIconCard";
+import PlaceIconCard from "./svgs/PlaceIconCard";
+
+// Utils.
 import { formatDateRange, formatTimeRange } from "../utils/functions";
+
+// Types.
 import { Event } from "../types/types";
+
+// Assets.
+import eventPlaceholder from "../assets/images/undraw_partying.png";
+
+// Styles.
+import styles from "../styles/EventCard.module.scss";
 
 interface EventCardProps {
   event: Event;
@@ -19,6 +30,8 @@ const EventCard = ({ event }: EventCardProps) => {
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);
 
+  console.log(event.locationName);
+
   return (
     <div className={styles.eventCardContainer}>
       <div className={styles.eventCard}>
@@ -26,20 +39,19 @@ const EventCard = ({ event }: EventCardProps) => {
           <Image
             src={event.image ?? eventPlaceholder}
             layout="fill"
-            alt="event image"
+            alt="Noe som forhåpentligvis beskriver arrangementet"
             objectFit="cover"
-            objectPosition="center"
             /* This is black magic. This is the only configuration where the size is 384px on both desktop and mobile */
-            sizes="(max-width: 500px) 30vw, 384px"
+            sizes="(max-width: 500px) 30vw, 384px" // TODO: Consider tweaking this.
           />
         </div>
         <div className={styles.eventCardInfoContainer}>
           <div className={styles.eventCardInfo}>
             <div className={styles.eventCardInfoHeaderContainer}>
-              <h2>{event.title}</h2>
+              <h2 className={styles.title}>{event.title}</h2>
               <div className={styles.eventCardInfoHeaderPriceContainer}>
-                <SmileIcon />
-                <span>Pris</span>
+                <SmileIconCard className={styles.icon} />
+                <span>Gratis</span>
                 {/* Price */}
               </div>
             </div>
@@ -48,14 +60,26 @@ const EventCard = ({ event }: EventCardProps) => {
               <div className={styles.eventCardInfoBody}>
                 <div>
                   <div className={styles.eventCardInfoBodyItem}>
-                    <CalendarIcon />
+                    <UserIconCard className={styles.icon} />
+                    <div>
+                      {event.eventArrangers?.map((a) => (
+                        <span key={a.arranger.id}>
+                          {a.arranger.user
+                            ? `${a.arranger.user.firstName}`
+                            : a.arranger.organization?.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.eventCardInfoBodyItem}>
+                    <CalendarIconCard className={styles.icon} />
                     <div>
                       <span>{dateString}</span>
                       <span>{timeString}</span>
                     </div>
                   </div>
                   <div className={styles.eventCardInfoBodyItem}>
-                    <LocationIcon />
+                    <PlaceIconCard className={styles.icon} />
                     <span>{event.locationName}</span>
                   </div>
                 </div>

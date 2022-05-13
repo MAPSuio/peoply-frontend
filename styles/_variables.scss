@@ -5,6 +5,9 @@ $primary-color-200: #B89BFE;
 $primary-color-200-hover: #C3A9FF;
 $primary-color-muted: #594F78;
 
+// Secondary color variations.
+$secondary-color-200: #FEB99B;
+
 // Status colors.
 $success-color: #7EFB8E;
 $success-color-hover: #9BFFA9;
@@ -98,6 +101,8 @@ $border-radius-inside-card: 8px;
 $border-radius-icon: 8px;
 $border-radius-round: 100px;
 $border-radius-calendar-flair: $border-radius-regular $border-radius-regular 0 0;
+$border-radius-image-card: $border-radius-regular $border-radius-regular 0 0;
+$border-radius-event-info: 0 0 $border-radius-regular $border-radius-regular;
 
 // Shadows
 $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
@@ -136,8 +141,8 @@ $font-weight-bold: 700;
 
 /* Mobile font sizes. */
 $font-size-title: 2.25rem;
-$font-size-heading-large: 1.5rem;
-$font-size-heading-medium: 1.125rem;
+$font-size-heading-large: 1.75rem;
+$font-size-heading-medium: 1.25rem;
 $font-size-primary: 1rem;
 $font-size-input: 16px;
 $font-size-secondary: 0.875rem;
@@ -157,6 +162,7 @@ $font-size-tertiary-desktop: 0.875rem;
 $line-height-title: 1;
 $line-height-hint-text: 1.2;
 $line-height-text: 1.5;
+$line-height-card-title: 1.2;
 
 // Letter spacing
 $letter-spacing-header-large: -0.05em;

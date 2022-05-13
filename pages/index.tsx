@@ -1,38 +1,42 @@
+// Next.js.
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import useSWR from "swr";
 
+// React.
+import { useState } from "react";
+
+// Components.
 import EventCard from "../components/EventCard";
 import Navbar from "../components/Navbar";
+import HeadComponent from "../components/HeadComponent";
+import Header from "../components/Header";
 
-import styles from "../styles/Home.module.scss";
-
+// Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/free-mode";
-
-// import Swiper core and required modules
 import SwiperCore, {
   Scrollbar,
   Mousewheel,
   FreeMode,
   Navigation,
 } from "swiper";
+SwiperCore.use([Scrollbar, Mousewheel, FreeMode, Navigation]); // Install swiper modules.
 
-// install Swiper modules
-SwiperCore.use([Scrollbar, Mousewheel, FreeMode, Navigation]);
-import Header from "../components/Header";
-import { useState } from "react";
-import HeadComponent from "../components/HeadComponent";
-import { useRouter } from "next/router";
+// Services.
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
+
+// Styles.
+import styles from "../styles/Home.module.scss";
 
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const router = useRouter();
   const [today] = useState(new Date().toISOString());
+  const router = useRouter();
   const { data: futureEvents, error: futureEventsError } = useSWR(
     `/events?afterDate=${today}`,
     fetchFromPeoplyApiJson,
@@ -86,13 +90,13 @@ const EventSwiper = ({
     <div className={styles.swiperContainer}>
       <div className={styles.swiperHeader}>
         <h1>{header}</h1>
-        <Link href={seeAllUrl}>Se alle</Link>
+        <Link href={seeAllUrl}>
+          <a className={styles.link}>Se alle</a>
+        </Link>
       </div>
       <Swiper
-        freeMode={true}
         className={styles.mySwiper}
         scrollbar={{ draggable: true, hide: true }}
-        direction={"horizontal"}
         mousewheel={{ forceToAxis: true }}
         spaceBetween={16}
         slidesPerView={"auto"}

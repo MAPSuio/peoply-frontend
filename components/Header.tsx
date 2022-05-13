@@ -1,14 +1,22 @@
-import useUser from "../hooks/useUser";
-
-import styles from "../styles/Header.module.scss";
+// Next.js.
 import Link from "next/link";
+
+// React.
+import { useState } from "react";
+
+// Components.
 import Avatar from "./Avatar";
 import ChevronDownIcon from "./svgs/ChevronDownIcon";
 import MenuModal from "./MenuModal";
-import { useState } from "react";
 import ChangeContextMenu from "./ChangeContextMenu";
 import NotificationIndicator from "./NotificationIndicator";
+
+// Hooks.
+import useUser from "../hooks/useUser";
 import useNotifications from "../hooks/useNotifications";
+
+// Styles.
+import styles from "../styles/Header.module.scss";
 
 export default function Header() {
   const { user, currentOrg, orgs } = useUser();
@@ -20,7 +28,9 @@ export default function Header() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <h1>Peoply</h1>
+        <Link href="/">
+          <a className={styles.logo}>Peoply</a>
+        </Link>
         {user ? (
           <div className={styles.loggedIn}>
             {notifications && !currentOrg && (

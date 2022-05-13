@@ -3,14 +3,26 @@
 .container {
   align-items: center;
   display: flex;
-  height: 80px;
   justify-content: space-between;
-  padding: 0 1rem;
+  margin-bottom: $spacer-medium;
+  padding: $spacer-small;
 
-  > h1 {
-    font-size: 1.25rem;
-    font-weight: 500;
+  @include desktop() {
+    margin-bottom: $spacer-medium-plus;
+  }
+
+  > .logo {
+    background: linear-gradient(90deg, $primary-color-200, $secondary-color-200);
+    background-clip: text;
+    font-size: $font-size-heading-medium;
+    font-weight: $font-weight-medium;
+    line-height: 1.2;
     margin: 0;
+    -webkit-text-fill-color: transparent;
+
+    @include desktop() {
+      font-size: $font-size-heading-medium-desktop;
+    }
   }
 
   a {
