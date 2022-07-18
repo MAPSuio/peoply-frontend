@@ -1,6 +1,7 @@
 export enum OrganizationRole {
   ADMIN = "ADMIN",
   MEMBER = "MEMBER",
+  OWNER = "OWNER",
 }
 
 export interface User {

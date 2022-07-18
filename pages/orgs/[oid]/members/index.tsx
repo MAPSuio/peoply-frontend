@@ -84,6 +84,15 @@ export default function Members({ users, baseUrl }: MembersProps) {
             <p>Se og behandle medlemmer i {org.name}</p>
           </div>
           <div className={styles.memberList}>
+            <h2>Eier</h2>
+            <div className={styles.owner}>
+              {filterMembersByRole(
+                organizationUsers,
+                OrganizationRole.OWNER,
+              ).map(({ user }) => (
+                <MemberCard key={user.id} user={user} />
+              ))}
+            </div>
             <h2>Administratorer</h2>
             <div className={styles.admins}>
               {filterMembersByRole(
