@@ -15,6 +15,7 @@ interface ButtonProps {
   className?: string;
   disabled?: boolean;
   small?: boolean;
+  width?: string;
   noShadow?: boolean;
   loading?: boolean;
   loadingIconLatency?: number;
@@ -27,6 +28,7 @@ export default function Button({
   className,
   disabled,
   small,
+  width,
   noShadow,
   loading,
   loadingIconLatency = 150,
@@ -82,6 +84,7 @@ export default function Button({
         setOnClickDisableState(false);
       }}
       className={`${buttonStyles} ${className}`}
+      style={{ width }}
       disabled={loading || onClickDisableState || disabled}
     >
       {loading || onClickLoadingState ? (

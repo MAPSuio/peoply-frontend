@@ -2,44 +2,29 @@
 import Link from "next/link";
 import Image from "next/image";
 
-/* Hooks. */
-import useSnack from "../hooks/useSnack";
-
 /* Utils. */
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 
 /* Types. */
-import { Event, Registration, RegStatus, SnackTypes } from "../types/types";
+import { Event, Registration, RegStatus } from "../types/types";
 
 /* Assets. */
 import placeholderImage from "../assets/images/undraw_partying.png";
 import UsersIcon from "./svgs/UsersIcon";
 import TimeIcon from "./svgs/TimeIcon";
 import PlaceIcon from "./svgs/PlaceIcon";
-import Button from "./Button";
 import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 /* Styles. */
 import styles from "../styles/MyEventCard.module.scss";
+import { ShareButton } from "./ShareButton";
 
 interface MyEventCardProps {
   event: Event;
 }
 
 const MyEventCard = ({ event }: MyEventCardProps) => {
-  const { addSnack } = useSnack();
-
-  const buttonOnClick = (e: MouseEvent) => {
-    e.stopPropagation();
-
-    navigator.clipboard.writeText(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.urlId}`,
-    );
-
-    addSnack("Lenken ble kopiert!", SnackTypes.SUCCESS);
-  };
-
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : null;
 
@@ -98,12 +83,10 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
                 <p className={styles.data}>Oslo</p>
               </div>
             </div>
-            <Button
-              text="Kopier lenke"
-              small
-              className={styles.iconLink}
-              onClick={(e: MouseEvent) => buttonOnClick(e)}
-              noShadow
+            <ShareButton
+              width="100%"
+              buttonText="Del arrangement"
+              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.urlId}`}
             />
           </div>
         </div>
