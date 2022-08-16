@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import BackButton from "../../../../components/BackButton";
 import MemberCard from "../../../../components/MemberCard";
 import Button from "../../../../components/Button";
 import useBack from "../../../../hooks/useBack";
-import useUser from "../../../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../../../services/fetchers";
 import styles from "../../../../styles/OrgMembers.module.scss";
 import {
@@ -18,48 +16,30 @@ import useSnack from "../../../../hooks/useSnack";
 import { GetStaticProps } from "next";
 import { ParsedUrlQuery } from "querystring";
 import HeadComponent from "../../../../components/HeadComponent";
+import { getOrganizationRolePrivilege } from "../../../../utils/functions";
+import useOrganization from "../../../../hooks/useOrganization";
 
 interface MembersProps {
-  users: UserOrganizationRoles[];
+  fallbackUsers: UserOrganizationRoles[];
   baseUrl: string;
 }
 
-export default function Members({ users, baseUrl }: MembersProps) {
+export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
   const goBack = useBack();
-  const { user, loading } = useUser();
   const router = useRouter();
   const { oid } = router.query;
-  const { data: organizationUsers, error: userError } = useSWR<
-    UserOrganizationRoles[]
-  >(
-    () => (oid ? `/organizations/${oid}/members` : false),
-    fetchFromPeoplyApiJson,
-    {
-      fallbackData: users,
-    },
-  );
-
-  const { data: org, error: orgError } = useSWR<Organization>(
-    () => (oid ? `/organizations/${oid}` : false),
-    fetchFromPeoplyApiJson,
-  );
+  const {
+    organization,
+    organizationUsers,
+    organizationUser,
+    isAdminOrOwner,
+    error: organizationError,
+  } = useOrganization(oid as string);
 
   const { addSnack } = useSnack();
 
-  const isAdmin =
-    user &&
-    organizationUsers &&
-    organizationUsers.find(
-      (orgUser) =>
-        orgUser.user.id === user.id && orgUser.role === OrganizationRole.ADMIN,
-    );
-
-  if (loading) {
-    return <></>;
-  }
-
-  if (userError || orgError) {
-    addSnack("Kunne ikke hente oppdatert data", SnackTypes.ERROR);
+  if (organizationError) {
+    addSnack("Kunne ikke hente oppdatert organisasjonsdata", SnackTypes.ERROR);
   }
 
   const filterMembersByRole = (
@@ -67,63 +47,76 @@ export default function Members({ users, baseUrl }: MembersProps) {
     role: OrganizationRole,
   ) => users.filter((user) => user.role === role);
 
-  if (organizationUsers && org) {
-    return (
-      <>
-        <HeadComponent
-          title={`${org.name} - medlemmer`}
-          description={`Medlemmer i ${org.name}`}
-          url={`${baseUrl}/organizations/${oid}/members`}
-          imageUrl={org.image}
+  const renderMemberCardsByRole = (
+    role: OrganizationRole,
+    organizationUsers: UserOrganizationRoles[],
+  ) =>
+    filterMembersByRole(organizationUsers, role).map((orgUser) => {
+      const isEditingSelf = organizationUser?.user.id === orgUser.user.id;
+      const hasHigherPrivilege =
+        organizationUser &&
+        getOrganizationRolePrivilege(organizationUser) >
+          getOrganizationRolePrivilege(orgUser);
+      const canEdit = isEditingSelf || hasHigherPrivilege;
+      return canEdit ? (
+        <MemberCard
+          link={`/orgs/${oid}/members/${orgUser.user.id}/edit`}
+          organizationUser={orgUser}
+          key={orgUser.user.id}
         />
+      ) : (
+        <MemberCard organizationUser={orgUser} key={orgUser.user.id} />
+      );
+    });
 
-        <div className={styles.container}>
-          <BackButton onClick={goBack} />
-          <div className={styles.header}>
-            <h1>Medlemmer</h1>
-            <p>Se og behandle medlemmer i {org.name}</p>
-          </div>
-          <div className={styles.memberList}>
-            <h2>Eier</h2>
-            <div className={styles.owner}>
-              {filterMembersByRole(
-                organizationUsers,
-                OrganizationRole.OWNER,
-              ).map(({ user }) => (
-                <MemberCard key={user.id} user={user} />
-              ))}
-            </div>
-            <h2>Administratorer</h2>
-            <div className={styles.admins}>
-              {filterMembersByRole(
-                organizationUsers,
-                OrganizationRole.ADMIN,
-              ).map(({ user }) => (
-                <MemberCard key={user.id} user={user} />
-              ))}
-            </div>
-            <h2>Medlemmer</h2>
-            <div className={styles.members}>
-              {filterMembersByRole(
-                organizationUsers,
-                OrganizationRole.MEMBER,
-              ).map(({ user }) => (
-                <MemberCard key={user.id} user={user} />
-              ))}
-            </div>
-          </div>
-          {isAdmin && (
-            <Link href={`/orgs/${oid}/invite`} passHref>
-              <a className={styles.primaryButton}>
-                <Button text="Legg til flere" />
-              </a>
-            </Link>
-          )}
+  return (
+    <>
+      <HeadComponent
+        title={`${organization?.name} - medlemmer`}
+        description={`Medlemmer i ${organization?.name}`}
+        url={`${baseUrl}/organizations/${oid}/members`}
+        imageUrl={organization?.image}
+      />
+
+      <div className={styles.container}>
+        <BackButton onClick={goBack} />
+        <div className={styles.header}>
+          <h1>Medlemmer</h1>
+          <p>Se og behandle medlemmer i {organization?.name}</p>
         </div>
-      </>
-    );
-  }
-  return <></>;
+        <div className={styles.memberList}>
+          <h2>Eier</h2>
+          <div className={styles.memberCards}>
+            {renderMemberCardsByRole(
+              OrganizationRole.OWNER,
+              organizationUsers ?? fallbackUsers,
+            )}
+          </div>
+          <h2>Administratorer</h2>
+          <div className={styles.memberCards}>
+            {renderMemberCardsByRole(
+              OrganizationRole.ADMIN,
+              organizationUsers ?? fallbackUsers,
+            )}
+          </div>
+          <h2>Medlemmer</h2>
+          <div className={styles.memberCards}>
+            {renderMemberCardsByRole(
+              OrganizationRole.MEMBER,
+              organizationUsers ?? fallbackUsers,
+            )}
+          </div>
+        </div>
+        {isAdminOrOwner && (
+          <Link href={`/orgs/${oid}/invite`} passHref>
+            <a className={styles.primaryButton}>
+              <Button text="Legg til flere" />
+            </a>
+          </Link>
+        )}
+      </div>
+    </>
+  );
 }
 
 interface IParams extends ParsedUrlQuery {
@@ -144,7 +137,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
-      users,
+      fallbackUsers: users,
       baseUrl,
     },
     revalidate: 60 * 60,

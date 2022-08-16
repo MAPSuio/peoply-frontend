@@ -1,23 +1,38 @@
+import Link from "next/link";
 import styles from "../styles/MemberCard.module.scss";
-import { User } from "../types/types";
+import { UserOrganizationRoles } from "../types/types";
 import Avatar from "./Avatar";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 
 interface MemberCardProps {
-  user: User;
+  organizationUser: UserOrganizationRoles;
+  link?: string;
 }
 
-export default function MemberCard({ user }: MemberCardProps) {
+export default function MemberCard({
+  organizationUser,
+  link,
+}: MemberCardProps) {
   return (
     <div className={styles.container}>
-      <div className={styles.info}>
-        <Avatar size="medium" user={user} />
-        <div className={styles.name}>
-          <p>{`${user.firstName} ${user.lastName}`}</p>
-          <p>Role</p>
-        </div>
-      </div>
-      <ChevronRightIcon />
+      <Link href={`/user/${organizationUser.user.id}`} passHref>
+        <a>
+          <div className={styles.info}>
+            <Avatar size="medium" user={organizationUser.user} />
+            <div className={styles.name}>
+              <p>{`${organizationUser.user.firstName} ${organizationUser.user.lastName}`}</p>
+              <p>{organizationUser.roleDescription}</p>
+            </div>
+          </div>
+        </a>
+      </Link>
+      {link && (
+        <Link href={link} passHref>
+          <a>
+            <ChevronRightIcon />
+          </a>
+        </Link>
+      )}
     </div>
   );
 }

@@ -1,4 +1,10 @@
-import { InputPages, CircleLabels, Weekdays } from "../types/types";
+import {
+  InputPages,
+  CircleLabels,
+  Weekdays,
+  OrganizationRole,
+  UserOrganizationRoles,
+} from "../types/types";
 
 function formatDateRange(startDate: Date, endDate: Date | null): string {
   let dateString: string;
@@ -413,6 +419,21 @@ function allEventInputsValid(eventInputsValid: Array<boolean>): boolean {
   return valid;
 }
 
+function getOrganizationRolePrivilege(
+  organizationRole: UserOrganizationRoles,
+): number {
+  switch (organizationRole.role) {
+    case OrganizationRole.OWNER:
+      return 3;
+    case OrganizationRole.ADMIN:
+      return 2;
+    case OrganizationRole.MEMBER:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
 export {
   formatDateRange,
   formatTimeRange,
@@ -440,4 +461,5 @@ export {
   getProgressCircleLabel,
   olderThanStart,
   getWeekday,
+  getOrganizationRolePrivilege,
 };

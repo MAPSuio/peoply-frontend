@@ -1,0 +1,49 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 5rem;
+  width: 90%;
+  @include desktop() {
+    margin-bottom: 7rem;
+  }
+}
+
+.profile {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: $spacer-medium;
+  width: 100%;
+}
+
+.name {
+  font-size: $font-size-primary;
+  font-weight: $font-weight-bold;
+  margin-top: $spacer-small-plus;
+}
+
+.roleDescription {
+  margin-top: $spacer-very-small;
+}
+
+.form {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-medium;
+  justify-content: center;
+  margin-top: $spacer-large;
+  width: 100%;
+
+  > * {
+    max-width: 500px;
+    width: 100%;
+  }
+}
+
+.confirm {
+  @include fixedAnimatedButtonContainer();
+  
+}

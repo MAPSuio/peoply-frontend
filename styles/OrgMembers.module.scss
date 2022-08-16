@@ -15,7 +15,7 @@
 
   .memberList {
     max-width: 450px;
-    width: 90%;
+    width: 100%;
 
     h2 {
       color: $text-color-primary;
@@ -26,8 +26,18 @@
       text-transform: uppercase;
     }
 
-    .admins {
-      margin-bottom: $spacer-medium;
+    > :not(:last-child) {
+      margin-bottom: $spacer-small;
+    }
+
+    .memberCards {
+      display: flex;
+      flex-direction: column;
+      gap: $spacer-very-small;
+
+      &:not(:last-child) {
+        margin-bottom: $spacer-medium;
+      }
     }
     .owner {
       margin-bottom: $spacer-medium;
@@ -40,5 +50,5 @@
   @include fixedButton();
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: 90%;
 }

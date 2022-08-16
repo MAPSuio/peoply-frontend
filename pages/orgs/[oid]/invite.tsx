@@ -1,26 +1,21 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import useSWR from "swr";
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
 import CloseIcon from "../../../components/svgs/CloseIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
+import useOrganization from "../../../hooks/useOrganization";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../../../services/fetchers";
+import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/InviteMembersToOrg.module.scss";
 import {
-  Organization,
   OrganizationRole,
   OutboundOrganizationInvitation,
   SnackTypes,
   User,
-  UserOrganizationRoles,
 } from "../../../types/types";
 
 export default function InviteMembersToOrg() {
@@ -30,17 +25,13 @@ export default function InviteMembersToOrg() {
   const { addSnack } = useSnack();
   const router = useRouter();
   const { oid } = router.query;
-  const { data: organizationUsers, error: userError } = useSWR<
-    UserOrganizationRoles[]
-  >(
-    () => (oid ? `/organizations/${oid}/members` : false),
-    fetchFromPeoplyApiJson,
-  );
-
-  const { data: org, error: orgError } = useSWR<Organization>(
-    () => (oid ? `/organizations/${oid}` : false),
-    fetchFromPeoplyApiJson,
-  );
+  const {
+    organization,
+    organizationUsers,
+    isAdminOrOwner,
+    loading: organizationsLoading,
+    error: organizationError,
+  } = useOrganization(oid as string);
 
   const onUserSelect = (user: User) => {
     setSelectedUsers([...selectedUsers, user]);
@@ -50,25 +41,20 @@ export default function InviteMembersToOrg() {
     setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
   };
 
-  if (loading) {
+  if (loading || organizationsLoading) {
     return <></>;
   }
 
-  if (userError || orgError) {
-    addSnack("Noe gikk galt", SnackTypes.ERROR);
+  if (organizationError) {
+    addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
     router.push(`/orgs/${oid}`);
   }
 
-  const isAdmin =
-    user &&
-    organizationUsers &&
-    organizationUsers.find(
-      (orgUser) =>
-        orgUser.user.id === user.id && orgUser.role === OrganizationRole.ADMIN,
+  if (!isAdminOrOwner) {
+    addSnack(
+      "Du har ikke rettigheter til å invitere ny medlemmer",
+      SnackTypes.ERROR,
     );
-
-  if (!isAdmin) {
-    addSnack("Du er ikke administrator", SnackTypes.ERROR);
     router.push(`/orgs/${oid}`);
   }
 
@@ -95,18 +81,18 @@ export default function InviteMembersToOrg() {
     }
   };
 
-  if (user && organizationUsers && org) {
+  if (user && organizationUsers && organization) {
     return (
       <>
         <HeadComponent
-          title={`${org?.name} - Inviter medlemmer`}
+          title={`${organization.name} - Inviter medlemmer`}
           description="Inviter medlemmer til din organisasjon"
         />
         <div className={styles.container}>
           <BackButton onClick={goBack} />
           <div className={styles.header}>
             <h1>Inviter medlemmer</h1>
-            <p>Legg til nye medlemmer i {org.name}</p>
+            <p>Legg til nye medlemmer i {organization.name}</p>
           </div>
           <div className={styles.selected}>
             {selectedUsers.length !== 0 && <p>Valgte brukere: </p>}

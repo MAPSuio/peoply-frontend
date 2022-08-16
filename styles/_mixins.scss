@@ -14,6 +14,26 @@
   }
 }
 
+@mixin fixedAnimatedButtonContainer() {
+  bottom: -$spacer-large;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  transition: all 0.2s ease-in-out;
+  width: 90%;
+
+  &.show {
+    bottom: $spacer-medium;
+  }
+
+  @include desktop() {
+    
+    &.show {
+      bottom: $spacer-large;
+    }
+  }
+}
+
 @mixin createEventDesktop() {
   @media screen and (min-width: 1000px) {
     @content;

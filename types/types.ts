@@ -137,6 +137,9 @@ export interface UserOrganizationRoles {
   organization: Organization;
   user: User;
   role: OrganizationRole;
+  roleDescription: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Organization {

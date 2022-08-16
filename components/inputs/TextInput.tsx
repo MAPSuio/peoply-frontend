@@ -9,7 +9,7 @@ interface TextInputProps {
   inputId: string;
   inputName: string;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   maxLength?: number;
   minLength?: number;
   errorMessage: string;

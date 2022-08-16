@@ -1,10 +1,22 @@
 .container {
   @include card();
-  align-items: center;
+  align-items: stretch;
   display: flex;
   justify-content: space-between;
   padding: $spacer-very-small $spacer-small;
-  width: 100%;
+  width: 100%; 
+
+  > a {
+    &:first-child {
+      min-width: max-content;
+    }
+    &:not(:first-child) {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+    }
+  }
 
 
   svg {
