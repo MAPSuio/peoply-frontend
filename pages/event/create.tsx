@@ -123,8 +123,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   const router = useRouter();
   const { addSnack } = useSnack();
-  /* Might be useful later. */
-  const today = new Date();
 
   /* Get all the possible event categories. */
   const { data: categories, error: categoriesError } = useSWR(
@@ -133,8 +131,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   );
 
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventTitle: e.target.value,
     }));
     updateLocalStorage({
@@ -144,8 +142,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventDescription: e.target.value,
     }));
     updateLocalStorage({
@@ -155,8 +153,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventLocationName = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventLocationName: e.target.value,
     }));
     updateLocalStorage({
@@ -166,8 +164,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventLocation = (loc?: Models.SearchFuzzyResult) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventLocation: loc,
     }));
     updateLocalStorage({
@@ -178,8 +176,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   const updateEventCategories = (categoryId: number) => {
     if (!eventObject.eventActiveCategories.includes(categoryId)) {
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         eventActiveCategories: [
           ...eventObject.eventActiveCategories,
           categoryId,
@@ -193,8 +191,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventDateStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventDateStart: e.target.value,
     }));
     updateLocalStorage({
@@ -204,8 +202,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventTimeStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventTimeStart: e.target.value,
     }));
     updateLocalStorage({
@@ -214,9 +212,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     });
   };
 
-  const seteventHasDateEnd = (value: boolean) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+  const setEventHasDateEnd = (value: boolean) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventHasDateEnd: value,
     }));
     updateLocalStorage({
@@ -226,8 +224,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventDateEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventDateEnd: e.target.value,
     }));
     updateLocalStorage({
@@ -237,8 +235,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventTimeEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventTimeEnd: e.target.value,
     }));
     updateLocalStorage({
@@ -253,8 +251,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       const fileName = e.target.files[0].name;
       //should we add check for same filename to avoid excess writes?
       writeImageToLocalStorage(e.target.files[0]);
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         eventImage: e.target.files[0],
@@ -293,13 +291,13 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   const updateHasCapacity = (id: number) => {
     if (id === 2) {
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         eventHasCapacity: true,
       }));
     } else {
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         eventHasCapacity: false,
       }));
     }
@@ -310,8 +308,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventCapacity = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       eventCapacity: e.target.value,
     }));
     updateLocalStorage({
@@ -324,16 +322,16 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     let visibility = Visibility.PUBLIC;
     switch (id) {
       case 1:
-        setEventObject((prevEventOjbect) => ({
-          ...prevEventOjbect,
+        setEventObject((prevEventObject) => ({
+          ...prevEventObject,
           eventVisibility: Visibility.PUBLIC,
         }));
         break;
 
       case 2:
         visibility = Visibility.UNLISTED;
-        setEventObject((prevEventOjbect: EventObjectProps) => ({
-          ...prevEventOjbect,
+        setEventObject((prevEventObject: EventObjectProps) => ({
+          ...prevEventObject,
           eventVisibility: Visibility.UNLISTED,
         }));
         break;
@@ -348,22 +346,22 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateImageCached = (cached: ImageCaching) => {
-    setEventObject((prevEventOjbect) => ({
-      ...prevEventOjbect,
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
       imageCached: cached,
     }));
   };
 
   const inputPageOnClick = (step: number) => {
     if (step !== stepCount) {
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         currentStep: step,
       }));
     }
     if (step > eventObject.reachedStep) {
-      setEventObject((prevEventOjbect) => ({
-        ...prevEventOjbect,
+      setEventObject((prevEventObject) => ({
+        ...prevEventObject,
         reachedStep: step,
       }));
     }
@@ -500,16 +498,16 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     const extraInfoInputPageValid = eventCapacityValid;
 
     const validDataMap: Map<string, boolean> = new Map();
-    validDataMap.set(InputPages.TITLEPAGE, titleInputPageValid);
-    validDataMap.set(InputPages.DATEPAGE, dateInputPageValid);
-    validDataMap.set(InputPages.ADDRESSPAGE, addressInputPageValid);
-    validDataMap.set(InputPages.DESCRIPTIONPAGE, descriptionInputPageValid);
-    validDataMap.set(InputPages.IMAGEPAGE, imageInputPageValid);
+    validDataMap.set(InputPages.TITLE_PAGE, titleInputPageValid);
+    validDataMap.set(InputPages.DATE_PAGE, dateInputPageValid);
+    validDataMap.set(InputPages.ADDRESS_PAGE, addressInputPageValid);
+    validDataMap.set(InputPages.DESCRIPTION_PAGE, descriptionInputPageValid);
+    validDataMap.set(InputPages.IMAGE_PAGE, imageInputPageValid);
     validDataMap.set(
-      InputPages.EXTRAINFOPAGE,
+      InputPages.EXTRA_INFO_PAGE,
       extraInfoInputPageValid && eventExtraInfoValid,
     );
-    validDataMap.set(InputPages.SUMMARYPAGE, validEvent);
+    validDataMap.set(InputPages.SUMMARY_PAGE, validEvent);
 
     switch (step) {
       case 0:
@@ -523,7 +521,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.TITLEPAGE}
+            page={InputPages.TITLE_PAGE}
             firstPage
             buttonOnClick={inputPageOnClick}
           >
@@ -554,7 +552,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.DATEPAGE}
+            page={InputPages.DATE_PAGE}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic={eventObject.eventHasDateEnd}
           >
@@ -588,7 +586,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
               {!eventObject.eventHasDateEnd && (
                 <button
                   className={styles.addDateContainer}
-                  onClick={() => seteventHasDateEnd(true)}
+                  onClick={() => setEventHasDateEnd(true)}
                 >
                   <PlusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
@@ -597,7 +595,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
               {eventObject.eventHasDateEnd && (
                 <button
                   className={styles.addDateContainer}
-                  onClick={() => seteventHasDateEnd(false)}
+                  onClick={() => setEventHasDateEnd(false)}
                 >
                   <MinusIcon className={styles.addDateDimensions} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
@@ -643,7 +641,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.ADDRESSPAGE}
+            page={InputPages.ADDRESS_PAGE}
             buttonOnClick={inputPageOnClick}
             padding
           >
@@ -693,7 +691,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.DESCRIPTIONPAGE}
+            page={InputPages.DESCRIPTION_PAGE}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
           >
@@ -733,7 +731,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             stepCount={stepCount}
             buttonText={buttonText}
             validDataMap={validDataMap}
-            page={InputPages.IMAGEPAGE}
+            page={InputPages.IMAGE_PAGE}
             setEventImageValid={setEventImageValid}
             buttonOnClick={inputPageOnClick}
             placeButtonStatic
@@ -762,7 +760,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             buttonText={buttonText}
             placeButtonStatic
             validDataMap={validDataMap}
-            page={InputPages.EXTRAINFOPAGE}
+            page={InputPages.EXTRA_INFO_PAGE}
             setEventExtraInfoValid={setEventExtraInfoValid}
             buttonOnClick={inputPageOnClick}
           >
@@ -844,7 +842,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             buttonText={buttonText}
             placeButtonStatic
             validDataMap={validDataMap}
-            page={InputPages.SUMMARYPAGE}
+            page={InputPages.SUMMARY_PAGE}
             buttonOnClick={inputPageOnClick}
             createEventFunction={summaryPageOnClick}
             changeStep={inputPageOnClick}
@@ -865,7 +863,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   async function writeImageToLocalStorage(file: File) {
     if (file.size > 4500000) {
-      updateImageCached(ImageCaching.PREEMPTIVEMESSAGE);
+      updateImageCached(ImageCaching.PREEMPTIVE_MESSAGE);
       localStorage.removeItem("eventImage");
       return;
     }
@@ -917,12 +915,12 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       startNewEventCreation();
     }
     setEventExtraInfoValid(oldEventObject.eventExtraInfoValid);
-    if (oldEventObject.imageCached === ImageCaching.PREEMPTIVEMESSAGE) {
+    if (oldEventObject.imageCached === ImageCaching.PREEMPTIVE_MESSAGE) {
       setEventImageValid(false);
       setEventObject(() => ({
         ...oldEventObject,
         eventImage: undefined,
-        imageCached: ImageCaching.REFRESHMESSAGE,
+        imageCached: ImageCaching.REFRESH_MESSAGE,
         eventImageValid: false,
         currentStep: 4,
       }));
@@ -950,7 +948,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         {modalOpen && (
           <Modal
             label="Fortsett opprettelse av arrangement?"
-            description="Vi ser at du har et tidligere arrangement som ikke ble postet. Vil du fortsette der du slapp, eller opprette et nytt arrangment?"
+            description="Vi ser at du har et tidligere arrangement som ikke ble postet. Vil du fortsette der du slapp, eller opprette et nytt arrangement?"
             buttonText="Fortsett"
             secondaryButtonText="Opprett nytt"
             buttonOnClick={continueEventCreation}

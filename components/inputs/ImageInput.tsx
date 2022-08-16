@@ -60,7 +60,7 @@ const ImageInput = ({
   const fileTooLarge = value && value.size > fileMaxSize;
   const fileNotCached = !fileTooLarge && value && value.size > maxCachedSize;
   const oldFileNotCached =
-    !fileTooLarge && imageCached === ImageCaching.REFRESHMESSAGE;
+    !fileTooLarge && imageCached === ImageCaching.REFRESH_MESSAGE;
 
   const imageSource = value
     ? value && URL.createObjectURL(value)

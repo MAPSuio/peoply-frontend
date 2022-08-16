@@ -9,7 +9,7 @@ import SummaryCard from "./SummaryCard";
 import TitleCircle from "./TitleCircle";
 import Tag from "./Tag";
 
-import CalendarCircleSummmary from "./CalendarCircleSummary";
+import CalendarCircleSummary from "./CalendarCircleSummary";
 import DataCircleSummary from "./DataCircleSummary";
 import PlaceCircleSummary from "./PlaceCircleSummary";
 import InfoCircleSummary from "./InfoCircleSummary";
@@ -27,8 +27,7 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
-import { ImageCaching, Visibility } from "../types/types";
-import { Models } from "azure-maps-rest";
+import { Visibility } from "../types/types";
 import { EventObjectProps } from "../pages/event/create";
 
 interface SummaryPageProps {
@@ -229,7 +228,7 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={1}
-          Icon={<CalendarCircleSummmary />}
+          Icon={<CalendarCircleSummary />}
           onClick={buttonOnClick}
         >
           <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>

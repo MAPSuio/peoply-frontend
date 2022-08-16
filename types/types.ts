@@ -270,13 +270,13 @@ export interface EventInvitation {
 }
 
 export enum InputPages {
-  TITLEPAGE = "titlePage",
-  DATEPAGE = "datePage",
-  ADDRESSPAGE = "addressPage",
-  DESCRIPTIONPAGE = "descriptionPage",
-  IMAGEPAGE = "imagePage",
-  EXTRAINFOPAGE = "extraInfoPage",
-  SUMMARYPAGE = "summaryPage",
+  TITLE_PAGE = "titlePage",
+  DATE_PAGE = "datePage",
+  ADDRESS_PAGE = "addressPage",
+  DESCRIPTION_PAGE = "descriptionPage",
+  IMAGE_PAGE = "imagePage",
+  EXTRA_INFO_PAGE = "extraInfoPage",
+  SUMMARY_PAGE = "summaryPage",
 }
 
 export enum CircleLabels {
@@ -302,8 +302,8 @@ export enum Visibility {
 }
 export enum ImageCaching {
   OK,
-  PREEMPTIVEMESSAGE,
-  REFRESHMESSAGE,
+  PREEMPTIVE_MESSAGE,
+  REFRESH_MESSAGE,
 }
 
 export enum SettingTypes {
@@ -321,7 +321,7 @@ export enum RegStatus {
 export enum SectionTypes {
   REGISTERED,
   FAVORITES,
-  MYEVENTS,
+  MY_EVENTS,
 }
 
 export enum Weekdays {

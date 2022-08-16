@@ -281,21 +281,21 @@ function getInputPageData(step: number): {
 function getInputPageName(step: number): string {
   switch (step) {
     case 0:
-      return InputPages.TITLEPAGE;
+      return InputPages.TITLE_PAGE;
     case 1:
-      return InputPages.DATEPAGE;
+      return InputPages.DATE_PAGE;
     case 2:
-      return InputPages.ADDRESSPAGE;
+      return InputPages.ADDRESS_PAGE;
     case 3:
-      return InputPages.DESCRIPTIONPAGE;
+      return InputPages.DESCRIPTION_PAGE;
     case 4:
-      return InputPages.IMAGEPAGE;
+      return InputPages.IMAGE_PAGE;
     case 5:
-      return InputPages.EXTRAINFOPAGE;
+      return InputPages.EXTRA_INFO_PAGE;
     case 6:
-      return InputPages.SUMMARYPAGE;
+      return InputPages.SUMMARY_PAGE;
     default:
-      return InputPages.TITLEPAGE;
+      return InputPages.TITLE_PAGE;
   }
 }
 

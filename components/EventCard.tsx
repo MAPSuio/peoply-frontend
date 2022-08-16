@@ -30,8 +30,6 @@ const EventCard = ({ event }: EventCardProps) => {
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);
 
-  console.log(event.locationName);
-
   return (
     <div className={styles.eventCardContainer}>
       <div className={styles.eventCard}>

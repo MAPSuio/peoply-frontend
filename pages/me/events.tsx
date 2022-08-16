@@ -12,12 +12,10 @@ import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButt
 import Button from "../../components/Button";
 
 /* Utils. */
-import { registerForEventTest } from "../../services/events";
 import { formatDateRange, getWeekday } from "../../utils/functions";
 
 /* Hooks. */
 import useUser from "../../hooks/useUser";
-import useSnack from "../../hooks/useSnack";
 
 /* Types. */
 import {
@@ -26,11 +24,9 @@ import {
   Registration,
   RegStatus,
   SectionTypes,
-  SnackTypes,
 } from "../../types/types";
 
 /* Assets. */
-import ChevronDownIcon from "../../components/svgs/ChevronDownIcon";
 import ListIcon from "../../components/svgs/ListIcon";
 import CalendarIconSummary from "../../components/svgs/CalendarIconSummary";
 import HeartIcon from "../../components/svgs/HeartIcon";
@@ -72,11 +68,10 @@ const MyEvents = () => {
       case SectionTypes.FAVORITES:
         if (eventsFavorited) setActiveRegistrations(eventsFavorited);
         break;
-      case SectionTypes.MYEVENTS:
+      case SectionTypes.MY_EVENTS:
         if (eventsArranging) setActiveRegistrations([...eventsArranging]);
         break;
       default:
-        console.log("default triggered:", activeRegistrations);
         break;
     }
   };
@@ -161,14 +156,14 @@ const MyEvents = () => {
               </button>
               <button
                 className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.MYEVENTS)}
+                onClick={() => changeActiveSection(SectionTypes.MY_EVENTS)}
               >
                 <ListIcon
                   className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.MYEVENTS && styles.active
+                    activeSection === SectionTypes.MY_EVENTS && styles.active
                   }`}
                 />
-                {activeSection === SectionTypes.MYEVENTS && (
+                {activeSection === SectionTypes.MY_EVENTS && (
                   <span className={styles.activeLine} />
                 )}
               </button>
@@ -241,14 +236,14 @@ const MyEvents = () => {
               </button>
               <button
                 className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.MYEVENTS)}
+                onClick={() => changeActiveSection(SectionTypes.MY_EVENTS)}
               >
                 <ListIcon
                   className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.MYEVENTS && styles.active
+                    activeSection === SectionTypes.MY_EVENTS && styles.active
                   }`}
                 />
-                {activeSection === SectionTypes.MYEVENTS && (
+                {activeSection === SectionTypes.MY_EVENTS && (
                   <span className={styles.activeLine} />
                 )}
               </button>
@@ -301,7 +296,7 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
       return "Du er ikke meldt på noen arrangementer!";
     } else if (eventType === SectionTypes.FAVORITES) {
       return "Du har ikke markert noen arrangementer som favoritt!";
-    } else if (eventType === SectionTypes.MYEVENTS) {
+    } else if (eventType === SectionTypes.MY_EVENTS) {
       return "Du har ikke opprettet noen arrangementer!";
     }
   };
@@ -316,7 +311,7 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
             placeholder="blur"
           />
         </div>
-        {eventType === SectionTypes.MYEVENTS ? (
+        {eventType === SectionTypes.MY_EVENTS ? (
           <Link href="/event/create">
             <a className={styles.button}>
               <Button text="Opprett et nytt arrangement" />

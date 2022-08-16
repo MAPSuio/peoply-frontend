@@ -3,7 +3,6 @@ import { useState } from "react";
 import ErrorIcon from "../svgs/ErrorIcon";
 
 import styles from "../../styles/TimeInput.module.scss";
-import { laterThanNow } from "../../utils/functions";
 
 interface TimeInputProps {
   value: string;
