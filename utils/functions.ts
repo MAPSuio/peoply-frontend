@@ -6,7 +6,7 @@ import {
   UserOrganizationRoles,
 } from "../types/types";
 
-function formatDateRange(startDate: Date, endDate: Date | null): string {
+function formatDateRange(startDate: Date, endDate?: Date | null): string {
   let dateString: string;
   // if start date, month and year is today
   if (

@@ -1,0 +1,87 @@
+
+.container {
+  display: flex;
+  justify-content: center;
+  width: 100%
+}
+
+.tab {
+  @include resetButton();
+  align-items: center;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  position: relative;
+  width: 100%;
+  
+  span{
+    transition: color $animation-duration ease-in-out;
+  }
+
+  svg {
+    fill: none;
+    height: 24px;
+    stroke: $text-color-primary;
+    transition: all $animation-duration ease;
+    width: 24px;
+  
+    @include desktop {
+      height: 32px;
+      width: 32px;
+    }
+
+  }
+}
+.selected {
+    
+  span {
+    color: #FFF;
+    font-weight: $font-weight-medium;
+  }
+
+  svg {
+    stroke: $text-color-emphasis;
+  }
+
+  .activeLine {
+    animation-duration: $animation-duration;
+    animation-fill-mode: both;
+    animation-name: line-enter-reduced-motion;
+    animation-timing-function: ease;
+    background-color: $text-color-emphasis;
+    bottom: 0px;
+    height: 1px;
+    left: 0;
+    margin: 0 auto;
+    position: absolute;
+    right: 0;
+    width: 100%;
+  
+    @media (prefers-reduced-motion: no-preference) {
+      animation-name: line-enter-reduced-motion, line-enter-full-motion;
+    }
+  }
+  
+  /* The reduced motion version of the animation. */
+  @keyframes line-enter-reduced-motion {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* The full motion version of the animation. */
+  @keyframes line-enter-full-motion {
+    from {
+      width: 0%;
+    }
+  
+    to {
+      width: 100%;
+    }
+  }
+}

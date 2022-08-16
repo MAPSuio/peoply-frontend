@@ -426,21 +426,25 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   )}
                 </div>
               </div>
-              <div
-                className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-              >
-                <SmallCheckCircle />
-                <p className={styles.infoText}>
-                  <span className={styles.emphasis}>{`${
-                    eventData.registrations?.filter(
-                      (r) => r.regStatus === RegStatus.GOING,
-                    ).length
-                  }${
-                    eventData.capacity ? `/${eventData.capacity}` : ""
-                  }`}</span>{" "}
-                  påmeldte
-                </p>
-              </div>
+              <Link href={`/event/${eventData.id}/participants`} passHref>
+                <a>
+                  <div
+                    className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
+                  >
+                    <SmallCheckCircle />
+                    <p className={styles.infoText}>
+                      <span className={styles.emphasis}>{`${
+                        eventData.registrations?.filter(
+                          (r) => r.regStatus === RegStatus.GOING,
+                        ).length
+                      }${
+                        eventData.capacity ? `/${eventData.capacity}` : ""
+                      }`}</span>{" "}
+                      påmeldte
+                    </p>
+                  </div>
+                </a>
+              </Link>
             </div>
           </div>
           <div className={styles.descWrapper}>

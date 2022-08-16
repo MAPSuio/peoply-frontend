@@ -61,11 +61,16 @@ export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
       return canEdit ? (
         <MemberCard
           link={`/orgs/${oid}/members/${orgUser.user.id}/edit`}
-          organizationUser={orgUser}
+          user={orgUser.user}
+          description={orgUser.roleDescription}
           key={orgUser.user.id}
         />
       ) : (
-        <MemberCard organizationUser={orgUser} key={orgUser.user.id} />
+        <MemberCard
+          user={orgUser.user}
+          description={orgUser.roleDescription}
+          key={orgUser.user.id}
+        />
       );
     });
 

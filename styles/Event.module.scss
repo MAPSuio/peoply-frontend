@@ -184,6 +184,7 @@
     align-items: center;
     display: flex;
     flex-flow: row wrap;
+    width: max-content;
 
     .infoText {
       font-family: $mono-font;
@@ -194,6 +195,10 @@
         font-size: $font-size-secondary-desktop;
       }
     }
+  }
+
+  a {
+    width: max-content;
   }
 }
 

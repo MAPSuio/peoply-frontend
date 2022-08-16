@@ -1,0 +1,39 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 5rem;
+  width: 100%;
+  
+  @include desktop() {
+    margin-bottom: 7rem;
+  }
+
+  .content {
+    // max-width: 450px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-very-small;
+    margin-top: $spacer-medium;
+    width: 90%;
+
+    @include desktop() {
+      width: 100%;
+    }
+  }
+}
+
+.backButton {
+  margin-left: 5%;
+}
+
+.header {
+  @include headingContainer();
+}
+
+.notFound {
+  text-align: center;
+  width: 100%;
+}

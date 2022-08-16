@@ -182,7 +182,8 @@ export interface Registration {
   event: Event;
   userId: string;
   user: User;
-  regDate: string;
+  createdAt: string;
+  updatedAt: string;
   regStatus: RegStatus;
   attendance: boolean;
 }
@@ -253,6 +254,19 @@ export interface EventCategory {
   category: Category;
   eventId: string;
   event: Event;
+}
+
+export interface EventInvitation {
+  id: string;
+  eventId: string;
+  event?: Event;
+  fromUserId: string;
+  fromUser?: User;
+  toUserId: string;
+  toUser?: User;
+  createdAt: Date;
+  updatedAt: Date;
+  invitationStatus: InvitationStatus;
 }
 
 export enum InputPages {
