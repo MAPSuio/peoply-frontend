@@ -49,6 +49,7 @@ const ProgressBar = ({
             />
             {!last && (
               <ProgressConnector
+                /* TODO: Fix same key error here */
                 key={step}
                 success={success}
                 nextSuccess={nextSuccess}

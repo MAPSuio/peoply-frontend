@@ -5,7 +5,7 @@
   height: 310px;
 
   @include desktop() {
-    height: 350px;
+    height: 330px;
   }
 
   .eventCard {
@@ -104,11 +104,12 @@
     }
   }
   span {
-    font-size: $font-size-secondary;
+    color: $text-color-primary;
+    font-size: $font-size-tertiary;
     font-weight: $font-weight-regular;
 
     @include desktop() {
-      font-size: $font-size-secondary-desktop;
+      font-size: $font-size-tertiary-desktop;
     }
   }
 }
@@ -117,14 +118,38 @@
   color: $text-color-emphasis;
 }
 
-.icon {
-  height: $font-size-secondary;
-  stroke: $primary-color-200;
-  stroke-width: 2;
-  width: $font-size-secondary;
+.iconContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 20px;
 
   @include desktop() {
-    height: $font-size-secondary-desktop;
-    width: $font-size-secondary-desktop;
+    width: 24px;
+  }
+}
+
+.icon {
+  height: 14px;
+  stroke: $primary-color-200;
+  stroke-width: 2;
+  width: 14px;
+
+  @include desktop() {
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.arrangerImage {
+  border-radius: $border-radius-rounded;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+  width: 20px;
+
+  @include desktop() {
+    height: 24px;
+    width: 24px;
   }
 }

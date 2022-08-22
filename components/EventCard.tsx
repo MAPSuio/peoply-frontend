@@ -30,6 +30,61 @@ const EventCard = ({ event }: EventCardProps) => {
   const dateString = formatDateRange(startDate, endDate);
   const timeString = formatTimeRange(startDate, endDate);
 
+  const getArrangerImageOrIcon = () => {
+    if (event.eventArrangers) {
+      const firstArranger = event.eventArrangers[0].arranger;
+      if (firstArranger.user) {
+        const imageSrc = firstArranger.user.image;
+        if (imageSrc) {
+          return (
+            <div className={styles.arrangerImage}>
+              <Image
+                src={imageSrc}
+                layout="fill"
+                alt="Arrangøren av arrangementet"
+                objectFit="cover"
+                sizes="5vw"
+              />
+            </div>
+          );
+        } else {
+          return (
+            <div className={styles.iconContainer}>
+              <UserIconCard className={styles.icon} />
+            </div>
+          );
+        }
+      } else {
+        const imageSrc = firstArranger.organization?.image;
+        if (imageSrc) {
+          return (
+            <div className={styles.arrangerImage}>
+              <Image
+                src={imageSrc}
+                layout="fill"
+                alt="Arrangøren av arrangementet"
+                objectFit="cover"
+                sizes="5vw"
+              />
+            </div>
+          );
+        } else {
+          return (
+            <div className={styles.iconContainer}>
+              <UserIconCard className={styles.icon} />
+            </div>
+          );
+        }
+      }
+    } else {
+      return (
+        <div className={styles.iconContainer}>
+          <UserIconCard className={styles.icon} />
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={styles.eventCardContainer}>
       <div className={styles.eventCard}>
@@ -58,7 +113,7 @@ const EventCard = ({ event }: EventCardProps) => {
               <div className={styles.eventCardInfoBody}>
                 <div>
                   <div className={styles.eventCardInfoBodyItem}>
-                    <UserIconCard className={styles.icon} />
+                    {getArrangerImageOrIcon()}
                     <div>
                       {event.eventArrangers?.map((a) => (
                         <span key={a.arranger.id}>
@@ -70,14 +125,18 @@ const EventCard = ({ event }: EventCardProps) => {
                     </div>
                   </div>
                   <div className={styles.eventCardInfoBodyItem}>
-                    <CalendarIconCard className={styles.icon} />
+                    <div className={styles.iconContainer}>
+                      <CalendarIconCard className={styles.icon} />
+                    </div>
                     <div>
                       <span>{dateString}</span>
                       <span>{timeString}</span>
                     </div>
                   </div>
                   <div className={styles.eventCardInfoBodyItem}>
-                    <PlaceIconCard className={styles.icon} />
+                    <div className={styles.iconContainer}>
+                      <PlaceIconCard className={styles.icon} />
+                    </div>
                     <span>{event.locationName}</span>
                   </div>
                 </div>

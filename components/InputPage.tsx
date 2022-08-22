@@ -1,9 +1,15 @@
+// Next.js.
 import { useRouter } from "next/router";
 
+// Components.
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 import BackButton from "./BackButton";
 
+// Assets.
+import { InputPages } from "../types/types";
+
+// Styles.
 import styles from "../styles/InputPage.module.scss";
 
 interface InputPageProps {
@@ -15,8 +21,8 @@ interface InputPageProps {
   stepCount: number;
   buttonText: string;
   placeButtonStatic?: boolean;
-  validDataMap: Map<string, boolean>;
-  page: string;
+  validDataMap: Map<InputPages, boolean>;
+  page: InputPages;
   setEventImageValid?: (eventImageValid: boolean) => void;
   setEventExtraInfoValid?: (eventExtraInfoValid: boolean) => void;
   firstPage?: boolean;

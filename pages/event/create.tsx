@@ -497,7 +497,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     const imageInputPageValid = eventImageValid;
     const extraInfoInputPageValid = eventCapacityValid;
 
-    const validDataMap: Map<string, boolean> = new Map();
+    const validDataMap: Map<InputPages, boolean> = new Map();
     validDataMap.set(InputPages.TITLE_PAGE, titleInputPageValid);
     validDataMap.set(InputPages.DATE_PAGE, dateInputPageValid);
     validDataMap.set(InputPages.ADDRESS_PAGE, addressInputPageValid);

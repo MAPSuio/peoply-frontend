@@ -100,6 +100,7 @@ const EventSwiper = ({
         mousewheel={{ forceToAxis: true }}
         spaceBetween={16}
         slidesPerView={"auto"}
+        freeMode={{ enabled: true }}
       >
         {events?.map((event: any) => (
           <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
