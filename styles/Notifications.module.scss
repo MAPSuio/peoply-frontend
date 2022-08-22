@@ -48,19 +48,20 @@
   }
 
   .notification {
-    width: 100%;
-  }
-
-  /* styles for different notifs */
-  .orgInvitation {
     @include card();
     align-items: center;
     display: flex;
     gap: $spacer-small;
     padding: $spacer-small-plus $spacer-medium;
+    width: 100%;
+
+    a {
+      color: $text-color-emphasis;
+    }
 
     p {
       color: $text-color-emphasis;
+      line-height: $line-height-text;
     }
 
     .info {

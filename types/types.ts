@@ -35,9 +35,17 @@ export interface OutboundOrganizationInvitation {
 }
 
 export interface OrganizationInvitation {
+  id: string;
+  invitationStatus: InvitationStatus;
   organizationId: string;
   organizationRole: OrganizationRole;
   organization: Organization;
+  createdAt: string;
+  updatedAt: string;
+  fromUser?: User;
+  fromUserId: string;
+  toUser?: User;
+  toUserId: string;
 }
 
 export interface UserContextType {
@@ -122,14 +130,18 @@ export enum NotificationType {
 
 export interface PeoplyNotification {
   id: string;
-  eventId: string;
-  fromUserId: string;
-  toUserId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  invitationStatus: InvitationStatus;
   type: NotificationType;
+  createdAt: string;
+  updatedAt: string;
 }
+
+export interface EventInvitationNotification
+  extends PeoplyNotification,
+    EventInvitation {}
+
+export interface OrganizationInvitationNotification
+  extends PeoplyNotification,
+    OrganizationInvitation {}
 
 export interface UserOrganizationRoles {
   organizationId: string;
@@ -264,8 +276,8 @@ export interface EventInvitation {
   fromUser?: User;
   toUserId: string;
   toUser?: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   invitationStatus: InvitationStatus;
 }
 

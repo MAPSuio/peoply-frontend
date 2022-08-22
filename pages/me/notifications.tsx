@@ -3,12 +3,17 @@ import HeadComponent from "../../components/HeadComponent";
 import Header from "../../components/Header";
 import useBack from "../../hooks/useBack";
 import useUser from "../../hooks/useUser";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import {
+  fetchFromPeoplyApi,
+  fetchFromPeoplyApiJson,
+} from "../../services/fetchers";
 import {
   ButtonType,
+  EventInvitation,
+  EventInvitationNotification,
   InvitationStatus,
   NotificationType,
-  OrganizationInvitation,
+  OrganizationInvitationNotification,
   PeoplyNotification,
   SnackTypes,
 } from "../../types/types";
@@ -20,6 +25,8 @@ import SleepImage from "../../assets/images/undraw_sleeping.png";
 import Image from "next/image";
 import useNotifications from "../../hooks/useNotifications";
 import useSWR from "swr";
+import Link from "next/link";
+import { groupBy } from "../../utils/functions";
 
 export default function Notifications() {
   const { user } = useUser();
@@ -59,15 +66,30 @@ export default function Notifications() {
     return hours;
   };
 
+  const renderTimeSince = (notification: PeoplyNotification) => {
+    const hours = getHoursSince(notification);
+    const days = Math.floor(hours / 24);
+    if (hours < 1) {
+      return "under en time siden";
+    } else if (hours === 1) {
+      return "1 time siden";
+    } else if (hours < 24) {
+      return `${hours} timer siden`;
+    } else if (days === 1) {
+      return "1 dag siden";
+    } else {
+      return `${days} dager siden`;
+    }
+  };
+
   /* updates a single notification with the given action and refetches the notifications */
-  const updateInvitation = async (
+  async function updateInvitation(
     notification: PeoplyNotification,
     action: InvitationStatus,
-  ) => {
+  ) {
     switch (notification.type) {
       case NotificationType.INVITATION_ORGANIZATION:
-        const orgInvite = notification as PeoplyNotification &
-          OrganizationInvitation;
+        const orgInvite = notification as OrganizationInvitationNotification;
         try {
           await fetchFromPeoplyApiJson(
             `/organizations/${orgInvite.organizationId}/invitations/${orgInvite.id}`,
@@ -80,9 +102,44 @@ export default function Notifications() {
             },
           );
           if (action === InvitationStatus.ACCEPTED) {
-            addSnack("Du godtok invitasjonen", SnackTypes.SUCCESS);
+            addSnack(
+              `Du godtok invitasjonen til ${orgInvite.organization.name}`,
+              SnackTypes.SUCCESS,
+            );
           } else {
-            addSnack("Du avviste invitasjonen", SnackTypes.WARNING);
+            addSnack(
+              `Du avviste invitasjonen til ${orgInvite.organization.name}`,
+              SnackTypes.WARNING,
+            );
+          }
+        } catch (e) {
+          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        }
+        break;
+
+      case NotificationType.INVITATION_EVENT:
+        const eventInvite = notification as EventInvitationNotification;
+        try {
+          await fetchFromPeoplyApi(
+            `/events/${eventInvite.eventId}/invitations`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json; charset=utf-8" },
+              body: JSON.stringify({
+                status: action,
+              }),
+            },
+          );
+          if (action === InvitationStatus.ACCEPTED) {
+            addSnack(
+              `Du godtok invitasjonen til ${eventInvite.event?.title}`,
+              SnackTypes.SUCCESS,
+            );
+          } else {
+            addSnack(
+              `Du avviste invitasjonen til ${eventInvite.event?.title}`,
+              SnackTypes.WARNING,
+            );
           }
         } catch (e) {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
@@ -93,7 +150,125 @@ export default function Notifications() {
         return;
     }
     mutateNotifications();
-  };
+  }
+
+  function renderNotificationActions(notification: PeoplyNotification) {
+    return (
+      <div className={styles.actions}>
+        <Button
+          onClick={async () =>
+            updateInvitation(notification, InvitationStatus.ACCEPTED)
+          }
+          text="Godta"
+        />
+        <Button
+          text="Avslå"
+          type={ButtonType.SECONDARY}
+          onClick={async () =>
+            updateInvitation(notification, InvitationStatus.DECLINED)
+          }
+        />
+      </div>
+    );
+  }
+
+  function renderEventInvitations(invitations: EventInvitationNotification[]) {
+    const invitationsGroupedByEventId = groupBy<
+      EventInvitationNotification,
+      string
+    >(invitations, ({ eventId }) => eventId);
+    return invitationsGroupedByEventId.map(({ values }) => {
+      const fromUsers = values.map(({ fromUser }) => (
+        <Link key={fromUser?.id} href={`/user/${fromUser?.id}`}>
+          {fromUser?.firstName}
+        </Link>
+      ));
+      const invitationSortedByCreatedDate = values.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+      const oldestInvitation = invitationSortedByCreatedDate[0];
+      const event = oldestInvitation.event;
+
+      return (
+        <div key={oldestInvitation.id} className={styles.notification}>
+          {oldestInvitation.fromUser && (
+            <Avatar user={oldestInvitation.fromUser} />
+          )}
+          <div className={styles.info}>
+            <p>
+              {(() => {
+                if (fromUsers.length === 1) {
+                  return fromUsers;
+                } else if (fromUsers.length === 2) {
+                  return (
+                    <>
+                      {fromUsers[0]} og {fromUsers[1]}
+                    </>
+                  );
+                } else {
+                  return (
+                    <>
+                      {fromUsers[0]}, {fromUsers[1]} og {fromUsers.length - 2}{" "}
+                      andre
+                    </>
+                  );
+                }
+              })()}{" "}
+              inviterer deg til å bli med på{" "}
+              <Link href={`/event/${event?.urlId}`}>{event?.title}</Link>
+            </p>
+            <p className={styles.hoursSince}>
+              {renderTimeSince(oldestInvitation)}
+            </p>
+            {renderNotificationActions(oldestInvitation)}
+          </div>
+        </div>
+      );
+    });
+  }
+
+  function renderNotifications(notifications: PeoplyNotification[]) {
+    const groupedNotifications = groupBy<PeoplyNotification, NotificationType>(
+      notifications,
+      (notif) => notif.type,
+    );
+
+    return groupedNotifications.map(({ key: type, values }) => {
+      switch (type) {
+        case NotificationType.INVITATION_EVENT:
+          return renderEventInvitations(
+            values as EventInvitationNotification[],
+          );
+
+        case NotificationType.INVITATION_ORGANIZATION:
+          return values.map((notification) => {
+            const orgInvitation =
+              notification as OrganizationInvitationNotification;
+            const { organization } = orgInvitation;
+            return (
+              <div className={styles.notification} key={orgInvitation.id}>
+                {user && (
+                  <Avatar user={user} org={orgInvitation.organization} />
+                )}
+                <div className={styles.info}>
+                  <p>
+                    <Link href={`/org/${organization.id}`}>
+                      {organization.name}
+                    </Link>{" "}
+                    inviterer deg til å bli medlem.
+                  </p>
+                  <p className={styles.hoursSince}>
+                    {renderTimeSince(orgInvitation)}
+                  </p>
+                  {renderNotificationActions(orgInvitation)}
+                </div>
+              </div>
+            );
+          });
+      }
+    });
+  }
 
   return (
     <>
@@ -114,58 +289,7 @@ export default function Notifications() {
             ></Button>
           )}
           {notifications?.length ? (
-            notifications.map((notification) => {
-              const hoursSince = getHoursSince(notification);
-              switch (notification.type) {
-                case NotificationType.INVITATION_ORGANIZATION:
-                  const orgInvitation = notification as OrganizationInvitation &
-                    PeoplyNotification;
-                  const { organization } = orgInvitation;
-                  return (
-                    <div
-                      className={`${styles.orgInvitation} ${styles.notification}`}
-                    >
-                      <Avatar user={user} org={orgInvitation.organization} />
-                      <div className={styles.info}>
-                        <p>
-                          <b>{organization.name}</b> inviterer deg til å bli
-                          medlem.
-                        </p>
-                        <p className={styles.hoursSince}>
-                          {hoursSince < 1
-                            ? "under 1 time"
-                            : `${hoursSince} time(r) siden`}{" "}
-                          siden
-                        </p>
-                        <div className={styles.actions}>
-                          <Button
-                            onClick={async () =>
-                              updateInvitation(
-                                notification,
-                                InvitationStatus.ACCEPTED,
-                              )
-                            }
-                            text="Godta"
-                          />
-                          <Button
-                            text="Avslå"
-                            type={ButtonType.SECONDARY}
-                            onClick={async () =>
-                              updateInvitation(
-                                notification,
-                                InvitationStatus.DECLINED,
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-
-                default:
-                  return <h1>def</h1>;
-              }
-            })
+            renderNotifications(notifications)
           ) : (
             <>
               <div className={styles.imageContainer}>

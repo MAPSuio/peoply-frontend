@@ -245,6 +245,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       );
     } else if (
       registrationStatus === RegStatus.NOT_GOING ||
+      registrationStatus === RegStatus.INVITED ||
       !registrationStatus
     ) {
       if (eventData?.registrations && eventData?.capacity) {
