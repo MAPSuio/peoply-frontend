@@ -27,7 +27,7 @@
   }
 
   @include desktop() {
-    
+
     &.show {
       bottom: $spacer-large;
     }
@@ -155,6 +155,16 @@
 
   @include desktop() {
     font-size: $font-size-tertiary-desktop;
+  }
+}
+
+@mixin link() {
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  font-weight: $font-weight-bold;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
   }
 }
 

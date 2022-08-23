@@ -402,7 +402,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                       return (
                         <Link
                           key={a.arranger.id}
-                          href={`/org/${a.arranger.organization.id}`}
+                          href={`/orgs/${a.arranger.organization.id}`}
                         >
                           {a.arranger.organization?.name}
                         </Link>
