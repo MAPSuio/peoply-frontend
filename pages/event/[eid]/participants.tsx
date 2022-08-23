@@ -35,21 +35,25 @@ const Participants = () => {
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.PARTICIPANTS,
   );
-  const { data: registrations, error: registrationsError } = useSWR<
-    Registration[]
-  >(
-    () => (eid ? `/events/${eid}/registrations?includeUsers=true` : false),
-    fetchFromPeoplyApiJson,
-  );
-
   const { data: event, error: eventError } = useSWR<Event>(
     () => (eid ? `/events/${eid}` : false),
     fetchFromPeoplyApiJson,
   );
 
+  const { data: registrations, error: registrationsError } = useSWR<
+    Registration[]
+  >(
+    () =>
+      event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+    fetchFromPeoplyApiJson,
+  );
+
   const { data: invitations, error: invitationsError } = useSWR<
     EventInvitation[]
-  >(() => (eid ? `/events/${eid}/invitations` : false), fetchFromPeoplyApiJson);
+  >(
+    () => (event?.id ? `/events/${event.id}/invitations` : false),
+    fetchFromPeoplyApiJson,
+  );
 
   if (registrationsError || eventError || invitationsError) {
     addSnack("Kunne ikke laste inn data for arrangementet.", SnackTypes.ERROR);

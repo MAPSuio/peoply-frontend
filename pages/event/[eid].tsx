@@ -86,6 +86,14 @@ const Event = ({ event, baseUrl }: EventProps) => {
     fallbackData: event,
   });
 
+  const { data: registrations, error: registrationsError } = useSWR<
+    Registration[]
+  >(
+    () =>
+      event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+    fetchFromPeoplyApiJson,
+  );
+
   /* check if the user has this event as a favorite */
   useEffect(() => {
     if (navigator && eventData?.freeformAddress) {
@@ -466,27 +474,48 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   </p>
                 )}
               </div>
-              <Link href={`/event/${eventData.id}/participants`} passHref>
-                <a>
-                  <div
-                    className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-                  >
-                    <div className={styles.iconContainer}>
-                      <SmallCheckCircle />
+              {registrations && (
+                <Link href={`/event/${eventData.urlId}/participants`} passHref>
+                  <a>
+                    <div
+                      className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
+                    >
+                      <div className={styles.iconContainer}>
+                        <SmallCheckCircle />
+                      </div>
+                      <p className={styles.infoText}>
+                        <span className={styles.emphasis}>{`${
+                          eventData.registrations?.filter(
+                            (r) => r.regStatus === RegStatus.GOING,
+                          ).length
+                        }${
+                          eventData.capacity ? `/${eventData.capacity}` : ""
+                        }`}</span>{" "}
+                        påmeldte
+                      </p>
                     </div>
-                    <p className={styles.infoText}>
-                      <span className={styles.emphasis}>{`${
-                        eventData.registrations?.filter(
-                          (r) => r.regStatus === RegStatus.GOING,
-                        ).length
-                      }${
-                        eventData.capacity ? `/${eventData.capacity}` : ""
-                      }`}</span>{" "}
-                      påmeldte
-                    </p>
+                  </a>
+                </Link>
+              )}
+              {(registrationsError || !registrations) && (
+                <div
+                  className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
+                >
+                  <div className={styles.iconContainer}>
+                    <SmallCheckCircle />
                   </div>
-                </a>
-              </Link>
+                  <p className={styles.infoText}>
+                    <span className={styles.emphasis}>{`${
+                      eventData.registrations?.filter(
+                        (r) => r.regStatus === RegStatus.GOING,
+                      ).length
+                    }${
+                      eventData.capacity ? `/${eventData.capacity}` : ""
+                    }`}</span>{" "}
+                    påmeldte
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           <div className={styles.descWrapper}>
