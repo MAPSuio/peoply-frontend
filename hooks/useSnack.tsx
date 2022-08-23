@@ -10,6 +10,7 @@ import {
 import { clearTimeout, setTimeout } from "timers";
 import Snackbar from "../components/Snackbar";
 import { SnackContextType, Snack, SnackTypes } from "../types/types";
+import { generateRandomKey } from "../utils/functions";
 
 const SnackbarContext = createContext<SnackContextType>({} as SnackContextType);
 
@@ -45,7 +46,7 @@ export function SnackbarProvider({
       {children}
       {snacks.map((snack: Snack, index: number) => (
         <Snackbar
-          key={snack.label}
+          key={generateRandomKey()}
           label={snack.label}
           type={snack.type}
           first={index === 0}

@@ -3,6 +3,7 @@ import ProgressConnector from "./ProgressConnector";
 
 import {
   arrayFromRange,
+  generateRandomKey,
   getInputPageName,
   getProgressCircleLabel,
 } from "../utils/functions";
@@ -39,7 +40,7 @@ const ProgressBar = ({
         return (
           <>
             <ProgressCircle
-              key={step}
+              key={generateRandomKey()}
               success={success}
               active={active}
               label={label}
@@ -49,8 +50,7 @@ const ProgressBar = ({
             />
             {!last && (
               <ProgressConnector
-                /* TODO: Fix same key error here */
-                key={step}
+                key={generateRandomKey()}
                 success={success}
                 nextSuccess={nextSuccess}
               />

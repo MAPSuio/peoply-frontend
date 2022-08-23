@@ -434,6 +434,16 @@ function getOrganizationRolePrivilege(
   }
 }
 
+/* returns a 16 character string with letters and numbers */
+function generateRandomKey() {
+  const chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+  let key = "";
+  for (let i = 0; i < 16; i++) {
+    key += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return key;
+}
+
 /* a higher order function that takes an array and a function to determine how to group the elements */
 function groupBy<T, K>(
   array: Array<T>,
@@ -479,5 +489,6 @@ export {
   olderThanStart,
   getWeekday,
   getOrganizationRolePrivilege,
+  generateRandomKey,
   groupBy,
 };
