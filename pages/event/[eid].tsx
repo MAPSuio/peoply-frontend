@@ -1,6 +1,7 @@
 // Next.js.
 import Image from "next/image";
 import { GetStaticProps } from "next";
+import Link from "next/link";
 
 // React.
 import { useEffect, useState } from "react";
@@ -60,7 +61,6 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../styles/Event.module.scss";
-import Link from "next/link";
 
 interface EventProps {
   event: Event;
@@ -296,6 +296,36 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
 
+  const getArrangerImageOrIcon = () => {
+    if (eventData.eventArrangers && eventData.eventArrangers.length > 0) {
+      const firstArranger = eventData.eventArrangers[0].arranger;
+
+      const imageSrc = firstArranger?.user
+        ? firstArranger.user.image
+        : firstArranger?.organization?.image;
+
+      if (imageSrc) {
+        return (
+          <div className={styles.arrangerImage}>
+            <Image
+              src={imageSrc}
+              alt="Arrangøren av arrangementet"
+              layout="fill"
+              objectFit="cover"
+              sizes="5vw"
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div className={styles.iconContainer}>
+            <UserCircle />
+          </div>
+        );
+      }
+    }
+  };
+
   return (
     <>
       <HeadComponent
@@ -346,7 +376,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
-                <UserCircle />
+                {getArrangerImageOrIcon()}
                 <p className={`${styles.infoText} ${styles.emphasis}`}>
                   {eventData.eventArrangers?.map((a) => {
                     if (a.arranger.user) {
@@ -376,8 +406,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
-                <DateCircle />
-                <div className={styles.flexContainer}>
+                <div className={styles.iconContainer}>
+                  <DateCircle />
+                </div>
+                <div>
                   <p
                     className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
                   >
@@ -401,10 +433,17 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomMedium}`}
               >
-                <PlaceCircle />
-                <div className={styles.flexContainer}>
-                  {eventData.freeformAddress ? (
-                    <a href={mapsUrl} target="_blank" rel="noreferrer">
+                {eventData.freeformAddress ? (
+                  <a
+                    className={styles.row}
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <div className={styles.iconContainer}>
+                      <PlaceCircle />
+                    </div>
+                    <div>
                       <p
                         className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
                       >
@@ -417,22 +456,24 @@ const Event = ({ event, baseUrl }: EventProps) => {
                           {eventData.freeformAddress}
                         </p>
                       )}
-                    </a>
-                  ) : (
-                    <p
-                      className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                    >
-                      {eventData.locationName}
-                    </p>
-                  )}
-                </div>
+                    </div>
+                  </a>
+                ) : (
+                  <p
+                    className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+                  >
+                    {eventData.locationName}
+                  </p>
+                )}
               </div>
               <Link href={`/event/${eventData.id}/participants`} passHref>
                 <a>
                   <div
                     className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
                   >
-                    <SmallCheckCircle />
+                    <div className={styles.iconContainer}>
+                      <SmallCheckCircle />
+                    </div>
                     <p className={styles.infoText}>
                       <span className={styles.emphasis}>{`${
                         eventData.registrations?.filter(

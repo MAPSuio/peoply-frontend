@@ -202,6 +202,30 @@
   }
 }
 
+.arrangerImage {
+  border-radius: $border-radius-rounded;
+  height: 24px;
+  overflow: hidden;
+  position: relative;
+  width: 24px;
+
+  @include desktop() {
+    height: 32px;
+    width: 32px;
+  }
+}
+
+.iconContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 24px;
+
+  @include desktop() {
+    width: 32px;
+  }
+}
+
 .title {
   font-size: $font-size-title;
   margin-bottom: $spacer-small;
@@ -218,9 +242,10 @@
   width: $page-width-mobile;
 }
 
-.flexContainer {
+.row {
+  align-items: center;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
 }
 
 .emphasis {

@@ -31,7 +31,7 @@ const EventCard = ({ event }: EventCardProps) => {
   const timeString = formatTimeRange(startDate, endDate);
 
   const getArrangerImageOrIcon = () => {
-    if (event.eventArrangers) {
+    if (event.eventArrangers && event.eventArrangers.length > 0) {
       const firstArranger = event.eventArrangers[0].arranger;
       if (firstArranger.user) {
         const imageSrc = firstArranger.user.image;
