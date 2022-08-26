@@ -4,12 +4,9 @@ import Header from "../components/Header";
 import GlobalSearch from "../components/GlobalSearch";
 
 import styles from "../styles/Find.module.scss";
-import BackButton from "../components/BackButton";
-import useBack from "../hooks/useBack";
 import Navbar from "../components/Navbar";
 
 const Find: NextPage = () => {
-  const goBack = useBack();
   return (
     <>
       <HeadComponent
@@ -18,7 +15,6 @@ const Find: NextPage = () => {
       />
       <Header />
       <div className={styles.wrapper}>
-        <BackButton className={styles.back} onClick={goBack} />
         <div className={styles.header}>
           <h1>Finn</h1>
           <p>Finn arrangementer og organisasjoner</p>

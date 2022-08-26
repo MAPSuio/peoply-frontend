@@ -37,6 +37,7 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 import styles from "../../styles/MyEvents.module.scss";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSWR from "swr";
+import TabSelection from "../../components/TabSelection";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
@@ -118,57 +119,48 @@ const MyEvents = () => {
     setDateAndEventsMapArray(dateAndEventsArray);
   }, [activeRegistrations, dateAndEventsMap]);
 
+  function convertSectionTypeToLabel(section: SectionTypes) {
+    switch (section) {
+      case SectionTypes.REGISTERED:
+        return "Skal";
+      case SectionTypes.FAVORITES:
+        return "Favoritter";
+      case SectionTypes.MY_EVENTS:
+        return "Arrangerer";
+      default:
+        return "";
+    }
+  }
+
+  if (loading) {
+    return <></>;
+  }
+
   if (user) {
     return (
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <div className={styles.userContainer}>
-            <h1 className={styles.title}>{user.firstName}</h1>
-            {/* <ChevronDownIcon className={styles.chevronDownIcon} /> */}
-          </div>
-          <div className={styles.sectionButtonsContainer}>
-            <div className={styles.buttonsContainer}>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.REGISTERED)}
-              >
-                <CalendarIconSummary
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.REGISTERED && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.REGISTERED && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.FAVORITES)}
-              >
-                <HeartIcon
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.FAVORITES && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.FAVORITES && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.MY_EVENTS)}
-              >
-                <ListIcon
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.MY_EVENTS && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.MY_EVENTS && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-            </div>
-          </div>
+          <TabSelection
+            options={[
+              {
+                label: convertSectionTypeToLabel(SectionTypes.REGISTERED),
+                value: SectionTypes.REGISTERED,
+                icon: <CalendarIconSummary />,
+              },
+              {
+                label: convertSectionTypeToLabel(SectionTypes.FAVORITES),
+                value: SectionTypes.FAVORITES,
+                icon: <HeartIcon />,
+              },
+              {
+                label: convertSectionTypeToLabel(SectionTypes.MY_EVENTS),
+                value: SectionTypes.MY_EVENTS,
+                icon: <ListIcon />,
+              },
+            ]}
+            selected={activeSection}
+            setSelected={changeActiveSection}
+          />
 
           <div className={styles.eventContainer}>
             {dateAndEventsMapArray.length > 0 ? (
@@ -193,65 +185,6 @@ const MyEvents = () => {
             ) : (
               <EmptyEvents eventType={activeSection} />
             )}
-          </div>
-          <Navbar />
-        </div>
-      </div>
-    );
-  } else if (loading) {
-    return (
-      <div className={styles.wrapper}>
-        <div className={styles.container}>
-          <div className={styles.userContainer}>
-            <h1 className={styles.title}>Bruker</h1>
-            {/* <ChevronDownIcon className={styles.chevronDownIcon} /> */}
-          </div>
-          <div className={styles.sectionButtonsContainer}>
-            <div className={styles.buttonsContainer}>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.REGISTERED)}
-              >
-                <CalendarIconSummary
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.REGISTERED && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.REGISTERED && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.FAVORITES)}
-              >
-                <HeartIcon
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.FAVORITES && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.FAVORITES && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-              <button
-                className={styles.button}
-                onClick={() => changeActiveSection(SectionTypes.MY_EVENTS)}
-              >
-                <ListIcon
-                  className={`${styles.sectionIcon} ${
-                    activeSection === SectionTypes.MY_EVENTS && styles.active
-                  }`}
-                />
-                {activeSection === SectionTypes.MY_EVENTS && (
-                  <span className={styles.activeLine} />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.eventContainer}>
-            {/* Add loading indicator here, with skeleton loading screens before launch. */}
           </div>
           <Navbar />
         </div>

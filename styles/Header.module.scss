@@ -4,11 +4,11 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-bottom: $spacer-medium;
+  margin-bottom: $spacer-small;
   padding: $spacer-small;
 
   @include desktop() {
-    margin-bottom: $spacer-medium-plus;
+    margin-bottom: $spacer-medium;
   }
 
   > .logo {

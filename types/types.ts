@@ -331,9 +331,9 @@ export enum RegStatus {
 }
 
 export enum SectionTypes {
-  REGISTERED,
-  FAVORITES,
-  MY_EVENTS,
+  REGISTERED = "REGISTERED",
+  FAVORITES = "FAVORITES",
+  MY_EVENTS = "MY_EVENTS",
 }
 
 export enum Weekdays {

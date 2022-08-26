@@ -12,11 +12,17 @@
   display: flex;
   flex-direction: column;
   gap: $spacer-very-small;
+  padding-top: $spacer-small;
   position: relative;
   width: 100%;
   
   span{
+    font-size: $font-size-secondary;
     transition: color $animation-duration ease-in-out;
+
+    @include desktop() {
+      font-size: $font-size-primary-desktop;
+    }
   }
 
   svg {

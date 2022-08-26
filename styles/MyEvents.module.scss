@@ -9,9 +9,13 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
+  gap: $spacer-small-plus;
   justify-content: center;
-  margin-top: $spacer-medium-plus;
   width: 100%;
+
+  @include desktop() {
+    margin-top: $spacer-medium;
+  }
 
   .button {
     align-items: center;
