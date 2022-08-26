@@ -61,6 +61,8 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../styles/Event.module.scss";
+import { ShareButton } from "../../components/ShareButton";
+import LinkButton from "../../components/LinkButton";
 
 interface EventProps {
   event: Event;
@@ -467,11 +469,19 @@ const Event = ({ event, baseUrl }: EventProps) => {
                     </div>
                   </a>
                 ) : (
-                  <p
-                    className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                  >
-                    {eventData.locationName}
-                  </p>
+                  <>
+                    <div className={styles.iconContainer}>
+                      <PlaceCircle />
+                    </div>
+
+                    <div>
+                      <p
+                        className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+                      >
+                        {eventData.locationName}
+                      </p>
+                    </div>
+                  </>
                 )}
               </div>
               {registrations && (
@@ -519,7 +529,22 @@ const Event = ({ event, baseUrl }: EventProps) => {
             </div>
           </div>
           <div className={styles.descWrapper}>
-            <h2 className={styles.descHeader}>Informasjon</h2>
+            <div className={styles.descHeaderWrapper}>
+              <div className={styles.shareButtons}>
+                <ShareButton
+                  buttonText="Del arrangement"
+                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/event/${eventData.urlId}`}
+                  shareTitle={eventData.title}
+                />
+                <LinkButton
+                  href={`/event/${eventData.urlId}/invite`}
+                  small
+                  text="Inviter brukere"
+                  type={ButtonType.SECONDARY}
+                />
+              </div>
+              <h2 className={styles.descHeader}>Informasjon</h2>
+            </div>
             <div className={styles.descriptionContainer}>
               {eventData.description.split("\n").map((str) => (
                 <p key={str} className={styles.descText}>

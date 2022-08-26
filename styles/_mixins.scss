@@ -4,6 +4,12 @@
   }
 }
 
+@mixin breakPoint($breakpoint) {
+  @media screen and (min-width: $breakpoint) {
+    @content;
+  }
+}
+
 @mixin fixedButton() {
   bottom: $spacer-medium;
   position: fixed;

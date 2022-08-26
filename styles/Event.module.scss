@@ -267,3 +267,19 @@
 .marginBottomMedium {
   margin-bottom: $spacer-medium;
 }
+
+.descHeaderWrapper {
+  display: flex;
+  flex-direction: column;
+
+  @include breakPoint(700px) {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+}
+
+.shareButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
