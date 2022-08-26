@@ -1,16 +1,19 @@
-import { Organization, User } from "../types/types";
+import { Organization, User, Event } from "../types/types";
 import styles from "../styles/Avatar.module.scss";
 import EditCircle from "./EditCircle";
 import Image from "next/image";
+import eventPlaceholderImage from "../assets/images/undraw_partying.png";
 
-interface UserProps {
-  user: User;
+interface AvatarProps {
+  user?: User;
   org?: Organization;
+  event?: Event;
   size?: "small" | "medium" | "large";
   edit?: boolean; // whether or not to show edit icon
 }
 
-export default function Avatar({ user, org, size, edit }: UserProps) {
+/* should get either user, org or event */
+export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
   const getSizeStyling = () => {
     switch (size) {
       case "small":
@@ -23,6 +26,26 @@ export default function Avatar({ user, org, size, edit }: UserProps) {
         return styles.medium;
     }
   };
+
+  if (event) {
+    return (
+      <div>
+        <div
+          className={`${styles.avatar} ${getSizeStyling()} ${
+            event ? "" : styles.default
+          }`}
+        >
+          <Image
+            src={event.image ?? eventPlaceholderImage}
+            width={size === "small" ? "100" : "200"}
+            height={size === "small" ? "100" : "200"}
+            className={getSizeStyling()}
+            alt={event.title}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (org) {
     return (
@@ -52,28 +75,32 @@ export default function Avatar({ user, org, size, edit }: UserProps) {
     );
   }
 
-  return (
-    <div>
-      <div
-        className={`${styles.avatar} ${getSizeStyling()} ${
-          user.image ? "" : styles.default
-        }`}
-      >
-        {user.image ? (
-          <Image
-            src={user.image}
-            width={size === "small" ? 100 : 200}
-            height={size === "small" ? 100 : 200}
-            className={getSizeStyling()}
-            alt={`profile image of ${user.firstName} ${user.lastName}`}
-          />
-        ) : (
-          <span className={styles.name}>
-            {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
-          </span>
-        )}
-        {edit && <EditCircle className={styles.edit} />}
+  if (user) {
+    return (
+      <div>
+        <div
+          className={`${styles.avatar} ${getSizeStyling()} ${
+            user.image ? "" : styles.default
+          }`}
+        >
+          {user.image ? (
+            <Image
+              src={user.image}
+              width={size === "small" ? 100 : 200}
+              height={size === "small" ? 100 : 200}
+              className={getSizeStyling()}
+              alt={`profile image of ${user.firstName} ${user.lastName}`}
+            />
+          ) : (
+            <span className={styles.name}>
+              {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
+            </span>
+          )}
+          {edit && <EditCircle className={styles.edit} />}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <></>;
 }

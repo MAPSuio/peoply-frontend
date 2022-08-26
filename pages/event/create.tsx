@@ -174,19 +174,22 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     });
   };
 
+  /* will toggle category */
   const updateEventCategories = (categoryId: number) => {
-    if (!eventObject.eventActiveCategories.includes(categoryId)) {
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        eventActiveCategories: [
-          ...eventObject.eventActiveCategories,
-          categoryId,
-        ],
-      }));
-    }
+    const newEventCategories = eventObject.eventActiveCategories.includes(
+      categoryId,
+    )
+      ? eventObject.eventActiveCategories.filter((id) => id !== categoryId)
+      : [...eventObject.eventActiveCategories, categoryId];
+
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventActiveCategories: newEventCategories,
+    }));
+
     updateLocalStorage({
       ...eventObject,
-      eventActiveCategories: [...eventObject.eventActiveCategories, categoryId],
+      eventActiveCategories: newEventCategories,
     });
   };
 

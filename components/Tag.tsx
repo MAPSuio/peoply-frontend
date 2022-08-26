@@ -1,17 +1,12 @@
 import styles from "../styles/Tag.module.scss";
 
 interface TagProps {
-  id: number;
   text: string;
-  activeCategories: Array<number>;
-  onClick?: (categoryId: number) => void;
+  active: boolean;
+  onClick?: () => void;
 }
 
-const Tag = ({ id, text, activeCategories, onClick }: TagProps) => {
-  const isActive = () => {
-    return activeCategories.includes(id);
-  };
-
+const Tag = ({ text, active, onClick }: TagProps) => {
   const getTagStyles = () => {
     if (active) {
       return `${styles.tagContainer} ${styles.active}`;
@@ -19,12 +14,11 @@ const Tag = ({ id, text, activeCategories, onClick }: TagProps) => {
     return `${styles.tagContainer}`;
   };
 
-  const active = isActive();
   const tagStyles = getTagStyles();
 
   if (onClick) {
     return (
-      <button className={tagStyles} onClick={() => onClick(id)}>
+      <button className={tagStyles} onClick={onClick}>
         {text}
       </button>
     );

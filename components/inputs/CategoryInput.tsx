@@ -33,10 +33,9 @@ const CategoryInput = ({
           return (
             <Tag
               key={cat.id}
-              id={cat.id}
               text={cat.name}
-              activeCategories={activeCategories}
-              onClick={onClick}
+              active={activeCategories.includes(cat.id)}
+              onClick={() => onClick(cat.id)}
             />
           );
         })}

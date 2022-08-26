@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  gap: $spacer-mini;
+  overflow: hidden;
+  width: 100%;
+}
+
+
+.pill {
+  @include resetButton();
+  background-color: $background-color-tag;
+  border-radius: $border-radius-round;
+  color: $text-color-primary;
+  padding: $spacer-mini $spacer-small;
+
+  &.selected {
+    background-color: $primary-color-400;
+    
+    span {
+      color: $text-color-emphasis;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+.mySwiper {
+  margin: 0;
+}
+
+.swiperSlide {
+  max-width: max-content;
+  width: 80%;
+
+  &:first-child {
+    margin-left: $spacer-small;
+  }
+}
+
+.swiper-scrollbar {
+  display: none;
+}

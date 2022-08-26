@@ -278,9 +278,8 @@ const SummaryPage = ({
               {summaryCategories.map((cat) => (
                 <Tag
                   key={cat.id}
-                  id={cat.id}
                   text={cat.name}
-                  activeCategories={eventObject.eventActiveCategories}
+                  active={eventObject.eventActiveCategories.includes(cat.id)}
                 />
               ))}
             </div>

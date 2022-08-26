@@ -1,0 +1,45 @@
+.container {
+  @include card();
+  align-items: stretch;
+  display: flex;
+  justify-content: space-between;
+  padding: $spacer-very-small $spacer-small;
+  width: 100%; 
+
+  svg {
+    stroke: #FFFFFF;
+  }
+
+  .info {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+
+    .name {
+      > p:first-child {
+        color: #FFFFFF;
+        font-size: $font-size-primary;
+        margin-bottom: $spacer-mini
+      }
+
+      .description {
+        font-size: $font-size-tertiary;
+        margin-bottom: $spacer-mini;
+      }
+    }
+  }
+
+  img {
+    border-radius: 50%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateZ(0);
+    width: 100%;
+  }
+}
+
+.image {
+  height: 50px;
+  width: 50px;
+
+}

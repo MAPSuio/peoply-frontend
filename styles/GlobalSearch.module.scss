@@ -1,0 +1,51 @@
+.wrapper {
+  background-color: $background-color-card;
+  border-radius: $border-radius-inside-card;
+  margin: $spacer-small;
+  position: relative;
+}
+  
+.inputContainer {
+  align-items: center;
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  padding: 0 $spacer-small;
+  
+  &.focused {
+    outline: 2px solid #FFFFFF;
+  }
+  
+  input {
+    background-color: $background-color-card;
+    padding: $spacer-small;
+    width: calc(100% + 2px);
+    
+    &:focus{
+      outline: none;
+    } 
+  }
+}
+
+.results {
+  margin-top: $spacer-small;
+  overflow: hidden;
+  width: 100%;
+
+
+  .header {
+    padding-top: $spacer-mini;
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-small;
+    margin: $spacer-small;
+    margin-top: $spacer-small;
+  }
+
+  .error {
+    margin: 0 auto;
+    margin-top: $spacer-small;
+  }
+}
