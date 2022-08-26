@@ -7,6 +7,7 @@ import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import OrgMenu from "../../components/OrgMenu";
+import Navbar from "../../components/Navbar";
 
 const Me: NextPage = () => {
   const { user, currentOrg, loading } = useUser();
@@ -33,6 +34,7 @@ const Me: NextPage = () => {
           <p className={styles.description}>{currentOrg.description}</p>
         </div>
         <OrgMenu />
+        <Navbar />
       </div>
     );
   }
@@ -50,6 +52,7 @@ const Me: NextPage = () => {
           <p className={styles.description}>{user.description}</p>
         </div>
         <ProfileMenu />
+        <Navbar />
       </div>
     );
   }

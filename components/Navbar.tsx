@@ -5,6 +5,8 @@ import styles from "../styles/Navbar.module.scss";
 import AddIcon from "../components/AddIcon";
 import HomeIcon from "./svgs/HomeIcon";
 import CalendarIconSummary from "./svgs/CalendarIconSummary";
+import SearchIcon from "./svgs/SearchIcon";
+import UserIcon from "./svgs/UserIcon";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -44,11 +46,29 @@ export default function Navbar() {
         <div className={`${styles.item} ${isActive("/") ? styles.active : ""}`}>
           <Link href="/" passHref>
             <a>
-              <HomeIcon />
+              <HomeIcon
+                className={`${styles.icon} ${
+                  isActive("/") ? styles.active : ""
+                }`}
+              />
               {isActive("/") ? <span className={styles.underline}></span> : ""}
             </a>
           </Link>
         </div>
+        <Link href="/find" passHref>
+          <a>
+            <SearchIcon
+              className={`${styles.icon} ${
+                isActive("/find") ? styles.active : ""
+              }`}
+            />
+            {isActive("/find") ? (
+              <span className={styles.underline}></span>
+            ) : (
+              ""
+            )}
+          </a>
+        </Link>
         <div className={`${isActive("/event/create") ? styles.active : ""}`}>
           <Link href="/event/create" passHref>
             <a>
@@ -57,14 +77,16 @@ export default function Navbar() {
           </Link>
         </div>
         <div
-          className={`${styles.item} ${
-            isActive("/me/events") ? styles.active : ""
-          }`}
+          className={`${styles.item} ${isActive("/me") ? styles.active : ""}`}
         >
-          <Link href="/me/events" passHref>
+          <Link href="/me" passHref>
             <a>
-              <CalendarIconSummary className={styles.icon} />
-              {isActive("/me/events") ? (
+              <UserIcon
+                className={`${styles.icon} ${
+                  isActive("/me") ? styles.active : ""
+                }`}
+              />
+              {isActive("/me") ? (
                 <span className={styles.underline}></span>
               ) : (
                 ""
@@ -72,6 +94,20 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
+        <Link href="/me/events" passHref>
+          <a>
+            <CalendarIconSummary
+              className={`${styles.icon} ${
+                isActive("/me/events") ? styles.active : ""
+              }`}
+            />
+            {isActive("/me/events") ? (
+              <span className={styles.underline}></span>
+            ) : (
+              ""
+            )}
+          </a>
+        </Link>
       </div>
     </div>
   );

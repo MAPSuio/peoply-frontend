@@ -3,29 +3,35 @@
   bottom: 0;
   display: flex;
   justify-content: center;
-  max-width: $max-width;
-  padding-bottom: $spacer-medium;
   pointer-events: none;
   position: fixed;
   transition: transform $animation-duration ease;
   width: 100%;
   z-index: 999;
 
+  @include desktop() {
+    max-width: $max-width;
+    padding-bottom: $spacer-medium;
+  }
+
   .container {
     @include background-opacity($background-color-input, 0.85);
     align-items: flex-start;
     backdrop-filter: blur(8px);
-    border-radius: $border-radius-round;
     display: flex;
     justify-content: space-between;
-    max-width: 250px;
     padding: $spacer-very-small-plus $spacer-medium;
     pointer-events: auto;
     width: 100%;
 
+    @include desktop() {
+      border-radius: $border-radius-round;
+      max-width: 450px;
+    }
+
     .item {
       cursor: pointer;
-      filter: invert(40%) sepia(0%) saturate(175%) hue-rotate(43deg) brightness(113%) contrast(84%);
+      // filter: invert(40%) sepia(0%) saturate(175%) hue-rotate(43deg) brightness(113%) contrast(84%);
       transition: all $animation-duration ease;
 
       @include desktop() {
@@ -51,14 +57,26 @@
 
     .button {
       margin-top: -$spacer-medium;
+      
     }
   }
 }
 
 .hidden {
-  transform: translateY(100px);
+  transform: translateY(200px);
 }
 
 .icon {
-  stroke: $text-color-emphasis;
+  height: 24px;
+  stroke: $navbar-inactive-color;
+  width: 24px;
+
+  @include desktop() {
+    height: 32px;
+    width: 32px;
+  }
+
+  &.active {
+    stroke: $text-color-emphasis;
+  }
 }
