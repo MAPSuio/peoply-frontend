@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 // Components.
-import SmileIconCard from "./svgs/SmileIconCard";
+// import SmileIconCard from "./svgs/SmileIconCard";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import UserIconCard from "./svgs/UserIconCard";
 import PlaceIconCard from "./svgs/PlaceIconCard";
@@ -102,11 +102,10 @@ const EventCard = ({ event }: EventCardProps) => {
           <div className={styles.eventCardInfo}>
             <div className={styles.eventCardInfoHeaderContainer}>
               <h2 className={styles.title}>{event.title}</h2>
-              <div className={styles.eventCardInfoHeaderPriceContainer}>
+              {/* <div className={styles.eventCardInfoHeaderPriceContainer}>
                 <SmileIconCard className={styles.icon} />
                 <span>Gratis</span>
-                {/* Price */}
-              </div>
+              </div> */}
             </div>
             <div className={styles.divider}></div>
             <div className={styles.eventCardInfoBodyContainer}>

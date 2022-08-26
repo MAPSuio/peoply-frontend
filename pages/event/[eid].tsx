@@ -372,7 +372,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <span className={styles.eventCalendarTagFlair} />
             </div>
           </div>
-          <div className={styles.eventPriceTag}>Gratis</div>
+          {/* <div className={styles.eventPriceTag}>Gratis</div> */}
           <div className={styles.eventInfoContainer}>
             <p className={styles.eventTags}>
               {eventData.eventCategories
