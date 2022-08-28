@@ -7,9 +7,9 @@ import Image from "next/image";
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import BackButton from "../../../components/BackButton";
+import MyEventCard from "../../../components/MyEventCard";
 
 // Hooks.
-import useSnack from "../../../hooks/useSnack";
 import useBack from "../../../hooks/useBack";
 
 // Services.
@@ -28,6 +28,7 @@ import CatImg from "../../../assets/images/cat.jpg";
 import styles from "../../../styles/Organization.module.scss";
 import UserIconCard from "../../../components/svgs/UserIconCard";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
+import { useRef } from "react";
 
 interface OrganizationProps {
   organization: Organization;
@@ -36,6 +37,7 @@ interface OrganizationProps {
 
 const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   const goBack = useBack();
+  const today = useRef(new Date().toISOString());
 
   const {
     data: orgData,
@@ -66,7 +68,10 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     error: orgEventsError,
     mutate: updateOrganizationEvents,
   } = useSWR<Event[]>(
-    `/organizations/${organization.id}/events`,
+    () =>
+      orgData?.id
+        ? `/events?afterDate=${today.current}&organizationId=${orgData?.id}`
+        : false,
     fetchFromPeoplyApiJson,
     {
       fallbackData: [],
@@ -134,16 +139,17 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
               </a>
             </Link>
           </div>
-          <div className={styles.contentWrapper}>
-            <div className={styles.row}>
-              <p className={styles.uppercase}>Kommende arrangementer</p>
+          <div className={styles.eventWrapper}>
+            <div className={styles.eventHeaderContainer}>
+              <h2 className={styles.eventHeader}>Kommende arrangementer</h2>
               <Link href={`${baseUrl}/orgs/${orgData.id}/events`}>
                 <a className={styles.link}>Se alle</a>
               </Link>
             </div>
-            <div className={styles.contentContainer}>
-              <p>Her kommer et arrangement</p>
-              <p>Her kommer enda et arrangement</p>
+            <div className={styles.eventContainer}>
+              {orgEvents?.map((event: Event) => (
+                <MyEventCard key={event.id} event={event} />
+              ))}
             </div>
           </div>
         </div>

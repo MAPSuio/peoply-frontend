@@ -64,19 +64,18 @@
   }
 }
 
-.contentWrapper {
+.eventWrapper {
   display: flex;
   flex-flow: column nowrap;
   margin-bottom: $spacer-medium;
-
   @include desktop() {
     margin-bottom: $spacer-medium-plus;
   }
 }
 
-.contentContainer {
+.eventContainer {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   gap: $spacer-small;
 
   @include desktop() {
@@ -84,11 +83,26 @@
   }
 }
 
-.row {
+.eventHeaderContainer {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  margin-bottom: $spacer-very-small-plus;
+
+  @include desktop() {
+    margin-bottom: $spacer-small;
+  }
+}
+
+.eventHeader {
+  color: $text-color-emphasis;
+  font-size: $font-size-heading-medium;
+  font-weight: $font-weight-bold;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
 }
 
 .dataContainer {
@@ -139,7 +153,6 @@
 .uppercase {
   @include uppercase();
 }
-
 
 .link {
   @include link();
