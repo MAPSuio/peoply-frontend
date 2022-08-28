@@ -54,6 +54,7 @@
   cursor: pointer;
   font: inherit;
   font-family: $mono-font;
+  font-variant-ligatures: no-common-ligatures;
   padding: 0;
 }
 
@@ -238,6 +239,7 @@
 
     @include desktop() {
       font-size: $font-size-title-desktop;
+      margin-bottom: $spacer-small;
     }
   }
 

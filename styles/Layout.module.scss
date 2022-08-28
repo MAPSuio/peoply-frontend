@@ -1,0 +1,29 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  padding-bottom: $spacer-very-large;
+  width: 100%;
+
+  @include desktop() {
+    padding-bottom: $spacer-very-large-plus;
+  }
+}
+
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  width: $page-width-mobile;
+}
+
+.left {
+  align-items: flex-start;
+}
+
+.center {
+  align-items: center;
+}
+
+.right {
+  align-items: flex-end;
+}

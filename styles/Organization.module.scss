@@ -1,22 +1,3 @@
-.orgWrapper {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  padding-bottom: $spacer-very-large;
-  width: 100%;
-
-  @include desktop() {
-    padding-bottom: $spacer-very-large-plus;
-  }
-}
-
-.orgContainer {
-  display: flex;
-  flex-flow: column nowrap;
-  position: relative;
-  width: 90%;
-}
-
 .headerContainer {
   align-items: center;
   display: flex;

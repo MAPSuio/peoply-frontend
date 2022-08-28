@@ -1,0 +1,22 @@
+.headerContainer {
+  @include headingContainer();
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+
+  @include desktop() {
+    margin: $spacer-large 0;
+  }
+}
+
+.eventContainer {
+  display: flex;
+  flex-flow: row wrap;
+  gap: $spacer-small;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small-plus;
+  }
+}

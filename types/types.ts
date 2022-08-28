@@ -352,3 +352,9 @@ export enum ButtonType {
   DANGER,
   WARNING,
 }
+
+export enum Alignment {
+  LEFT,
+  CENTER,
+  RIGHT,
+}

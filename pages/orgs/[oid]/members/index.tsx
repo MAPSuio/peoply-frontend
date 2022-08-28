@@ -154,7 +154,7 @@ export async function getStaticPaths() {
     "/organizations?take=1000",
   );
   const paths = orgs.map((org: Organization) => ({
-    params: { oid: `${org.id}` },
+    params: { oid: org.id },
   }));
 
   return { paths, fallback: "blocking" };
