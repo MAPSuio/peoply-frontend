@@ -17,8 +17,16 @@ const Login: NextPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { user } = useUser();
   const router = useRouter();
-  const [redirectURL, setRedirectURL] = useState<string>();
+  const [redirectURL, setRedirectURL] = useState<string>("/");
   const goBack = useBack();
+
+  useEffect(() => {
+    const redirectUrlFromLocalStorage = localStorage.getItem("redirectURL");
+    if (redirectUrlFromLocalStorage) {
+      setRedirectURL(redirectUrlFromLocalStorage);
+      localStorage.removeItem("redirectURL");
+    }
+  }, []);
 
   useEffect(() => {
     if (router.query.redirect) {
@@ -73,7 +81,7 @@ const Login: NextPage = ({
                 <CheckCircle className={styles.checkIcon} />
               </div>
             </div>
-            <Link href="/">
+            <Link href={redirectURL}>
               <a>
                 <Button
                   text="Fortsett til appen"

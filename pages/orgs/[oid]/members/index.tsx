@@ -55,8 +55,8 @@ export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
       const isEditingSelf = organizationUser?.user.id === orgUser.user.id;
       const hasHigherPrivilege =
         organizationUser &&
-        getOrganizationRolePrivilege(organizationUser) >
-          getOrganizationRolePrivilege(orgUser);
+        getOrganizationRolePrivilege(organizationUser.role) >
+          getOrganizationRolePrivilege(orgUser.role);
       const canEdit = isEditingSelf || hasHigherPrivilege;
       return canEdit ? (
         <MemberCard

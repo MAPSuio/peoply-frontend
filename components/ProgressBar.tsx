@@ -8,6 +8,7 @@ import {
   getProgressCircleLabel,
 } from "../utils/functions";
 import styles from "../styles/ProgressBar.module.scss";
+import React from "react";
 
 interface ProgressBarProps {
   currentStep: number;
@@ -38,9 +39,8 @@ const ProgressBar = ({
         const last = step === stepCount - 1;
 
         return (
-          <>
+          <React.Fragment key={generateRandomKey()}>
             <ProgressCircle
-              key={generateRandomKey()}
               success={success}
               active={active}
               label={label}
@@ -49,13 +49,9 @@ const ProgressBar = ({
               changeStep={changeStep}
             />
             {!last && (
-              <ProgressConnector
-                key={generateRandomKey()}
-                success={success}
-                nextSuccess={nextSuccess}
-              />
+              <ProgressConnector success={success} nextSuccess={nextSuccess} />
             )}
-          </>
+          </React.Fragment>
         );
       })}
     </div>

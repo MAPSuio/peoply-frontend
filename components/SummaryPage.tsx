@@ -29,6 +29,8 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 import styles from "../styles/SummaryPage.module.scss";
 import { Visibility } from "../types/types";
 import { EventObjectProps } from "../pages/event/create";
+import UserCircle from "./UserCircle";
+import useUser from "../hooks/useUser";
 
 interface SummaryPageProps {
   title: string;
@@ -66,6 +68,7 @@ const SummaryPage = ({
   summaryCategories,
   eventObject,
 }: SummaryPageProps) => {
+  const { user, orgs } = useUser();
   const getButtonStyles = () => {
     if (placeButtonStatic) {
       return `${styles.primaryButton} ${styles.placeStatic}`;
@@ -92,6 +95,7 @@ const SummaryPage = ({
 
     /* Append title and description. */
     formData.set("title", eventObject.eventTitle);
+    formData.set("arrangerId", eventObject.eventArrangerId);
     formData.set("description", eventObject.eventDescription);
 
     /* Append capacity and private. */
@@ -203,6 +207,15 @@ const SummaryPage = ({
   const formData = new FormData();
   appendEventData(formData);
 
+  const arrangerName = (() => {
+    if (user?.arrangerId === eventObject.eventArrangerId) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+
+    return orgs?.find((org) => org.arrangerId === eventObject.eventArrangerId)
+      ?.name;
+  })();
+
   return (
     <div className={styles.container}>
       <BackButton
@@ -226,6 +239,15 @@ const SummaryPage = ({
         <SummaryCard inputId={0} Icon={<TitleCircle />} onClick={buttonOnClick}>
           <p className={styles.titleText}>{eventObject.eventTitle}</p>
         </SummaryCard>
+        {eventObject.eventArrangerId && (
+          <SummaryCard
+            inputId={0}
+            Icon={<UserCircle large />}
+            onClick={buttonOnClick}
+          >
+            <p className={styles.titleText}>{arrangerName}</p>
+          </SummaryCard>
+        )}
         <SummaryCard
           inputId={1}
           Icon={<CalendarCircleSummary />}

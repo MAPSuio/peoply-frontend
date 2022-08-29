@@ -162,7 +162,7 @@ export interface Organization {
   name: string;
   orgNr: string;
   image?: string;
-  organizationRole: UserOrganizationRoles[];
+  organizationRoles: UserOrganizationRoles[];
 }
 
 export interface Arranger {

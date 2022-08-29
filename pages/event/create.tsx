@@ -42,6 +42,7 @@ import {
   categoryInputValid,
   radioInputValid,
   getCategoryText,
+  getOrganizationRolePrivilege,
 } from "../../utils/functions";
 
 /* Types. */
@@ -51,6 +52,7 @@ import {
   Visibility,
   ImageCaching,
   SnackTypes,
+  OrganizationRole,
 } from "../../types/types";
 
 /* Styles */
@@ -62,9 +64,11 @@ import useSnack from "../../hooks/useSnack";
 import HeadComponent from "../../components/HeadComponent";
 import { Models } from "azure-maps-rest";
 import TextInputLocationSelect from "../../components/inputs/TextInputLocationSelect";
+import Dropdown from "../../components/Dropdown";
 
 export interface EventObjectProps {
   eventTitle: string;
+  eventArrangerId: string;
   eventDescription: string;
   eventLocationName: string;
   eventLocation?: Models.SearchFuzzyResult;
@@ -91,7 +95,7 @@ interface CreateEventProps {
 }
 
 const CreateEvent = ({ baseUrl }: CreateEventProps) => {
-  const { user, currentOrg, ipInfo, error: userError } = useUser();
+  const { user, ipInfo, error: userError, orgs } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
@@ -99,6 +103,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     eventTitle: "",
+    eventArrangerId: user?.arrangerId ?? "",
     eventDescription: "",
     eventLocationName: "",
     eventDateStart: "",
@@ -138,6 +143,17 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     updateLocalStorage({
       ...eventObject,
       eventTitle: e.target.value,
+    });
+  };
+
+  const updateEventArrangerId = (arrangerId: string) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventArrangerId: arrangerId,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventArrangerId: arrangerId,
     });
   };
 
@@ -378,14 +394,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   const summaryPageOnClick = async (formData: FormData) => {
     {
-      if (currentOrg) {
-        formData.set("arrangerId", currentOrg.arrangerId);
-      } else if (user) {
-        formData.set("arrangerId", user.arrangerId);
-      } else {
-        redirectToLogin();
-        return;
+      if (!user) {
+        return redirectToLogin();
       }
+
       try {
         const event: Event = await fetchFromPeoplyApiJson("/events", {
           method: "post",
@@ -512,6 +524,32 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     );
     validDataMap.set(InputPages.SUMMARY_PAGE, validEvent);
 
+    const validArrangersOptions = (() => {
+      if (!user) return [];
+      const validArrangers = orgs?.filter((org) => {
+        const userRoleInOrganization = org.organizationRoles.find(
+          (userRole) => {
+            return (
+              userRole.userId === user?.id &&
+              getOrganizationRolePrivilege(userRole.role) >
+                getOrganizationRolePrivilege(OrganizationRole.MEMBER)
+            );
+          },
+        );
+        return userRoleInOrganization !== undefined;
+      });
+
+      const userOption = {
+        label: `${user?.firstName} ${user?.lastName}`,
+        value: user?.arrangerId,
+      };
+      const orgOptions = validArrangers?.map((org) => ({
+        label: org.name,
+        value: org.arrangerId,
+      }));
+      return orgOptions ? [userOption, ...orgOptions] : [userOption];
+    })();
+
     switch (step) {
       case 0:
         return (
@@ -541,6 +579,16 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 required
                 handleChange={updateEventTitle}
               />
+              {validArrangersOptions.length > 0 && (
+                <Dropdown
+                  label="Opprett arrangementet som: "
+                  options={validArrangersOptions}
+                  value={eventObject.eventArrangerId}
+                  inputId="arrangerInput"
+                  className={styles.arrangerInput}
+                  setValue={updateEventArrangerId}
+                />
+              )}
             </div>
           </InputPage>
         );
@@ -918,6 +966,12 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       startNewEventCreation();
     }
     setEventExtraInfoValid(oldEventObject.eventExtraInfoValid);
+
+    /* arrangerId will be undefined if user was not logged in */
+    if (oldEventObject.eventArrangerId === "" && user) {
+      oldEventObject.eventArrangerId = user.arrangerId;
+    }
+
     if (oldEventObject.imageCached === ImageCaching.PREEMPTIVE_MESSAGE) {
       setEventImageValid(false);
       setEventObject(() => ({

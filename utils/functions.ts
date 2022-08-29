@@ -420,9 +420,9 @@ function allEventInputsValid(eventInputsValid: Array<boolean>): boolean {
 }
 
 function getOrganizationRolePrivilege(
-  organizationRole: UserOrganizationRoles,
+  organizationRole: OrganizationRole,
 ): number {
-  switch (organizationRole.role) {
+  switch (organizationRole) {
     case OrganizationRole.OWNER:
       return 3;
     case OrganizationRole.ADMIN:

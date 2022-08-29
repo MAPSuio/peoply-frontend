@@ -23,6 +23,10 @@
   }
 }
 
+.arrangerInput {
+  margin-top: $spacer-small;
+}
+
 .column {
   display: flex;
   flex-flow: column nowrap;

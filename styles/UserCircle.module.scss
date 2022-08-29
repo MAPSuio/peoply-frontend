@@ -9,4 +9,12 @@
   svg {
     stroke: $primary-color-200;
   }
+
+  &.large {
+    @include createCircle();
+    svg {
+      height: 24px;
+      width: 24px;
+    }
+  }
 }

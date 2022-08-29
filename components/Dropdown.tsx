@@ -6,6 +6,7 @@ interface DropdownProps {
   value: any;
   inputId: string;
   setValue: (value: any) => void;
+  className?: string;
 }
 
 export default function Dropdown({
@@ -14,9 +15,10 @@ export default function Dropdown({
   value,
   inputId,
   setValue,
+  className,
 }: DropdownProps) {
   return (
-    <div>
+    <div className={className}>
       {label && (
         <div className={styles.labelContainer}>
           <label
