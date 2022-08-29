@@ -14,6 +14,8 @@
     "lint:stylelint": "npx stylelint '**/*.{css,scss}'"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-react-js": "^3.4.0",
+    "@microsoft/applicationinsights-web": "^2.8.6",
     "next": "12.1.0",
     "next-pwa": "^5.5.2",
     "react": "17.0.2",
@@ -28,6 +30,7 @@
     "@types/react": "17.0.37",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
+    "azure-maps-rest": "^2.0.8",
     "eslint": "8.4.1",
     "eslint-config-next": "12.0.7",
     "eslint-config-prettier": "^8.3.0",
@@ -37,7 +40,6 @@
     "stylelint-config-recommended-scss": "^5.0.2",
     "stylelint-order": "^5.0.0",
     "stylelint-scss": "^4.1.0",
-    "typescript": "4.5.3",
-    "azure-maps-rest": "^2.0.8"
+    "typescript": "4.5.3"
   }
 }
