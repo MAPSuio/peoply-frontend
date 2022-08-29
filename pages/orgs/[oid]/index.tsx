@@ -88,7 +88,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   return (
     <>
       <HeadComponent
-        title={`Peoply - ${orgData.name}`}
+        title={orgData.name}
         description={
           orgData.description
             ? orgData.description

@@ -489,6 +489,12 @@ function calculateEditDistance(s1: string, s2: string): number {
   return d[m][n];
 }
 
+function queryToString(query: any) {
+  return Object.keys(query)
+    .map((key) => `${key}=${query[key]}`)
+    .join("&");
+}
+
 export {
   formatDateRange,
   formatTimeRange,
@@ -520,4 +526,5 @@ export {
   generateRandomKey,
   groupBy,
   calculateEditDistance,
+  queryToString,
 };

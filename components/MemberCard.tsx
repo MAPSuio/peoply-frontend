@@ -17,7 +17,7 @@ export default function MemberCard({
 }: MemberCardProps) {
   return (
     <div className={styles.container}>
-      <Link href={`/user/${user.id}`} passHref>
+      <Link href={`/users/${user.id}`} passHref>
         <a>
           <div className={styles.info}>
             <Avatar size="medium" user={user} />

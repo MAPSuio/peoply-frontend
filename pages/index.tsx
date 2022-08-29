@@ -31,42 +31,70 @@ import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
+import { Event } from "../types/types";
+import { UrlObject } from "url";
+import { queryToString } from "../utils/functions";
 
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [today] = useState(new Date().toISOString());
   const router = useRouter();
-  const { data: futureEvents, error: futureEventsError } = useSWR(
-    `/events?afterDate=${today}`,
+
+  const eventsQuery = {
+    afterDate: today,
+    orderBy: "startDate",
+  };
+
+  const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" };
+  const eventsOnUioQuery = { ...eventsQuery, categoryIds: "1" };
+
+  const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
+    `/events?${queryToString(eventsOnIfiQuery)}`,
     fetchFromPeoplyApiJson,
   );
-  const { data: previousEvents, error: previousEventsError } = useSWR(
-    `/events?beforeDate=${today}&orderDirection=desc`,
+  const { data: eventsOnUiO, error: eventsOnUiOError } = useSWR<Event[]>(
+    `/events?${queryToString(eventsOnUioQuery)}`,
+    fetchFromPeoplyApiJson,
+  );
+  const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
+    `/events?${queryToString(eventsQuery)}`,
     fetchFromPeoplyApiJson,
   );
 
   return (
     <>
       <HeadComponent
-        title="Peoply - Home"
-        description="Home page of Peoply"
+        title="Peoply"
+        description="Frontsiden til Peoply"
         url={`${baseUrl}${router.asPath}`}
       />
       <Header />
       <div className={styles.container}>
-        <EventSwiper
-          header={"Hva skjer fremover?"}
-          seeAllUrl={{ pathname: "/events" }}
-          events={futureEvents}
-          error={futureEventsError}
-        />
-        <EventSwiper
-          header={"Hva du gikk glipp av"}
-          seeAllUrl={{ pathname: "/events" }}
-          events={previousEvents}
-          error={previousEventsError}
-        />
+        {eventsOnIFI && eventsOnIFI.length > 0 ? (
+          <EventSwiper
+            header={"Hva skjer på IFI?"}
+            seeAllUrl={{ pathname: `/events`, query: eventsOnIfiQuery }}
+            events={eventsOnIFI}
+            error={eventsOnIFIError}
+          />
+        ) : undefined}
+        {eventsOnUiO && eventsOnUiO.length > 0 ? (
+          <EventSwiper
+            header={"Hva skjer på UiO?"}
+            seeAllUrl={{ pathname: `/events`, query: eventsOnUioQuery }}
+            events={eventsOnUiO}
+            error={eventsOnUiOError}
+          />
+        ) : undefined}
+        {futureEvents && futureEvents.length > 0 ? (
+          <EventSwiper
+            header={"Hva skjer fremover?"}
+            seeAllUrl={{ pathname: `/events`, query: eventsQuery }}
+            events={futureEvents}
+            error={futureEventsError}
+          />
+        ) : undefined}
       </div>
       <Navbar />
     </>
@@ -75,7 +103,7 @@ const Home: NextPage = ({
 
 interface EventSwiperProps {
   header: string;
-  seeAllUrl: { pathname: string };
+  seeAllUrl: string | UrlObject;
   events: Event[];
   error: Error | null;
 }
@@ -106,7 +134,7 @@ const EventSwiper = ({
           <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
             <Link
               href={{
-                pathname: "/event/[eventId]",
+                pathname: "/events/[eventId]",
                 query: { eventId: event.urlId },
               }}
             >

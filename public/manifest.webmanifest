@@ -10,7 +10,7 @@
   "description": "Peoply is an easy event app",
   "shortcuts": [
     {
-      "url": "/event/create",
+      "url": "/events/create",
       "name": "Lag arrangement"
     },
     {

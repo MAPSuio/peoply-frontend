@@ -11,14 +11,21 @@ import { Alignment, Event } from "../types/types";
 
 // Styles.
 import styles from "../styles/EventList.module.scss";
+import Button from "./Button";
 
 interface EventListProps {
   title: string;
   description: string;
   events: Event[];
+  nextPage?: () => void;
 }
 
-const EventList = ({ title, description, events }: EventListProps) => {
+const EventList = ({
+  title,
+  description,
+  events,
+  nextPage,
+}: EventListProps) => {
   const goBack = useBack();
 
   return (
@@ -33,6 +40,13 @@ const EventList = ({ title, description, events }: EventListProps) => {
           <MyEventCard key={event.id} event={event} />
         ))}
       </div>
+      {nextPage && (
+        <Button
+          className={styles.nextPageButton}
+          text="Last inn flere"
+          onClick={nextPage}
+        />
+      )}
     </Layout>
   );
 };

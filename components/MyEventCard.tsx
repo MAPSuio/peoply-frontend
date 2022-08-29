@@ -43,7 +43,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
   return (
     <Link
       href={{
-        pathname: "/event/[eventId]",
+        pathname: "/events/[eventId]",
         query: { eventId: event.urlId },
       }}
     >
@@ -86,7 +86,7 @@ const MyEventCard = ({ event }: MyEventCardProps) => {
             <ShareButton
               width="100%"
               buttonText="Del arrangement"
-              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/event/${event.urlId}`}
+              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
             />
           </div>
         </div>

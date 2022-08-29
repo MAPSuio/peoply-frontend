@@ -245,7 +245,7 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
           />
         </div>
         {eventType === SectionTypes.MY_EVENTS ? (
-          <Link href="/event/create">
+          <Link href="/events/create">
             <a className={styles.button}>
               <Button text="Opprett et nytt arrangement" />
             </a>

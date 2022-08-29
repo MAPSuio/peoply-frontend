@@ -28,7 +28,7 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
 import { Visibility } from "../types/types";
-import { EventObjectProps } from "../pages/event/create";
+import { EventObjectProps } from "../pages/events/create";
 import UserCircle from "./UserCircle";
 import useUser from "../hooks/useUser";
 

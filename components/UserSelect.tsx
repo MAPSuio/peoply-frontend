@@ -95,7 +95,7 @@ export default function UserSelect({
           <>
             <span className={styles.divider} />
             <div key={user.id} className={styles.item}>
-              <Link href={`user/${user.id}`} passHref>
+              <Link href={`/users/${user.id}`} passHref>
                 <a className={styles.user}>
                   <Avatar user={user} />
                   <div>{`${user.firstName} ${user.lastName}`}</div>

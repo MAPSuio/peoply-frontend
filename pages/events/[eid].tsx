@@ -339,9 +339,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
   return (
     <>
       <HeadComponent
-        title={`Peoply - ${eventData.title}`}
+        title={eventData.title}
         description={eventData.description}
-        url={`${baseUrl}/event/${eventData.urlId}`}
+        url={`${baseUrl}/events/${eventData.urlId}`}
         imageUrl={eventData.image}
       />
 
@@ -393,7 +393,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                       return (
                         <Link
                           key={a.arranger.id}
-                          href={`/user/${a.arranger.user.id}`}
+                          href={`/users/${a.arranger.user.id}`}
                         >
                           {a.arranger.user.firstName +
                             " " +
@@ -485,7 +485,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 )}
               </div>
               {registrations && (
-                <Link href={`/event/${eventData.urlId}/participants`} passHref>
+                <Link href={`/events/${eventData.urlId}/participants`} passHref>
                   <a>
                     <div
                       className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
@@ -533,11 +533,11 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <div className={styles.shareButtons}>
                 <ShareButton
                   buttonText="Del arrangement"
-                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/event/${eventData.urlId}`}
+                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${eventData.urlId}`}
                   shareTitle={eventData.title}
                 />
                 <LinkButton
-                  href={`/event/${eventData.urlId}/invite`}
+                  href={`/events/${eventData.urlId}/invite`}
                   small
                   text="Inviter brukere"
                   type={ButtonType.SECONDARY}

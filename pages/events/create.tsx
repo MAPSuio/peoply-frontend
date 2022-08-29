@@ -406,7 +406,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         addSnack("Ditt arrangement har blitt opprettet", SnackTypes.SUCCESS);
         localStorage.removeItem("eventObject");
         localStorage.removeItem("eventImage");
-        router.push(`/event/${event.urlId}`);
+        router.push(`/events/${event.urlId}`);
       } catch (e) {
         // snackbar showing error
         addSnack(
@@ -996,9 +996,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   return (
     <>
       <HeadComponent
-        title="Peoply - Nytt arrangement"
+        title="Nytt arrangement"
         description="Opprett et nytt arrangement på Peoply"
-        url={`${baseUrl}/event/create`}
+        url={`${baseUrl}/events/create`}
       />
       <Header />
       <div className={styles.wrapper}>

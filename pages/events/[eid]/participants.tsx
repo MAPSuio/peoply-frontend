@@ -97,7 +97,7 @@ const Participants = () => {
               description={`Meldte seg på ${formatDateRange(
                 new Date(registration.createdAt),
               )}`}
-              link={`/user/${registration.userId}`}
+              link={`/users/${registration.userId}`}
             />
           ));
 
@@ -122,7 +122,7 @@ const Participants = () => {
                 description={`Invitert av ${invitation.fromUser?.firstName} ${
                   invitation.fromUser?.lastName
                 } ${formatDateRange(new Date(invitation.createdAt))}`}
-                link={`/user/${invitation.toUser?.id}`}
+                link={`/users/${invitation.toUser?.id}`}
               />
             ),
         );

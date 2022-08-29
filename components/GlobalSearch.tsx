@@ -110,7 +110,7 @@ export default function GlobalSearch({}) {
                 key={event.id}
                 title={event.title}
                 description={"Arrangement"}
-                link={`/event/${event.urlId}`}
+                link={`/events/${event.urlId}`}
               >
                 <Avatar size="medium" event={event} />
               </ResultItem>

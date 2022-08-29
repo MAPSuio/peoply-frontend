@@ -38,9 +38,9 @@ const User = ({ user, baseUrl }: UserProps) => {
   return (
     <>
       <HeadComponent
-        title={`Peoply - ${userData.firstName} ${userData.lastName}`}
+        title={`${userData.firstName} ${userData.lastName}`}
         description={`${userData.description}`}
-        url={`${baseUrl}/user/${user.id}`}
+        url={`${baseUrl}/users/${user.id}`}
         imageUrl={userData.image}
       />
       <div className={styles.container}>

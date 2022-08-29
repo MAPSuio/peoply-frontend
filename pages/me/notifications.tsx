@@ -179,7 +179,7 @@ export default function Notifications() {
     >(invitations, ({ eventId }) => eventId);
     return invitationsGroupedByEventId.map(({ values }) => {
       const fromUsers = values.map(({ fromUser }) => (
-        <Link key={fromUser?.id} href={`/user/${fromUser?.id}`}>
+        <Link key={fromUser?.id} href={`/users/${fromUser?.id}`}>
           {fromUser?.firstName}
         </Link>
       ));
@@ -216,7 +216,7 @@ export default function Notifications() {
                 }
               })()}{" "}
               inviterer deg til å bli med på{" "}
-              <Link href={`/event/${event?.urlId}`}>{event?.title}</Link>
+              <Link href={`/events/${event?.urlId}`}>{event?.title}</Link>
             </p>
             <p className={styles.hoursSince}>
               {renderTimeSince(oldestInvitation)}
@@ -272,7 +272,7 @@ export default function Notifications() {
 
   return (
     <>
-      <HeadComponent title="Peoply - Varsler" description="Notifications" />
+      <HeadComponent title="Varsler" description="Notifications" />
       <Header />
       <div className={styles.container}>
         <BackButton onClick={goBack} />
@@ -283,7 +283,7 @@ export default function Notifications() {
         <div className={styles.notifications}>
           {notifications.length !== 0 && hasUnreadNotifications && (
             <Button
-              text="Hent nye varlser"
+              text="Hent nye varsler"
               type={ButtonType.WARNING}
               onClick={() => mutateNotifications()}
             ></Button>

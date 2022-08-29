@@ -45,7 +45,7 @@ const Login: NextPage = ({
   return (
     <>
       <HeadComponent
-        title="Peoply - Logg inn"
+        title="Logg inn"
         description="Logg inn på Peoply"
         url={`${baseUrl}/login`}
       />
