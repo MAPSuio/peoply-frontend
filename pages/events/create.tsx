@@ -1000,7 +1000,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         description="Opprett et nytt arrangement på Peoply"
         url={`${baseUrl}/events/create`}
       />
-      <Header />
       <div className={styles.wrapper}>
         {modalOpen && (
           <Modal

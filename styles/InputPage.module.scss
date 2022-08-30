@@ -8,6 +8,29 @@
 .padding {
   padding-bottom: 400px;
 }
+.actionContainer {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $spacer-medium;
+  width: 100%;
+
+  .close {
+    height: 24px;
+    svg {
+      height: 24px;
+      stroke: $text-color-emphasis;
+      width: 24px;
+    }
+    @include desktop() {
+      height: 30px;
+      svg {
+        height: 32px;
+        width: 32px;
+      }
+    }
+  }
+}
 
 .headerContainer {
   align-items: center;

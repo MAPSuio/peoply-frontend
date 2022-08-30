@@ -11,6 +11,8 @@ import { InputPages } from "../types/types";
 
 // Styles.
 import styles from "../styles/InputPage.module.scss";
+import CloseIcon from "./svgs/CloseIcon";
+import Link from "next/link";
 
 interface InputPageProps {
   step: number;
@@ -81,7 +83,14 @@ const InputPage = ({
 
   return (
     <div className={`${styles.container} ${padding && styles.padding}`}>
-      <BackButton onClick={goBack} className={styles.marginBottomMedium} />
+      <div className={styles.actionContainer}>
+        <BackButton onClick={goBack} />
+        <Link href="/" passHref>
+          <a className={styles.close}>
+            <CloseIcon />
+          </a>
+        </Link>
+      </div>
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
