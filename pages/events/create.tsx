@@ -41,7 +41,6 @@ import useSnack from "../../hooks/useSnack";
 import {
   getInputPageData,
   allEventInputsValid,
-  textInputValid,
   dateInputStartValid,
   timeInputStartValid,
   dateInputEndValid,
@@ -417,12 +416,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
 
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */
   const [eventTitleValid, setEventTitleValid] = useState(false);
-  const eventDescriptionValid = textInputValid(
-    eventObject.eventDescription,
-    0,
-    2500,
-  );
-
+  const [eventDescriptionValid, setEventDescriptionValid] = useState(false);
   const [eventAddressValid, setEventAddressValid] = useState(false);
   const eventDateStartValid = dateInputStartValid(eventObject.eventDateStart);
   const eventTimeStartValid = timeInputStartValid(
@@ -762,6 +756,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   required
                   handleChange={updateEventDescription}
                   validate
+                  valid={eventDescriptionValid}
+                  setValid={setEventDescriptionValid}
                 />
                 <CategoryInput
                   categories={categories}

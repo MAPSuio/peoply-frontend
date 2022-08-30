@@ -31,6 +31,7 @@ import Button from "./Button";
 import ImageInput from "./inputs/ImageInput";
 import TimeView from "./TimeView";
 import Modal from "./Modal";
+import TextInputLong from "./inputs/TextInputLong";
 
 //Styles
 import styles from "../styles/SummaryPage.module.scss";
@@ -513,14 +514,13 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           valid={validDescription}
           inputComponent={
             <>
-              <TextInput
+              <TextInputLong
                 value={tempEventObject.description}
                 inputId="description"
                 inputName="eventTitle"
                 label="Endre beskrivelse av arrangementet"
                 placeholder={tempEventObject.description}
                 maxLength={2500}
-                minLength={1}
                 errorMessage="Beskrivelsen kan ikke være tom"
                 required={false}
                 handleChange={updateTempObjectProps}

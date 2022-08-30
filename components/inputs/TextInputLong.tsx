@@ -17,6 +17,8 @@ interface TextInputLongProps {
   className?: string;
   handleChange: (e: any) => void;
   validate?: boolean;
+  valid?: boolean;
+  setValid?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TextInputLong = ({
@@ -32,13 +34,17 @@ const TextInputLong = ({
   required,
   handleChange,
   validate,
+  valid,
+  setValid,
 }: TextInputLongProps) => {
   const [focused, setFocused] = useState(false);
 
-  const validText = value.length > 0;
+  if (setValid) {
+    setValid(value.length > 0);
+  }
 
   const getInputContainerStyles = () => {
-    if (validate && (validText || !focused)) {
+    if (validate && (valid || !focused)) {
       return `${styles.inputContainer} ${styles.noErrorPadding}`;
     } else {
       return styles.inputContainer;
@@ -46,7 +52,7 @@ const TextInputLong = ({
   };
 
   const getTextInputLongStyles = () => {
-    if (validate && validText) {
+    if (validate && valid) {
       return `${styles.textInputLong} ${styles.valid}`;
     } else if (validate && focused) {
       return `${styles.textInputLong} ${styles.notValid}`;
@@ -82,7 +88,7 @@ const TextInputLong = ({
         maxLength={maxLength}
         required={required}
       ></textarea>
-      {validate && !validText && focused && (
+      {validate && !valid && focused && (
         <div className={styles.errorContainer}>
           <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>

@@ -73,9 +73,9 @@ const Create = ({ baseUrl }: CreateProps) => {
             maxLength={50}
             minLength={1}
             errorMessage="Navnet kan ikke være tomt"
+            validate
             valid={nameValid}
             setValid={setNameValid}
-            validate
           />
           <TextInputLong
             value={description}
@@ -87,7 +87,6 @@ const Create = ({ baseUrl }: CreateProps) => {
             rows={8}
             maxLength={300}
             errorMessage="Beskrivelsen kan ikke være tom"
-            validate
           />
         </div>
         <div className={styles.confirm}>
