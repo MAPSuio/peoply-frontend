@@ -12,11 +12,12 @@ interface TextInputProps {
   placeholder?: string;
   maxLength?: number;
   minLength?: number;
-  errorMessage: string;
+  errorMessage?: string;
   required?: boolean;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   setValid?: React.Dispatch<React.SetStateAction<boolean>>;
   valid?: boolean;
+  validate?: boolean;
 }
 
 const TextInput = ({
@@ -32,6 +33,7 @@ const TextInput = ({
   handleChange,
   setValid,
   valid,
+  validate,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
@@ -48,7 +50,7 @@ const TextInput = ({
   }
 
   const getInputContainerStyles = () => {
-    if (valid || !focused) {
+    if (validate && (valid || !focused)) {
       return `${styles.inputContainer} ${styles.noErrorPadding}`;
     } else {
       return styles.inputContainer;
@@ -56,9 +58,9 @@ const TextInput = ({
   };
 
   const getTextInputStyles = () => {
-    if (valid) {
+    if (validate && valid) {
       return `${styles.textInput} ${styles.valid}`;
-    } else if (focused) {
+    } else if (validate && focused) {
       return `${styles.textInput} ${styles.notValid}`;
     } else {
       return `${styles.textInput}`;
@@ -93,7 +95,7 @@ const TextInput = ({
         required={required}
         autoComplete="off"
       ></input>
-      {!valid && focused && (
+      {validate && !valid && focused && errorMessage && (
         <div className={styles.errorContainer}>
           <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>

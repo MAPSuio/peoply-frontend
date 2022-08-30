@@ -576,6 +576,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 handleChange={updateEventTitle}
                 setValid={setEventTitleValid}
                 valid={eventTitleValid}
+                validate
               />
               {validArrangersOptions.length > 0 && (
                 <Dropdown
@@ -708,6 +709,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 handleChange={updateEventLocationName}
                 setValid={setEventAddressValid}
                 valid={eventAddressValid}
+                validate
               />
               <br />
               <br />

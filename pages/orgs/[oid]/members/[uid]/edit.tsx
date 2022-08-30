@@ -178,7 +178,6 @@ export default function EditOrganizationUser() {
                 inputId="roleDescription"
                 inputName="roleDescription"
                 label="Tittel i organisajsonen"
-                errorMessage=""
                 maxLength={35}
               />
             )}

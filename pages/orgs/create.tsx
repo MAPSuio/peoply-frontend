@@ -5,7 +5,7 @@ import useBack from "../../hooks/useBack";
 import router from "next/router";
 import Button from "../../components/Button";
 import TextInput from "../../components/inputs/TextInput";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TextInputLong from "../../components/inputs/TextInputLong";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
@@ -21,19 +21,10 @@ const Create = ({ baseUrl }: CreateProps) => {
   const { user, loading, reload } = useUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isValid, setIsValid] = useState(false);
+  const [nameValid, setNameValid] = useState(false);
   const goBack = useBack();
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
-
-  /* hook for validating form */
-  useEffect(() => {
-    if (name.length > 0 && description.length > 0) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
-  }, [name, description]);
 
   if (loading) {
     return <></>;
@@ -80,7 +71,11 @@ const Create = ({ baseUrl }: CreateProps) => {
             label="Organisasjonens navn"
             placeholder="ProgSys"
             maxLength={50}
+            minLength={1}
             errorMessage="Navnet kan ikke være tomt"
+            valid={nameValid}
+            setValid={setNameValid}
+            validate
           />
           <TextInputLong
             value={description}
@@ -97,7 +92,7 @@ const Create = ({ baseUrl }: CreateProps) => {
         </div>
         <div className={styles.confirm}>
           <Button
-            disabled={!isValid}
+            disabled={!nameValid}
             text="Lagre endringer"
             onClick={handleConfirm}
           />

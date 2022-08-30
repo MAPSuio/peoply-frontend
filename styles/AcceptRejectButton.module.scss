@@ -1,5 +1,6 @@
 .check {
   background-color: $success-color;
+  cursor: pointer;
   display: flex;
   margin-right: $spacer-small;
   padding: $spacer-small;
@@ -7,6 +8,7 @@
 
 .cross {
   background-color: #738295;
+  cursor: pointer;
   display: flex;
   padding: $spacer-small ;
 }

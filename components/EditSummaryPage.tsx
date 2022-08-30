@@ -335,6 +335,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               handleChange={updateTempObjectProps}
               setValid={setValidTitle}
               valid={validTitle}
+              validate
             />
           }
         >
@@ -493,6 +494,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 handleChange={updateTempObjectProps}
                 setValid={setValidLocationName}
                 valid={validLocationName}
+                validate
               />
             </>
           }
@@ -524,6 +526,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 handleChange={updateTempObjectProps}
                 setValid={setValidDescription}
                 valid={validDescription}
+                validate
               />
             </>
           }
