@@ -1,6 +1,7 @@
 import useSnack from "../hooks/useSnack";
 import { SnackTypes } from "../types/types";
-import Button from "./Button";
+import Button, { IconPlacement } from "./Button";
+import ShareIcon from "./svgs/ShareIcon";
 
 interface ShareButtonProps {
   shareUrl?: string;
@@ -9,6 +10,7 @@ interface ShareButtonProps {
   shareTitle?: string;
   buttonText: string;
   width?: string;
+  iconPlacement?: IconPlacement;
 }
 
 export function ShareButton({
@@ -18,6 +20,7 @@ export function ShareButton({
   shareTitle,
   buttonText,
   width,
+  iconPlacement = IconPlacement.LEFT,
 }: ShareButtonProps) {
   const { addSnack } = useSnack();
   function buttonOnClick(event: MouseEvent) {
@@ -64,6 +67,8 @@ export function ShareButton({
       width={width}
       onClick={(e: MouseEvent) => buttonOnClick(e)}
       noShadow
+      icon={<ShareIcon />}
+      iconPlacement={iconPlacement}
     />
   );
 }

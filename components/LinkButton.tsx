@@ -5,6 +5,7 @@ import { ButtonType } from "../types/types";
 // Styles.
 import styles from "../styles/Button.module.scss";
 import Link from "next/link";
+import { IconPlacement } from "./Button";
 
 interface LinkButtonProps {
   text: string;
@@ -14,6 +15,8 @@ interface LinkButtonProps {
   small?: boolean;
   width?: string;
   noShadow?: boolean;
+  icon?: React.ReactNode;
+  iconPlacement: IconPlacement;
 }
 
 export default function LinkButton({
@@ -24,6 +27,8 @@ export default function LinkButton({
   small,
   width,
   noShadow,
+  icon,
+  iconPlacement = IconPlacement.LEFT,
 }: LinkButtonProps) {
   const buttonStyles = (() => {
     switch (type) {
@@ -50,9 +55,24 @@ export default function LinkButton({
     }
   })();
 
+  const getIconPlacementStyles = () => {
+    switch (iconPlacement) {
+      case IconPlacement.LEFT:
+        return styles.iconLeft;
+      case IconPlacement.ABOVE:
+        return styles.iconAbove;
+      case IconPlacement.ABOVE_ON_MOBILE:
+        return styles.iconAboveOnMobile;
+    }
+  };
+
   return (
     <Link href={href} passHref>
-      <a className={`${buttonStyles} ${className}`} style={{ width }}>
+      <a
+        className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
+        style={{ width }}
+      >
+        {icon}
         {text}
       </a>
     </Link>

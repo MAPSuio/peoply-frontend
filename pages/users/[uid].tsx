@@ -50,7 +50,6 @@ const User = ({ user, baseUrl }: UserProps) => {
           <h1
             className={styles.name}
           >{`${userData.firstName} ${userData.lastName}`}</h1>
-          <p className={styles.location}>Oslo, NO</p>
           <p className={styles.description}>{userData.description}</p>
         </div>
       </div>

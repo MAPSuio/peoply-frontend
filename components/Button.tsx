@@ -8,6 +8,12 @@ import { ButtonType } from "../types/types";
 import styles from "../styles/Button.module.scss";
 import { useState } from "react";
 
+export enum IconPlacement {
+  LEFT = "left",
+  ABOVE = "above",
+  ABOVE_ON_MOBILE = "aboveOnMobile",
+}
+
 interface ButtonProps {
   text: string;
   type?: ButtonType;
@@ -19,6 +25,8 @@ interface ButtonProps {
   noShadow?: boolean;
   loading?: boolean;
   loadingIconLatency?: number;
+  icon?: React.ReactNode;
+  iconPlacement?: IconPlacement;
 }
 
 export default function Button({
@@ -32,6 +40,8 @@ export default function Button({
   noShadow,
   loading,
   loadingIconLatency = 150,
+  icon,
+  iconPlacement = IconPlacement.LEFT,
 }: ButtonProps) {
   const [onClickLoadingState, setOnClickLoadingState] = useState(false);
   const [onClickDisableState, setOnClickDisableState] = useState(false);
@@ -60,6 +70,17 @@ export default function Button({
     }
   })();
 
+  const getIconPlacementStyles = () => {
+    switch (iconPlacement) {
+      case IconPlacement.LEFT:
+        return styles.iconLeft;
+      case IconPlacement.ABOVE:
+        return styles.iconAbove;
+      case IconPlacement.ABOVE_ON_MOBILE:
+        return styles.iconAboveOnMobile;
+    }
+  };
+
   return (
     <button
       onClick={async (e) => {
@@ -83,7 +104,7 @@ export default function Button({
         setOnClickLoadingState(false);
         setOnClickDisableState(false);
       }}
-      className={`${buttonStyles} ${className}`}
+      className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
       style={{ width }}
       disabled={loading || onClickDisableState || disabled}
     >
@@ -92,7 +113,10 @@ export default function Button({
           dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
         />
       ) : (
-        text
+        <>
+          {icon}
+          {text}
+        </>
       )}
     </button>
   );

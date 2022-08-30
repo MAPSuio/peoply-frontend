@@ -11,7 +11,7 @@ import UserCircle from "../../../components/UserCircle";
 import DateCircle from "../../../components/DateCircle";
 import PlaceCircle from "../../../components/PlaceCircle";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
-import Button from "../../../components/Button";
+import Button, { IconPlacement } from "../../../components/Button";
 import BackButtonGlass from "../../../components/BackButtonGlass";
 import HeartIconGlass from "../../../components/HeartIconGlass";
 import HeadComponent from "../../../components/HeadComponent";
@@ -70,6 +70,7 @@ import styles from "../../../styles/Event.module.scss";
 import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import router from "next/router";
+import MailIcon from "../../../components/svgs/MailIcon";
 
 interface EventProps {
   event: Event;
@@ -619,12 +620,15 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   buttonText="Del arrangement"
                   shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${eventData.urlId}`}
                   shareTitle={eventData.title}
+                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
                 />
                 <LinkButton
                   href={`/events/${eventData.urlId}/invite`}
                   small
                   text="Inviter brukere"
                   type={ButtonType.SECONDARY}
+                  icon={<MailIcon />}
+                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
                 />
               </div>
               <h2 className={styles.descHeader}>Informasjon</h2>

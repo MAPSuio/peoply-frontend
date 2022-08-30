@@ -1,5 +1,6 @@
 .button {
   @include resetButton();
+  align-items: center;
   background-color: $primary-color-400;
   box-shadow: $shadow-button;
   color: $text-color-emphasis;
@@ -10,6 +11,39 @@
   padding: $spacer-small 0;
   transition: all $animation-duration ease;
   width: 100%;
+
+  &.iconLeft {
+    display: flex;
+    gap: $spacer-very-small-plus;
+    justify-content: center;
+  }
+
+  &.iconAbove {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-mini;
+  }
+
+  &.iconAboveOnMobile {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-mini;
+
+    @include desktop() {
+      display: flex;
+      flex-direction: row;
+      gap: $spacer-very-small-plus;
+      justify-content: center;
+    }
+  }
+
+  svg {
+    height: 24px;
+    stroke: $text-color-emphasis;
+    width: 24px;
+  }
 
   &:disabled {
     background-color: $background-color-button-disabled;

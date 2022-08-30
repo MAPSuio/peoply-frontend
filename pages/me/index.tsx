@@ -28,7 +28,6 @@ const Me: NextPage = () => {
           <h1
             className={styles.name}
           >{`${user.firstName} ${user.lastName}`}</h1>
-          <p className={styles.location}>Oslo, NO</p>
           <p className={styles.description}>{user.description}</p>
         </div>
         <ProfileMenu />
