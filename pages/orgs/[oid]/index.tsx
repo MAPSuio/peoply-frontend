@@ -89,7 +89,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             ? org.description
             : `Organisasjonssiden til ${org.name}`
         }
-        url={`${baseUrl}/organization/${org?.id}`}
+        url={`${baseUrl}/orgs/${org?.id}`}
         imageUrl={org.image}
       />
 

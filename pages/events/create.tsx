@@ -1,12 +1,12 @@
-/* Next */
+/* Next.js. */
 import { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
-/* React */
+/* React. */
 import { useState, ChangeEvent, useEffect } from "react";
 
-/* Components */
+/* Components. */
 import DateInput from "../../components/inputs/DateInput";
 import TimeInput from "../../components/inputs/TimeInput";
 import TextInput from "../../components/inputs/TextInput";
@@ -16,6 +16,10 @@ import CategoryInput from "../../components/inputs/CategoryInput";
 import ImageInput from "../../components/inputs/ImageInput";
 import RadioInput from "../../components/inputs/RadioInput";
 import Modal from "../../components/Modal";
+import TextInputLocationSelect from "../../components/inputs/TextInputLocationSelect";
+import Dropdown from "../../components/Dropdown";
+import Header from "../../components/Header";
+import HeadComponent from "../../components/HeadComponent";
 
 import SummaryPage from "../../components/SummaryPage";
 import InputPage from "../../components/InputPage";
@@ -27,8 +31,11 @@ import PublicIcon from "../../components/svgs/PublicIcon";
 import PlusIcon from "../../components/svgs/PlusIcon";
 import MinusIcon from "../../components/svgs/MinusIcon";
 
-/* Hooks */
+/* Hooks. */
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import useUser from "../../hooks/useUser";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import useSnack from "../../hooks/useSnack";
 
 /* Utils */
 import {
@@ -53,17 +60,10 @@ import {
   SnackTypes,
   OrganizationRole,
 } from "../../types/types";
-
-/* Styles */
-import styles from "../../styles/CreateEvent.module.scss";
-import useUser from "../../hooks/useUser";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
-import Header from "../../components/Header";
-import useSnack from "../../hooks/useSnack";
-import HeadComponent from "../../components/HeadComponent";
 import { Models } from "azure-maps-rest";
-import TextInputLocationSelect from "../../components/inputs/TextInputLocationSelect";
-import Dropdown from "../../components/Dropdown";
+
+/* Styles. */
+import styles from "../../styles/CreateEvent.module.scss";
 
 export interface EventObjectProps {
   eventTitle: string;
