@@ -1,8 +1,10 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
 import useSnack from "../hooks/useSnack";
-import useUser from "../hooks/useUser";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 import styles from "../styles/ProfileMenu.module.scss";
-import { SnackTypes } from "../types/types";
+import { Organization, SnackTypes } from "../types/types";
+import Modal from "./Modal";
 import ProfileMenuItem from "./ProfileMenuItem";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import CloseIcon from "./svgs/CloseIcon";
@@ -10,35 +12,31 @@ import EditIcon from "./svgs/EditIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import UsersIcon from "./svgs/UsersIcon";
 
-/* TODO: WIP */
-export default function OrgMenu() {
-  const { currentOrg, switchContext, reload } = useUser();
-  const { addSnack } = useSnack();
+interface OrgMenuProps {
+  org: Organization;
+}
 
-  const handleLogout = async () => {
-    switchContext();
-    addSnack(`Logget ut av ${currentOrg?.name}`, SnackTypes.ERROR);
-  };
+/* TODO: WIP */
+export default function OrgMenu({ org }: OrgMenuProps) {
+  const { addSnack } = useSnack();
+  const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     try {
-      const response = await fetchFromPeoplyApi(
-        `/organizations/${currentOrg?.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const response = await fetchFromPeoplyApi(`/organizations/${org.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
       if (response.status === 200) {
-        addSnack(`Slettet ${currentOrg?.name}`, SnackTypes.SUCCESS);
-        switchContext();
-        reload();
+        addSnack(`Slettet ${org.name}`, SnackTypes.SUCCESS);
+        router.push(`/orgs/${org.id}`);
       } else {
-        addSnack(`Kunne ikke slette ${currentOrg?.name}`, SnackTypes.ERROR);
+        addSnack(`Kunne ikke slette ${org.name}`, SnackTypes.ERROR);
       }
     } catch (error) {
-      addSnack(`Kunne ikke slette ${currentOrg?.name}`, SnackTypes.ERROR);
+      addSnack(`Kunne ikke slette ${org.name}`, SnackTypes.ERROR);
     }
   };
 
@@ -48,29 +46,32 @@ export default function OrgMenu() {
         text="Rediger organisasjon"
         Icon={() => <EditIcon className={styles.icon} />}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={`/orgs/${currentOrg?.id}/edit`}
+        linkOrOnClick={`/orgs/${org.id}/edit`}
       />
       <ProfileMenuItem
         text="Behandle medlemmer"
         Icon={() => <UsersIcon className={styles.icon} />}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={`/orgs/${currentOrg?.id}/members`}
+        linkOrOnClick={`/orgs/${org.id}/members`}
       />
       <span className={styles.divider} />
-      <ProfileMenuItem
-        text="Logg ut av organisasjon"
-        Icon={LogoutIcon}
-        danger
-        ActionIcon={CloseIcon}
-        linkOrOnClick={handleLogout}
-      />
       <ProfileMenuItem
         text="Slett organisasjonen"
         Icon={LogoutIcon}
         danger
         ActionIcon={CloseIcon}
-        linkOrOnClick={handleDelete}
+        linkOrOnClick={() => setModalOpen(true)}
       />
+      {modalOpen && (
+        <Modal
+          label={`Vil du slette ${org.name}?`}
+          description="Dette vil slette organisasjonen og all tilknyttet data. Dette kan ikke reverseres."
+          buttonText={`Slett ${org.name}`}
+          secondaryButtonText="Lukk"
+          buttonOnClick={handleDelete}
+          secondaryButtonOnClick={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

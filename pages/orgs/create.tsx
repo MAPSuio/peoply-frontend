@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import TextInputLong from "../../components/inputs/TextInputLong";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
-import { Organization, SnackTypes } from "../../types/types";
+import { SnackTypes } from "../../types/types";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import HeadComponent from "../../components/HeadComponent";
 
@@ -25,7 +25,6 @@ const Create = ({ baseUrl }: CreateProps) => {
   const goBack = useBack();
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
-  const { switchContext } = useUser();
 
   /* hook for validating form */
   useEffect(() => {
@@ -44,25 +43,19 @@ const Create = ({ baseUrl }: CreateProps) => {
     redirectToLogin();
   }
 
-  const switchContextHandler = (org: Organization) => {
-    switchContext(org);
-    addSnack(`Byttet til ${org.name}.`, SnackTypes.SUCCESS);
-    router.push("/me");
-  };
-
   const handleConfirm = async () => {
     try {
-      const org: Organization = await fetchFromPeoplyApiJson("/organizations", {
+      await fetchFromPeoplyApiJson("/organizations", {
         method: "POST",
         body: JSON.stringify({ name, description }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       reload();
       addSnack("Organisasjon opprettet", SnackTypes.SUCCESS);
-      switchContextHandler(org);
     } catch (error) {
       addSnack("Klarte ikke å lage organisasjon", SnackTypes.ERROR);
     }
+    router.push("/me/orgs");
   };
 
   return (

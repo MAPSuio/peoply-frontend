@@ -1,14 +1,8 @@
 // Next.js.
 import Link from "next/link";
 
-// React.
-import { useState } from "react";
-
 // Components.
 import Avatar from "./Avatar";
-import ChevronDownIcon from "./svgs/ChevronDownIcon";
-import MenuModal from "./MenuModal";
-import ChangeContextMenu from "./ChangeContextMenu";
 import NotificationIndicator from "./NotificationIndicator";
 
 // Hooks.
@@ -19,11 +13,8 @@ import useNotifications from "../hooks/useNotifications";
 import styles from "../styles/Header.module.scss";
 
 export default function Header() {
-  const { user, currentOrg, orgs } = useUser();
-  const [changeContext, setChangeContext] = useState(false);
-  const { notifications, hasUnreadNotifications } = useNotifications();
-
-  const userHasOrgs = orgs && orgs.length > 0;
+  const { user } = useUser();
+  const { hasUnreadNotifications } = useNotifications();
 
   return (
     <div className={styles.wrapper}>
@@ -33,19 +24,13 @@ export default function Header() {
         </Link>
         {user ? (
           <div className={styles.loggedIn}>
-            {notifications && !currentOrg && (
-              <NotificationIndicator
-                hasUnreadNotifications={hasUnreadNotifications}
-              />
-            )}
-            {userHasOrgs && (
-              <button onClick={() => setChangeContext(!changeContext)}>
-                <ChevronDownIcon />
-              </button>
-            )}
+            <NotificationIndicator
+              hasUnreadNotifications={hasUnreadNotifications}
+            />
+
             <Link href="/me" passHref>
               <a>
-                <Avatar user={user} org={currentOrg} />
+                <Avatar user={user} />
               </a>
             </Link>
           </div>
@@ -54,14 +39,6 @@ export default function Header() {
             <Link href="/login">Log in</Link>
             <Link href="/support">FAQ</Link>
           </div>
-        )}
-        {changeContext && (
-          <MenuModal
-            label="Endre bruker"
-            onClose={() => setChangeContext(false)}
-          >
-            <ChangeContextMenu onClose={() => setChangeContext(false)} />
-          </MenuModal>
         )}
       </div>
     </div>

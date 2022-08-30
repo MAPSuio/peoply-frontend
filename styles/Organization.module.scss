@@ -1,3 +1,20 @@
+.heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .settingsIcon {
+    height: 24px;
+    width: 24px;
+
+    @include desktop() {
+      height: 32px;
+      width: 32px;
+    }
+  }
+}
+
 .headerContainer {
   align-items: center;
   display: flex;

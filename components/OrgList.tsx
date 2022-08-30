@@ -1,41 +1,28 @@
 /* component that accepts a list of orgs as props and renders them */
 
-import { Organization, SnackTypes } from "../types/types";
+import { Organization } from "../types/types";
 import styles from "../styles/OrgList.module.scss";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import PlusIcon from "./svgs/PlusIcon";
 import router from "next/router";
-import useUser from "../hooks/useUser";
-import useSnack from "../hooks/useSnack";
+import Link from "next/link";
 
 interface OrgListProps {
   orgs: Organization[];
 }
 
 export default function OrgList({ orgs }: OrgListProps) {
-  const { switchContext } = useUser();
-  const { addSnack } = useSnack();
-
-  const switchContextHandler = (org: Organization) => {
-    switchContext(org);
-    addSnack(`Byttet til ${org.name}.`, SnackTypes.SUCCESS);
-    router.push("/me");
-  };
-
   return (
     <div className={styles.container}>
       {orgs.map((org, index) => (
-        <button
-          key={index}
-          className={styles.item}
-          tabIndex={0}
-          onClick={() => switchContextHandler(org)}
-        >
-          <div>
-            <p>{org.name}</p>
-          </div>
-          <ChevronRightIcon />
-        </button>
+        <Link href={`/orgs/${org.id}`} key={index} passHref>
+          <a className={styles.item}>
+            <div>
+              <p>{org.name}</p>
+            </div>
+            <ChevronRightIcon />
+          </a>
+        </Link>
       ))}
 
       <button
