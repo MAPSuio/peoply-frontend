@@ -37,6 +37,8 @@
 
 .errorText {
   @include errorText();
+  text-align: left
+
 }
 
 .valid {

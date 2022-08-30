@@ -61,6 +61,18 @@
   }
 }
 
+.editIcon {
+  position: absolute;
+  right: 3.5rem;
+  top: 1rem;
+  z-index: 1;
+
+  @include desktop() {
+    right: 3rem;
+    top: 2rem;
+  }
+}
+
 .eventContainer {
   align-self: center;
   display: flex;
@@ -236,6 +248,7 @@
   }
 }
 
+
 .primaryButton {
   @include fixedButton();
   align-self: center;
@@ -265,6 +278,13 @@
 }
 
 .marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
+.glassButtonsWrapper {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
   margin-bottom: $spacer-medium;
 }
 

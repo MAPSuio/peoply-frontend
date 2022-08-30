@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRef, ChangeEvent } from "react";
 
 // Components.
-import EditIcon from "../svgs/EditIcon";
 import WarningIcon from "../svgs/WarningIcon";
 import ErrorIcon from "../svgs/ErrorIcon";
 
@@ -24,9 +23,10 @@ interface ImageInputProps {
   label: string;
   buttonLabel: string;
   value?: File;
+  placeholder?: string;
   errorMessage: string;
   required?: boolean;
-  imageCached: ImageCaching;
+  imageCached?: ImageCaching;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -36,6 +36,7 @@ const ImageInput = ({
   label,
   buttonLabel,
   value,
+  placeholder,
   errorMessage,
   required,
   onChange,
@@ -64,7 +65,7 @@ const ImageInput = ({
 
   const imageSource = value
     ? value && URL.createObjectURL(value)
-    : PlaceholderImage;
+    : placeholder ?? PlaceholderImage;
   const imageInputStyles = getImageInputStyles();
 
   return (
@@ -90,7 +91,6 @@ const ImageInput = ({
         onChange={onChange}
       />
       <button className={styles.imageInputButton} onClick={clickImageInput}>
-        <EditIcon />
         <span className={styles.imageInputButtonLabel}>{buttonLabel}</span>
       </button>
       {fileTooLarge && (

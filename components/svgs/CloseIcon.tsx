@@ -1,6 +1,11 @@
-export default function CloseIcon() {
+interface CloseIconProps {
+  className?: string;
+}
+
+export default function CloseIcon({ className }: CloseIconProps) {
   return (
     <svg
+      className={className}
       width="16"
       height="16"
       viewBox="0 0 16 16"
@@ -9,14 +14,12 @@ export default function CloseIcon() {
     >
       <path
         d="M12 4L4 12"
-        stroke="#FF948C"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M4 4L12 12"
-        stroke="#FF948C"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

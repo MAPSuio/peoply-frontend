@@ -207,8 +207,8 @@ export interface Event {
   endDate: Date | string | null;
   title: string;
   description: string;
-  capacity?: number;
-  private: boolean;
+  capacity?: number | null;
+  visibility: Visibility;
   image?: string;
   locationName: string;
   poiName?: string;

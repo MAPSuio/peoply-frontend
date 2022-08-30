@@ -34,11 +34,11 @@
 .imageInputButton {
   @include resetButton;
   align-items: center;
-  background-color: $background-color-input-muted;
+  background-color: $background-color-input;
   display: flex;
   font-weight: $font-weight-regular;
   justify-content: center;
-  padding: $spacer-small 0;
+  padding: $spacer-small 0; 
 }
 
 .imageInputButtonLabel {

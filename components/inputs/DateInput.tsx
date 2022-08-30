@@ -10,10 +10,11 @@ interface DateInputProps {
   valid?: boolean;
   inputId: string;
   inputName: string;
-  label: string;
+  label?: string;
   errorMessage: string;
   required?: boolean;
   handleChange: (e: any) => void;
+  initiallyFocused?: boolean;
 }
 
 const DateInput = ({
@@ -25,8 +26,9 @@ const DateInput = ({
   errorMessage,
   required,
   handleChange,
+  initiallyFocused = false,
 }: DateInputProps) => {
-  const [focused, setFocused] = useState(false);
+  const [focused, setFocused] = useState(initiallyFocused);
 
   const getInputContainerStyles = () => {
     if (valid || !focused) {
@@ -52,9 +54,14 @@ const DateInput = ({
 
   return (
     <div className={inputContainerStyles}>
-      <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
-        {label}
-      </label>
+      {label && (
+        <label
+          className={`${styles.label} ${styles.required}`}
+          htmlFor={inputId}
+        >
+          {label}
+        </label>
+      )}
       <input
         className={dateInputStyles}
         type="date"

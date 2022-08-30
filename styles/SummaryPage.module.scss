@@ -10,6 +10,7 @@
   display: flex;
   flex-flow: column nowrap;
   text-align: center;
+  width: 90%;
 }
 
 .progressBarContainer {
@@ -23,6 +24,9 @@
 .subTitle {
   margin-bottom: $spacer-small;
 }
+.summaryWrapper {
+  width:90%;
+}
 
 .summaryContainer {
   align-items: center;
@@ -30,6 +34,10 @@
   flex-flow: column nowrap;
   gap: $spacer-medium;
   width: 100%;
+}
+
+.backButtonContainer {
+  width: 90%;
 }
 
 .primaryButton {
@@ -41,6 +49,52 @@
   @include desktop() {
     font-size: $font-size-primary-desktop;
   }
+}
+
+.addDateContainer {
+  @include resetButton();
+  
+  display: flex;
+  padding: $spacer-very-small 0;
+}
+
+.addDateText {
+  color: $primary-color-200;
+  font-family: $mono-font;
+  font-size: $font-size-secondary;
+  margin-left: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.addDateDimensions {
+  height: $font-size-secondary;
+  stroke: $primary-color-200;
+  width: $font-size-secondary;
+
+  @include desktop() {
+    height: $font-size-secondary-desktop;
+    width: $font-size-secondary-desktop;
+  }
+}
+
+.deleteButton {
+  background-color: transparent;
+  color: $text-color-primary;
+  cursor: pointer;
+  font-size: $font-size-primary;
+  margin-top: -1rem;
+  text-decoration: underline;
+}
+
+.deleteImage {
+  align-self: center;
+  color: $text-color-primary;
+  font-size: $font-size-primary;
+  margin-top: -1rem;
+  text-decoration: underline;
 }
 
 .placeStatic {
@@ -61,6 +115,7 @@
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
   line-height: 1.5;
+  text-align: left;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
@@ -92,6 +147,7 @@
 .descriptionText {
   font-size: $font-size-secondary;
   line-height: 1.5;
+  text-align: left;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
@@ -178,6 +234,11 @@
   }
 }
 
+.categoryTag {
+  background-color: $background-color-button-secondary-hover;
+  color: $text-color-emphasis
+}
+
 .textColorPrimary {
   color: $text-color-primary;
 }
@@ -186,8 +247,28 @@
   margin-bottom: $spacer-very-small;
 }
 
+.marginRightVerySmall {
+  margin-right: $spacer-very-small;
+}
+
 .dataIconDimensions {
   @include dataIconDimensions();
+}
+
+.startAlign {
+  align-items: flex-start;
+}
+
+.horizontalContainer {
+  display: flex;
+  flex-direction: row;
+  gap: $spacer-small;
+}
+
+.diagonalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 @include desktop() {

@@ -133,6 +133,46 @@ function getISOTime(date: Date): string {
   return isoString;
 }
 
+/* format isoString and timezone into an isoString in UTC*/
+function removeTimezone(isoString: string): string {
+  const date = new Date(isoString);
+  const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+  const utcDate = new Date(date.getTime() - timezoneOffset);
+
+  return utcDate.toISOString();
+}
+
+function addTimezone(isoString: string): string {
+  const date = new Date(isoString);
+  const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+  const utcDate = new Date(date.getTime() + timezoneOffset);
+
+  return utcDate.toISOString();
+}
+
+/* Formats an iso date into yyyy-dd-mm */
+function getISODateString(date: string, local = false): string {
+  let year = date.slice(0, 4);
+  let month = date.slice(5, 7);
+  let day = date.slice(8, 10);
+
+  if (local) {
+    const localDate = new Date(date).toDateString();
+
+    year = localDate.slice(0, 4);
+    month = localDate.slice(5, 7);
+    day = localDate.slice(8, 10);
+  }
+
+  return `${year}-${month}-${day}`;
+}
+
+function getISOTimeString(date: string): string {
+  const hour = date.slice(11, 13);
+  const minute = date.slice(14, 16);
+  return `${hour}:${minute}`;
+}
+
 /* Formats a date into dd.mm.yyyy. */
 function getDateString(date: string): string {
   const year = date.slice(0, 4);
@@ -140,6 +180,13 @@ function getDateString(date: string): string {
   const day = date.slice(8, 10);
 
   return `${day}.${month}.${year}`;
+}
+
+/* Formats a date into hh:mm */
+function getTimeString(date: string): string {
+  const hour = date.slice(11, 13);
+  const minute = date.slice(14, 16);
+  return `${hour}:${minute}`;
 }
 
 /* Gets the weekday of a given date. */
@@ -386,6 +433,19 @@ function timeInputEndValid(
   return timeLaterThanDate && dateLaterThanStart;
 }
 
+/* Check if isoString1 is later than isoString2. */
+function laterThan(isoString1: string, isoString2: string): boolean {
+  const date1 = new Date(isoString1);
+  const date2 = new Date(isoString2);
+
+  return date1 >= date2;
+}
+
+function latherThanNowISOString(isoString: string): boolean {
+  const date = new Date(isoString);
+  return date > new Date();
+}
+
 /* Checks if a category input is valid. */
 function categoryInputValid(categories: Array<number>): boolean {
   return categories.length > 0;
@@ -495,6 +555,10 @@ function queryToString(query: any) {
     .join("&");
 }
 
+function throwNotImportedError() {
+  throw new Error("This function is not specified.");
+}
+
 export {
   formatDateRange,
   formatTimeRange,
@@ -517,11 +581,19 @@ export {
   sameDate,
   allEventInputsValid,
   getDateString,
+  getTimeString,
   getCategoryText,
   getInputPageName,
   getProgressCircleLabel,
   olderThanStart,
   getWeekday,
+  throwNotImportedError,
+  getISODateString,
+  getISOTimeString,
+  removeTimezone,
+  addTimezone,
+  laterThan,
+  latherThanNowISOString,
   getOrganizationRolePrivilege,
   generateRandomKey,
   groupBy,

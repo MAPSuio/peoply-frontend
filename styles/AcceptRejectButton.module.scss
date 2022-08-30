@@ -1,0 +1,26 @@
+.check {
+  background-color: $success-color;
+  display: flex;
+  margin-right: $spacer-small;
+  padding: $spacer-small;
+}
+
+.cross {
+  background-color: #738295;
+  display: flex;
+  padding: $spacer-small ;
+}
+
+.icon {
+  height: 16px;
+  justify-content: center;
+  stroke: $text-color-black;
+  width: 16px;
+}
+
+.buttonContainer {
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}

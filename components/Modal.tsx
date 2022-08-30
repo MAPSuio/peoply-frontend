@@ -18,6 +18,7 @@ interface ModalProps {
   secondaryButtonText?: string;
   buttonOnClick?: () => void;
   secondaryButtonOnClick?: () => void;
+  closeButtonOnclick?: () => void;
 }
 
 const Modal = ({
@@ -27,8 +28,12 @@ const Modal = ({
   secondaryButtonText,
   buttonOnClick,
   secondaryButtonOnClick,
+  closeButtonOnclick,
 }: ModalProps) => {
   const [show, setShow] = useState(true);
+  const onClose = () => {
+    setShow(false);
+  };
 
   const clickFunction = () => {
     buttonOnClick && buttonOnClick();
@@ -44,7 +49,10 @@ const Modal = ({
     return (
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <button className={styles.exitIcon} onClick={() => setShow(false)}>
+          <button
+            className={styles.exitIcon}
+            onClick={closeButtonOnclick ?? onClose}
+          >
             <ExitIcon />
           </button>
           <h1 className={styles.title}>{label}</h1>

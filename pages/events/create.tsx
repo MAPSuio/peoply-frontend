@@ -39,7 +39,6 @@ import {
   timeInputStartValid,
   dateInputEndValid,
   timeInputEndValid,
-  categoryInputValid,
   radioInputValid,
   getCategoryText,
   getOrganizationRolePrivilege,
@@ -408,7 +407,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         localStorage.removeItem("eventImage");
         router.push(`/events/${event.urlId}`);
       } catch (e) {
-        // snackbar showing error
         addSnack(
           "Det skjedde en feil under opprettelsen av arrangementet",
           SnackTypes.ERROR,
@@ -418,17 +416,14 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */
-  const eventTitleValid = textInputValid(eventObject.eventTitle, 0, 100);
+  const [eventTitleValid, setEventTitleValid] = useState(false);
   const eventDescriptionValid = textInputValid(
     eventObject.eventDescription,
     0,
     2500,
   );
-  const eventAddressValid = textInputValid(
-    eventObject.eventLocationName,
-    0,
-    100,
-  );
+
+  const [eventAddressValid, setEventAddressValid] = useState(false);
   const eventDateStartValid = dateInputStartValid(eventObject.eventDateStart);
   const eventTimeStartValid = timeInputStartValid(
     eventObject.eventTimeStart,
@@ -449,9 +444,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       : !eventObject.eventTimeEnd && !eventObject.eventDateEnd // if both are not there
       ? true
       : false;
-  const eventActiveCategoriesValid = categoryInputValid(
-    eventObject.eventActiveCategories,
-  );
+
+  const [eventActiveCategoriesValid, setEventActiveCategoriesValid] =
+    useState(false);
+
   const eventCapacityValid = radioInputValid(
     eventObject.eventHasCapacity,
     parseInt(eventObject.eventCapacity),
@@ -578,6 +574,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 errorMessage={`Tittelen må være mellom ${3} og ${100} tegn`}
                 required
                 handleChange={updateEventTitle}
+                setValid={setEventTitleValid}
+                valid={eventTitleValid}
               />
               {validArrangersOptions.length > 0 && (
                 <Dropdown
@@ -708,6 +706,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 errorMessage="Du må oppgi et kallenavn på stedet."
                 required
                 handleChange={updateEventLocationName}
+                setValid={setEventAddressValid}
+                valid={eventAddressValid}
               />
               <br />
               <br />
@@ -766,6 +766,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   activeCategories={eventObject.eventActiveCategories}
                   errorMessage="Du må velge minst en kategori."
                   onClick={updateEventCategories}
+                  setValid={setEventActiveCategoriesValid}
+                  valid={eventActiveCategoriesValid}
                 />
               </div>
             </div>

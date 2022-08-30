@@ -7,20 +7,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Components.
-import UserCircle from "../../components/UserCircle";
-import DateCircle from "../../components/DateCircle";
-import PlaceCircle from "../../components/PlaceCircle";
-import SmallCheckCircle from "../../components/SmallCheckCircle";
-import Button from "../../components/Button";
-import BackButtonGlass from "../../components/BackButtonGlass";
-import HeartIconGlass from "../../components/HeartIconGlass";
-import HeadComponent from "../../components/HeadComponent";
+import UserCircle from "../../../components/UserCircle";
+import DateCircle from "../../../components/DateCircle";
+import PlaceCircle from "../../../components/PlaceCircle";
+import SmallCheckCircle from "../../../components/SmallCheckCircle";
+import Button from "../../../components/Button";
+import BackButtonGlass from "../../../components/BackButtonGlass";
+import HeartIconGlass from "../../../components/HeartIconGlass";
+import HeadComponent from "../../../components/HeadComponent";
+import EditIconGlass from "../../../components/EditIconGlass";
 
 // Hooks.
-import useUser from "../../hooks/useUser";
-import useBack from "../../hooks/useBack";
-import useSnack from "../../hooks/useSnack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import useUser from "../../../hooks/useUser";
+import useBack from "../../../hooks/useBack";
+import useSnack from "../../../hooks/useSnack";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSWR from "swr";
 
 // Services.
@@ -33,9 +34,9 @@ import {
   getUserRegistration,
   registerUser,
   removeFavorite,
-} from "../../services/events";
+} from "../../../services/events";
 
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
 import {
@@ -44,7 +45,7 @@ import {
   getISODate,
   getISOTime,
   laterThanNow,
-} from "../../utils/functions";
+} from "../../../utils/functions";
 
 // Types.
 import {
@@ -53,16 +54,17 @@ import {
   Registration,
   RegStatus,
   SnackTypes,
-} from "../../types/types";
+} from "../../../types/types";
 
 // Assets.
-import placeholderImage from "../../assets/images/undraw_partying.png";
+import placeholderImage from "../../../assets/images/undraw_partying.png";
 import { ParsedUrlQuery } from "querystring";
 
 // Styles.
-import styles from "../../styles/Event.module.scss";
-import { ShareButton } from "../../components/ShareButton";
-import LinkButton from "../../components/LinkButton";
+import styles from "../../../styles/Event.module.scss";
+import { ShareButton } from "../../../components/ShareButton";
+import LinkButton from "../../../components/LinkButton";
+import router from "next/router";
 
 interface EventProps {
   event: Event;
@@ -80,13 +82,13 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const redirectToLogin = useRedirectToLogin();
   const [mapsUrl, setMapsUrl] = useState<string>();
 
-  const {
-    data: eventData,
-    error: eventError,
-    mutate: updateEvent,
-  } = useSWR<Event>(`/events/${event.urlId}`, fetchFromPeoplyApiJson, {
-    fallbackData: event,
-  });
+  const { data: eventData, mutate: updateEvent } = useSWR<Event>(
+    `/events/${event.urlId}`,
+    fetchFromPeoplyApiJson,
+    {
+      fallbackData: event,
+    },
+  );
 
   const { data: registrations, error: registrationsError } = useSWR<
     Registration[]
@@ -208,6 +210,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
     } else {
       redirectToLogin();
     }
+  };
+
+  const editEventFunc = () => {
+    router.push(router.asPath + "/edit");
   };
 
   const unregisterForEvent = async () => {
@@ -336,6 +342,14 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
 
+  const isArranger = () => {
+    if (user && eventData && eventData.eventArrangers) {
+      return eventData.eventArrangers.some(
+        (arranger) => arranger.arrangerId === user.arrangerId,
+      );
+    }
+  };
+
   return (
     <>
       <HeadComponent
@@ -354,6 +368,12 @@ const Event = ({ event, baseUrl }: EventProps) => {
             favorited={favorited}
             loading={!favoriteFetched}
           />
+          {isArranger() && (
+            <EditIconGlass
+              className={styles.editIcon}
+              onClick={editEventFunc}
+            />
+          )}
           <div className={styles.imageContainer}>
             <Image
               src={eventData.image ?? placeholderImage}

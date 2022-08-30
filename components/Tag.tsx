@@ -4,14 +4,15 @@ interface TagProps {
   text: string;
   active: boolean;
   onClick?: () => void;
+  style?: string;
 }
 
-const Tag = ({ text, active, onClick }: TagProps) => {
+const Tag = ({ text, active, onClick, style }: TagProps) => {
   const getTagStyles = () => {
     if (active) {
       return `${styles.tagContainer} ${styles.active}`;
     }
-    return `${styles.tagContainer}`;
+    return `${styles.tagContainer} ${style}`;
   };
 
   const tagStyles = getTagStyles();

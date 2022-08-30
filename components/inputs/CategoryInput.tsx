@@ -8,6 +8,9 @@ interface CategoryInputProps {
   activeCategories: Array<number>;
   errorMessage: string;
   onClick: (categoryId: number) => void;
+  style?: string;
+  setValid?: React.Dispatch<React.SetStateAction<boolean>>;
+  valid?: boolean;
 }
 
 const CategoryInput = ({
@@ -15,6 +18,9 @@ const CategoryInput = ({
   activeCategories,
   errorMessage,
   onClick,
+  style,
+  setValid,
+  valid,
 }: CategoryInputProps) => {
   const getCategoryContainerStyles = () => {
     return activeCategories.length > 0
@@ -22,7 +28,10 @@ const CategoryInput = ({
       : styles.categoryInputContainer;
   };
 
-  const valid = activeCategories.length > 0;
+  if (setValid) {
+    setValid(activeCategories.length > 0);
+  }
+
   const categoryContainerStyles = getCategoryContainerStyles();
 
   return (
@@ -36,6 +45,7 @@ const CategoryInput = ({
               text={cat.name}
               active={activeCategories.includes(cat.id)}
               onClick={() => onClick(cat.id)}
+              style={style}
             />
           );
         })}
