@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { logout } from "../services/auth";
+import { deleteMe, logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { fetchIpInfo } from "../services/ip";
 import { IpInfo, Organization, User, UserContextType } from "../types/types";
@@ -87,6 +87,11 @@ export function UserProvider({
     return logout();
   };
 
+  const deleteMeHandler = async () => {
+    setUser(undefined);
+    return deleteMe();
+  };
+
   /* will switch context to org if provided, otherwise switch to user */
   const switchContext = (org?: Organization) => {
     if (org) {
@@ -111,6 +116,7 @@ export function UserProvider({
       user,
       loading,
       logout: logoutHandler,
+      deleteMe: deleteMeHandler,
       error,
       currentOrg,
       orgs,

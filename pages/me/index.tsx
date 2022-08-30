@@ -5,20 +5,19 @@ import Avatar from "../../components/Avatar";
 import ProfileMenu from "../../components/ProfileMenu";
 import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import Navbar from "../../components/Navbar";
+import { useRouter } from "next/router";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
-
-  const redirectToLogin = useRedirectToLogin();
+  const router = useRouter();
 
   if (loading) {
     return <></>;
   }
 
   if (!loading && !user) {
-    redirectToLogin();
+    router.push("/");
   }
 
   if (!loading && user) {

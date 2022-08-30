@@ -57,6 +57,7 @@ export interface UserContextType {
   ipInfo?: IpInfo;
 
   logout: () => Promise<Response>;
+  deleteMe: () => Promise<Response>;
   reload: () => void;
   switchContext: (org?: Organization) => void;
 }

@@ -1,32 +1,31 @@
 /* Next. */
-import Link from "next/link";
-
-/* React. */
-import { useState } from "react";
+// import Link from "next/link";
 
 /* Hooks. */
-import useUser from "../hooks/useUser";
-import useBack from "../hooks/useBack";
+import useUser from "../../hooks/useUser";
+import useBack from "../../hooks/useBack";
 
 /* Components. */
-import BackButton from "../components/BackButton";
-import SwitchInput from "../components/inputs/SwitchInput";
-import CheckboxInput from "../components/inputs/CheckboxInput";
-import RadioInputSmall from "../components/inputs/RadioInputSmall";
-import SettingsButton from "../components/SettingsButton";
+import BackButton from "../../components/BackButton";
+// import SwitchInput from "../../components/inputs/SwitchInput";
+// import CheckboxInput from "../../components/inputs/CheckboxInput";
+// import RadioInputSmall from "../../components/inputs/RadioInputSmall";
+import SettingsButton from "../../components/SettingsButton";
 
 /* Assets. */
-import SunsetIcon from "../components/svgs/SunsetIcon";
-import NightIcon from "../components/svgs/NightIcon";
-import SunIcon from "../components/svgs/SunIcon";
+// import SunsetIcon from "../../components/svgs/SunsetIcon";
+// import NightIcon from "../../components/svgs/NightIcon";
+// import SunIcon from "../../components/svgs/SunIcon";
 
 /* Types. */
-import { SettingTypes } from "../types/types";
+import { SettingTypes } from "../../types/types";
 
 /* Styles. */
-import styles from "../styles/Settings.module.scss";
-import useRedirectToLogin from "../hooks/useRedirectToLogin";
-import HeadComponent from "../components/HeadComponent";
+import styles from "../../styles/Settings.module.scss";
+import HeadComponent from "../../components/HeadComponent";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Modal from "../../components/Modal";
 
 interface SettingsProps {
   baseUrl: string;
@@ -34,33 +33,34 @@ interface SettingsProps {
 
 const Settings = ({ baseUrl }: SettingsProps) => {
   /* TODO: Fetch and update most of these from API. */
-  const [locationAccess, setLocationAccess] = useState(false);
-  const [allowNotifications, setAllowNotifications] = useState(true);
-  const [allowSMSNotifications, setAlllowSMSNotifications] = useState(true);
-  const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
-  const [activeTheme, setActiveTheme] = useState(1);
+  // const [locationAccess, setLocationAccess] = useState(false);
+  // const [allowNotifications, setAllowNotifications] = useState(true);
+  // const [allowSMSNotifications, setAlllowSMSNotifications] = useState(true);
+  // const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
+  // const [activeTheme, setActiveTheme] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { user, loading } = useUser();
+  const { user, loading, deleteMe } = useUser();
   const goBack = useBack();
-  const redirectToLogin = useRedirectToLogin();
+  const router = useRouter();
 
   if (loading) {
     /* TODO: Create actual loading skeleton. */
     return <h1>Loading...</h1>;
-  } else if (!user) {
-    redirectToLogin();
+  } else if (!user && !loading) {
+    router.push("/");
   }
 
-  const updateTheme = (id: number) => {
-    setActiveTheme(id);
-  };
+  // const updateTheme = (id: number) => {
+  //   setActiveTheme(id);
+  // };
 
   return (
     <>
       <HeadComponent
         title="Innstillinger"
         description="Her kan du endre innstillinger for din bruker."
-        url={`${baseUrl}/settings`}
+        url={`${baseUrl}/me/settings`}
       />
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -70,15 +70,15 @@ const Settings = ({ baseUrl }: SettingsProps) => {
             Tilpass appen etter dine ønsker og behov
           </p>
           <div className={styles.contentContainer}>
-            <div className={styles.section}>
+            {/* <div className={styles.section}>
               <h2 className={styles.inputHeader}>Posisjonsdata</h2>
               <SwitchInput
                 label="Bruk posisjonen min"
                 checked={locationAccess}
                 onClick={() => setLocationAccess(!locationAccess)}
               />
-            </div>
-            <div className={styles.section}>
+            </div> */}
+            {/* <div className={styles.section}>
               <h2 className={styles.inputHeader}>Varslinger</h2>
               <div className={styles.notificationContainer}>
                 <CheckboxInput
@@ -111,8 +111,8 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                   }
                 />
               </div>
-            </div>
-            <div className={styles.section}>
+            </div> */}
+            {/* <div className={styles.section}>
               <h2 className={styles.inputHeader}>Visning/tema</h2>
               <RadioInputSmall
                 optionsAndIcons={[
@@ -137,24 +137,37 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                 ]}
                 onClick={updateTheme}
               />
-            </div>
+            </div> */}
             <div className={styles.section}>
-              <h2 className={styles.inputHeader}>Posisjonsdata</h2>
+              <h2 className={styles.inputHeader}>Min bruker</h2>
               <div className={styles.userContainer}>
-                <Link href="/me/data">
+                {/* <Link href="/me/data">
                   <a>
                     <SettingsButton text="Se dataene dine" isLink />
                   </a>
-                </Link>
+                </Link> */}
                 <SettingsButton
                   text="Slett min bruker"
                   type={SettingTypes.DANGER}
+                  onClick={() => setModalOpen(true)}
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
+      {modalOpen && (
+        <Modal
+          label={`Vil du slette ${user?.firstName} ${user?.lastName}?`}
+          description="Dette vil slette brukeren og all tilknyttet data. Dette kan ikke reverseres."
+          buttonText={`Slett meg`}
+          secondaryButtonText="Lukk"
+          buttonOnClick={deleteMe}
+          secondaryButtonOnClick={() => setModalOpen(false)}
+          closeButtonOnclick={() => setModalOpen(false)}
+          danger
+        />
+      )}
     </>
   );
 };

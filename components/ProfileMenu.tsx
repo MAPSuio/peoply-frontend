@@ -3,17 +3,15 @@ import ProfileMenuItem from "./ProfileMenuItem";
 import UserIcon from "./svgs/UserIcon";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import SettingsIcon from "./svgs/SettingsIcon";
-import CreditCardIcon from "./svgs/CreditCardIcon";
+// import CreditCardIcon from "./svgs/CreditCardIcon";
 import BriefcaseIcon from "./svgs/BriefcaseIcon";
 import MailIcon from "./svgs/MailIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import CloseIcon from "./svgs/CloseIcon";
-import { useRouter } from "next/router";
 import useUser from "../hooks/useUser";
 
 export default function ProfileMenu() {
   const { logout } = useUser();
-  const router = useRouter();
   return (
     <div className={styles.container}>
       <ProfileMenuItem
@@ -22,23 +20,23 @@ export default function ProfileMenu() {
         ActionIcon={ChevronRightIcon}
         linkOrOnClick="/me/edit"
       />
-      <ProfileMenuItem
-        text="Instillinger"
-        Icon={SettingsIcon}
-        ActionIcon={ChevronRightIcon}
-        linkOrOnClick="/settings"
-      />
-      <ProfileMenuItem
+      {/* <ProfileMenuItem
         text="Betalingsinformasjon"
         Icon={CreditCardIcon}
         ActionIcon={ChevronRightIcon}
         linkOrOnClick={() => ""}
-      />
+      /> */}
       <ProfileMenuItem
         text="Organisasjoner"
         Icon={BriefcaseIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={"me/orgs"}
+        linkOrOnClick={"/me/orgs"}
+      />
+      <ProfileMenuItem
+        text="Innstillinger"
+        Icon={SettingsIcon}
+        ActionIcon={ChevronRightIcon}
+        linkOrOnClick="/me/settings"
       />
       <span className={styles.divider} />
       <ProfileMenuItem
@@ -52,7 +50,7 @@ export default function ProfileMenu() {
         Icon={LogoutIcon}
         danger
         ActionIcon={CloseIcon}
-        linkOrOnClick={() => logout().then(() => router.push("/"))}
+        linkOrOnClick={logout}
       />
     </div>
   );
