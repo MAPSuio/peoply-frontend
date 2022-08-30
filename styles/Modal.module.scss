@@ -65,7 +65,7 @@
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
-    font-size: $font-size-heading-large-desktop;
+    font-size: $danger-color-button;
     margin-bottom: $spacer-small-plus;
   }
 }

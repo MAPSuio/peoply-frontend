@@ -1,6 +1,3 @@
-/* React. */
-import { useState } from "react";
-
 /* Components. */
 import Button from "./Button";
 
@@ -19,6 +16,7 @@ interface ModalProps {
   buttonOnClick?: () => void;
   secondaryButtonOnClick?: () => void;
   closeButtonOnclick?: () => void;
+  danger?: boolean;
 }
 
 const Modal = ({
@@ -29,57 +27,45 @@ const Modal = ({
   buttonOnClick,
   secondaryButtonOnClick,
   closeButtonOnclick,
+  danger,
 }: ModalProps) => {
-  const [show, setShow] = useState(true);
-  const onClose = () => {
-    setShow(false);
-  };
-
   const clickFunction = () => {
     buttonOnClick && buttonOnClick();
-    setShow(false);
   };
 
   const secondaryClickFunction = () => {
     secondaryButtonOnClick && secondaryButtonOnClick();
-    setShow(false);
   };
 
-  if (show) {
-    return (
-      <div className={styles.wrapper}>
-        <div className={styles.container}>
-          <button
-            className={styles.exitIcon}
-            onClick={closeButtonOnclick ?? onClose}
-          >
-            <ExitIcon />
-          </button>
-          <h1 className={styles.title}>{label}</h1>
-          <p className={styles.description}>{description}</p>
-          {buttonText && (
-            <Button
-              className={styles.button}
-              text={buttonText}
-              onClick={clickFunction}
-              noShadow
-            />
-          )}
-          {secondaryButtonText && (
-            <Button
-              type={ButtonType.SECONDARY}
-              className={styles.button}
-              text={secondaryButtonText}
-              onClick={secondaryClickFunction}
-              noShadow
-            />
-          )}
-        </div>
+  return (
+    <div className={styles.wrapper} onClick={closeButtonOnclick}>
+      <div className={styles.container} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.exitIcon} onClick={closeButtonOnclick}>
+          <ExitIcon />
+        </button>
+        <h1 className={styles.title}>{label}</h1>
+        <p className={styles.description}>{description}</p>
+        {buttonText && (
+          <Button
+            className={styles.button}
+            text={buttonText}
+            onClick={clickFunction}
+            noShadow
+            type={danger ? ButtonType.DANGER : ButtonType.PRIMARY}
+          />
+        )}
+        {secondaryButtonText && (
+          <Button
+            type={ButtonType.SECONDARY}
+            className={styles.button}
+            text={secondaryButtonText}
+            onClick={secondaryClickFunction}
+            noShadow
+          />
+        )}
       </div>
-    );
-  } else {
-    return null;
-  }
+    </div>
+  );
 };
 
 export default Modal;

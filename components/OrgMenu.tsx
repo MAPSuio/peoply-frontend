@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSnack from "../hooks/useSnack";
+import useUser from "../hooks/useUser";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 import styles from "../styles/ProfileMenu.module.scss";
 import { Organization, SnackTypes } from "../types/types";
@@ -21,6 +22,7 @@ export default function OrgMenu({ org }: OrgMenuProps) {
   const { addSnack } = useSnack();
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const { reload } = useUser();
 
   const handleDelete = async () => {
     try {
@@ -30,8 +32,9 @@ export default function OrgMenu({ org }: OrgMenuProps) {
       });
 
       if (response.status === 200) {
-        addSnack(`Slettet ${org.name}`, SnackTypes.SUCCESS);
-        router.push(`/orgs/${org.id}`);
+        addSnack(`Slettet ${org.name}`, SnackTypes.WARNING);
+        reload(); // refresh orgs in user data
+        router.push(`/me/orgs`);
       } else {
         addSnack(`Kunne ikke slette ${org.name}`, SnackTypes.ERROR);
       }
@@ -69,7 +72,9 @@ export default function OrgMenu({ org }: OrgMenuProps) {
           buttonText={`Slett ${org.name}`}
           secondaryButtonText="Lukk"
           buttonOnClick={handleDelete}
+          danger
           secondaryButtonOnClick={() => setModalOpen(false)}
+          closeButtonOnclick={() => setModalOpen(false)}
         />
       )}
     </div>

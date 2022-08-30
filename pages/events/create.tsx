@@ -1008,8 +1008,18 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             description="Vi ser at du har et tidligere arrangement som ikke ble postet. Vil du fortsette der du slapp, eller opprette et nytt arrangement?"
             buttonText="Fortsett"
             secondaryButtonText="Opprett nytt"
-            buttonOnClick={continueEventCreation}
-            secondaryButtonOnClick={startNewEventCreation}
+            buttonOnClick={() => {
+              continueEventCreation();
+              setModalOpen(false);
+            }}
+            secondaryButtonOnClick={() => {
+              startNewEventCreation();
+              setModalOpen(false);
+            }}
+            closeButtonOnclick={() => {
+              setModalOpen(false);
+              startNewEventCreation();
+            }}
           />
         )}
         <div className={styles.container}>
