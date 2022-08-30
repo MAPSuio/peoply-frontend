@@ -9,7 +9,6 @@ import {
 } from "../../services/fetchers";
 import {
   ButtonType,
-  EventInvitation,
   EventInvitationNotification,
   InvitationStatus,
   NotificationType,

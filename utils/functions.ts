@@ -3,7 +3,6 @@ import {
   CircleLabels,
   Weekdays,
   OrganizationRole,
-  UserOrganizationRoles,
 } from "../types/types";
 
 function formatDateRange(startDate: Date, endDate?: Date | null): string {

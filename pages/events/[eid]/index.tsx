@@ -34,9 +34,13 @@ import {
   getUserRegistration,
   registerUser,
   removeFavorite,
+  updateRegistrationUser,
 } from "../../../services/events";
 
-import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
+import {
+  fetchFromPeoplyApi,
+  fetchFromPeoplyApiJson,
+} from "../../../services/fetchers";
 
 // Utils.
 import {
@@ -51,6 +55,7 @@ import {
 import {
   ButtonType,
   Event,
+  InvitationStatus,
   Registration,
   RegStatus,
   SnackTypes,
@@ -223,7 +228,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
         success = await deleteRegistrationUser(user.id, eventData.id);
       } catch (e) {}
       if (success) {
-        setRegistrationStatus(RegStatus.NOT_GOING);
+        setRegistrationStatus(undefined);
         updateEvent();
         addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
       } else {
@@ -234,6 +239,51 @@ const Event = ({ event, baseUrl }: EventProps) => {
       redirectToLogin();
     }
   };
+
+  const updateRegistrationStatus = async (status: RegStatus) => {
+    if (user) {
+      let success = undefined;
+      try {
+        success = (await updateRegistrationUser(
+          user.id,
+          eventData.id,
+          status,
+        )) as Registration;
+      } catch (e) {}
+      if (success) {
+        setRegistrationStatus(status);
+        updateEvent();
+        if (success.regStatus === RegStatus.GOING) {
+          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+        } else if (success.regStatus === RegStatus.WAITLISTED) {
+          addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
+        } else if (success.regStatus === RegStatus.NOT_GOING) {
+          addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
+        }
+      } else {
+        addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
+      }
+      return success;
+    } else {
+      redirectToLogin();
+    }
+  };
+  async function acceptInvitation() {
+    try {
+      await fetchFromPeoplyApi(`/events/${eventData?.id}/invitations`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          status: InvitationStatus.ACCEPTED,
+        }),
+      });
+      setRegistrationStatus(RegStatus.GOING);
+      updateEvent();
+      addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+    } catch (e) {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
+  }
 
   // Get the appropriate button for the current user's registration status and event date.
   const getButton = () => {
@@ -259,11 +309,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           loading={!registeredFetched}
         />
       );
-    } else if (
-      registrationStatus === RegStatus.NOT_GOING ||
-      registrationStatus === RegStatus.INVITED ||
-      !registrationStatus
-    ) {
+    } else if (!registrationStatus) {
       if (eventData?.registrations && eventData?.capacity) {
         if (
           eventData.registrations?.filter(
@@ -306,6 +352,24 @@ const Event = ({ event, baseUrl }: EventProps) => {
           text="Avmeld deg fra ventliste"
           className={styles.primaryButton}
           onClick={unregisterForEvent}
+          loading={!registeredFetched}
+        />
+      );
+    } else if (registrationStatus === RegStatus.NOT_GOING) {
+      return (
+        <Button
+          text="Meld deg på arrangementet"
+          className={styles.primaryButton}
+          onClick={() => updateRegistrationStatus(RegStatus.GOING)}
+          loading={!registeredFetched}
+        />
+      );
+    } else if (registrationStatus === RegStatus.INVITED) {
+      return (
+        <Button
+          text="Meld deg på arrangementet"
+          className={styles.primaryButton}
+          onClick={acceptInvitation}
           loading={!registeredFetched}
         />
       );

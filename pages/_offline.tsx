@@ -10,7 +10,7 @@ const Offline: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Peoply - Du er offline</title>
+        <title>Du er offline</title>
       </Head>
       <div className={styles.offlineWrapper}>
         <div className={styles.offlineContainer}>

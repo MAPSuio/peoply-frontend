@@ -10,7 +10,7 @@ const Find: NextPage = () => {
   return (
     <>
       <HeadComponent
-        title="Peoply - Finn"
+        title="Finn"
         description="Finn arrangementer og organisasjoner"
       />
       <Header />

@@ -38,6 +38,7 @@ import styles from "../../styles/MyEvents.module.scss";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSWR from "swr";
 import TabSelection from "../../components/TabSelection";
+import HeadComponent from "../../components/HeadComponent";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
@@ -138,57 +139,63 @@ const MyEvents = () => {
 
   if (user) {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.container}>
-          <TabSelection
-            options={[
-              {
-                label: convertSectionTypeToLabel(SectionTypes.REGISTERED),
-                value: SectionTypes.REGISTERED,
-                icon: <CalendarIconSummary />,
-              },
-              {
-                label: convertSectionTypeToLabel(SectionTypes.FAVORITES),
-                value: SectionTypes.FAVORITES,
-                icon: <HeartIcon />,
-              },
-              {
-                label: convertSectionTypeToLabel(SectionTypes.MY_EVENTS),
-                value: SectionTypes.MY_EVENTS,
-                icon: <ListIcon />,
-              },
-            ]}
-            selected={activeSection}
-            setSelected={changeActiveSection}
-          />
+      <>
+        <HeadComponent
+          title="Mine arrangementer"
+          description="Her kan du se hvilke arrangementer du er meldt på, hvilke du har markert som favoritter og hvilke du har opprettet."
+        />
+        <div className={styles.wrapper}>
+          <div className={styles.container}>
+            <TabSelection
+              options={[
+                {
+                  label: convertSectionTypeToLabel(SectionTypes.REGISTERED),
+                  value: SectionTypes.REGISTERED,
+                  icon: <CalendarIconSummary />,
+                },
+                {
+                  label: convertSectionTypeToLabel(SectionTypes.FAVORITES),
+                  value: SectionTypes.FAVORITES,
+                  icon: <HeartIcon />,
+                },
+                {
+                  label: convertSectionTypeToLabel(SectionTypes.MY_EVENTS),
+                  value: SectionTypes.MY_EVENTS,
+                  icon: <ListIcon />,
+                },
+              ]}
+              selected={activeSection}
+              setSelected={changeActiveSection}
+            />
 
-          <div className={styles.eventContainer}>
-            {dateAndEventsMapArray.length > 0 ? (
-              dateAndEventsMapArray.map((dateAndEvent, index) => {
-                const date = new Date(dateAndEvent.date);
-                const events = dateAndEvent.events;
-                const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
-                const weekday = getWeekday(date);
+            <div className={styles.eventContainer}>
+              {dateAndEventsMapArray.length > 0 ? (
+                dateAndEventsMapArray.map((dateAndEvent, index) => {
+                  const date = new Date(dateAndEvent.date);
+                  const events = dateAndEvent.events;
+                  const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
+                  const weekday = getWeekday(date);
 
-                return (
-                  <div key={index} className={styles.dateAndEventsContainer}>
-                    <p className={styles.dateTag}>{weekday}</p>
-                    <h2 className={styles.dateTitle}>{dateString}</h2>
-                    <div className={styles.eventCardsContainer}>
-                      {events.map((event: Event) => (
-                        <MyEventCard key={event.id} event={event} /> // TODO: The returned card should be different based on which event type it is.
-                      ))}
+                  return (
+                    <div key={index} className={styles.dateAndEventsContainer}>
+                      <p className={styles.dateTag}>{weekday}</p>
+                      <h2 className={styles.dateTitle}>{dateString}</h2>
+                      <div className={styles.eventCardsContainer}>
+                        {events.map((event: Event) => (
+                          <MyEventCard key={event.id} event={event} /> // TODO: The returned card should be different based on which event type it is.
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-            ) : (
-              <EmptyEvents eventType={activeSection} />
-            )}
+                  );
+                })
+              ) : (
+                <EmptyEvents eventType={activeSection} />
+              )}
+            </div>
+            <Navbar />
           </div>
-          <Navbar />
         </div>
-      </div>
+      </>
     );
   }
 

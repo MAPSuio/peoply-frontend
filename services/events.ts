@@ -155,7 +155,7 @@ async function registerUser(
     regStatus: status,
   };
 
-  const res: Registration = await fetchFromPeoplyApiJson(eventUrl, {
+  const res: Promise<Registration> = fetchFromPeoplyApiJson(eventUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -174,15 +174,13 @@ async function unregisterUser(userId: string, eventId: string) {
     regStatus: RegStatus.NOT_GOING,
   };
 
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
+  return fetchFromPeoplyApiJson(eventUrl, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestBody),
   });
-
-  return res;
 }
 
 /* add event as favorite. returns true/false if done succesfull */
@@ -192,15 +190,33 @@ async function deleteRegistrationUser(userId: string, eventId: string) {
     eventId: eventId,
   };
 
-  const res = await fetchFromPeoplyApiJson(eventUrl, {
+  return fetchFromPeoplyApiJson(eventUrl, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestBody),
   });
+}
 
-  return res;
+async function updateRegistrationUser(
+  userId: string,
+  eventId: string,
+  status: RegStatus,
+) {
+  const eventUrl = `/users/${userId}/registrations`;
+  const requestBody = {
+    eventId: eventId,
+    regStatus: status,
+  };
+
+  return fetchFromPeoplyApiJson(eventUrl, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
 }
 
 export {
@@ -214,4 +230,5 @@ export {
   registerUser,
   unregisterUser,
   deleteRegistrationUser,
+  updateRegistrationUser,
 };
