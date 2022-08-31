@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { GetStaticProps } from "next";
 import Link from "next/link";
+import router from "next/router";
 
 // React.
 import { useEffect, useState } from "react";
@@ -16,6 +17,9 @@ import BackButtonGlass from "../../../components/BackButtonGlass";
 import HeartIconGlass from "../../../components/HeartIconGlass";
 import HeadComponent from "../../../components/HeadComponent";
 import EditIconGlass from "../../../components/EditIconGlass";
+import { ShareButton } from "../../../components/ShareButton";
+import LinkButton from "../../../components/LinkButton";
+import MailIcon from "../../../components/svgs/MailIcon";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -66,10 +70,6 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Event.module.scss";
-import { ShareButton } from "../../../components/ShareButton";
-import LinkButton from "../../../components/LinkButton";
-import router from "next/router";
-import MailIcon from "../../../components/svgs/MailIcon";
 
 interface EventProps {
   event: Event;

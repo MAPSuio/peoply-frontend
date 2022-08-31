@@ -1,6 +1,6 @@
 // Components.
 import Layout from "./Layout";
-import MyEventCard from "./MyEventCard";
+import LargeEventCard from "./LargeEventCard";
 import BackButton from "./BackButton";
 
 // Hooks.
@@ -37,7 +37,7 @@ const EventList = ({
       </div>
       <div className={styles.eventContainer}>
         {events.map((event: Event) => (
-          <MyEventCard key={event.id} event={event} />
+          <LargeEventCard key={event.id} event={event} />
         ))}
       </div>
       {nextPage && (

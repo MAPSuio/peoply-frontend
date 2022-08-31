@@ -1,21 +1,27 @@
 /* Next. */
 import Image from "next/image";
 import Link from "next/link";
+import useSWR from "swr";
 
 /* React. */
 import { useEffect, useState } from "react";
 
 /* Components. */
 import Navbar from "../../components/Navbar";
-import MyEventCard from "../../components/MyEventCard";
+import LargeEventCard from "../../components/LargeEventCard";
 import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
 import Button from "../../components/Button";
+import TabSelection from "../../components/TabSelection";
+import HeadComponent from "../../components/HeadComponent";
+
+/* Hooks. */
+import useUser from "../../hooks/useUser";
 
 /* Utils. */
 import { formatDateRange, getWeekday } from "../../utils/functions";
 
-/* Hooks. */
-import useUser from "../../hooks/useUser";
+/* Services. */
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 /* Types. */
 import {
@@ -35,10 +41,6 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import useSWR from "swr";
-import TabSelection from "../../components/TabSelection";
-import HeadComponent from "../../components/HeadComponent";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
@@ -52,11 +54,11 @@ const MyEvents = () => {
     fetchFromPeoplyApiJson,
   );
   const { data: eventsFavorited, error: myFavoritesError } = useSWR<Favorite[]>(
-    `/users/${user?.id}/favorites?includeEvent=true`,
+    `/users/${user?.id}/favorites?includeEvent=true&includeArrangers=true`,
     fetchFromPeoplyApiJson,
   );
   const { data: eventsGoing, error: myGoingError } = useSWR<Registration[]>(
-    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true`,
+    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true`,
     fetchFromPeoplyApiJson,
   );
 
@@ -65,10 +67,10 @@ const MyEvents = () => {
 
     switch (section) {
       case SectionTypes.REGISTERED:
-        if (eventsGoing) setActiveRegistrations(eventsGoing);
+        if (eventsGoing) setActiveRegistrations([...eventsGoing]);
         break;
       case SectionTypes.FAVORITES:
-        if (eventsFavorited) setActiveRegistrations(eventsFavorited);
+        if (eventsFavorited) setActiveRegistrations([...eventsFavorited]);
         break;
       case SectionTypes.MY_EVENTS:
         if (eventsArranging) setActiveRegistrations([...eventsArranging]);
@@ -182,7 +184,11 @@ const MyEvents = () => {
                       <h2 className={styles.dateTitle}>{dateString}</h2>
                       <div className={styles.eventCardsContainer}>
                         {events.map((event: Event) => (
-                          <MyEventCard key={event.id} event={event} /> // TODO: The returned card should be different based on which event type it is.
+                          <LargeEventCard
+                            key={event.id}
+                            event={event}
+                            showArranger
+                          /> // TODO: The returned card should be different based on which event type it is.
                         ))}
                       </div>
                     </div>

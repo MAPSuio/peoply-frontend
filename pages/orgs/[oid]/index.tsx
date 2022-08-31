@@ -10,7 +10,7 @@ import { useRef } from "react";
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import BackButton from "../../../components/BackButton";
-import MyEventCard from "../../../components/MyEventCard";
+import LargeEventCard from "../../../components/LargeEventCard";
 import Layout from "../../../components/Layout";
 import UserIconCard from "../../../components/svgs/UserIconCard";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
@@ -154,7 +154,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           </div>
           <div className={styles.eventContainer}>
             {orgEvents?.map((event: Event) => (
-              <MyEventCard key={event.id} event={event} />
+              <LargeEventCard key={event.id} event={event} />
             ))}
           </div>
         </div>

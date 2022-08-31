@@ -5,7 +5,7 @@ import HeartIcon from "./svgs/HeartIcon";
 
 interface HeartIconGlassProps {
   className?: string;
-  onClick: (() => void) | (() => Promise<void>);
+  onClick: ((e: any) => void) | (() => Promise<void>);
   favorited: boolean;
   loading?: boolean;
 }
@@ -23,9 +23,9 @@ export default function HeartIconGlass({
 
   return (
     <button
-      onClick={async () => {
+      onClick={async (e) => {
         setLoadingState(true);
-        await onClick();
+        await onClick(e);
         setLoadingState(false);
       }}
       disabled={loading || loadingState}
