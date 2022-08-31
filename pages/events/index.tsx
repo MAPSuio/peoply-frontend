@@ -2,9 +2,11 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import useSWRInfinite from "swr/infinite";
+import BackButton from "../../components/BackButton";
 import EventList from "../../components/EventList";
 import HeadComponent from "../../components/HeadComponent";
 import Header from "../../components/Header";
+import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import { Event } from "../../types/types";
 import { queryToString } from "../../utils/functions";
@@ -18,6 +20,7 @@ function getGetKey(queryUrl: string, pageSize: number) {
 
 const Events: NextPage = () => {
   const router = useRouter();
+  const goBack = useBack();
   const [isMoreEvents, setMoreEvents] = useState(true);
   const queryUrl = useMemo(
     () =>
@@ -52,6 +55,7 @@ const Events: NextPage = () => {
         url={`${process.env.NEXT_PUBLIC_BASE_URL}${router.asPath}`}
       />
       <Header />
+      <BackButton onClick={goBack} style={{ marginLeft: "5%" }} />
       <EventList
         events={events && events?.length > 0 ? events.flatMap((ev) => ev) : []}
         title={"Arrangementer"}

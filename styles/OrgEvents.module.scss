@@ -1,0 +1,12 @@
+.content {
+  margin-top: $spacer-medium;
+}
+
+.backButton {
+  margin-bottom: $spacer-small;
+  margin-left: 5%;
+
+  @include desktop() {
+    margin-bottom: $spacer-medium;
+  }
+}

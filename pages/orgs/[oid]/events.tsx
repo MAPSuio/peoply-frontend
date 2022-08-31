@@ -21,6 +21,15 @@ import { Event, Organization } from "../../../types/types";
 
 // Assets.
 import { ParsedUrlQuery } from "querystring";
+import TabSelection from "../../../components/TabSelection";
+import BackButton from "../../../components/BackButton";
+import useBack from "../../../hooks/useBack";
+import styles from "../../../styles/OrgEvents.module.scss";
+
+enum TabOption {
+  FUTURE_EVENTS = "FUTURE_EVENTS",
+  PAST_EVENTS = "PAST_EVENTS",
+}
 
 function getGetKey(queryUrl: string, pageSize: number) {
   return (pageIndex: number, previousPageData: Event[]) => {
@@ -36,26 +45,48 @@ interface EventsProps {
 
 const Events = ({ organization, baseUrl }: EventsProps) => {
   const today = useRef(new Date().toISOString());
-  const [isMoreEvents, setMoreEvents] = useState(true);
+  const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
+  const [isMorePastEvents, setIsMorePastEvents] = useState(true);
+  const [selectedTab, setSelectedTab] = useState<TabOption>(
+    TabOption.FUTURE_EVENTS,
+  );
+  const goBack = useBack();
 
-  const queryUrl = `/events?afterDate=${today.current}&organizationId=${organization.id}`;
+  const futureQueryUrl = `/events?afterDate=${today.current}&organizationId=${organization.id}`;
+  const pastQueryUrl = `/events?beforeDate=${today.current}&organizationId=${organization.id}&orderDirection=desc`;
 
   const pageSize = 10;
-  const getKey = getGetKey(queryUrl, pageSize);
+  const getKeyFuture = getGetKey(futureQueryUrl, pageSize);
+  const getKeyPast = getGetKey(pastQueryUrl, pageSize);
 
   const {
-    data: events,
-    size,
-    setSize,
-  } = useSWRInfinite<Event[]>(getKey, fetchFromPeoplyApiJson, {
+    data: futureEvents,
+    size: futureEventsSize,
+    setSize: setFutureEventsSize,
+  } = useSWRInfinite<Event[]>(getKeyFuture, fetchFromPeoplyApiJson, {
     onSuccess: (data) => {
-      if (data[data.length - 1].length < pageSize) setMoreEvents(false);
+      if (data[data.length - 1].length < pageSize) setIsMoreFutureEvents(false);
+    },
+  });
+  const {
+    data: pastEvents,
+    size: pastEventsSize,
+    setSize: setPastEventsSize,
+  } = useSWRInfinite<Event[]>(getKeyPast, fetchFromPeoplyApiJson, {
+    onSuccess: (data) => {
+      if (data[data.length - 1].length < pageSize) setIsMorePastEvents(false);
     },
   });
 
-  const nextPage = isMoreEvents
+  const futureNextPage = isMoreFutureEvents
     ? () => {
-        setSize(size + 1);
+        setFutureEventsSize(futureEventsSize + 1);
+      }
+    : undefined;
+
+  const pastNextPage = isMorePastEvents
+    ? () => {
+        setPastEventsSize(pastEventsSize + 1);
       }
     : undefined;
 
@@ -66,12 +97,43 @@ const Events = ({ organization, baseUrl }: EventsProps) => {
         description={`Sjekk ut alle arrangementene til ${organization.name}`}
         url={`${baseUrl}/orgs/${organization.id}/events`}
       />
-      <EventList
-        events={events && events?.length > 0 ? events.flatMap((ev) => ev) : []}
-        title={`${organization.name} sine arrangementer`}
-        description={`Alle kommende arrangementer for ${organization.name}`}
-        nextPage={nextPage}
+      <BackButton onClick={goBack} className={styles.backButton} />
+      <TabSelection
+        options={[
+          {
+            label: "Kommende arrangementer",
+            value: TabOption.FUTURE_EVENTS,
+          },
+          {
+            label: "Tidligere arrangementer",
+            value: TabOption.PAST_EVENTS,
+          },
+        ]}
+        selected={selectedTab}
+        setSelected={setSelectedTab}
       />
+      <div className={styles.content}>
+        {selectedTab === TabOption.FUTURE_EVENTS && (
+          <EventList
+            events={
+              futureEvents && futureEvents?.length > 0
+                ? futureEvents.flatMap((ev) => ev)
+                : []
+            }
+            nextPage={futureNextPage}
+          />
+        )}
+        {selectedTab === TabOption.PAST_EVENTS && (
+          <EventList
+            events={
+              pastEvents && pastEvents?.length > 0
+                ? pastEvents.flatMap((ev) => ev)
+                : []
+            }
+            nextPage={pastNextPage}
+          />
+        )}
+      </div>
     </>
   );
 };
