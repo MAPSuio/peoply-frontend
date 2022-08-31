@@ -6,7 +6,7 @@ import AddIcon from "../components/AddIcon";
 import HomeIcon from "./svgs/HomeIcon";
 import CalendarIconSummary from "./svgs/CalendarIconSummary";
 import SearchIcon from "./svgs/SearchIcon";
-import UserIcon from "./svgs/UserIcon";
+import BriefcaseIcon from "./svgs/BriefcaseIcon";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -77,16 +77,18 @@ export default function Navbar() {
           </Link>
         </div>
         <div
-          className={`${styles.item} ${isActive("/me") ? styles.active : ""}`}
+          className={`${styles.item} ${
+            isActive("/me/orgs") ? styles.active : ""
+          }`}
         >
-          <Link href="/me" passHref>
+          <Link href="/me/orgs" passHref>
             <a>
-              <UserIcon
+              <BriefcaseIcon
                 className={`${styles.icon} ${
-                  isActive("/me") ? styles.active : ""
+                  isActive("/me/orgs") ? styles.active : ""
                 }`}
               />
-              {isActive("/me") ? (
+              {isActive("/me/orgs") ? (
                 <span className={styles.underline}></span>
               ) : (
                 ""

@@ -5,24 +5,28 @@ import Avatar from "../../components/Avatar";
 import ProfileMenu from "../../components/ProfileMenu";
 import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
-import Navbar from "../../components/Navbar";
-import { useRouter } from "next/router";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import BackButton from "../../components/BackButton";
+import useBack from "../../hooks/useBack";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
-  const router = useRouter();
+  const redirectToLogin = useRedirectToLogin();
+  const goBack = useBack();
 
   if (loading) {
     return <></>;
   }
 
   if (!loading && !user) {
-    router.push("/");
+    redirectToLogin();
+    return <></>;
   }
 
   if (!loading && user) {
     return (
       <div className={styles.container}>
+        <BackButton onClick={goBack} />
         <div className={styles.profile}>
           <Avatar user={user} size="large" />
           <h1
@@ -31,7 +35,6 @@ const Me: NextPage = () => {
           <p className={styles.description}>{user.description}</p>
         </div>
         <ProfileMenu />
-        <Navbar />
       </div>
     );
   }

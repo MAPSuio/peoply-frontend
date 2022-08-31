@@ -11,6 +11,7 @@ import Link from "next/link";
 import HeadComponent from "../../components/HeadComponent";
 import { useEffect, useState } from "react";
 import useBack from "../../hooks/useBack";
+import Navbar from "../../components/Navbar";
 
 const Login: NextPage = ({
   baseUrl,
@@ -40,6 +41,10 @@ const Login: NextPage = ({
     return `${date.getDate()}. ${date.toLocaleString("no", {
       month: "long",
     })} ${date.getFullYear()}`;
+  };
+
+  const handleBack = () => {
+    router.push("/");
   };
 
   return (
@@ -94,7 +99,7 @@ const Login: NextPage = ({
       ) : (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
-            <BackButton onClick={goBack} />
+            <BackButton onClick={handleBack} />
             <div className={styles.loginHeaderContainer}>
               <h1>Logg inn</h1>
               <p>Logg inn eller opprett en bruker</p>

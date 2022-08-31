@@ -36,18 +36,20 @@ import {
 import ListIcon from "../../components/svgs/ListIcon";
 import CalendarIconSummary from "../../components/svgs/CalendarIconSummary";
 import HeartIcon from "../../components/svgs/HeartIcon";
-import LogInImage from "../../assets/images/undraw_login.png";
 import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
+import { useRouter } from "next/router";
+import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
   const [activeRegistrations, setActiveRegistrations] = useState<any[]>([]);
   const [dateAndEventsMap, setDateAndEventsMap] = useState(new Map());
   const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<any[]>([]);
-  const { user, loading, error } = useUser();
+  const { user, loading } = useUser();
+  const redirectToLogin = useRedirectToLogin();
 
   const { data: eventsArranging, error: myEventsError } = useSWR<Event[]>(
     `/users/${user?.id}/arranging`,
@@ -139,97 +141,73 @@ const MyEvents = () => {
     return <></>;
   }
 
-  if (user) {
-    return (
-      <>
-        <HeadComponent
-          title="Mine arrangementer"
-          description="Her kan du se hvilke arrangementer du er meldt på, hvilke du har markert som favoritter og hvilke du har opprettet."
-        />
-        <div className={styles.wrapper}>
-          <div className={styles.container}>
-            <TabSelection
-              options={[
-                {
-                  label: convertSectionTypeToLabel(SectionTypes.REGISTERED),
-                  value: SectionTypes.REGISTERED,
-                  icon: <CalendarIconSummary />,
-                },
-                {
-                  label: convertSectionTypeToLabel(SectionTypes.FAVORITES),
-                  value: SectionTypes.FAVORITES,
-                  icon: <HeartIcon />,
-                },
-                {
-                  label: convertSectionTypeToLabel(SectionTypes.MY_EVENTS),
-                  value: SectionTypes.MY_EVENTS,
-                  icon: <ListIcon />,
-                },
-              ]}
-              selected={activeSection}
-              setSelected={changeActiveSection}
-            />
-
-            <div className={styles.eventContainer}>
-              {dateAndEventsMapArray.length > 0 ? (
-                dateAndEventsMapArray.map((dateAndEvent, index) => {
-                  const date = new Date(dateAndEvent.date);
-                  const events = dateAndEvent.events;
-                  const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
-                  const weekday = getWeekday(date);
-
-                  return (
-                    <div key={index} className={styles.dateAndEventsContainer}>
-                      <p className={styles.dateTag}>{weekday}</p>
-                      <h2 className={styles.dateTitle}>{dateString}</h2>
-                      <div className={styles.eventCardsContainer}>
-                        {events.map((event: Event) => (
-                          <LargeEventCard
-                            key={event.id}
-                            event={event}
-                            showArranger
-                          /> // TODO: The returned card should be different based on which event type it is.
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <EmptyEvents eventType={activeSection} />
-              )}
-            </div>
-            <Navbar />
-          </div>
-        </div>
-      </>
-    );
+  if (!user) {
+    redirectToLogin();
+    return <></>;
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.container}>
-        <h1 className={`${styles.title} ${styles.marginBottomMedium}`}>
-          Du er ikke logget inn!
-        </h1>
-        <div className={styles.imageContainer}>
-          <Image
-            src={LogInImage}
-            alt="En liten figur ved siden av en mobil"
-            placeholder="blur"
+    <>
+      <HeadComponent
+        title="Mine arrangementer"
+        description="Her kan du se hvilke arrangementer du er meldt på, hvilke du har markert som favoritter og hvilke du har opprettet."
+      />
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <TabSelection
+            options={[
+              {
+                label: convertSectionTypeToLabel(SectionTypes.REGISTERED),
+                value: SectionTypes.REGISTERED,
+                icon: <CalendarIconSummary />,
+              },
+              {
+                label: convertSectionTypeToLabel(SectionTypes.FAVORITES),
+                value: SectionTypes.FAVORITES,
+                icon: <HeartIcon />,
+              },
+              {
+                label: convertSectionTypeToLabel(SectionTypes.MY_EVENTS),
+                value: SectionTypes.MY_EVENTS,
+                icon: <ListIcon />,
+              },
+            ]}
+            selected={activeSection}
+            setSelected={changeActiveSection}
           />
+
+          <div className={styles.eventContainer}>
+            {dateAndEventsMapArray.length > 0 ? (
+              dateAndEventsMapArray.map((dateAndEvent, index) => {
+                const date = new Date(dateAndEvent.date);
+                const events = dateAndEvent.events;
+                const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
+                const weekday = getWeekday(date);
+
+                return (
+                  <div key={index} className={styles.dateAndEventsContainer}>
+                    <p className={styles.dateTag}>{weekday}</p>
+                    <h2 className={styles.dateTitle}>{dateString}</h2>
+                    <div className={styles.eventCardsContainer}>
+                      {events.map((event: Event) => (
+                        <LargeEventCard
+                          key={event.id}
+                          event={event}
+                          showArranger
+                        /> // TODO: The returned card should be different based on which event type it is.
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <EmptyEvents eventType={activeSection} />
+            )}
+          </div>
+          <Navbar />
         </div>
-        <div className={styles.loginButtonContainer}>
-          <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}>
-            <ContinueWithVippsButton />
-          </a>
-          <p className={styles.loginButtonText}>
-            Hvis du har logget inn før, vil du bli tatt til din gamle bruker.
-            Hvis ikke vil en ny bruker bli opprettet
-          </p>
-        </div>
-        <Navbar />
       </div>
-    </div>
+    </>
   );
 };
 

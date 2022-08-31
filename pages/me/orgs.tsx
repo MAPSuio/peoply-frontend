@@ -10,6 +10,7 @@ import Button from "../../components/Button";
 
 import OrgList from "../../components/OrgList";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import Navbar from "../../components/Navbar";
 
 const Organizations: NextPage = () => {
   const { user, loading, orgs } = useUser();
@@ -56,6 +57,7 @@ const Organizations: NextPage = () => {
             </div>
           </>
         )}
+        <Navbar />
       </div>
     );
   }

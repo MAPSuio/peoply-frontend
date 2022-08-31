@@ -59,6 +59,7 @@ import {
   ButtonType,
   Event,
   InvitationStatus,
+  OrganizationRole,
   Registration,
   RegStatus,
   SnackTypes,
@@ -77,7 +78,7 @@ interface EventProps {
 }
 
 const Event = ({ event, baseUrl }: EventProps) => {
-  const { user, loading: loadingUser } = useUser();
+  const { user, loading: loadingUser, orgs } = useUser();
   const goBack = useBack();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
@@ -387,11 +388,21 @@ const Event = ({ event, baseUrl }: EventProps) => {
   };
 
   const isArranger = () => {
-    if (user && eventData && eventData.eventArrangers) {
-      return eventData.eventArrangers.some(
-        (arranger) => arranger.arrangerId === user.arrangerId,
-      );
-    }
+    const organizationRolesForUser = orgs?.map((org) => ({
+      role: org.organizationRoles?.find((role) => role.userId === user?.id),
+      arrangerId: org.arrangerId,
+    }));
+
+    const arrangersIdsForEvent = eventData?.eventArrangers?.map(
+      (arranger) => arranger.arrangerId,
+    );
+
+    return organizationRolesForUser?.some(
+      ({ role, arrangerId }) =>
+        arrangersIdsForEvent?.includes(arrangerId) &&
+        role &&
+        [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(role.role),
+    );
   };
 
   return (
