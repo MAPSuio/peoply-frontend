@@ -6,6 +6,7 @@ import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
 import MailIcon from "../../../components/svgs/MailIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
+import UserCross from "../../../components/svgs/UserCross";
 import TabSelection from "../../../components/TabSelection";
 import useBack from "../../../hooks/useBack";
 import useSnack from "../../../hooks/useSnack";
@@ -25,6 +26,7 @@ import { formatDateRange } from "../../../utils/functions";
 enum TabOption {
   PARTICIPANTS = "PARTICIPANTS",
   INVITATIONS = "INVITATIONS",
+  NOT_GOING = "NOT_GOING",
 }
 
 const Participants = () => {
@@ -70,6 +72,8 @@ const Participants = () => {
         return "Deltakere";
       case TabOption.INVITATIONS:
         return "Invitasjoner";
+      case TabOption.NOT_GOING:
+        return "Kommer ikke";
     }
   }
 
@@ -88,18 +92,16 @@ const Participants = () => {
           );
         }
 
-        return registrations
-          ?.filter((registration) => registration.regStatus === RegStatus.GOING)
-          .map((registration) => (
-            <MemberCard
-              key={registration.userId}
-              user={registration.user}
-              description={`Meldte seg på ${formatDateRange(
-                new Date(registration.createdAt),
-              )}`}
-              link={`/users/${registration.userId}`}
-            />
-          ));
+        return going.map((registration) => (
+          <MemberCard
+            key={registration.userId}
+            user={registration.user}
+            description={`Meldte seg på ${formatDateRange(
+              new Date(registration.updatedAt),
+            )}`}
+            link={`/users/${registration.userId}`}
+          />
+        ));
 
       case TabOption.INVITATIONS:
         const pending = invitations?.filter(
@@ -126,6 +128,30 @@ const Participants = () => {
               />
             ),
         );
+
+      case TabOption.NOT_GOING:
+        const notGoing = registrations?.filter(
+          (registration) => registration.regStatus === RegStatus.NOT_GOING,
+        );
+
+        if (!notGoing?.length) {
+          return (
+            <p className={styles.notFound}>
+              Ingen deltakere har meldt seg på enda
+            </p>
+          );
+        }
+
+        return notGoing.map((registration) => (
+          <MemberCard
+            key={registration.userId}
+            user={registration.user}
+            description={`Meldte seg av ${formatDateRange(
+              new Date(registration.updatedAt),
+            )}`}
+            link={`/users/${registration.userId}`}
+          />
+        ));
     }
   }
 
@@ -154,6 +180,11 @@ const Participants = () => {
               label: convertTabOptionToLabel(TabOption.INVITATIONS),
               value: TabOption.INVITATIONS,
               icon: <MailIcon />,
+            },
+            {
+              label: convertTabOptionToLabel(TabOption.NOT_GOING),
+              value: TabOption.NOT_GOING,
+              icon: <UserCross />,
             },
           ]}
         />

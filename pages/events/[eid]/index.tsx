@@ -27,7 +27,6 @@ import useSWR from "swr";
 // Services.
 import {
   addFavorite,
-  deleteRegistrationUser,
   getEventData,
   getTopXEvents,
   getUserFavorite,
@@ -204,7 +203,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           if (newRegistration.regStatus === RegStatus.GOING) {
             addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
           } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
-            addSnack("Du er nå på ventliste", SnackTypes.SUCCESS);
+            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
           }
         } else {
           addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
@@ -220,25 +219,6 @@ const Event = ({ event, baseUrl }: EventProps) => {
 
   const editEventFunc = () => {
     router.push(router.asPath + "/edit");
-  };
-
-  const unregisterForEvent = async () => {
-    if (user) {
-      let success = false;
-      try {
-        success = await deleteRegistrationUser(user.id, eventData.id);
-      } catch (e) {}
-      if (success) {
-        setRegistrationStatus(undefined);
-        updateEvent();
-        addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
-      } else {
-        addSnack("En feil skjedde under avmelding", SnackTypes.ERROR);
-      }
-      return success;
-    } else {
-      redirectToLogin();
-    }
   };
 
   const updateRegistrationStatus = async (status: RegStatus) => {
@@ -293,7 +273,6 @@ const Event = ({ event, baseUrl }: EventProps) => {
         <Button
           text="Dette arrangementet er ferdig"
           className={`${styles.primaryButton} ${styles.dangerButton}`}
-          onClick={unregisterForEvent}
           loading={!registeredFetched}
           disabled
         />
@@ -306,7 +285,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           type={ButtonType.DANGER}
           text="Meld deg av arrangementet"
           className={`${styles.primaryButton} ${styles.dangerButton}`}
-          onClick={unregisterForEvent}
+          onClick={() => updateRegistrationStatus(RegStatus.NOT_GOING)}
           loading={!registeredFetched}
         />
       );
@@ -350,9 +329,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
       return (
         <Button
           type={ButtonType.DANGER}
-          text="Avmeld deg fra ventliste"
+          text="Avmeld deg fra venteliste"
           className={styles.primaryButton}
-          onClick={unregisterForEvent}
+          onClick={() => updateRegistrationStatus(RegStatus.NOT_GOING)}
           loading={!registeredFetched}
         />
       );

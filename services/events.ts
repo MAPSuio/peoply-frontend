@@ -183,22 +183,6 @@ async function unregisterUser(userId: string, eventId: string) {
   });
 }
 
-/* add event as favorite. returns true/false if done succesfull */
-async function deleteRegistrationUser(userId: string, eventId: string) {
-  const eventUrl = `/users/${userId}/registrations`;
-  const requestBody = {
-    eventId: eventId,
-  };
-
-  return fetchFromPeoplyApiJson(eventUrl, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-}
-
 async function updateRegistrationUser(
   userId: string,
   eventId: string,
@@ -229,6 +213,5 @@ export {
   getUserRegistration,
   registerUser,
   unregisterUser,
-  deleteRegistrationUser,
   updateRegistrationUser,
 };
