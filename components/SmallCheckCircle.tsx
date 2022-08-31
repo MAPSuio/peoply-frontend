@@ -4,24 +4,28 @@ import SmallCheckIcon from "./svgs/SmallCheckIcon";
 
 interface SmallCheckCircleProps {
   placeBottomCenter?: boolean;
+  placeRight?: boolean;
+  purple?: boolean;
+  small?: boolean;
 }
 
 export default function SmallCheckCircle({
   placeBottomCenter,
+  purple,
+  placeRight,
+  small,
 }: SmallCheckCircleProps) {
   const getCheckCircleStyles = () => {
-    if (placeBottomCenter) {
-      return `${styles.container} ${styles.placeBottomCenter}`;
-    } else {
-      return styles.container;
-    }
+    return `${styles.container} ${
+      placeBottomCenter && styles.placeBottomCenter
+    }  ${purple && styles.purple} ${placeRight && styles.placeRight}`;
   };
 
   const checkCircleStyles = getCheckCircleStyles();
 
   return (
     <div className={checkCircleStyles}>
-      <SmallCheckIcon />
+      <SmallCheckIcon className={small ? styles.small : ""} />
     </div>
   );
 }

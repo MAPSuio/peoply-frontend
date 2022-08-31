@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GetStaticProps } from "next";
 import useSWR from "swr";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // React.
 import { useRef } from "react";
@@ -14,9 +15,13 @@ import LargeEventCard from "../../../components/LargeEventCard";
 import Layout from "../../../components/Layout";
 import UserIconCard from "../../../components/svgs/UserIconCard";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
+import SmallCheckCircle from "../../../components/SmallCheckCircle";
+import SettingsIcon from "../../../components/svgs/SettingsIcon";
 
 // Hooks.
 import useBack from "../../../hooks/useBack";
+import useSnack from "../../../hooks/useSnack";
+import useOrganization from "../../../hooks/useOrganization";
 
 // Services.
 import {
@@ -32,10 +37,6 @@ import CatImg from "../../../assets/images/cat.jpg";
 
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
-import SettingsIcon from "../../../components/svgs/SettingsIcon";
-import useSnack from "../../../hooks/useSnack";
-import useOrganization from "../../../hooks/useOrganization";
-import { useRouter } from "next/router";
 
 interface OrganizationProps {
   organization: Organization;
@@ -126,7 +127,10 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
               />
             </div>
           )}
-          <h1 className={styles.title}>{org.name}</h1>
+          <div className={styles.titleContainer}>
+            <h1 className={styles.title}>{org.name}</h1>
+            {org.orgNr && <SmallCheckCircle purple placeRight small />}
+          </div>
           <p className={styles.description}>{org.description}</p>
         </div>
         <div className={styles.dataContainer}>

@@ -17,3 +17,25 @@
   stroke: $black-color;
   transform: translate(-50%, 50%);
 }
+
+.placeRight {
+  position: absolute;
+  right: -$spacer-very-small;
+  top: 50%;
+  transform: translate(100%, -50%);
+}
+
+.purple {
+  background-color: $primary-color-400;
+  stroke: $text-color-emphasis;
+}
+
+.small {
+  height: 8px;
+  width: 8px;
+
+  @include desktop() {
+    height: 12px;
+    width: 12px;
+  }
+}

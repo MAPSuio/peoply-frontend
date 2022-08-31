@@ -29,11 +29,9 @@
 
 .title {
   font-size: $font-size-heading-large;
-  margin-bottom: $spacer-very-small;
 
   @include desktop() {
     font-size: $font-size-heading-large-desktop;
-    margin-bottom: $spacer-very-small-plus;
   }
 }
 
@@ -122,6 +120,19 @@
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-very-small;
+}
+
+.titleContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-very-small;
+  margin-bottom: $spacer-very-small;
+  position: relative;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
 }
 
 .data {
