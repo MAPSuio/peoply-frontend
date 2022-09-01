@@ -8,6 +8,7 @@ import styles from "../../styles/me.module.scss";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
+import HeadComponent from "../../components/HeadComponent";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
@@ -25,17 +26,23 @@ const Me: NextPage = () => {
 
   if (!loading && user) {
     return (
-      <div className={styles.container}>
-        <BackButton onClick={goBack} />
-        <div className={styles.profile}>
-          <Avatar user={user} size="large" />
-          <h1
-            className={styles.name}
-          >{`${user.firstName} ${user.lastName}`}</h1>
-          <p className={styles.description}>{user.description}</p>
+      <>
+        <HeadComponent
+          title="Min profil"
+          description="Her kan du se og endre din profil"
+        />
+        <div className={styles.container}>
+          <BackButton onClick={goBack} />
+          <div className={styles.profile}>
+            <Avatar user={user} size="large" />
+            <h1
+              className={styles.name}
+            >{`${user.firstName} ${user.lastName}`}</h1>
+            <p className={styles.description}>{user.description}</p>
+          </div>
+          <ProfileMenu />
         </div>
-        <ProfileMenu />
-      </div>
+      </>
     );
   }
 
