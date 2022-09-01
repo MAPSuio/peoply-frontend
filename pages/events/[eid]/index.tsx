@@ -46,13 +46,7 @@ import {
 } from "../../../services/fetchers";
 
 // Utils.
-import {
-  formatDateRange,
-  formatTimeRange,
-  getISODate,
-  getISOTime,
-  laterThanNow,
-} from "../../../utils/functions";
+import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 
 // Types.
 import {
@@ -154,14 +148,12 @@ const Event = ({ event, baseUrl }: EventProps) => {
   // Check if the event is open for registrations.
   const openForRegistrations = () => {
     const endDate = eventData.endDate && new Date(eventData.endDate);
+    const now = new Date();
 
-    if (endDate) {
-      const date = getISODate(endDate);
-      const time = getISOTime(endDate);
-      return laterThanNow(date, time);
+    if (endDate && now < endDate) {
+      return true;
     }
-
-    return true;
+    return false;
   };
 
   const addFavoriteFunc = async () => {
