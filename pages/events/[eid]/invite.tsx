@@ -7,6 +7,7 @@ import HeadComponent from "../../../components/HeadComponent";
 import CloseIcon from "../../../components/svgs/CloseIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import {
@@ -27,6 +28,7 @@ export default function InviteUsersToEvent() {
     () => (eid ? `/events/${eid}` : false),
     fetchFromPeoplyApiJson,
   );
+  const redirectToLogin = useRedirectToLogin();
 
   const onUserSelect = (user: User) => {
     setSelectedUsers([...selectedUsers, user]);
@@ -62,6 +64,11 @@ export default function InviteUsersToEvent() {
       router.push(`/events/${eid}`);
     }
   };
+
+  if (!user) {
+    redirectToLogin();
+    return <></>;
+  }
 
   if (user && event) {
     return (

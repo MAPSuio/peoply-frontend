@@ -388,21 +388,34 @@ const Event = ({ event, baseUrl }: EventProps) => {
   };
 
   const isArranger = () => {
-    const organizationRolesForUser = orgs?.map((org) => ({
-      role: org.organizationRoles?.find((role) => role.userId === user?.id),
-      arrangerId: org.arrangerId,
-    }));
+    /* arrangerIds for orgs where the user is ownerOrAdmin */
+    const organizationArrangerIdsForUser = orgs
+      ?.map((org) => ({
+        role: org.organizationRoles?.find((role) => role.userId === user?.id),
+        arrangerId: org.arrangerId,
+      }))
+      ?.filter(
+        ({ role }) =>
+          role &&
+          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(role.role),
+      )
+      .map(({ arrangerId }) => arrangerId);
 
     const arrangersIdsForEvent = eventData?.eventArrangers?.map(
       (arranger) => arranger.arrangerId,
     );
 
-    return organizationRolesForUser?.some(
-      ({ role, arrangerId }) =>
-        arrangersIdsForEvent?.includes(arrangerId) &&
-        role &&
-        [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(role.role),
-    );
+    if (user && arrangersIdsForEvent?.includes(user.arrangerId)) {
+      return true;
+    } else if (
+      organizationArrangerIdsForUser &&
+      organizationArrangerIdsForUser.some((id) =>
+        arrangersIdsForEvent?.includes(id),
+      )
+    ) {
+      return true;
+    }
+    return false;
   };
 
   return (
