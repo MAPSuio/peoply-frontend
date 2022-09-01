@@ -150,10 +150,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
     const endDate = eventData.endDate && new Date(eventData.endDate);
     const now = new Date();
 
-    if (endDate && now < endDate) {
-      return true;
+    if (endDate && now > endDate) {
+      return false;
     }
-    return false;
+    return true;
   };
 
   const addFavoriteFunc = async () => {
