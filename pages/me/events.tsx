@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 /* Components. */
 import Navbar from "../../components/Navbar";
 import LargeEventCard from "../../components/LargeEventCard";
-import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
 import Button from "../../components/Button";
 import TabSelection from "../../components/TabSelection";
 import HeadComponent from "../../components/HeadComponent";
@@ -40,7 +39,6 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
-import { useRouter } from "next/router";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 
 const MyEvents = () => {

@@ -124,17 +124,26 @@
   }
 }
 
-.eventContainer {
+.eventContainer {  
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-medium;
+  max-width: calc(1000px + $spacer-medium); // to accomodate to card max-width 500px for centering
   width: $page-width-mobile;
+
+  @include desktop() {
+    flex-flow: row wrap;
+
+    > * {
+      flex: 1 1 48%;
+    }
+  }
 }
+
 
 .eventCardsContainer {
   display: flex;
-  flex-flow: row wrap;
-  gap: $spacer-small;
+
 }
 
 .dateTitle {

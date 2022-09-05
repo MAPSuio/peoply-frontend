@@ -55,20 +55,24 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
-        <Link href="/find" passHref>
-          <a>
-            <SearchIcon
-              className={`${styles.icon} ${
-                isActive("/find") ? styles.active : ""
-              }`}
-            />
-            {isActive("/find") ? (
-              <span className={styles.underline}></span>
-            ) : (
-              ""
-            )}
-          </a>
-        </Link>
+        <div
+          className={`${styles.item} ${isActive("/find") ? styles.active : ""}`}
+        >
+          <Link href="/find" passHref>
+            <a>
+              <SearchIcon
+                className={`${styles.icon} ${
+                  isActive("/find") ? styles.active : ""
+                }`}
+              />
+              {isActive("/find") ? (
+                <span className={styles.underline}></span>
+              ) : (
+                ""
+              )}
+            </a>
+          </Link>
+        </div>
         <div className={`${isActive("/events/create") ? styles.active : ""}`}>
           <Link href="/events/create" passHref>
             <a>
@@ -96,20 +100,26 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
-        <Link href="/me/events" passHref>
-          <a>
-            <CalendarIconSummary
-              className={`${styles.icon} ${
-                isActive("/me/events") ? styles.active : ""
-              }`}
-            />
-            {isActive("/me/events") ? (
-              <span className={styles.underline}></span>
-            ) : (
-              ""
-            )}
-          </a>
-        </Link>
+        <div
+          className={`${styles.item} ${
+            isActive("/me/events") ? styles.active : ""
+          }`}
+        >
+          <Link href="/me/events" passHref>
+            <a>
+              <CalendarIconSummary
+                className={`${styles.icon} ${
+                  isActive("/me/events") ? styles.active : ""
+                }`}
+              />
+              {isActive("/me/events") ? (
+                <span className={styles.underline}></span>
+              ) : (
+                ""
+              )}
+            </a>
+          </Link>
+        </div>
       </div>
     </div>
   );

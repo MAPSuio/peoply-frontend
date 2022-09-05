@@ -33,32 +33,32 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
 
   useEffect(() => {
     async function fetchOrganizationUsers() {
-      if (user && oid) {
-        setLoading(true);
-        try {
-          /* fetch organization data */
-          const organization = getOrganization(oid);
-          /* fetch organization users */
-          const organizationUsers = getOrganizationUsers(oid);
+      setLoading(true);
+      try {
+        /* fetch organization data */
+        const organization = getOrganization(oid);
+        /* fetch organization users */
+        const organizationUsers = getOrganizationUsers(oid);
 
-          setOrganization(await organization);
-          setOrganizationUsers(await organizationUsers);
+        setOrganization(await organization);
+        setOrganizationUsers(await organizationUsers);
 
-          if (!organization || !organizationUsers) {
-            throw new Error(
-              "Either the organization does not exist, or we could not fetch the members",
-            );
-          }
-        } catch (error) {
-          setError("Something went wrong when fetching organization data");
+        if (!organization || !organizationUsers) {
+          throw new Error(
+            "Either the organization does not exist, or we could not fetch the members",
+          );
         }
-        setLoading(false);
+      } catch (error) {
+        setError("Something went wrong when fetching organization data");
       }
+      setLoading(false);
     }
     if (oid) {
       fetchOrganizationUsers();
+    } else {
+      setLoading(false);
     }
-  }, [user, oid]);
+  }, [oid]);
 
   /* find the authenticated user in the organization */
   const organizationUser = organizationUsers?.find(
