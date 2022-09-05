@@ -1,0 +1,23 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  padding-bottom: $spacer-small;
+  text-align: center;
+}
+
+.name {
+  -webkit-box-orient: vertical;
+  color: $text-color-primary;
+  display: -webkit-box;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-regular;
+  -webkit-line-clamp: 2;
+  margin-top: $spacer-very-small;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    margin-top: $spacer-very-small-plus;
+  }
+}

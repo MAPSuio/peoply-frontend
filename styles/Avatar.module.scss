@@ -1,27 +1,18 @@
 .avatar {
   align-items: center;
-  border-radius: 100px;
+  border-radius: $border-radius-rounded;
   box-shadow: $shadow-avatar;
   display: flex;
   justify-content: center;
   position: relative;
 
   &.default {
-    background-color: #FFFFFF;
-  }
-
-  .indicator {
-    background-color: $success-color;
-    border-radius: 100px;
-    height: 10px;
-    left: 2px;
-    position: absolute;
-    top: 37px;
-    width: 10px;
+    background: linear-gradient($background-color-avatar, $background-color-avatar-gradient);
+    background-color: $background-color-avatar;
   }
 
   img {
-    border-radius: 50%;
+    border-radius: $border-radius-rounded;
     height: 100%;
     object-fit: cover;
     transform: translateZ(0);
@@ -30,37 +21,41 @@
 }
 
 .small {
-  font-size: 0.5rem;
+  font-size: $font-size-avatar;
   height: 30px;
   width: 30px;
 }
 
 .medium {
-  font-size: 1rem;
+  font-size: $font-size-avatar-medium;
   height: 50px;
   width: 50px;
 }
 
 .large {
-  font-size: 2rem;
-  height: 140px;
-  width: 140px;
+  box-shadow: $shadow-avatar-large;
+  font-size: $font-size-avatar-large;
+  height: $avatar-size-large;
+  width: $avatar-size-large;
 
-  @include desktop() {
-    font-size: 3rem;
-    height: 180px;
-    width: 180px;
+  @include desktop(){
+    font-size: $font-size-avatar-large-desktop;
+    height: $avatar-size-large-desktop;
+    width: $avatar-size-large-desktop;
   }
 }
 
 .edit {
-  left: 102px;
+  bottom: 0;
   position: absolute;
-  top: 105px;
+  right: 0;
 
   @include desktop() {
-    left: 135px;
-    top: 140px;
+    bottom: 4px;
+    right: 4px;
   }
+}
 
+.name {
+  color: $text-color-emphasis;
 }

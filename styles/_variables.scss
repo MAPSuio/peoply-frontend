@@ -50,6 +50,8 @@ $background-color-button-danger-disabled: #3B3B48;
 $background-color-button-warning: #F4E57F;
 $background-color-button-warning-hover: #FFF296;
 $background-color-button-warning-disabled: #333E44;
+$background-color-avatar: #738295;
+$background-color-avatar-gradient: #3F4C5C;
 
 // Text colors.
 $text-color-emphasis: #FFFFFF;
@@ -95,6 +97,8 @@ $z-index-snack: 9998;
 $event-image-height: calc(100vw / 1.78);
 $event-image-height-desktop: 400px;
 $event-image-width-desktop: 712px;
+$avatar-size-large: 120px;
+$avatar-size-large-desktop: 150px;
 
 // Border radii.
 $border-radius-regular: 12px;
@@ -108,7 +112,8 @@ $border-radius-event-info: 0 0 $border-radius-regular $border-radius-regular;
 
 // Shadows
 $shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
-$shadow-avatar: 0px 3px 8px rgba(209, 241, 230, 0.2);
+$shadow-avatar: 0px 3px 7px rgba(0, 0, 0, 0.2);
+$shadow-avatar-large: 0px 5px 12px rgba(0, 0, 0, 0.2);
 $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
 $shadow-add: 0px 5px 12px rgba(184, 155, 254, 0.3);
 $shadow-button: 0px 8px 20px rgba(124, 77, 255, 0.3);
@@ -149,6 +154,9 @@ $font-size-primary: 1rem;
 $font-size-input: 16px;
 $font-size-secondary: 0.875rem;
 $font-size-tertiary: 0.75rem;
+$font-size-avatar: 0.5rem;
+$font-size-avatar-medium: 1rem;
+$font-size-avatar-large: 2rem;
 
 /* Desktop font sizes. */
 $font-size-title-desktop: 4rem;
@@ -159,6 +167,7 @@ $font-size-primary-desktop: 1.125rem;
 $font-size-input-desktop: 1.125rem;
 $font-size-secondary-desktop: 1rem;
 $font-size-tertiary-desktop: 0.875rem;
+$font-size-avatar-large-desktop: 3rem;
 
 // Line heights.
 $line-height-title: 1;

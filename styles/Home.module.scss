@@ -14,16 +14,18 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      margin: 0 $spacer-small;
+      margin: 0 $spacer-small $spacer-small;
+
+      @include desktop() {
+        margin: 0 $spacer-small $spacer-small-plus;
+      }
 
       h1 {
         color: $text-color-emphasis;
         font-size: $font-size-heading-medium;
-        margin-bottom: $spacer-very-small-plus;
 
         @include desktop() {
           font-size: $font-size-heading-medium-desktop;
-          margin-bottom: $spacer-small;
         }
       }
     }
@@ -33,6 +35,22 @@
 .mySwiperSlide {
   max-width: 320px;
   width: 80%;
+}
+
+.swiperSlideOrg {
+  width: $avatar-size-large;
+
+  @include desktop() {
+    width: $avatar-size-large-desktop;
+  }
+}
+
+.swiperSlideOrg:last-child {
+  margin-right: $spacer-small;
+}
+
+.swiperSlideOrg:first-child {
+  margin-left: $spacer-small;
 }
 
 .mySwiperSlide:last-child {
