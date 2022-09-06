@@ -24,6 +24,7 @@ $danger-color-button-hover: #FF9DA5;
 // Background colors.
 $background-color-primary: #1E2630;
 $background-color-card: #303A47;
+$background-color-card-hover: #3F4C5C;
 $background-color-modal-transparent: rgba(6, 9, 13, 0.8);
 $background-color-modal: #1E2630;
 $background-color-price-tag: #FFFFFF;
@@ -84,6 +85,7 @@ $max-width-input-time-desktop: 150px;
 $max-width-input-number: 100px;
 $max-width-button: 500px;
 $max-width-card: 500px;
+$max-width-org-card: 320px;
 $max-width-text: 600px;
 $max-width-text-desktop: 700px;
 $page-width-mobile: 90%;
@@ -150,6 +152,7 @@ $font-weight-bold: 700;
 $font-size-title: 2.25rem;
 $font-size-heading-large: 1.75rem;
 $font-size-heading-medium: 1.25rem;
+$font-size-heading-small: 1.125rem;
 $font-size-primary: 1rem;
 $font-size-input: 16px;
 $font-size-secondary: 0.875rem;
@@ -157,17 +160,21 @@ $font-size-tertiary: 0.75rem;
 $font-size-avatar: 0.5rem;
 $font-size-avatar-medium: 1rem;
 $font-size-avatar-large: 2rem;
+$font-size-data: 1.25rem;
+$font-size-data-small: 1.125rem;
 
 /* Desktop font sizes. */
 $font-size-title-desktop: 4rem;
 $font-size-heading-large-desktop: 2.25rem;
 $font-size-heading-medium-desktop: 1.75rem;
-$font-size-heading-small-desktop: 1.375rem;
+$font-size-heading-small-desktop: 1.25rem;
 $font-size-primary-desktop: 1.125rem;
 $font-size-input-desktop: 1.125rem;
 $font-size-secondary-desktop: 1rem;
 $font-size-tertiary-desktop: 0.875rem;
 $font-size-avatar-large-desktop: 3rem;
+$font-size-data-desktop: 1.75rem;
+$font-size-data-small-desktop: 1.375rem;
 
 // Line heights.
 $line-height-title: 1;

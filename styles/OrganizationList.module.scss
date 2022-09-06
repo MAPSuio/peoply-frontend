@@ -1,0 +1,30 @@
+.errorContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.headerContainer {
+  @include headingContainer();
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+
+  @include desktop() {
+    margin: $spacer-large 0;
+  }
+}
+
+.orgList {
+  display: grid;
+  gap: $spacer-small;
+  grid-template-columns: repeat(auto-fill, minmax(150px, $max-width-org-card));
+  justify-content: center;
+  margin-bottom: $spacer-large;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-medium;
+    margin-bottom: $spacer-large-plus;
+  }
+}

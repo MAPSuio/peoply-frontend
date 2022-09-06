@@ -137,12 +137,12 @@
 
 .data {
   color: $text-color-emphasis;
-  font-size: $font-size-heading-small-desktop;
+  font-size: $font-size-data;
   font-weight: $font-weight-bold;
   @include monoFont();
 
   @include desktop() {
-    font-size: $font-size-heading-large;
+    font-size: $font-size-data-desktop;
   }
 }
 
