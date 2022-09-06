@@ -51,8 +51,22 @@ const Home: NextPage = ({
     orderBy: "startDate",
   };
 
-  const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" };
-  const eventsOnUioQuery = { ...eventsQuery, categoryIds: "1" };
+  // temporary list before we get a solution for the API
+  const ifiOrgs = [
+    "990110352", // CYB
+    "990995303", // navet
+    "987042583", // dagen
+    "911594242", // Ifi-Progsys
+    "915439721", // Defi
+    "919650354", // Digitus
+    "997875400", // Språktek
+    "991739815", // mikro
+    "920547230", // Toastjærn
+  ];
+
+  const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
+  const eventsOnUioQuery = { ...eventsQuery, categoryIds: "1" }; // UIO category id
+  const ifiOrgsQuery = { ...eventsQuery, orgNrs: ifiOrgs.join(",") };
 
   const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
     `/events?${queryToString(eventsOnIfiQuery)}`,
@@ -69,7 +83,7 @@ const Home: NextPage = ({
 
   const { data: organizations, error: organizationsError } = useSWR<
     Organization[]
-  >("/organizations", fetchFromPeoplyApiJson);
+  >(`/organizations?${queryToString(ifiOrgsQuery)}`, fetchFromPeoplyApiJson);
 
   return (
     <>
@@ -83,7 +97,7 @@ const Home: NextPage = ({
         {organizations && organizations.length > 0 && (
           <OrganizationSwiper
             header="Foreninger på IFI"
-            seeAllUrl="/orgs"
+            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
             organizations={organizations}
             error={organizationsError}
           />

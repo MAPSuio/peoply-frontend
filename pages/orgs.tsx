@@ -5,7 +5,7 @@ import HeadComponent from "../components/HeadComponent";
 import Link from "next/link";
 
 // React.
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 // Components.
 import Layout from "../components/Layout";
@@ -24,6 +24,8 @@ import useBack from "../hooks/useBack";
 
 // Styles.
 import styles from "../styles/OrganizationList.module.scss";
+import { useRouter } from "next/router";
+import { queryToString } from "../utils/functions";
 
 interface OrganizationListProps {
   baseUrl: string;
@@ -37,10 +39,16 @@ function getGetKey(queryUrl: string, pageSize: number) {
 }
 
 const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
+  const router = useRouter();
   const goBack = useBack();
   const [isMoreOrgs, setIsMoreOrgs] = useState(true);
-
-  const orgQueryUrl = `/organizations`;
+  const orgQueryUrl = useMemo(
+    () =>
+      router.query
+        ? `/organizations?${queryToString(router.query)}&`
+        : `/organizations?`,
+    [router.query],
+  );
 
   const pageSize = 10;
   const getKey = getGetKey(orgQueryUrl, pageSize);
