@@ -183,7 +183,10 @@ const MyEvents = () => {
                 const weekday = getWeekday(date);
 
                 return (
-                  <div key={index} className={styles.dateAndEventsContainer}>
+                  <div
+                    key={index}
+                    className={events.length > 1 ? styles.multiple : ""}
+                  >
                     <p className={styles.dateTag}>{weekday}</p>
                     <h2 className={styles.dateTitle}>{dateString}</h2>
                     <div className={styles.eventCardsContainer}>

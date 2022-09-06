@@ -17,11 +17,8 @@
     flex-direction: column;
     gap: $spacer-very-small;
     margin-top: $spacer-medium;
-    width: 90%;
-
-    @include desktop() {
-      width: 100%;
-    }
+    padding: 0 $spacer-small;
+    width: 100%;
   }
 }
 
@@ -35,5 +32,10 @@
 
 .notFound {
   text-align: center;
+  width: 100%;
+}
+
+.searchContainer {
+  margin-bottom: $spacer-small-plus;
   width: 100%;
 }

@@ -1,0 +1,27 @@
+.wrapper {
+  background-color: $background-color-card;
+  border-radius: $border-radius-inside-card;
+  position: relative;
+  width: 100%;
+}
+    
+.inputContainer {
+  align-items: center;
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  padding: 0 $spacer-small;
+    
+  &.focused {
+    outline: 2px solid #FFFFFF;
+  }
+    
+  input {
+    background-color: $background-color-card;
+    padding: $spacer-small;
+    width: calc(100% + 2px);
+      
+    &:focus{
+      outline: none;
+    } 
+  }
+}

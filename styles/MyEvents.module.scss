@@ -136,14 +136,28 @@
 
     > * {
       flex: 1 1 48%;
+
+      &.multiple {
+        flex: 1 1 100%;
+      }
     }
   }
 }
 
-
 .eventCardsContainer {
   display: flex;
+  flex: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: $spacer-medium;
 
+  @include desktop() {
+    flex-direction: row;
+
+    > * {
+      flex: 1 1 48%;
+    }
+  }
 }
 
 .dateTitle {

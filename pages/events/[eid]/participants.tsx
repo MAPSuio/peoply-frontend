@@ -4,6 +4,7 @@ import useSWR from "swr";
 import BackButton from "../../../components/BackButton";
 import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
+import SearchField from "../../../components/SearchField";
 import MailIcon from "../../../components/svgs/MailIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCross from "../../../components/svgs/UserCross";
@@ -20,8 +21,13 @@ import {
   RegStatus,
   EventInvitation,
   InvitationStatus,
+  User,
 } from "../../../types/types";
-import { formatDateRange } from "../../../utils/functions";
+import {
+  calculateEditDistance,
+  formatDateRange,
+} from "../../../utils/functions";
+import { getFormattedName } from "../../../utils/user";
 
 enum TabOption {
   PARTICIPANTS = "PARTICIPANTS",
@@ -34,6 +40,7 @@ const Participants = () => {
   const router = useRouter();
   const { addSnack } = useSnack();
   const { eid } = router.query;
+  const [search, setSearch] = useState("");
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.PARTICIPANTS,
   );
@@ -77,6 +84,71 @@ const Participants = () => {
     }
   }
 
+  /* filter results based on search term */
+  function searchFilter(user: User) {
+    if (!search.trim().length) {
+      return true;
+    }
+
+    const searchTokens = search.trim().toLowerCase().split(" ");
+    const firstNameTokens = user.firstName.toLowerCase().split(" ");
+
+    const editDistanceLastName = calculateEditDistance(
+      user.lastName.toLowerCase(),
+      searchTokens[searchTokens.length - 1],
+    );
+
+    /* if all search tokens matches on of the first name tokens */
+    if (
+      searchTokens.every((token) =>
+        firstNameTokens.some(
+          (firstNameToken) =>
+            calculateEditDistance(firstNameToken, token) <= 2 ||
+            firstNameToken.startsWith(token),
+        ),
+      )
+    ) {
+      return true;
+    }
+
+    /* if there are multiple search words for the first name, make sure all are matches */
+    if (
+      firstNameTokens
+        .slice(0, searchTokens.length)
+        .every((token) =>
+          searchTokens.some(
+            (searchToken) =>
+              calculateEditDistance(searchToken, token) <= 2 ||
+              token.startsWith(searchToken),
+          ),
+        )
+    ) {
+      return true;
+    }
+
+    if (
+      editDistanceLastName <= 2 ||
+      user.lastName
+        .toLocaleLowerCase()
+        .startsWith(searchTokens[searchTokens.length - 1])
+    ) {
+      return true;
+    }
+
+    return getFormattedName(user).toLowerCase().includes(search.toLowerCase());
+  }
+
+  function sortByEditDistance(userA?: User, userB?: User) {
+    if (!userA || !userB) {
+      return 0;
+    }
+
+    return (
+      calculateEditDistance(getFormattedName(userA), search) -
+      calculateEditDistance(getFormattedName(userB), search)
+    );
+  }
+
   function renderTab(tab: TabOption) {
     switch (tab) {
       case TabOption.PARTICIPANTS:
@@ -92,16 +164,33 @@ const Participants = () => {
           );
         }
 
-        return going.map((registration) => (
-          <MemberCard
-            key={registration.userId}
-            user={registration.user}
-            description={`Meldte seg på ${formatDateRange(
-              new Date(registration.updatedAt),
-            )}`}
-            link={`/users/${registration.userId}`}
-          />
-        ));
+        const filteredGoing = going
+          .filter((registration) => searchFilter(registration.user))
+          .sort((regA, regB) => sortByEditDistance(regA.user, regB.user));
+
+        return (
+          <>
+            {going.length > 0 && (
+              <div className={styles.searchContainer}>
+                <SearchField
+                  search={search}
+                  loading={false}
+                  setSearch={setSearch}
+                />
+              </div>
+            )}
+            {filteredGoing.map((registration) => (
+              <MemberCard
+                key={registration.userId}
+                user={registration.user}
+                description={`Meldte seg på ${formatDateRange(
+                  new Date(registration.updatedAt),
+                )}`}
+                link={`/users/${registration.userId}`}
+              />
+            ))}
+          </>
+        );
 
       case TabOption.INVITATIONS:
         const pending = invitations?.filter(
@@ -115,18 +204,40 @@ const Participants = () => {
           );
         }
 
-        return pending?.map(
-          (invitation) =>
-            invitation.toUser && (
-              <MemberCard
-                key={invitation.id}
-                user={invitation.toUser}
-                description={`Invitert av ${invitation.fromUser?.firstName} ${
-                  invitation.fromUser?.lastName
-                } ${formatDateRange(new Date(invitation.createdAt))}`}
-                link={`/users/${invitation.toUser?.id}`}
-              />
-            ),
+        const filteredPending = pending
+          .filter(
+            (invitation) =>
+              invitation.toUser && searchFilter(invitation.toUser),
+          )
+          .sort((invA, invB) => sortByEditDistance(invA.toUser, invB.toUser));
+
+        return (
+          <>
+            {pending.length && (
+              <div className={styles.searchContainer}>
+                <SearchField
+                  search={search}
+                  loading={false}
+                  setSearch={setSearch}
+                />
+              </div>
+            )}
+            {filteredPending?.map(
+              (invitation) =>
+                invitation.toUser && (
+                  <MemberCard
+                    key={invitation.id}
+                    user={invitation.toUser}
+                    description={`Invitert av ${
+                      invitation.fromUser?.firstName
+                    } ${invitation.fromUser?.lastName} ${formatDateRange(
+                      new Date(invitation.createdAt),
+                    )}`}
+                    link={`/users/${invitation.toUser?.id}`}
+                  />
+                ),
+            )}
+          </>
         );
 
       case TabOption.NOT_GOING:
@@ -142,16 +253,33 @@ const Participants = () => {
           );
         }
 
-        return notGoing.map((registration) => (
-          <MemberCard
-            key={registration.userId}
-            user={registration.user}
-            description={`Meldte seg av ${formatDateRange(
-              new Date(registration.updatedAt),
-            )}`}
-            link={`/users/${registration.userId}`}
-          />
-        ));
+        const filteredNotGoing = notGoing
+          .filter((registration) => searchFilter(registration.user))
+          .sort((regA, regB) => sortByEditDistance(regA.user, regB.user));
+
+        return (
+          <>
+            {notGoing.length && (
+              <div className={styles.searchContainer}>
+                <SearchField
+                  search={search}
+                  loading={false}
+                  setSearch={setSearch}
+                />
+              </div>
+            )}
+            {filteredNotGoing.map((registration) => (
+              <MemberCard
+                key={registration.userId}
+                user={registration.user}
+                description={`Meldte seg av ${formatDateRange(
+                  new Date(registration.updatedAt),
+                )}`}
+                link={`/users/${registration.userId}`}
+              />
+            ))}
+          </>
+        );
     }
   }
 
