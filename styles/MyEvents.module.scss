@@ -246,3 +246,33 @@
     width: 100%;
   }
 }
+
+.pastEvents {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.divider {
+  @include divider();
+  margin: $spacer-medium 0;
+}
+
+.pastEventsHeader {
+  margin-bottom: $spacer-medium-plus;
+  max-width: calc(1000px + 2rem);
+  width: 90%;
+
+  h2 {
+    font-size: $font-size-heading-large;
+    margin-bottom: $spacer-very-small-plus;
+    text-align: left;
+  
+    @include desktop() {
+      font-size: $font-size-heading-large-desktop;
+      margin-bottom: $spacer-small;
+    }
+  }
+}

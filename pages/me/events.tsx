@@ -40,6 +40,7 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import { isEventFinished } from "../../utils/event";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
@@ -144,6 +145,16 @@ const MyEvents = () => {
     return <></>;
   }
 
+  const hasFutureEvents = dateAndEventsMapArray.some(
+    (dateAndEvents) =>
+      new Date(dateAndEvents.date).getTime() >= new Date().getTime(),
+  );
+
+  const hasPastEvents = dateAndEventsMapArray.some((dateAndEvents) => {
+    const date = new Date(dateAndEvents.date);
+    return date < new Date();
+  });
+
   return (
     <>
       <HeadComponent
@@ -176,35 +187,96 @@ const MyEvents = () => {
 
           <div className={styles.eventContainer}>
             {dateAndEventsMapArray.length > 0 ? (
-              dateAndEventsMapArray.map((dateAndEvent, index) => {
-                const date = new Date(dateAndEvent.date);
-                const events = dateAndEvent.events;
-                const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
-                const weekday = getWeekday(date);
+              dateAndEventsMapArray
+                .sort(
+                  (dateAndEventA, dateAndEventB) =>
+                    new Date(dateAndEventA.date).getTime() -
+                    new Date(dateAndEventB.date).getTime(),
+                )
+                .map((dateAndEvent, index) => {
+                  const date = new Date(dateAndEvent.date);
+                  const events = (dateAndEvent.events as Event[]).filter(
+                    (event) => !isEventFinished(event),
+                  );
+                  const dateString = formatDateRange(date, date).slice(0, -5); // TODO: This needs work.
+                  const weekday = getWeekday(date);
 
-                return (
-                  <div
-                    key={index}
-                    className={events.length > 1 ? styles.multiple : ""}
-                  >
-                    <p className={styles.dateTag}>{weekday}</p>
-                    <h2 className={styles.dateTitle}>{dateString}</h2>
-                    <div className={styles.eventCardsContainer}>
-                      {events.map((event: Event) => (
-                        <LargeEventCard
-                          key={event.id}
-                          event={event}
-                          showArranger
-                        /> // TODO: The returned card should be different based on which event type it is.
-                      ))}
+                  if (!events.length) {
+                    return null;
+                  }
+
+                  return (
+                    <div
+                      key={index}
+                      className={events.length > 1 ? styles.multiple : ""}
+                    >
+                      <p className={styles.dateTag}>{weekday}</p>
+                      <h2 className={styles.dateTitle}>{dateString}</h2>
+                      <div className={styles.eventCardsContainer}>
+                        {events.map((event: Event) => (
+                          <LargeEventCard
+                            key={event.id}
+                            event={event}
+                            showArranger
+                          /> // TODO: The returned card should be different based on which event type it is.
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
             ) : (
               <EmptyEvents eventType={activeSection} />
             )}
           </div>
+          {hasPastEvents && (
+            <>
+              {hasFutureEvents && <span className={styles.divider}></span>}
+              <div className={styles.pastEvents}>
+                <div className={styles.pastEventsHeader}>
+                  <h2>Tidligere arrangementer</h2>
+                  <p>Gjenopplev tidligere arrangementer</p>
+                </div>
+                <div className={styles.eventContainer}>
+                  {dateAndEventsMapArray.length > 0 ? (
+                    dateAndEventsMapArray
+                      .sort(
+                        (dateAndEventA, dateAndEventB) =>
+                          new Date(dateAndEventB.date).getTime() -
+                          new Date(dateAndEventA.date).getTime(),
+                      )
+                      .map((dateAndEvent, index) => {
+                        const events = (dateAndEvent.events as Event[]).filter(
+                          (event) => isEventFinished(event),
+                        );
+
+                        if (!events.length) {
+                          return null;
+                        }
+
+                        return (
+                          <div
+                            key={index}
+                            className={events.length > 1 ? styles.multiple : ""}
+                          >
+                            <div className={styles.eventCardsContainer}>
+                              {events.map((event: Event) => (
+                                <LargeEventCard
+                                  key={event.id}
+                                  event={event}
+                                  showArranger
+                                /> // TODO: The returned card should be different based on which event type it is.
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })
+                  ) : (
+                    <EmptyEvents eventType={activeSection} />
+                  )}
+                </div>
+              </div>
+            </>
+          )}
           <Navbar />
         </div>
       </div>

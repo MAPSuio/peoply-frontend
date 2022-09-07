@@ -38,6 +38,7 @@ import UserIconCard from "./svgs/UserIconCard";
 
 // Styles.
 import styles from "../styles/LargeEventCard.module.scss";
+import { isEventFinished } from "../utils/event";
 
 interface LargeEventCardProps {
   event: Event;
@@ -238,12 +239,14 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
                 <p className={styles.data}>{event.locationName}</p>
               </div>
             </div>
-            <ShareButton
-              width="100%"
-              buttonText="Del arrangement"
-              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
-              shareTitle={event.title}
-            />
+            {!isEventFinished(event) && (
+              <ShareButton
+                width="100%"
+                buttonText="Del arrangement"
+                shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
+                shareTitle={event.title}
+              />
+            )}
           </div>
         </div>
       </a>
