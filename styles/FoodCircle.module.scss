@@ -1,0 +1,14 @@
+.container {
+  align-items: center;
+  background-color: $primary-color-muted;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+
+  svg {
+    height: 14px;
+    stroke: $primary-color-200;
+    width: 14px;
+  }
+}

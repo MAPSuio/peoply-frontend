@@ -435,7 +435,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
         addSnack("Ditt arrangement har blitt opprettet", SnackTypes.SUCCESS);
         localStorage.removeItem("eventObject");
         localStorage.removeItem("eventImage");
-        router.push(`/events/${event.urlId}`);
+        router.replace(`/events/${event.urlId}`);
       } catch (e) {
         addSnack(
           "Det skjedde en feil under opprettelsen av arrangementet",

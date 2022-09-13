@@ -66,6 +66,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Event.module.scss";
+import FoodCircle from "../../../components/svgs/FoodCircle";
 
 interface EventProps {
   event: Event;
@@ -535,7 +536,11 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 </div>
               </div>
               <div
-                className={`${styles.infoTextContainer} ${styles.marginBottomMedium}`}
+                className={`${styles.infoTextContainer} ${
+                  event.hasFood
+                    ? styles.marginBottomSmall
+                    : styles.marginBottomMedium
+                }`}
               >
                 {eventData.freeformAddress ? (
                   <a
@@ -578,6 +583,23 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   </>
                 )}
               </div>
+              {eventData.hasFood && (
+                <div
+                  className={`${styles.infoTextContainer} ${styles.marginBottomMedium}`}
+                >
+                  {" "}
+                  <div className={styles.iconContainer}>
+                    <FoodCircle />
+                  </div>
+                  <div>
+                    <p
+                      className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+                    >
+                      Matservering
+                    </p>
+                  </div>
+                </div>
+              )}
               {registrations && (
                 <Link href={`/events/${eventData.urlId}/participants`} passHref>
                   <a>
