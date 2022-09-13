@@ -1,10 +1,18 @@
+.label {
+  color: $text-color-emphasis;
+  font-size: $font-size-secondary;
+  font-weight: $font-weight-regular;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
 .container {
   align-items: center;
-  background-color: $background-color-input;
+  background-color: $background-color-snack;
   border-radius: $border-radius-regular;
   bottom: 128px;
-  box-shadow: $shadow-snack;
-  color: $text-color-emphasis;
   display: flex;
   justify-content: center;
   left: 0;
@@ -15,6 +23,14 @@
   right: 0;
   width: $page-width-mobile;
   z-index: $z-index-snack;
+
+  .label {
+    color: $text-color-black;
+  }
+}
+
+.shadow {
+  box-shadow: $shadow-snack;
 }
 
 .animation {
@@ -25,16 +41,6 @@
 
   @media (prefers-reduced-motion: no-preference) {
     animation-name: snack-enter-reduced-motion, snack-enter-full-motion;
-  }
-}
-
-.label {
-  color: $text-color-emphasis;
-  font-size: $font-size-secondary;
-  font-weight: $font-weight-regular;
-
-  @include desktop() {
-    font-size: $font-size-secondary-desktop;
   }
 }
 

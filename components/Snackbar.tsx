@@ -44,8 +44,10 @@ const Snackbar = ({ label, type, first }: SnackbarProps) => {
       return `${styles.container} ${styles.error} ${styles.errorShadow} ${styles.animation}`;
     } else if (type === SnackTypes.ERROR) {
       return `${styles.container} ${styles.error}`;
+    } else if (first) {
+      return `${styles.container} ${styles.shadow} ${styles.animation}`;
     } else {
-      return `${styles.container}`;
+      return `${styles.container} ${styles.animation}`;
     }
   };
 

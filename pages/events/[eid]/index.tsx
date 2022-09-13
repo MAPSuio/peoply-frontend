@@ -662,7 +662,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           secondaryButtonText="Lukk"
           buttonOnClick={() => router.push("/me/edit")}
           secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-          closeButtonOnclick={() => setFoodPreferenceModalOpen(false)}
+          closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         />
       )}
     </>

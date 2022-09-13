@@ -1,0 +1,224 @@
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 $spacer-small;
+
+  @include desktop() {
+    align-self: stretch;
+    width: initial;
+  }
+}
+
+.headingAndAvatarContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-very-small-plus;
+  margin-bottom: $spacer-very-small-plus;
+
+  @include desktop() {
+    margin-bottom: $spacer-small;
+  }
+}
+
+.headingContainer {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.tag {
+  @include uppercase();
+  background: linear-gradient(90deg, $primary-color-200, $secondary-color-200);
+  background-clip: text;
+  margin-bottom: $spacer-very-small;
+  -webkit-text-fill-color: transparent;
+}
+
+.title {
+  color: $text-color-emphasis;
+  font-size: $font-size-heading-medium;
+  font-weight: $font-weight-bold;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
+}
+
+.imageContainer {
+  border-radius: $border-radius-regular;
+  box-shadow: $shadow-highlighted-event-card;
+  height: 260px;
+  max-width: $max-width-highlighted-card;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  @include desktop(){
+    height: 360px;
+  }
+
+  @media screen and (max-width: 375px) {
+    height: 300px;
+  }
+}
+
+.divider {
+  @include divider();
+  background-color: $divider-color-highlighted-event-card;
+  margin-bottom: $spacer-very-small;
+
+  @include desktop() {
+    margin-bottom: $spacer-very-small-plus;
+  }
+}
+
+.dataContainer {
+  backdrop-filter: blur(15px);
+  background-color: $background-color-card-transparent;
+  border-radius: 0 0 $border-radius-regular;
+  bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  padding: $spacer-very-small-plus $spacer-small;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60%;
+
+  @include desktop() {
+    padding: $spacer-small;
+  }
+}
+
+.eventTitle {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: $font-size-heading-small;
+  font-weight: $font-weight-bold;
+  -webkit-line-clamp: 2;
+  line-height: $line-height-card-title;
+  margin-bottom: $spacer-very-small;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-heading-small-desktop;
+    margin-bottom: $spacer-very-small-plus;
+  }
+}
+
+.eventDescription {
+  -webkit-box-orient: vertical;
+  color: $text-color-input;
+  display: -webkit-box;
+  font-size: $font-size-secondary;
+  -webkit-line-clamp: 1;
+  line-height: $line-height-hint-text;
+  margin-bottom: $spacer-very-small;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+    -webkit-line-clamp: 3;
+    margin-bottom: $spacer-very-small-plus;
+  }
+}
+
+.emphasis {
+  color: $text-color-emphasis;
+}
+
+.iconWrapper {
+  margin-bottom: $spacer-small;
+}
+
+.iconContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+
+  &:not(:last-child) {
+    margin-bottom: $spacer-very-small;
+
+    @include desktop() {
+      margin-bottom: $spacer-small;
+    }
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  height: 14px;
+  margin-right: $spacer-very-small;
+  stroke: $text-color-input;
+  stroke-width: 2;
+  width: 14px;
+
+  @include desktop() {
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.data {
+  color: $text-color-emphasis;
+  font-family: $mono-font;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-hint-text;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.buttonContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  @include desktop() {
+    align-items: flex-end;
+  }
+}
+
+.favoriteIcon {
+  fill: none;
+  height: 24px;
+  stroke: $text-color-primary;
+  stroke-width: 2;
+  transition: all $animation-duration ease;
+  width: 24px;
+
+  @include desktop() {
+    height: 32px;
+    width: 32px;
+
+    &:hover:not(:disabled) {
+      stroke: $text-color-emphasis;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.favorited {
+  fill: $red-color;
+  stroke: $red-color;
+
+  &:hover:not(:disabled) {
+    stroke: $red-color;
+  }
+}
+
+.button {
+  @include resetButton();
+}
+
+.hideOverflow {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}

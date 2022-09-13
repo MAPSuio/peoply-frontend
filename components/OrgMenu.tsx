@@ -74,7 +74,7 @@ export default function OrgMenu({ org }: OrgMenuProps) {
           buttonOnClick={handleDelete}
           danger
           secondaryButtonOnClick={() => setModalOpen(false)}
-          closeButtonOnclick={() => setModalOpen(false)}
+          closeButtonOnClick={() => setModalOpen(false)}
         />
       )}
     </div>

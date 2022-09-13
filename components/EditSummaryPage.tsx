@@ -96,8 +96,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     locationName: event.locationName,
     freeformAddress: event.freeformAddress,
   });
-  /* 
-  When editing changes are written to this state. 
+  /*
+  When editing changes are written to this state.
   The changes are written to the eventObject state when the user clicks the accept button.
   */
   const [tempEventObject, setTempEventObject] = useState<EventObjectProps>({
@@ -691,7 +691,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
             secondaryButtonOnClick={() => {
               setDeleteModalOpen(false);
             }}
-            closeButtonOnclick={() => {
+            closeButtonOnClick={() => {
               setDeleteModalOpen(false);
             }}
           ></Modal>

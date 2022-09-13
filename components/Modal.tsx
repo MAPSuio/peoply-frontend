@@ -15,7 +15,7 @@ interface ModalProps {
   secondaryButtonText?: string;
   buttonOnClick?: () => void;
   secondaryButtonOnClick?: () => void;
-  closeButtonOnclick?: () => void;
+  closeButtonOnClick?: () => void;
   danger?: boolean;
 }
 
@@ -26,7 +26,7 @@ const Modal = ({
   secondaryButtonText,
   buttonOnClick,
   secondaryButtonOnClick,
-  closeButtonOnclick,
+  closeButtonOnClick,
   danger,
 }: ModalProps) => {
   const clickFunction = () => {
@@ -38,9 +38,9 @@ const Modal = ({
   };
 
   return (
-    <div className={styles.wrapper} onClick={closeButtonOnclick}>
+    <div className={styles.wrapper} onClick={closeButtonOnClick}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.exitIcon} onClick={closeButtonOnclick}>
+        <button className={styles.exitIcon} onClick={closeButtonOnClick}>
           <ExitIcon />
         </button>
         <h1 className={styles.title}>{label}</h1>

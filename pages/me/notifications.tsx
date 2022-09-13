@@ -333,7 +333,7 @@ export default function Notifications() {
           secondaryButtonOnClick={() =>
             setFoodPreferanceModalOpenModalOpen(false)
           }
-          closeButtonOnclick={() => setFoodPreferanceModalOpenModalOpen(false)}
+          closeButtonOnClick={() => setFoodPreferanceModalOpenModalOpen(false)}
         />
       )}
     </>

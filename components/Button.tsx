@@ -17,7 +17,7 @@ export enum IconPlacement {
 interface ButtonProps {
   text: string;
   type?: ButtonType;
-  onClick?: ((e: any) => void) | ((e: any) => Promise<void>);
+  onClick?: ((e: MouseEvent) => void) | ((e: MouseEvent) => Promise<void>);
   className?: string;
   disabled?: boolean;
   small?: boolean;
@@ -63,6 +63,14 @@ export default function Button({
         return `${styles.button} ${styles.warningButton} ${
           small && styles.small
         } ${noShadow && styles.noShadow}`;
+      case ButtonType.HIGHLIGHTEDEVENTCARD:
+        return `${styles.button} ${styles.highlightedEventCardButton} ${
+          small && styles.small
+        } ${noShadow && styles.noShadow}`;
+      case ButtonType.REGISTERED:
+        return `${styles.button} ${styles.registeredButton} ${
+          small && styles.small
+        } ${noShadow && styles.noShadow}`;
       default:
         return `${styles.button} ${small && styles.small} ${
           noShadow && styles.noShadow
@@ -83,7 +91,7 @@ export default function Button({
 
   return (
     <button
-      onClick={async (e) => {
+      onClick={async (e: any) => {
         let onClickResult: any = null;
 
         // show loading wheel after `loadingIconLatency` ms
@@ -110,7 +118,11 @@ export default function Button({
     >
       {loading || onClickLoadingState ? (
         <LoadingWheel
-          dark={type === ButtonType.WARNING || type === ButtonType.DANGER}
+          dark={
+            type === ButtonType.WARNING ||
+            type === ButtonType.DANGER ||
+            type === ButtonType.HIGHLIGHTEDEVENTCARD
+          }
         />
       ) : (
         <>

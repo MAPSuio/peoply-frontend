@@ -361,6 +361,8 @@ export enum ButtonType {
   SECONDARY,
   DANGER,
   WARNING,
+  REGISTERED,
+  HIGHLIGHTEDEVENTCARD,
 }
 
 export enum Alignment {

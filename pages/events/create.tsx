@@ -1064,7 +1064,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
               startNewEventCreation();
               setModalOpen(false);
             }}
-            closeButtonOnclick={() => {
+            closeButtonOnClick={() => {
               setModalOpen(false);
               startNewEventCreation();
             }}

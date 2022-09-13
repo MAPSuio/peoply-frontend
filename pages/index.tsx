@@ -13,6 +13,7 @@ import Navbar from "../components/Navbar";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
 import OrganizationAvatar from "../components/OrganizationAvatar";
+import HighlightedEventCard from "../components/HighlightedEventCard";
 
 // Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -45,6 +46,10 @@ const Home: NextPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [today] = useState(new Date().toISOString());
   const router = useRouter();
+
+  const featuredEventsQuery = {
+    featured: true,
+  };
 
   const eventsQuery = {
     afterDate: today,
@@ -85,6 +90,11 @@ const Home: NextPage = ({
     Organization[]
   >(`/organizations?${queryToString(ifiOrgsQuery)}`, fetchFromPeoplyApiJson);
 
+  const { data: featuredEvents, error: featuredEventsError } = useSWR<Event[]>(
+    `/events?${queryToString(featuredEventsQuery)}`,
+    fetchFromPeoplyApiJson,
+  );
+
   return (
     <>
       <HeadComponent
@@ -101,6 +111,9 @@ const Home: NextPage = ({
             organizations={organizations}
             error={organizationsError}
           />
+        )}
+        {featuredEvents && featuredEvents.length > 0 && (
+          <HighlightedEventCard event={featuredEvents[0]} />
         )}
         {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper

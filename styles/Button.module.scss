@@ -102,6 +102,34 @@
   }
 }
 
+.highlightedEventCardButton {
+  background-color: $background-color-button-highlighted-event-card;
+  color: $text-color-black;
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $background-color-button-highlighted-event-card-hover;
+    }
+  }
+}
+
+.registeredButton {
+  background-color: $primary-color-muted;
+  color: $primary-color-100;
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $primary-color-muted;
+    }
+  }
+
+  &:disabled {
+    background-color: $primary-color-muted;
+    color: $primary-color-200;
+    font-weight: $font-weight-regular;
+  }
+}
+
 .warningButton {
   background-color: $background-color-button-warning;
   box-shadow: $shadow-button-warning;

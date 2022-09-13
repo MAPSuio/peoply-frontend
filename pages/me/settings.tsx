@@ -164,7 +164,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
           secondaryButtonText="Lukk"
           buttonOnClick={deleteMe}
           secondaryButtonOnClick={() => setModalOpen(false)}
-          closeButtonOnclick={() => setModalOpen(false)}
+          closeButtonOnClick={() => setModalOpen(false)}
           danger
         />
       )}
