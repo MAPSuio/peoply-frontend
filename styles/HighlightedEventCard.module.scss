@@ -55,7 +55,7 @@
   width: 100%;
 
   @include desktop(){
-    height: 360px;
+    height: 400px;
   }
 
   @media screen and (max-width: 375px) {
@@ -69,7 +69,7 @@
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
-    margin-bottom: $spacer-very-small-plus;
+    margin-bottom: $spacer-small;
   }
 }
 
@@ -89,6 +89,14 @@
 
   @include desktop() {
     padding: $spacer-small;
+  }
+
+  @include breakPoint(800px) {
+    width: 50%;
+  }
+
+  @include breakPoint(1000px) {
+    width: 40%;
   }
 }
 
@@ -120,8 +128,8 @@
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
-    -webkit-line-clamp: 3;
-    margin-bottom: $spacer-very-small-plus;
+    -webkit-line-clamp: 5;
+    margin-bottom: $spacer-small;
   }
 }
 
