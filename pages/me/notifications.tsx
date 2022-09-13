@@ -15,6 +15,7 @@ import {
   OrganizationInvitationNotification,
   PeoplyNotification,
   SnackTypes,
+  Event,
 } from "../../types/types";
 import styles from "../../styles/Notifications.module.scss";
 import Avatar from "../../components/Avatar";
@@ -26,12 +27,18 @@ import useNotifications from "../../hooks/useNotifications";
 import useSWR from "swr";
 import Link from "next/link";
 import { groupBy } from "../../utils/functions";
+import Modal from "../../components/Modal";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Notifications() {
   const { user } = useUser();
   const goBack = useBack();
   const { addSnack } = useSnack();
   const { hasUnreadNotifications, markAsRead } = useNotifications();
+  const [foodPreferanceModalOpen, setFoodPreferanceModalOpenModalOpen] =
+    useState(false);
+  const router = useRouter();
 
   const {
     data: notifications,
@@ -119,6 +126,16 @@ export default function Notifications() {
       case NotificationType.INVITATION_EVENT:
         const eventInvite = notification as EventInvitationNotification;
         try {
+          if (action === InvitationStatus.ACCEPTED) {
+            /* fetch event to check if event serves food */
+            const event: Event = await fetchFromPeoplyApiJson(
+              `/events/${eventInvite.eventId}`,
+            );
+            if (event.hasFood && !user?.foodPreference) {
+              return setFoodPreferanceModalOpenModalOpen(true);
+            }
+          }
+
           await fetchFromPeoplyApi(
             `/events/${eventInvite.eventId}/invitations`,
             {
@@ -306,6 +323,19 @@ export default function Notifications() {
           )}
         </div>
       </div>
+      {foodPreferanceModalOpen && (
+        <Modal
+          label={`Arrangementet har matservering`}
+          description="For å godta invitasjonen til arrangementet må du fylle ut matpreferanser på profilen din."
+          buttonText={`Rediger matpreferanser`}
+          secondaryButtonText="Lukk"
+          buttonOnClick={() => router.push("/me/edit")}
+          secondaryButtonOnClick={() =>
+            setFoodPreferanceModalOpenModalOpen(false)
+          }
+          closeButtonOnclick={() => setFoodPreferanceModalOpenModalOpen(false)}
+        />
+      )}
     </>
   );
 }

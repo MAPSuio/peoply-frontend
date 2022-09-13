@@ -20,6 +20,7 @@ import EditIconGlass from "../../../components/EditIconGlass";
 import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
+import Modal from "../../../components/Modal";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -81,6 +82,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
   const [mapsUrl, setMapsUrl] = useState<string>();
+  const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
 
   const { data: eventData, mutate: updateEvent } = useSWR<Event>(
     `/events/${event.urlId}`,
@@ -179,6 +181,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const registerForEvent = async () => {
     if (user) {
       if (openForRegistrations()) {
+        /* force user to update food prefs if food is served */
+        if (event.hasFood && !user.foodPreference) {
+          return setFoodPreferenceModalOpen(true);
+        }
         let newRegistration: Registration | undefined;
         try {
           newRegistration = await registerUser(
@@ -216,6 +222,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
 
   const updateRegistrationStatus = async (status: RegStatus) => {
     if (user) {
+      /* force user to update food prefs if food is served */
+      if (status === RegStatus.GOING && event.hasFood && !user.foodPreference) {
+        return setFoodPreferenceModalOpen(true);
+      }
       let success = undefined;
       try {
         success = (await updateRegistrationUser(
@@ -243,6 +253,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
   async function acceptInvitation() {
+    /* force user to update food prefs if food is served */
+    if (event.hasFood && !user?.foodPreference) {
+      return setFoodPreferenceModalOpen(true);
+    }
     try {
       await fetchFromPeoplyApi(`/events/${eventData?.id}/invitations`, {
         method: "PATCH",
@@ -640,6 +654,17 @@ const Event = ({ event, baseUrl }: EventProps) => {
           {getButton()}
         </div>
       </div>
+      {foodPreferenceModalOpen && (
+        <Modal
+          label={`Arrangementet har matservering`}
+          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
+          buttonText={`Rediger matpreferanser`}
+          secondaryButtonText="Lukk"
+          buttonOnClick={() => router.push("/me/edit")}
+          secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
+          closeButtonOnclick={() => setFoodPreferenceModalOpen(false)}
+        />
+      )}
     </>
   );
 };

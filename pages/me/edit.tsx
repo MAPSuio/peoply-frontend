@@ -81,13 +81,13 @@ const EditProfile: NextPage = () => {
     }
 
     return [
+      { value: null, label: "", isDefault: true },
       ...Object.entries(FoodPreference).map(([key, value]) => {
         return {
           value: key,
           label: valueToLabel(value),
         };
       }),
-      { value: null, label: "", isDefault: true },
     ];
   }
 
