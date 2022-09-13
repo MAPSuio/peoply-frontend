@@ -313,6 +313,7 @@ export enum Visibility {
   PRIVATE = "PRIVATE",
   UNLISTED = "UNLISTED",
 }
+
 export enum ImageCaching {
   OK,
   PREEMPTIVE_MESSAGE,

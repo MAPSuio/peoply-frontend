@@ -31,6 +31,8 @@ import { Visibility } from "../types/types";
 import { EventObjectProps } from "../pages/events/create";
 import UserCircle from "./UserCircle";
 import useUser from "../hooks/useUser";
+import FoodIcon from "./svgs/FoodIcon";
+import NoFoodIcon from "./svgs/NoFoodIcon";
 
 interface SummaryPageProps {
   title: string;
@@ -103,6 +105,7 @@ const SummaryPage = ({
       formData.set("capacity", eventObject.eventCapacity);
     }
     formData.set("visibility", `${eventObject.eventVisibility}`);
+    formData.set("hasFood", `${eventObject.eventHasFood}`);
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventObject.eventActiveCategories);
@@ -352,6 +355,17 @@ const SummaryPage = ({
               <div className={styles.dataItemContainer}>
                 <NoLimitIconSmall className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Ingen kapasitet</p>
+              </div>
+            )}
+            {eventObject.eventHasFood ? (
+              <div className={styles.dataItemContainer}>
+                <FoodIcon className={styles.dataIconDimensions} />
+                <p className={styles.dataLabel}>Det serveres mat</p>
+              </div>
+            ) : (
+              <div className={styles.dataItemContainer}>
+                <NoFoodIcon className={styles.dataIconDimensions} />
+                <p className={styles.dataLabel}>Ingen matservering</p>
               </div>
             )}
           </div>

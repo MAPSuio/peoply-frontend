@@ -7,7 +7,7 @@ interface RadioInputProps {
     id: number;
     text: string;
     hintText?: string;
-    icon: React.FunctionComponent;
+    icon: React.VoidFunctionComponent;
     active: boolean;
   }>;
   label: string;

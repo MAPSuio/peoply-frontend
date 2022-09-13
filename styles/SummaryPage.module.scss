@@ -187,6 +187,10 @@
 .dataItemContainer {
   display: flex;
   flex-flow: row nowrap;
+  
+  svg {
+    stroke: $primary-color-200;
+  }
 }
 
 .dataLabel {

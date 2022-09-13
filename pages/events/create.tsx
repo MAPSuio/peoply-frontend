@@ -63,6 +63,8 @@ import { Models } from "azure-maps-rest";
 
 /* Styles. */
 import styles from "../../styles/CreateEvent.module.scss";
+import NoFoodIcon from "../../components/svgs/NoFoodIcon";
+import FoodIcon from "../../components/svgs/FoodIcon";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -79,6 +81,7 @@ export interface EventObjectProps {
   eventVisibility: Visibility;
   eventHasCapacity: boolean;
   eventCapacity: string;
+  eventHasFood: boolean;
   eventExtraInfoValid: boolean;
   eventImage?: File;
   eventImageValid: boolean;
@@ -112,6 +115,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventActiveCategories: [],
     eventVisibility: Visibility.PUBLIC,
     eventHasCapacity: false,
+    eventHasFood: false,
     eventImage: undefined,
     eventCapacity: "",
     eventExtraInfoValid: eventExtraInfoValid,
@@ -359,6 +363,33 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     updateLocalStorage({
       ...eventObject,
       eventVisibility: visibility,
+    });
+  };
+
+  const updateHasFood = (id: number) => {
+    let eventHasFood = false;
+    switch (id) {
+      case 1:
+        setEventObject((prevEventObject) => ({
+          ...prevEventObject,
+          eventHasFood: false,
+        }));
+        break;
+
+      case 2:
+        eventHasFood = true;
+        setEventObject((prevEventObject: EventObjectProps) => ({
+          ...prevEventObject,
+          eventHasFood: true,
+        }));
+        break;
+
+      default:
+        break;
+    }
+    updateLocalStorage({
+      ...eventObject,
+      eventHasFood: eventHasFood,
     });
   };
 
@@ -838,16 +869,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     },
                   ]}
                   onClick={updateVisibility}
-                  label="Privat eller ikke oppført arrangement?*"
+                  label="Privat eller ikke oppført arrangement?"
                 />
               </div>
-              <div
-                className={
-                  !eventObject.eventHasCapacity
-                    ? styles.noExtraOptionPadding
-                    : ""
-                }
-              >
+              <div>
                 <RadioInput
                   optionsAndIcons={[
                     {
@@ -864,7 +889,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     },
                   ]}
                   onClick={updateHasCapacity}
-                  label="Privat eller offentlig arrangement?*"
+                  label="Skal arrangementet ha begrenset antall deltakere?"
                 />
                 {eventObject.eventHasCapacity && (
                   <NumberInput
@@ -878,6 +903,30 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     handleChange={updateEventCapacity}
                   />
                 )}
+              </div>
+              <div className={styles.eventHasFood}>
+                <RadioInput
+                  optionsAndIcons={[
+                    {
+                      id: 1,
+                      text: "Ingen matsevering",
+                      hintText:
+                        "Mat skal ikke serveres. Du får da ikke tilgang på deltakerenes matpreferanser.",
+                      icon: NoFoodIcon,
+                      active: !eventObject.eventHasFood,
+                    },
+                    {
+                      id: 2,
+                      text: "Det serveres mat",
+                      hintText:
+                        "Det blir servert mat på arrangementet. Deltakernes matpreferanser vil bli synlig i deltakerlisten.",
+                      icon: FoodIcon,
+                      active: eventObject.eventHasFood,
+                    },
+                  ]}
+                  onClick={updateHasFood}
+                  label="Skal det serveres mat på arrangementet?"
+                />
               </div>
             </div>
           </InputPage>
