@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
 import BackButton from "../../../components/BackButton";
+import ExpandableCard from "../../../components/ExpandableCard";
+import FoodPreferenceDisplay from "../../../components/FoodPreferenceDisplay";
 import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
 import SearchField from "../../../components/SearchField";
@@ -22,6 +24,7 @@ import {
   EventInvitation,
   InvitationStatus,
   User,
+  FoodPreference,
 } from "../../../types/types";
 import {
   calculateEditDistance,
@@ -53,7 +56,9 @@ const Participants = () => {
     Registration[]
   >(
     () =>
-      event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+      event?.id
+        ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
+        : false,
     fetchFromPeoplyApiJson,
   );
 
@@ -164,6 +169,20 @@ const Participants = () => {
           );
         }
 
+        const foodPreferenceMap: Map<FoodPreference, number> = going.reduce(
+          (map, { user }) => {
+            if (user.foodPreference) {
+              if (map.has(user.foodPreference)) {
+                map.set(user.foodPreference, map.get(user.foodPreference)! + 1);
+              } else {
+                map.set(user.foodPreference, 1);
+              }
+            }
+            return map;
+          },
+          new Map<FoodPreference, number>(),
+        );
+
         const filteredGoing = going
           .filter((registration) => searchFilter(registration.user))
           .sort((regA, regB) => sortByEditDistance(regA.user, regB.user));
@@ -171,13 +190,25 @@ const Participants = () => {
         return (
           <>
             {going.length > 0 && (
-              <div className={styles.searchContainer}>
-                <SearchField
-                  search={search}
-                  loading={false}
-                  setSearch={setSearch}
-                />
-              </div>
+              <>
+                {event?.hasFood && (
+                  <ExpandableCard
+                    title="Matpreferanser"
+                    className={styles.foodPreferenceDisplay}
+                  >
+                    <FoodPreferenceDisplay
+                      foodPreferenceMap={foodPreferenceMap}
+                    />
+                  </ExpandableCard>
+                )}
+                <div className={styles.searchContainer}>
+                  <SearchField
+                    search={search}
+                    loading={false}
+                    setSearch={setSearch}
+                  />
+                </div>
+              </>
             )}
             {filteredGoing.map((registration) => (
               <MemberCard

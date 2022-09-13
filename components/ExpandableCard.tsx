@@ -6,13 +6,21 @@ import PlusIcon from "./svgs/PlusIcon";
 interface ExpandableCardProps {
   title: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-const ExpandableCard = ({ title, children }: ExpandableCardProps) => {
+const ExpandableCard = ({
+  title,
+  children,
+  className,
+}: ExpandableCardProps) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <button className={styles.button} onClick={() => setOpen(!open)}>
+    <button
+      className={`${styles.button} ${className ?? ""}`}
+      onClick={() => setOpen(!open)}
+    >
       <div className={styles.titleContainer}>
         <p className={styles.title}>{title}</p>
         {open ? (

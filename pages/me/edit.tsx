@@ -12,14 +12,17 @@ import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
-import { SnackTypes } from "../../types/types";
+import { FoodPreference, SnackTypes } from "../../types/types";
+import Dropdown from "../../components/Dropdown";
 
 const EditProfile: NextPage = () => {
   const goBack = useBack();
   const [editImage, setEditImage] = useState(false);
   const { user, loading, reload } = useUser();
   const [description, setDescription] = useState("");
-  const [validEdit, setValidEdit] = useState(false);
+  const [foodPreference, setFoodPreference] = useState<FoodPreference | null>(
+    null,
+  );
   const redirectToLogin = useRedirectToLogin();
 
   const { addSnack } = useSnack();
@@ -27,19 +30,10 @@ const EditProfile: NextPage = () => {
     if (user?.description) {
       setDescription(user.description);
     }
-  }, [user]);
-
-  useEffect(() => {
-    /* we must check if it is the first time the user updates desc */
-    if (
-      !(!user?.description && description === "") &&
-      user?.description !== description
-    ) {
-      setValidEdit(true);
-    } else {
-      setValidEdit(false);
+    if (user?.foodPreference) {
+      setFoodPreference(user.foodPreference);
     }
-  }, [description, user]);
+  }, [user]);
 
   if (!loading && !user) {
     redirectToLogin();
@@ -60,7 +54,7 @@ const EditProfile: NextPage = () => {
     try {
       await fetchFromPeoplyApiJson("/users/me", {
         method: "PATCH",
-        body: JSON.stringify({ description }),
+        body: JSON.stringify({ description, foodPreference }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       reload();
@@ -69,6 +63,40 @@ const EditProfile: NextPage = () => {
       addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
     }
   };
+
+  function generateFoodPreferenceOptions() {
+    function valueToLabel(preference: FoodPreference) {
+      switch (preference) {
+        case FoodPreference.VEGAN:
+          return "Vegan 🌱";
+        case FoodPreference.VEGETARIAN:
+          return "Vegetar 🧀";
+        case FoodPreference.PESCETARIAN:
+          return "Pescetar 🐟";
+        case FoodPreference.NO_PREFERENCE:
+          return "Ingen preferanse 🤷";
+        default:
+          return "";
+      }
+    }
+
+    return [
+      ...Object.entries(FoodPreference).map(([key, value]) => {
+        return {
+          value: key,
+          label: valueToLabel(value),
+        };
+      }),
+      { value: null, label: "", isDefault: true },
+    ];
+  }
+
+  const validDescriptionEdit =
+    !(!user?.description && description === "") && // user.desc might be null if user has not edited yet - meaning we should not show confirm button
+    user?.description !== description;
+  const validFoodPreferenceEdit =
+    foodPreference && user?.foodPreference !== foodPreference;
+  const validEdit = validDescriptionEdit || validFoodPreferenceEdit;
 
   return (
     <div className={styles.container}>
@@ -90,6 +118,14 @@ const EditProfile: NextPage = () => {
         maxLength={120}
         errorMessage=""
         className={styles.description}
+      />
+      <Dropdown
+        label="Matpreferanse"
+        options={generateFoodPreferenceOptions()}
+        value={foodPreference ?? ""}
+        inputId="foodPreference"
+        setValue={setFoodPreference}
+        className={styles.foodPreference}
       />
       <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
         <Button

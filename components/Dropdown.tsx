@@ -2,7 +2,7 @@ import styles from "../.../../styles/Dropdown.module.scss";
 
 interface DropdownProps {
   label?: string;
-  options: { value: any; label: string }[];
+  options: { value: any; label: string; isDefault?: boolean }[];
   value: any;
   inputId: string;
   setValue: (value: any) => void;
@@ -36,8 +36,13 @@ export default function Dropdown({
         value={value}
         onChange={(e) => setValue(e.target.value)}
       >
-        {options.map(({ value, label }) => (
-          <option key={value} value={value}>
+        {options.map(({ value, label, isDefault }) => (
+          <option
+            key={value}
+            value={value}
+            disabled={isDefault}
+            hidden={isDefault}
+          >
             {label}
           </option>
         ))}

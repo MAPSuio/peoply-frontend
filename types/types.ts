@@ -3,7 +3,6 @@ export enum OrganizationRole {
   MEMBER = "MEMBER",
   OWNER = "OWNER",
 }
-
 export interface User {
   firstName: string;
   lastName: string;
@@ -14,6 +13,14 @@ export interface User {
   phone: string;
   description: string;
   image?: string;
+  foodPreference?: FoodPreference;
+}
+
+export enum FoodPreference {
+  NO_PREFERENCE = "NO_PREFERENCE",
+  VEGAN = "VEGAN",
+  VEGETARIAN = "VEGETARIAN",
+  PESCETARIAN = "PESCETARIAN",
 }
 
 export interface GeolocationPostitionObject {
@@ -208,6 +215,7 @@ export interface Event {
   endDate: Date | string | null;
   title: string;
   description: string;
+  hasFood: boolean;
   capacity?: number | null;
   visibility: Visibility;
   image?: string;
