@@ -45,27 +45,37 @@
   }
 }
 
-.imageContainer {
+.card {
+  background-color: $background-color-card;
   border-radius: $border-radius-regular;
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+
+  @include desktop() {
+    flex-flow: row nowrap;
+  }
+}
+
+.imageContainer {
+  border-radius: $border-radius-regular $border-radius-regular 0 0;
   box-shadow: $shadow-highlighted-event-card;
-  height: 260px;
+  height: 200px;
   max-width: $max-width-highlighted-card;
   overflow: hidden;
   position: relative;
   width: 100%;
 
   @include desktop(){
-    height: 400px;
-  }
-
-  @media screen and (max-width: 375px) {
-    height: 300px;
+    border-radius: $border-radius-regular 0 0 $border-radius-regular;
+    flex: 3 0 0;
+    height: 380px;
   }
 }
 
 .divider {
   @include divider();
-  background-color: $divider-color-highlighted-event-card;
+  background-color: $divider-color;
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
@@ -74,29 +84,14 @@
 }
 
 .dataContainer {
-  backdrop-filter: blur(15px);
-  background-color: $background-color-card-transparent;
-  border-radius: 0 0 $border-radius-regular;
-  bottom: 0;
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
   padding: $spacer-very-small-plus $spacer-small;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 60%;
 
   @include desktop() {
+    flex: 2 0 0;
     padding: $spacer-small;
-  }
-
-  @include breakPoint(800px) {
-    width: 50%;
-  }
-
-  @include breakPoint(1000px) {
-    width: 40%;
   }
 }
 
@@ -105,13 +100,14 @@
   display: -webkit-box;
   font-size: $font-size-heading-small;
   font-weight: $font-weight-bold;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   line-height: $line-height-card-title;
   margin-bottom: $spacer-very-small;
   overflow: hidden;
 
   @include desktop() {
     font-size: $font-size-heading-small-desktop;
+    -webkit-line-clamp: 2;
     margin-bottom: $spacer-very-small-plus;
   }
 }
@@ -121,14 +117,14 @@
   color: $text-color-input;
   display: -webkit-box;
   font-size: $font-size-secondary;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   line-height: $line-height-hint-text;
   margin-bottom: $spacer-very-small;
   overflow: hidden;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
-    -webkit-line-clamp: 5;
+    -webkit-line-clamp: 4;
     margin-bottom: $spacer-small;
   }
 }
@@ -181,33 +177,41 @@
   }
 }
 
-.buttonContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-
-  @include desktop() {
-    align-items: flex-end;
-  }
-}
-
 .favoriteIcon {
+  display: none;
   fill: none;
   height: 24px;
+  position: absolute;
+  right: 16px;
   stroke: $text-color-primary;
   stroke-width: 2;
   transition: all $animation-duration ease;
   width: 24px;
 
   @include desktop() {
+    bottom: $spacer-small;
+    display: block;
     height: 32px;
+    right: $spacer-small;
+    top: initial;
     width: 32px;
 
     &:hover:not(:disabled) {
       stroke: $text-color-emphasis;
       transform: scale(1.05);
     }
+  }
+}
+
+.favoriteIconGlass {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  transition: all $animation-duration ease;
+  z-index: 2;
+
+  @include desktop() {
+    display: none;
   }
 }
 
@@ -222,6 +226,14 @@
 
 .button {
   @include resetButton();
+}
+
+.primaryButton {
+  border-radius: $border-radius-inside-card;
+
+  @include desktop() {
+    align-self: flex-start;
+  }
 }
 
 .hideOverflow {

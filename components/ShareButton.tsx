@@ -2,6 +2,7 @@ import useSnack from "../hooks/useSnack";
 import { SnackTypes } from "../types/types";
 import Button, { IconPlacement } from "./Button";
 import ShareIcon from "./svgs/ShareIcon";
+import styles from "../styles/ShareButton.module.scss";
 
 interface ShareButtonProps {
   shareUrl?: string;
@@ -69,6 +70,7 @@ export function ShareButton({
       noShadow
       icon={<ShareIcon />}
       iconPlacement={iconPlacement}
+      className={styles.shareButton}
     />
   );
 }

@@ -12,6 +12,7 @@ import Avatar from "./Avatar";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import Button from "./Button";
 import Modal from "./Modal";
+import HeartIconGlass from "./HeartIconGlass";
 
 // Hooks.
 import useUser from "../hooks/useUser";
@@ -294,6 +295,7 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
             e.preventDefault();
             setUnregisterModalOpen(true);
           }}
+          className={styles.primaryButton}
         />
       );
     } else if (!openForRegistrations()) {
@@ -304,6 +306,7 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
           small
           noShadow
           disabled
+          className={styles.primaryButton}
         />
       );
     } else if (!registrationStatus) {
@@ -311,12 +314,13 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
         if (registrations < event.capacity) {
           return (
             <Button
-              type={ButtonType.HIGHLIGHTEDEVENTCARD}
+              type={ButtonType.PRIMARY}
               text="Meld deg på"
               onClick={registerForEvent}
               loading={!registeredFetched}
               small
               noShadow
+              className={styles.primaryButton}
             />
           );
         } else {
@@ -328,18 +332,20 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
               loading={!registeredFetched}
               small
               noShadow
+              className={styles.primaryButton}
             />
           );
         }
       } else if (event.capacity === null) {
         return (
           <Button
-            type={ButtonType.HIGHLIGHTEDEVENTCARD}
+            type={ButtonType.PRIMARY}
             text="Meld deg på"
             onClick={registerForEvent}
             loading={!registeredFetched}
             small
             noShadow
+            className={styles.primaryButton}
           />
         );
       }
@@ -354,12 +360,13 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
           loading={!registeredFetched}
           small
           noShadow
+          className={styles.primaryButton}
         />
       );
     } else if (registrationStatus === RegStatus.NOT_GOING) {
       return (
         <Button
-          type={ButtonType.HIGHLIGHTEDEVENTCARD}
+          type={ButtonType.PRIMARY}
           text="Meld deg på"
           onClick={(ev: MouseEvent) =>
             updateRegistrationStatus(RegStatus.GOING, ev)
@@ -367,17 +374,19 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
           loading={!registeredFetched}
           small
           noShadow
+          className={styles.primaryButton}
         />
       );
     } else if (registrationStatus === RegStatus.INVITED) {
       return (
         <Button
-          type={ButtonType.HIGHLIGHTEDEVENTCARD}
+          type={ButtonType.PRIMARY}
           text="Meld deg på"
           onClick={acceptInvitation}
           loading={!registeredFetched}
           small
           noShadow
+          className={styles.primaryButton}
         />
       );
     }
@@ -435,14 +444,39 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
       </Link>
       <Link href={`/events/${event.id}`}>
         <a>
-          <div className={styles.imageContainer}>
-            <Image
-              src={event.image ? event.image : CatImg}
-              alt="Bildet til arrangementet"
-              objectFit="cover"
-              layout="fill"
-              objectPosition="center"
+          <div className={styles.card}>
+            <button
+              className={styles.button}
+              disabled={!favoriteFetched}
+              onClick={(ev) => {
+                ev.preventDefault();
+                addFavoriteFunc();
+              }}
+            >
+              <HeartIcon
+                className={`${styles.favoriteIcon} ${
+                  favorited && styles.favorited
+                }`}
+              />
+            </button>
+            <HeartIconGlass
+              className={styles.favoriteIconGlass}
+              onClick={(ev) => {
+                ev.preventDefault();
+                addFavoriteFunc();
+              }}
+              favorited={favorited}
+              loading={!favoriteFetched}
             />
+            <div className={styles.imageContainer}>
+              <Image
+                src={event.image ? event.image : CatImg}
+                alt="Bildet til arrangementet"
+                objectFit="cover"
+                layout="fill"
+                objectPosition="center"
+              />
+            </div>
             <div className={styles.dataContainer}>
               <div className={styles.row}>
                 <h2 className={styles.eventTitle}>{event.title}</h2>
@@ -469,30 +503,14 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
                           ? "?"
                           : registrations
                           ? registrations
-                          : "?"}
+                          : "0"}
                       </span>
                       {event.capacity && `\u200A/\u200A${event.capacity}`}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className={styles.buttonContainer}>
-                {getButton()}
-                <button
-                  className={styles.button}
-                  disabled={!favoriteFetched}
-                  onClick={(ev) => {
-                    ev.preventDefault();
-                    addFavoriteFunc();
-                  }}
-                >
-                  <HeartIcon
-                    className={`${styles.favoriteIcon} ${
-                      favorited && styles.favorited
-                    }`}
-                  />
-                </button>
-              </div>
+              {getButton()}
             </div>
           </div>
         </a>
