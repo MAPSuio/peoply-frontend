@@ -219,6 +219,13 @@
   fill: $red-color;
   stroke: $red-color;
 
+  @media (prefers-reduced-motion: no-preference) {
+    animation-duration: $animation-duration-longer;
+    animation-fill-mode: both;
+    animation-name: favorited-full-motion;
+    animation-timing-function: ease;
+  }
+
   &:hover:not(:disabled) {
     stroke: $red-color;
   }
@@ -241,4 +248,27 @@
   display: -webkit-box;
   -webkit-line-clamp: 1;
   overflow: hidden;
+}
+
+/* The full motion version of the animation. */
+@keyframes favorited-full-motion {
+  0% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.2);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1.0);
+  }
 }
