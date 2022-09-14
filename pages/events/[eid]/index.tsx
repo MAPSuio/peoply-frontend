@@ -12,6 +12,7 @@ import UserCircle from "../../../components/UserCircle";
 import DateCircle from "../../../components/DateCircle";
 import PlaceCircle from "../../../components/PlaceCircle";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
+import FoodCircle from "../../../components/svgs/FoodCircle";
 import Button, { IconPlacement } from "../../../components/Button";
 import BackButtonGlass from "../../../components/BackButtonGlass";
 import HeartIconGlass from "../../../components/HeartIconGlass";
@@ -66,7 +67,6 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Event.module.scss";
-import FoodCircle from "../../../components/svgs/FoodCircle";
 
 interface EventProps {
   event: Event;
@@ -466,7 +466,13 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <span className={styles.date}>{`${eventData.startDate
                 .toString()
                 .substring(8, 10)}.`}</span>
-              <span className={styles.eventCalendarTagFlair} />
+              <div className={styles.eventCalendarTagFlair}>
+                <span className={styles.month}>
+                  {`${new Date(eventData.startDate)
+                    .toDateString()
+                    .substring(4, 7)}`}
+                </span>
+              </div>
             </div>
           </div>
           {/* <div className={styles.eventPriceTag}>Gratis</div> */}

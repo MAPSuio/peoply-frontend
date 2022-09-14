@@ -24,7 +24,6 @@
 }
 
 .imageContainer {
-  box-shadow: $shadow-event-image;
   height: $event-image-height;
   overflow: hidden;
   position: relative;
@@ -32,7 +31,9 @@
 
   @include desktop() {
     border-radius: $border-radius-regular;
+    box-shadow: $shadow-event-image;
     height: $event-image-height-desktop;
+    margin-top: $spacer-small;
     width: $event-image-width-desktop;
   }
 }
@@ -86,6 +87,10 @@
   position: absolute;
   top: 0;
   transform: translateY(-75%);
+
+  @include desktop() {
+    transform: translateY(-50%);
+  }
 }
 
 .eventCalendarTag {
@@ -101,10 +106,14 @@
 }
 
 .eventCalendarTagFlair {
+  align-items: center;
   background-color: $primary-color-200;
   border-radius: $border-radius-calendar-flair;
+  display: flex;
   height: 14px;
+  justify-content: center;
   left: 0;
+  padding: $spacer-very-small;
   position: absolute;
   top: 0;
   width: 100%;
@@ -112,6 +121,11 @@
   @include desktop() {
     height: 24px;
   }
+}
+
+.month {
+  @include uppercase();
+  color: $text-color-black;
 }
 
 .date {
@@ -148,7 +162,7 @@
   @include desktop() {
     font-size: $font-size-tertiary-desktop;
     margin-bottom: $spacer-very-small;
-    margin-top: $spacer-medium-plus;
+    margin-top: $spacer-large;
   }
 }
 
@@ -169,6 +183,10 @@
     @include desktop() {
       font-size: $font-size-heading-large-desktop;
       margin-bottom: $spacer-small;
+    }
+
+    @include breakPoint(800px) {
+      margin-bottom: 0;
     }
   }
 
@@ -295,13 +313,23 @@
   flex-direction: column;
 
   @include breakPoint(800px) {
+    align-items: flex-end;
     flex-direction: row-reverse;
     justify-content: space-between;
+    margin-bottom: $spacer-small;
   }
 }
 
 .shareButtons {
+  align-items: center;
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-flow: row nowrap;
+  gap: $spacer-small;
+  margin-bottom: $spacer-medium;
+  width: 100%;
+
+  @include breakPoint(800px) {
+    margin-bottom: 0;
+    width: initial;
+  }
 }
