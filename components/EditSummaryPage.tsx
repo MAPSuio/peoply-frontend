@@ -51,7 +51,10 @@ import {
   latherThanNowISOString,
 } from "../utils/functions";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import useUser from "../hooks/useUser";
+import { Models } from "azure-maps-rest";
+import TextInputLocationSelect from "./inputs/TextInputLocationSelect";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -77,10 +80,24 @@ interface EventObjectProps {
   eventImage?: File;
   deleteImage: boolean;
   locationName: string;
+  poiName?: string;
+  country?: string;
+  countryCode?: string;
+  countryCodeISO3?: string;
+  countrySubdivision?: string;
+  localName?: string;
+  municipality?: string;
+  postalCode?: string;
+  streetName?: string;
+  streetNumber?: string;
   freeformAddress?: string;
+  latitude?: number | string;
+  longitude?: number | string;
 }
 
 const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
+  const { ipInfo } = useUser();
+
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     title: event.title,
     description: event.description,
@@ -94,7 +111,19 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     eventImage: undefined,
     deleteImage: false,
     locationName: event.locationName,
+    poiName: event.poiName,
+    country: event.country,
+    countryCode: event.countryCode,
+    countryCodeISO3: event.countryCodeISO3,
+    countrySubdivision: event.countrySubdivision,
+    localName: event.localName,
+    municipality: event.municipality,
+    postalCode: event.postalCode,
+    streetName: event.streetName,
+    streetNumber: event.streetNumber,
     freeformAddress: event.freeformAddress,
+    latitude: event.latitude,
+    longitude: event.longitude,
   });
   /*
   When editing changes are written to this state.
@@ -102,6 +131,25 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   */
   const [tempEventObject, setTempEventObject] = useState<EventObjectProps>({
     ...eventObject,
+  });
+
+  const [location, setLocation] = useState<
+    Models.SearchFuzzyResult | undefined
+  >({
+    poi: { name: event.poiName },
+    address: {
+      country: event.country,
+      countryCode: event.countryCode,
+      countryCodeISO3: event.countryCodeISO3,
+      countrySubdivision: event.countrySubdivision,
+      localName: event.localName,
+      municipality: event.municipality,
+      postalCode: event.postalCode,
+      streetName: event.streetName,
+      streetNumber: event.streetNumber,
+      freeformAddress: event.freeformAddress,
+    },
+    position: { lat: event.latitude, lon: event.longitude },
   });
 
   const [validTitle, setValidTitle] = useState(true);
@@ -115,6 +163,26 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [changesMade, setChangesMade] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { addSnack } = useSnack();
+
+  // syncronize location state and values in tempEventObject
+  useEffect(() => {
+    setTempEventObject((e) => ({
+      ...e,
+      poiName: location?.poi?.name ?? "",
+      latitude: location?.position?.lat ?? "",
+      longitude: location?.position?.lon ?? "",
+      country: location?.address?.country ?? "",
+      countryCode: location?.address?.countryCode ?? "",
+      countryCodeISO3: location?.address?.countryCodeISO3 ?? "",
+      countrySubdivision: location?.address?.countrySubdivision ?? "",
+      localName: location?.address?.localName ?? "",
+      municipality: location?.address?.municipality ?? "",
+      postalCode: location?.address?.postalCode ?? "",
+      streetName: location?.address?.streetName ?? "",
+      streetNumber: location?.address?.streetNumber ?? "",
+      freeformAddress: location?.address?.freeformAddress ?? "",
+    }));
+  }, [location]);
 
   /*
   update the tempEventObject state with the new value of the input.
@@ -236,7 +304,6 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     setEventObject({ ...tempEventObject });
     setEditOpen(false);
   }
-  eventObject;
 
   function rejectChange() {
     setTempEventObject({ ...eventObject });
@@ -302,6 +369,21 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const imageSource = tempEventObject.eventImage
     ? URL.createObjectURL(tempEventObject.eventImage)
     : tempEventObject.eventImage;
+
+  function mapsUrl(eventData: EventObjectProps) {
+    if (navigator && eventData?.freeformAddress) {
+      const url = `https://maps.google.com?q=`;
+      let query: string;
+      if (eventData.poiName) {
+        query = encodeURIComponent(
+          `${eventData.poiName} ${eventData?.freeformAddress}`,
+        );
+      } else {
+        query = encodeURIComponent(eventData?.freeformAddress);
+      }
+      return url + query;
+    }
+  }
 
   const allValid =
     validTitle &&
@@ -497,10 +579,35 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 valid={validLocationName}
                 validate
               />
+
+              <TextInputLocationSelect
+                inputId="Location"
+                inputName="eventLocation"
+                placeholder="F.eks. Gaustadalléen 23B"
+                onLocationSelect={setLocation}
+                selectedLocation={location}
+                options={
+                  ipInfo
+                    ? {
+                        countrySet: [ipInfo.country_code],
+                        lat: ipInfo.latitude,
+                        lon: ipInfo.longitude,
+                      }
+                    : undefined
+                }
+              />
             </>
           }
         >
-          <a className={styles.placeText}>{eventObject.locationName}</a>
+          <p className={styles.titleText}>{eventObject.locationName}</p>
+          <a
+            className={styles.placeText}
+            href={mapsUrl(eventObject)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {eventObject?.freeformAddress}
+          </a>
         </SummaryCard>
 
         <SummaryCard
@@ -666,7 +773,6 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
             )}
           </div>
         </SummaryCard>
-
         <Button
           text={"Lagre endringer"}
           onClick={() => saveChanges(eventObject)}

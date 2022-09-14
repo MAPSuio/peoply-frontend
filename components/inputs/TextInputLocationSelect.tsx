@@ -9,7 +9,7 @@ import LoadingWheel from "../LoadingWheel";
 interface TextInputLocationSelectProps {
   inputId: string;
   inputName: string;
-  label: string;
+  label?: string;
   placeholder: string;
   required?: boolean;
   onLocationSelect: (location?: Models.SearchFuzzyResult) => void;
@@ -100,14 +100,16 @@ const TextInputLocationSelect = ({
 
   return (
     <div className={inputContainerStyles}>
-      <div className={styles.labelContainer}>
-        <label
-          className={`${styles.label} ${required && styles.required}`}
-          htmlFor={inputId}
-        >
-          {label}
-        </label>
-      </div>
+      {label && (
+        <div className={styles.labelContainer}>
+          <label
+            className={`${styles.label} ${required && styles.required}`}
+            htmlFor={inputId}
+          >
+            {label}
+          </label>
+        </div>
+      )}
       <div className={styles.inputAndIconContainer}>
         <input
           onFocus={() => {
@@ -149,9 +151,9 @@ const TextInputLocationSelect = ({
           <></>
         )}
       </div>
-      <div className={styles.results}>
-        {locations.length > 0 &&
-          locations.map((location) => (
+      {locations.length > 0 && (
+        <div className={styles.results}>
+          {locations.map((location) => (
             <>
               <span className={styles.divider} />
               <button
@@ -174,7 +176,8 @@ const TextInputLocationSelect = ({
               </button>
             </>
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

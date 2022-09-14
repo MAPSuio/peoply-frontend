@@ -78,6 +78,7 @@
   position: absolute;
   top: calc(64px + $spacer-very-small);
   width: 100%;
+  z-index: 1;
 
   @include desktop() {
     height: 300px;
