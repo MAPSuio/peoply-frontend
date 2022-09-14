@@ -105,6 +105,9 @@ const Home: NextPage = ({
       />
       <Header />
       <div className={styles.container}>
+        {featuredEvents && featuredEvents.length > 0 && (
+          <HighlightedEventCard event={featuredEvents[0]} />
+        )}
         {organizations && organizations.length > 0 && (
           <OrganizationSwiper
             header="Foreninger på IFI"
@@ -112,9 +115,6 @@ const Home: NextPage = ({
             organizations={organizations}
             error={organizationsError}
           />
-        )}
-        {featuredEvents && featuredEvents.length > 0 && (
-          <HighlightedEventCard event={featuredEvents[0]} />
         )}
         {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper
