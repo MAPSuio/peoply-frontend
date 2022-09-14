@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  width: 90%;
+  width: $page-width-mobile;
 }
 
 .profile {
@@ -14,26 +14,32 @@
   width: 100%;
 
   .name {
-    font-size: $font-size-primary;
-    font-weight: $font-weight-bold;
-    margin-top: $spacer-small-plus;
+    font-size: $font-size-heading-large;
+    margin-top: $spacer-small;
+
+    @include desktop() {
+      font-size: $font-size-heading-large-desktop;
+      margin-top: $spacer-small-plus;
+    }
   }
 
   .description {
     -webkit-box-orient: vertical;
-    color: $text-color-primary;
     display: -webkit-box;
     font-size: $font-size-secondary;
     -webkit-line-clamp: 5; /* number of lines to show */
     line-clamp: 5;
-    line-height: $line-height-text;
     margin-bottom: $spacer-medium-plus;
     margin-top: $spacer-small;
-    max-width: 400px;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
     white-space: pre-wrap;
-    width: 80%
+    @include normalText();
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+      max-width: $max-width-profile;
+    }
   }
 }
