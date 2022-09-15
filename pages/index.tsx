@@ -67,7 +67,6 @@ const Home: NextPage = ({
     "997875400", // Språktek
     "991739815", // mikro
     "920547230", // Toastjærn
-    "927524627", // Decidable
   ];
 
   const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id

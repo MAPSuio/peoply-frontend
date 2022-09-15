@@ -63,8 +63,8 @@ const Organizations: NextPage = () => {
               </div>
             </>
           )}
-          <Navbar />
         </div>
+        <Navbar />
       </>
     );
   }
