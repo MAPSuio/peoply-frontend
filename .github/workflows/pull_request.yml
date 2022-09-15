@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - dev
+  push:
+    branches:
+      - dev
 
 env:
   WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
