@@ -14,7 +14,6 @@
   }
 
   .imageContainer {
-    margin-top: $spacer-medium-plus;
     max-width: 500px;
     padding-right: 15px;
   }
@@ -33,14 +32,10 @@
   }
 
   .confirm {
-    bottom: 2rem;
     display: flex;
     justify-content: center;
-    position: fixed;
+    margin-top: $spacer-medium;
     width: 90%;
-    @include desktop() {
-      bottom: 4rem;
-    }
   }
 
 }

@@ -43,7 +43,7 @@ export default function ProfileMenu() {
         text="Spørsmål og kontakt"
         Icon={MailIcon}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick="/support"
+        linkOrOnClick="/faq"
       />
       <ProfileMenuItem
         text="Logg ut"

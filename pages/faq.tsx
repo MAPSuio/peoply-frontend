@@ -3,21 +3,21 @@ import ExpandableCard from "../components/ExpandableCard";
 import HeadComponent from "../components/HeadComponent";
 import useBack from "../hooks/useBack";
 
-import styles from "../styles/Support.module.scss";
+import styles from "../styles/FAQ.module.scss";
 
-interface SupportProps {
+interface FAQProps {
   baseUrl: string;
 }
 
-const Support = ({ baseUrl }: SupportProps) => {
+const FAQ = ({ baseUrl }: FAQProps) => {
   const goBack = useBack();
 
   return (
     <>
       <HeadComponent
-        title="Innstillinger"
-        description="Her kan du endre innstillinger for din bruker."
-        url={`${baseUrl}/settings`}
+        title="FAQ"
+        description="Spørsmål og kontakt"
+        url={`${baseUrl}/faq`}
       />
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -73,7 +73,7 @@ const Support = ({ baseUrl }: SupportProps) => {
                       <span className={styles.emphasis}>Telefonnummer</span>
                       <ul className={styles.reducedPadding}>
                         <li>Brukes for å identifisere deg i systemet vårt.</li>
-                        <li>Brukes for å sende deg SMS varslinger.</li>
+                        {/* <li>Brukes for å sende deg SMS varslinger.</li> */}
                       </ul>
                     </li>
                     <li className={styles.marginBottomVerySmall}>
@@ -167,62 +167,10 @@ const Support = ({ baseUrl }: SupportProps) => {
             <div className={styles.section}>
               <h2 className={styles.sectionHeader}>Arrangementer</h2>
               <div className={styles.cardContainer}>
-                <ExpandableCard title="Hvordan melde seg på et arrangement?">
-                  <p>
-                    For å melde deg på et arrangement må du være logget inn i
-                    appen. Hvordan dette gjøres, beskrives under kategorien
-                    “innlogging”.
-                  </p>
-                  <p>
-                    Etter du har logget inn kan du navigere til et arrangement i
-                    appen. Etter du har kommet inn på arrangementsiden kan du
-                    enkelt trykke på “Meld deg på arrangementet”.
-                  </p>
-                </ExpandableCard>
                 <ExpandableCard title="Kan andre se at jeg har meldt meg på et gitt arrangement?">
                   <p>
-                    De du valgt å være venner med kan se hvilke arrangementer du
-                    har meldt deg på. Hvis du ønsker å endre på dette, kan du
-                    enkelt skru det av i innstillinger, under kategorien
-                    “personvern og sikkerhet”.
+                    Kun arrangøren kan se at du er deltaker på et arrangement.
                   </p>
-                </ExpandableCard>
-                <ExpandableCard title="Hva skjer hvis jeg er påmeldt et arrangement og ikke møter?">
-                  <p>
-                    Hva som skjer hvis du ikke møter opp på et arrangement du er
-                    påmeldt, vil være avhengig av hvilken type arrangement det
-                    er, og hva arrangøren har bestemt for det arrangementet.
-                  </p>
-                  <p>
-                    Arrangøren vil ha mulighet dele ut en form for “straff” ved
-                    manglende oppmøte. Hva slags straff dette typisk kan være,
-                    er listet nedenfor:
-                  </p>
-                  <ul>
-                    <li className={styles.marginBottomVerySmall}>
-                      <span className={styles.emphasis}>
-                        Du vil være sperret fra å delta på arrangementer fra den
-                        arrangøren i en viss periode.
-                      </span>
-                    </li>
-                    <li className={styles.marginBottomVerySmall}>
-                      <span className={styles.emphasis}>
-                        Du vil måtte betale en pengestraff.
-                      </span>
-                    </li>
-                    <li className={styles.marginBottomVerySmall}>
-                      <span className={styles.emphasis}>
-                        Du vil ikke ha mulighet for å delta på noen
-                        arrangementer i appen i en periode.
-                      </span>
-                      <ul className={styles.reducedPadding}>
-                        <li>
-                          Dette vil bare være aktuelt hvis vi mistenker eller
-                          oppdager grovt misbruk.
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
                 </ExpandableCard>
                 <ExpandableCard title="Hva skjer hvis det ikke er noen ledige plasser på et arrangement?">
                   <p>
@@ -234,43 +182,6 @@ const Support = ({ baseUrl }: SupportProps) => {
                     Hvis du velger å melde deg på arrangementet allikevel, vil
                     du automatisk bli satt på en venteliste. Skulle noen andre
                     melde seg av, vil du rykke opp i køen og evt. få en plass.
-                    Hvis du får en plass, vil du få beskjed om dette på SMS.
-                  </p>
-                </ExpandableCard>
-              </div>
-            </div>
-            <div className={styles.section}>
-              <h2 className={styles.sectionHeader}>Betaling</h2>
-              <div className={styles.cardContainer}>
-                <ExpandableCard title="Hvilke betalingsmetoder støttes i appen?">
-                  <p>
-                    Peoply støtter bare Vipps betaling. Vi har valgt dette som
-                    betalingsmetode fordi det er trygt, enkelt og raskt for deg
-                    som bruker.
-                  </p>
-                  <p>
-                    Vi antar at alle brukere har Vipps, dersom dette er eneste
-                    godkjente innloggingsmetode.
-                  </p>
-                </ExpandableCard>
-                <ExpandableCard title="Hvordan håndteres refusjoner ved avlyste arrangementer?">
-                  <p>
-                    Hvis det skulle være aktuelt med refusjon på et avlyst
-                    betalt arrangement, vil du automatisk få tilbake summen du
-                    betalte for å delta på arrangementet.
-                  </p>
-                  <p>Dette vil typisk skje innen 14 arbeidsdager.</p>
-                </ExpandableCard>
-                <ExpandableCard title="Er det gratis for meg som arrangør å ta betaling gjennom appen deres?">
-                  <p>
-                    Det er så og si gratis for deg som arrangør å la oss
-                    håndtere betalinger.
-                  </p>
-                  <p>
-                    Siden Vipps tar en liten prosentandel av alle betalinger,
-                    har vi valgt å sette betalingsavgiften til 5%. Dette gjør at
-                    Peoply får 2% fortjeneste på alle betalte arrangementer. En
-                    ekstremt rettferdig sum, ifølge oss selv 😉
                   </p>
                 </ExpandableCard>
               </div>
@@ -281,8 +192,8 @@ const Support = ({ baseUrl }: SupportProps) => {
                 <p className={styles.contactText}>
                   Har du har et problem med appen, et spørsmål som ikke er
                   besvart ovenfor, eller et forslag til en potensiell forbedring
-                  av tjenesten? Ta gjerne kontakt med oss på{" "}
-                  <a className={styles.emailLink}>peoply@decidable.no</a>.
+                  av tjenesten? Ta gjerne kontakt med oss på ved hjelp av
+                  kontaktinformasjonen nedenfor.
                 </p>
               </div>
             </div>
@@ -313,4 +224,4 @@ export const getStaticProps = async () => {
   };
 };
 
-export default Support;
+export default FAQ;
