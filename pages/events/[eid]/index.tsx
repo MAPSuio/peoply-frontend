@@ -506,8 +506,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
                         <Link
                           key={a.arranger.id}
                           href={`/orgs/${a.arranger.organization.id}`}
+                          passHref
                         >
-                          {a.arranger.organization?.name}
+                          <a>
+                            <div className={styles.orgLink}>
+                              {a.arranger.organization?.name}
+                              {a.arranger.organization?.orgNr && (
+                                <SmallCheckCircle purple verySmall />
+                              )}
+                            </div>
+                          </a>
                         </Link>
                       );
                     }
