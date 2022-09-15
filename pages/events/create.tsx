@@ -65,6 +65,14 @@ import { Models } from "azure-maps-rest";
 import styles from "../../styles/CreateEvent.module.scss";
 import NoFoodIcon from "../../components/svgs/NoFoodIcon";
 import FoodIcon from "../../components/svgs/FoodIcon";
+import {
+  eventDescriptionMaxLength,
+  eventDescriptionMinLength,
+  eventLocationNameMaxLength,
+  eventLocationNameMinLength,
+  eventTitleMaxLength,
+  eventTitleMinLength,
+} from "../../utils/constants";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -448,7 +456,41 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   /* TODO: Maybe move this logic into the `allEventInputsValid` function instead. */
   const [eventTitleValid, setEventTitleValid] = useState(false);
   const [eventDescriptionValid, setEventDescriptionValid] = useState(false);
+  const [eventActiveCategoriesValid, setEventActiveCategoriesValid] =
+    useState(false);
   const [eventAddressValid, setEventAddressValid] = useState(false);
+
+  /* validate fields to fill progressbar on refresh */
+  /* title */
+  const { eventTitle, eventDescription, eventActiveCategories } = eventObject;
+  if (
+    !eventTitleValid &&
+    eventTitle.length >= eventTitleMinLength &&
+    eventTitle.length <= eventTitleMaxLength
+  ) {
+    setEventTitleValid(true);
+  }
+
+  /* address */
+  if (
+    !eventAddressValid &&
+    eventObject.eventLocationName.length >= eventLocationNameMinLength &&
+    eventObject.eventLocationName.length <= eventLocationNameMaxLength
+  ) {
+    setEventAddressValid(true);
+  }
+
+  /* description */
+  if (
+    !eventDescriptionValid &&
+    eventDescription.length > eventDescriptionMinLength &&
+    eventDescription.length < eventDescriptionMaxLength &&
+    eventActiveCategories.length
+  ) {
+    setEventDescriptionValid(true);
+    setEventActiveCategoriesValid(true);
+  }
+
   const eventDateStartValid = dateInputStartValid(eventObject.eventDateStart);
   const eventTimeStartValid = timeInputStartValid(
     eventObject.eventTimeStart,
@@ -469,9 +511,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       : !eventObject.eventTimeEnd && !eventObject.eventDateEnd // if both are not there
       ? true
       : false;
-
-  const [eventActiveCategoriesValid, setEventActiveCategoriesValid] =
-    useState(false);
 
   const eventCapacityValid = radioInputValid(
     eventObject.eventHasCapacity,
@@ -594,9 +633,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 inputName="eventTitle"
                 label="Tittel på arrangementet*"
                 placeholder="F.eks. Peoply launch party"
-                maxLength={100}
-                minLength={3}
-                errorMessage={`Tittelen må være mellom ${3} og ${100} tegn`}
+                maxLength={eventTitleMaxLength}
+                minLength={eventTitleMinLength}
+                errorMessage={`Tittelen må være mellom ${eventTitleMinLength} og ${eventTitleMaxLength} tegn`}
                 required
                 handleChange={updateEventTitle}
                 setValid={setEventTitleValid}
@@ -727,8 +766,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 inputName="eventLocationName"
                 label="Kallenavn på stedet*"
                 placeholder="F.eks. Bliss"
-                maxLength={100}
-                minLength={1}
+                maxLength={eventLocationNameMaxLength}
+                minLength={eventLocationNameMinLength}
                 errorMessage="Du må oppgi et kallenavn på stedet."
                 required
                 handleChange={updateEventLocationName}
@@ -782,7 +821,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   rows={12}
                   label="Beskrivelse av arrangementet*"
                   placeholder="F.eks. Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
-                  maxLength={2500}
+                  maxLength={eventDescriptionMaxLength}
                   errorMessage="Beskrivelsen kan ikke være tom"
                   required
                   handleChange={updateEventDescription}
