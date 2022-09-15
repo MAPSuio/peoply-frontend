@@ -4,17 +4,18 @@
   display: flex;
   justify-content: space-between;
   padding: $spacer-very-small $spacer-small;
-  width: 100%; 
+  width: 100%;
 
   > a {
     &:first-child {
       min-width: max-content;
+      width: 100%;
     }
     &:not(:first-child) {
       align-items: center;
       display: flex;
       justify-content: flex-end;
-      width: 100%;
+      padding: 1rem;
     }
   }
 
