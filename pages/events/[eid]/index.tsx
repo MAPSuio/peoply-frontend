@@ -13,7 +13,7 @@ import DateCircle from "../../../components/DateCircle";
 import PlaceCircle from "../../../components/PlaceCircle";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import FoodCircle from "../../../components/svgs/FoodCircle";
-import Button, { IconPlacement } from "../../../components/Button";
+import { IconPlacement } from "../../../components/Button";
 import BackButtonGlass from "../../../components/BackButtonGlass";
 import HeartIconGlass from "../../../components/HeartIconGlass";
 import HeadComponent from "../../../components/HeadComponent";
@@ -21,7 +21,6 @@ import EditIconGlass from "../../../components/EditIconGlass";
 import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
-import Modal from "../../../components/Modal";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -36,16 +35,10 @@ import {
   getEventData,
   getTopXEvents,
   getUserFavorite,
-  getUserRegistration,
-  registerUser,
   removeFavorite,
-  updateRegistrationUser,
 } from "../../../services/events";
 
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../../../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
 import { formatDateRange, formatTimeRange } from "../../../utils/functions";
@@ -54,7 +47,6 @@ import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import {
   ButtonType,
   Event,
-  InvitationStatus,
   OrganizationRole,
   Registration,
   RegStatus,
@@ -67,6 +59,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Event.module.scss";
+import JoinButton from "../../../components/JoinButton";
 
 interface EventProps {
   event: Event;
@@ -78,12 +71,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const goBack = useBack();
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
-  const [registrationStatus, setRegistrationStatus] = useState<RegStatus>();
-  const [registeredFetched, setRegisteredFetched] = useState(false);
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
   const [mapsUrl, setMapsUrl] = useState<string>();
-  const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
 
   const { data: eventData, mutate: updateEvent } = useSWR<Event>(
     `/events/${event.urlId}`,
@@ -126,38 +116,12 @@ const Event = ({ event, baseUrl }: EventProps) => {
       }
     };
 
-    const getRegisteredStatus = async () => {
-      if (user && eventData) {
-        const registration = await getUserRegistration(user.id, eventData.id);
-        setRegisteredFetched(true);
-
-        if (registration === null) {
-          return;
-        }
-        setRegistrationStatus(registration.regStatus);
-      } else if (!loadingUser && !user && eventData) {
-        setRegisteredFetched(true);
-      }
-    };
-
-    getRegisteredStatus();
     getFavoriteStatus();
   }, [eventData, user, loadingUser]);
 
   if (!eventData) {
     return <div>Loading...</div>;
   }
-
-  // Check if the event is open for registrations.
-  const openForRegistrations = () => {
-    const endDate = eventData.endDate && new Date(eventData.endDate);
-    const now = new Date();
-
-    if (endDate && now > endDate) {
-      return false;
-    }
-    return true;
-  };
 
   const addFavoriteFunc = async () => {
     if (user) {
@@ -179,189 +143,8 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
 
-  const registerForEvent = async () => {
-    if (user) {
-      if (openForRegistrations()) {
-        /* force user to update food prefs if food is served */
-        if (event.hasFood && !user.foodPreference) {
-          return setFoodPreferenceModalOpen(true);
-        }
-        let newRegistration: Registration | undefined;
-        try {
-          newRegistration = await registerUser(
-            user.id,
-            eventData.id,
-            RegStatus.GOING,
-          );
-        } catch (e) {
-          newRegistration = undefined;
-        }
-
-        if (newRegistration) {
-          setRegistrationStatus(newRegistration.regStatus);
-          updateEvent();
-          if (newRegistration.regStatus === RegStatus.GOING) {
-            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-          } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
-            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-          }
-        } else {
-          addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
-        }
-        return newRegistration;
-      } else {
-        addSnack("Dette arrangementet er ferdig.", SnackTypes.ERROR);
-      }
-    } else {
-      redirectToLogin();
-    }
-  };
-
   const editEventFunc = () => {
     router.push(router.asPath + "/edit");
-  };
-
-  const updateRegistrationStatus = async (status: RegStatus) => {
-    if (user) {
-      /* force user to update food prefs if food is served */
-      if (status === RegStatus.GOING && event.hasFood && !user.foodPreference) {
-        return setFoodPreferenceModalOpen(true);
-      }
-      let success = undefined;
-      try {
-        success = (await updateRegistrationUser(
-          user.id,
-          eventData.id,
-          status,
-        )) as Registration;
-      } catch (e) {}
-      if (success) {
-        setRegistrationStatus(status);
-        updateEvent();
-        if (success.regStatus === RegStatus.GOING) {
-          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.WAITLISTED) {
-          addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.NOT_GOING) {
-          addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
-        }
-      } else {
-        addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
-      }
-      return success;
-    } else {
-      redirectToLogin();
-    }
-  };
-  async function acceptInvitation() {
-    /* force user to update food prefs if food is served */
-    if (event.hasFood && !user?.foodPreference) {
-      return setFoodPreferenceModalOpen(true);
-    }
-    try {
-      await fetchFromPeoplyApi(`/events/${eventData?.id}/invitations`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          status: InvitationStatus.ACCEPTED,
-        }),
-      });
-      setRegistrationStatus(RegStatus.GOING);
-      updateEvent();
-      addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-    } catch (e) {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  }
-
-  // Get the appropriate button for the current user's registration status and event date.
-  const getButton = () => {
-    if (!openForRegistrations()) {
-      return (
-        <Button
-          text="Dette arrangementet er ferdig"
-          className={`${styles.primaryButton} ${styles.dangerButton}`}
-          loading={!registeredFetched}
-          disabled
-        />
-      );
-    }
-
-    if (registrationStatus === RegStatus.GOING) {
-      return (
-        <Button
-          type={ButtonType.DANGER}
-          text="Meld deg av arrangementet"
-          className={`${styles.primaryButton} ${styles.dangerButton}`}
-          onClick={() => updateRegistrationStatus(RegStatus.NOT_GOING)}
-          loading={!registeredFetched}
-        />
-      );
-    } else if (!registrationStatus) {
-      if (eventData?.registrations && eventData?.capacity) {
-        if (
-          eventData.registrations?.filter(
-            (r) => r.regStatus === RegStatus.GOING,
-          ).length < eventData?.capacity
-        ) {
-          return (
-            <Button
-              text="Meld deg på arrangementet"
-              className={styles.primaryButton}
-              onClick={registerForEvent}
-              loading={!registeredFetched}
-            />
-          );
-        } else {
-          return (
-            <Button
-              type={ButtonType.WARNING}
-              text="Meld deg på ventliste"
-              className={styles.primaryButton}
-              onClick={registerForEvent}
-              loading={!registeredFetched}
-            />
-          );
-        }
-      } else if (eventData && eventData?.capacity === null) {
-        return (
-          <Button
-            text="Meld deg på arrangementet"
-            className={styles.primaryButton}
-            onClick={registerForEvent}
-            loading={!registeredFetched}
-          />
-        );
-      }
-    } else if (registrationStatus === RegStatus.WAITLISTED) {
-      return (
-        <Button
-          type={ButtonType.DANGER}
-          text="Avmeld deg fra venteliste"
-          className={styles.primaryButton}
-          onClick={() => updateRegistrationStatus(RegStatus.NOT_GOING)}
-          loading={!registeredFetched}
-        />
-      );
-    } else if (registrationStatus === RegStatus.NOT_GOING) {
-      return (
-        <Button
-          text="Meld deg på arrangementet"
-          className={styles.primaryButton}
-          onClick={() => updateRegistrationStatus(RegStatus.GOING)}
-          loading={!registeredFetched}
-        />
-      );
-    } else if (registrationStatus === RegStatus.INVITED) {
-      return (
-        <Button
-          text="Meld deg på arrangementet"
-          className={styles.primaryButton}
-          onClick={acceptInvitation}
-          loading={!registeredFetched}
-        />
-      );
-    }
   };
 
   const getArrangerImageOrIcon = () => {
@@ -687,20 +470,13 @@ const Event = ({ event, baseUrl }: EventProps) => {
               ))}
             </div>
           </div>
-          {getButton()}
+          <JoinButton
+            event={eventData}
+            updateOnChange={updateEvent}
+            className={styles.primaryButton}
+          />
         </div>
       </div>
-      {foodPreferenceModalOpen && (
-        <Modal
-          label={`Arrangementet har matservering`}
-          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
-          buttonText={`Rediger matpreferanser`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={() => router.push("/me/edit")}
-          secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-          closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-        />
-      )}
     </>
   );
 };

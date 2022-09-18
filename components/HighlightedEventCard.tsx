@@ -2,7 +2,6 @@
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 // React.
 import { useEffect, useState } from "react";
@@ -10,8 +9,6 @@ import { useEffect, useState } from "react";
 // Components.
 import Avatar from "./Avatar";
 import CalendarIconCard from "./svgs/CalendarIconCard";
-import Button from "./Button";
-import Modal from "./Modal";
 import HeartIconGlass from "./HeartIconGlass";
 
 // Hooks.
@@ -21,28 +18,15 @@ import useRedirectToLogin from "../hooks/useRedirectToLogin";
 
 // Services.
 import { formatDateRange, formatTimeRange } from "../utils/functions";
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../services/fetchers";
+import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import {
   addFavorite,
   getUserFavorite,
-  getUserRegistration,
-  registerUser,
   removeFavorite,
-  updateRegistrationUser,
 } from "../services/events";
 
 // Types.
-import {
-  ButtonType,
-  Event,
-  InvitationStatus,
-  Registration,
-  RegStatus,
-  SnackTypes,
-} from "../types/types";
+import { Event, RegStatus, SnackTypes } from "../types/types";
 
 // Assets.
 import UsersIconCard from "./svgs/UsersIconCard";
@@ -52,6 +36,7 @@ import CatImg from "../assets/images/cat.jpg";
 
 // Styles.
 import styles from "../styles/HighlightedEventCard.module.scss";
+import JoinButton from "./JoinButton";
 
 interface HighlightedEventCardProps {
   event: Event;
@@ -61,14 +46,9 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
   const { addSnack } = useSnack();
   const { user, loading: loadingUser } = useUser();
   const redirectToLogin = useRedirectToLogin();
-  const router = useRouter();
 
   const [favorited, setFavorited] = useState(false);
   const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
-  const [registrationStatus, setRegistrationStatus] = useState<RegStatus>();
-  const [registeredFetched, setRegisteredFetched] = useState(false);
-  const [unregisterModalOpen, setUnregisterModalOpen] = useState(false);
-  const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
 
   const {
     data: registrations,
@@ -131,21 +111,6 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
       }
     };
 
-    const getRegisteredStatus = async () => {
-      if (user && event) {
-        const registration = await getUserRegistration(user.id, event.id);
-        setRegisteredFetched(true);
-
-        if (registration === null) {
-          return;
-        }
-        setRegistrationStatus(registration.regStatus);
-      } else if (!loadingUser && !user && event) {
-        setRegisteredFetched(true);
-      }
-    };
-
-    getRegisteredStatus();
     getFavoriteStatus();
   }, [event, user, loadingUser]);
 
@@ -173,225 +138,6 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
     }
   };
 
-  // Check if the event is open for registrations.
-  const openForRegistrations = () => {
-    const endDate = event.endDate && new Date(event.endDate);
-    const now = new Date();
-
-    if (endDate && now > endDate) {
-      return false;
-    }
-    return true;
-  };
-
-  const registerForEvent = async (ev: MouseEvent) => {
-    ev.preventDefault();
-    if (user) {
-      if (openForRegistrations()) {
-        if (event.hasFood && !user.foodPreference) {
-          return setFoodPreferenceModalOpen(true);
-        }
-
-        let newRegistration: Registration | undefined;
-        try {
-          newRegistration = await registerUser(
-            user.id,
-            event.id,
-            RegStatus.GOING,
-          );
-        } catch (error) {
-          newRegistration = undefined;
-        }
-
-        if (newRegistration) {
-          setRegistrationStatus(newRegistration.regStatus);
-          updateRegistrations();
-          if (newRegistration.regStatus === RegStatus.GOING) {
-            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-          } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
-            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-          }
-        } else {
-          addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
-        }
-        return newRegistration;
-      } else {
-        addSnack("Dette arrangementet er ferdig.", SnackTypes.ERROR);
-      }
-    } else {
-      redirectToLogin();
-    }
-  };
-
-  const updateRegistrationStatus = async (
-    status: RegStatus,
-    ev?: MouseEvent,
-  ) => {
-    if (ev) {
-      ev.preventDefault();
-    }
-
-    if (user) {
-      if (status === RegStatus.GOING && event.hasFood && !user.foodPreference) {
-        return setFoodPreferenceModalOpen(true);
-      }
-      let success = undefined;
-      try {
-        success = (await updateRegistrationUser(
-          user.id,
-          event.id,
-          status,
-        )) as Registration;
-      } catch (error) {}
-      if (success) {
-        setRegistrationStatus(status);
-        updateRegistrations();
-        if (success.regStatus === RegStatus.GOING) {
-          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.WAITLISTED) {
-          addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.NOT_GOING) {
-          addSnack("Du er nå meldt av arrangementet");
-        }
-      } else {
-        addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
-      }
-      return success;
-    } else {
-      redirectToLogin();
-    }
-  };
-
-  async function acceptInvitation() {
-    if (event.hasFood && !user?.foodPreference) {
-      return setFoodPreferenceModalOpen(true);
-    }
-    try {
-      await fetchFromPeoplyApi(`/events/${event.id}/invitations`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          status: InvitationStatus.ACCEPTED,
-        }),
-      });
-      setRegistrationStatus(RegStatus.GOING);
-      updateRegistrations();
-      addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-    } catch (error) {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  }
-
-  const getButton = () => {
-    if (registrationStatus === RegStatus.GOING) {
-      return (
-        <Button
-          type={ButtonType.REGISTERED}
-          text="Du er påmeldt"
-          loading={!registeredFetched}
-          small
-          noShadow
-          onClick={(e) => {
-            e.preventDefault();
-            setUnregisterModalOpen(true);
-          }}
-          className={styles.primaryButton}
-        />
-      );
-    } else if (!openForRegistrations()) {
-      return (
-        <Button
-          text="Ferdig"
-          loading={!registeredFetched}
-          small
-          noShadow
-          disabled
-          className={styles.primaryButton}
-        />
-      );
-    } else if (!registrationStatus) {
-      if (registrations && event.capacity) {
-        if (registrations < event.capacity) {
-          return (
-            <Button
-              type={ButtonType.PRIMARY}
-              text="Meld deg på"
-              onClick={registerForEvent}
-              loading={!registeredFetched}
-              small
-              noShadow
-              className={styles.primaryButton}
-            />
-          );
-        } else {
-          return (
-            <Button
-              type={ButtonType.WARNING}
-              text="Meld deg på venteliste"
-              onClick={registerForEvent}
-              loading={!registeredFetched}
-              small
-              noShadow
-              className={styles.primaryButton}
-            />
-          );
-        }
-      } else if (event.capacity === null) {
-        return (
-          <Button
-            type={ButtonType.PRIMARY}
-            text="Meld deg på"
-            onClick={registerForEvent}
-            loading={!registeredFetched}
-            small
-            noShadow
-            className={styles.primaryButton}
-          />
-        );
-      }
-    } else if (registrationStatus === RegStatus.WAITLISTED) {
-      return (
-        <Button
-          type={ButtonType.DANGER}
-          text="Meld deg av venteliste"
-          onClick={(ev: MouseEvent) =>
-            updateRegistrationStatus(RegStatus.NOT_GOING, ev)
-          }
-          loading={!registeredFetched}
-          small
-          noShadow
-          className={styles.primaryButton}
-        />
-      );
-    } else if (registrationStatus === RegStatus.NOT_GOING) {
-      return (
-        <Button
-          type={ButtonType.PRIMARY}
-          text="Meld deg på"
-          onClick={(ev: MouseEvent) =>
-            updateRegistrationStatus(RegStatus.GOING, ev)
-          }
-          loading={!registeredFetched}
-          small
-          noShadow
-          className={styles.primaryButton}
-        />
-      );
-    } else if (registrationStatus === RegStatus.INVITED) {
-      return (
-        <Button
-          type={ButtonType.PRIMARY}
-          text="Meld deg på"
-          onClick={acceptInvitation}
-          loading={!registeredFetched}
-          small
-          noShadow
-          className={styles.primaryButton}
-        />
-      );
-    }
-  };
-
   const dateString = formatDateRange(
     new Date(event.startDate),
     event.endDate ? new Date(event.endDate) : null,
@@ -403,32 +149,6 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
 
   return (
     <div className={styles.container}>
-      {unregisterModalOpen && (
-        <Modal
-          label="Meld deg av arrangementet"
-          description={`Er du sikker på at du vil melde deg av ${event.title}?`}
-          buttonText="Meld deg av"
-          secondaryButtonText="Forbli påmeldt"
-          danger
-          buttonOnClick={() => {
-            updateRegistrationStatus(RegStatus.NOT_GOING);
-            setUnregisterModalOpen(false);
-          }}
-          secondaryButtonOnClick={() => setUnregisterModalOpen(false)}
-          closeButtonOnClick={() => setUnregisterModalOpen(false)}
-        />
-      )}
-      {foodPreferenceModalOpen && (
-        <Modal
-          label={`Arrangementet har matservering`}
-          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
-          buttonText={`Rediger matpreferanser`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={() => router.push("/me/edit")}
-          secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-          closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-        />
-      )}
       <Link
         href={
           arranger?.org
@@ -442,7 +162,7 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
           </div>
         </a>
       </Link>
-      <Link href={`/events/${event.id}`}>
+      <Link href={`/events/${event.urlId}`}>
         <a>
           <div className={styles.card}>
             <button
@@ -510,7 +230,21 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
                   </div>
                 </div>
               </div>
-              {getButton()}
+              <JoinButton
+                event={event}
+                countdownText="Åpner om"
+                updateOnChange={updateRegistrations}
+                joinText="Meld deg på"
+                joinedText="Meld deg av"
+                joinWaitlistText="Stå på venteliste"
+                joinedWaitlistText="Fjern fra venteliste"
+                eventFinishedText="Arrangementet er ferdig"
+                regClosedText="Påmelding er stengt"
+                useUnregisterModal
+                small
+                noShadow
+                className={styles.primaryButton}
+              />
             </div>
           </div>
         </a>
