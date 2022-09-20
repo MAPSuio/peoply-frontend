@@ -172,11 +172,6 @@ const EventSwiper = ({
         spaceBetween={16}
         slidesPerView={"auto"}
         freeMode={{ enabled: true }}
-        breakpoints={{
-          600: {
-            spaceBetween: 32,
-          },
-        }}
       >
         {events?.map((event: any) => (
           <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
@@ -223,11 +218,6 @@ const OrganizationSwiper = ({
         spaceBetween={16}
         slidesPerView={"auto"}
         freeMode={{ enabled: true }}
-        breakpoints={{
-          600: {
-            spaceBetween: 32,
-          },
-        }}
       >
         {organizations?.map((organization: Organization) => (
           <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>

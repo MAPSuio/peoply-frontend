@@ -372,3 +372,8 @@ export enum Alignment {
   CENTER,
   RIGHT,
 }
+
+export enum EventDateFormat {
+  SHORT,
+  LONG,
+}
