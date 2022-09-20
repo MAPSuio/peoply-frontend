@@ -433,7 +433,11 @@ function timeInputEndValid(
 }
 
 /* Check if isoString1 is later than isoString2. */
-function laterThan(isoString1: string, isoString2: string): boolean {
+function laterThan(isoString1?: string, isoString2?: string): boolean {
+  if (!isoString1 || !isoString2) {
+    return true;
+  }
+
   const date1 = new Date(isoString1);
   const date2 = new Date(isoString2);
 

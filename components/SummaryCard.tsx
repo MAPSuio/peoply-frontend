@@ -67,7 +67,7 @@ const SummaryCard = ({
               setEditClosed(true);
               onCross();
             }}
-            style={!valid ? `${styles.marginTopSmall}` : ""}
+            style={styles.marginTopSmall}
           ></AcceptRejectButton>
         </>
       )}
