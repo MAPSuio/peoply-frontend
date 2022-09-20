@@ -95,6 +95,27 @@ const SummaryPage = ({
     formData.set("startDate", startDate);
     endDate && formData.append("endDate", endDate);
 
+    /* registration open and close */
+    const {
+      eventHasRegEnd,
+      eventHasRegStart,
+      eventRegStartDate,
+      eventRegStartTime,
+      eventRegEndDate,
+      eventRegEndTime,
+    } = eventObject;
+    const regStart =
+      eventHasRegStart && eventRegStartDate && eventRegStartTime
+        ? formatDateAndTime(eventRegStartDate, eventRegStartTime)
+        : null;
+    const regEnd =
+      eventHasRegEnd && eventRegEndDate && eventRegEndTime
+        ? formatDateAndTime(eventRegEndDate, eventRegEndTime)
+        : null;
+
+    regStart && formData.set("regStart", regStart);
+    regEnd && formData.set("regEnd", regEnd);
+
     /* Append title and description. */
     formData.set("title", eventObject.eventTitle);
     formData.set("arrangerId", eventObject.eventArrangerId);
@@ -261,9 +282,27 @@ const SummaryPage = ({
             {`${dateStringStart}, ${eventObject.eventTimeStart}`}
           </p>
           {eventObject.eventHasDateEnd && (
-            <p className={styles.dateText}>
+            <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
               <span className={styles.textColorPrimary}>Slutt: </span>
               {`${dateStringEnd}, ${eventObject.eventTimeEnd}`}
+            </p>
+          )}
+          {eventObject.eventHasRegStart && (
+            <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
+              <span className={styles.textColorPrimary}>Påmelding åpner: </span>
+              {`${getDateString(eventObject.eventRegStartDate)}, ${
+                eventObject.eventRegStartTime
+              }`}
+            </p>
+          )}
+          {eventObject.eventHasRegEnd && (
+            <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
+              <span className={styles.textColorPrimary}>
+                Påmelding stenger:{" "}
+              </span>
+              {`${getDateString(eventObject.eventRegEndDate)}, ${
+                eventObject.eventRegEndTime
+              }`}
             </p>
           )}
         </SummaryCard>

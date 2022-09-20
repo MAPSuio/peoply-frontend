@@ -73,6 +73,12 @@ import {
   eventTitleMaxLength,
   eventTitleMinLength,
 } from "../../utils/constants";
+import {
+  isEventRegEndDateValid,
+  isEventRegEndTimeValid,
+  isEventRegStartDateValid,
+  isEventRegStartTimeValid,
+} from "../../utils/event";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -80,6 +86,12 @@ export interface EventObjectProps {
   eventDescription: string;
   eventLocationName: string;
   eventLocation?: Models.SearchFuzzyResult;
+  eventRegStartDate: string;
+  eventRegStartTime: string;
+  eventRegEndDate: string;
+  eventRegEndTime: string;
+  eventHasRegStart: boolean;
+  eventHasRegEnd: boolean;
   eventDateStart: string;
   eventDateEnd: string | null;
   eventHasDateEnd: boolean;
@@ -115,6 +127,12 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventArrangerId: user?.arrangerId ?? "",
     eventDescription: "",
     eventLocationName: "",
+    eventRegStartDate: "",
+    eventRegStartTime: "",
+    eventRegEndDate: "",
+    eventRegEndTime: "",
+    eventHasRegStart: false,
+    eventHasRegEnd: false,
     eventDateStart: "",
     eventDateEnd: null,
     eventHasDateEnd: false,
@@ -271,6 +289,72 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     updateLocalStorage({
       ...eventObject,
       eventTimeEnd: e.target.value,
+    });
+  };
+
+  const seteventHasRegStart = (value: boolean) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventHasRegStart: value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventHasRegStart: value,
+    });
+  };
+
+  const updateEventRegStartDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventRegStartDate: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventRegStartDate: e.target.value,
+    });
+  };
+
+  const updateEventRegStartTime = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventRegStartTime: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventRegStartTime: e.target.value,
+    });
+  };
+
+  const seteventHasRegEnd = (value: boolean) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventHasRegEnd: value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventHasRegEnd: value,
+    });
+  };
+
+  const updateEventRegEndDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventRegEndDate: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventRegEndDate: e.target.value,
+    });
+  };
+
+  const updateEventRegEndTime = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventRegEndTime: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventRegEndTime: e.target.value,
     });
   };
 
@@ -519,35 +603,64 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     10000,
   );
 
+  const {
+    eventRegStartDate,
+    eventRegStartTime,
+    eventRegEndDate,
+    eventRegEndTime,
+    eventDateStart,
+    eventTimeStart,
+    eventDateEnd,
+    eventTimeEnd,
+    eventHasRegStart,
+    eventHasRegEnd,
+  } = eventObject;
+  const regStartDateValid = eventHasRegStart
+    ? isEventRegStartDateValid(eventRegStartDate, eventDateStart)
+    : true;
+  const regStartTimeValid = eventHasRegStart
+    ? isEventRegStartTimeValid(
+        eventRegStartDate,
+        eventRegStartTime,
+        eventDateStart,
+        eventTimeStart,
+      )
+    : true;
+
+  const regEndDateValid = eventHasRegEnd
+    ? isEventRegEndDateValid(eventRegStartDate, eventRegEndDate, eventDateStart)
+    : true;
+
+  const regEndTimeValid = eventHasRegEnd
+    ? isEventRegEndTimeValid(
+        eventRegStartDate,
+        eventRegStartTime,
+        eventRegEndDate,
+        eventRegEndTime,
+        eventDateEnd ?? undefined,
+        eventTimeEnd ?? undefined,
+      )
+    : true;
+
   const lastStep = eventObject.currentStep === 6;
-  let validEvent: boolean;
-  if (eventObject.eventHasDateEnd) {
-    validEvent = allEventInputsValid([
-      eventTitleValid,
-      eventDescriptionValid,
-      eventAddressValid,
-      eventDateStartValid,
-      eventTimeStartValid,
-      eventDateEndValid,
-      eventTimeEndValid,
-      eventActiveCategoriesValid,
-      eventCapacityValid,
-      eventImageValid,
-      lastStep,
-    ]);
-  } else {
-    validEvent = allEventInputsValid([
-      eventTitleValid,
-      eventDescriptionValid,
-      eventAddressValid,
-      eventDateStartValid,
-      eventTimeStartValid,
-      eventActiveCategoriesValid,
-      eventCapacityValid,
-      eventImageValid,
-      lastStep,
-    ]);
-  }
+
+  const validEvent = allEventInputsValid([
+    eventTitleValid,
+    eventDescriptionValid,
+    eventAddressValid,
+    eventDateStartValid,
+    eventTimeStartValid,
+    eventDateEndValid,
+    eventTimeEndValid,
+    regStartDateValid,
+    regStartTimeValid,
+    regEndDateValid,
+    regEndTimeValid,
+    eventActiveCategoriesValid,
+    eventCapacityValid,
+    eventImageValid,
+    lastStep,
+  ]);
 
   const summaryCategories = eventObject.eventActiveCategories.map((catId) => {
     return {
@@ -560,12 +673,15 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const getCurrentInputPage = (step: number) => {
     const { title, subTitle, buttonText } = getInputPageData(step);
     const titleInputPageValid = eventTitleValid;
-    const dateInputPageValid = eventObject.eventHasDateEnd
-      ? eventDateStartValid &&
-        eventTimeStartValid &&
-        eventDateEndValid &&
-        eventTimeEndValid
-      : eventDateStartValid && eventTimeStartValid;
+    const dateInputPageValid =
+      eventDateStartValid &&
+      eventTimeStartValid &&
+      eventDateEndValid &&
+      eventTimeEndValid &&
+      regStartDateValid &&
+      regStartTimeValid &&
+      regEndDateValid &&
+      regEndTimeValid;
     const addressInputPageValid = eventAddressValid;
     const descriptionInputPageValid =
       eventDescriptionValid && eventActiveCategoriesValid;
@@ -668,14 +784,14 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             validDataMap={validDataMap}
             page={InputPages.DATE_PAGE}
             buttonOnClick={inputPageOnClick}
-            placeButtonStatic={eventObject.eventHasDateEnd}
+            placeButtonStatic={[
+              eventObject.eventHasDateEnd,
+              eventObject.eventHasRegStart,
+              eventObject.eventHasRegEnd,
+            ].some((cond) => cond)}
           >
-            <div
-              className={`${styles.dateContainer} ${styles.marginBottomMedium}`}
-            >
-              <div
-                className={`${styles.dateColumn} ${styles.marginBottomMedium}`}
-              >
+            <div className={styles.dateContainer}>
+              <div className={styles.dateColumn}>
                 <DateInput
                   value={eventObject.eventDateStart}
                   valid={eventDateStartValid}
@@ -715,33 +831,125 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
-            </div>
-            {eventObject.eventHasDateEnd && (
-              <div className={styles.dateContainer}>
-                <div className={styles.dateColumn}>
-                  <DateInput
-                    value={eventObject.eventDateEnd || ""}
-                    valid={eventDateEndValid}
-                    inputId="dateEnd"
-                    inputName="eventDateEnd"
-                    label="Dato slutt*"
-                    errorMessage="Sluttdato kan ikke være før startdato."
-                    required
-                    handleChange={updateEventDateEnd}
-                  />
-                  <TimeInput
-                    value={eventObject.eventTimeEnd || ""}
-                    valid={eventTimeEndValid}
-                    inputId="timeEnd"
-                    inputName="eventTimeEnd"
-                    label="Tidspunkt slutt*"
-                    errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
-                    required
-                    handleChange={updateEventTimeEnd}
-                  />
+              {eventObject.eventHasDateEnd && (
+                <div className={styles.dateContainer}>
+                  <div className={styles.dateColumn}>
+                    <DateInput
+                      value={eventObject.eventDateEnd || ""}
+                      valid={eventDateEndValid}
+                      inputId="dateEnd"
+                      inputName="eventDateEnd"
+                      label="Dato slutt*"
+                      errorMessage="Sluttdato kan ikke være før startdato."
+                      required
+                      handleChange={updateEventDateEnd}
+                    />
+                    <TimeInput
+                      value={eventObject.eventTimeEnd || ""}
+                      valid={eventTimeEndValid}
+                      inputId="timeEnd"
+                      inputName="eventTimeEnd"
+                      label="Tidspunkt slutt*"
+                      errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
+                      required
+                      handleChange={updateEventTimeEnd}
+                    />
+                  </div>
                 </div>
+              )}
+              <div className={styles.scheduledRegContainer}>
+                {!eventObject.eventHasRegStart && (
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => seteventHasRegStart(true)}
+                  >
+                    <PlusIcon className={styles.addDateDimensions} />
+                    <p className={styles.addDateText}>Påmeldingen åpner</p>
+                  </button>
+                )}
+                {eventObject.eventHasRegStart && (
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => seteventHasRegStart(false)}
+                  >
+                    <MinusIcon className={styles.addDateDimensions} />
+                    <p className={styles.addDateText}>Påmeldingen åpner</p>
+                  </button>
+                )}
+                {eventObject.eventHasRegStart && (
+                  <div className={styles.dateContainer}>
+                    <div className={styles.dateColumn}>
+                      <DateInput
+                        value={eventObject.eventRegStartDate || ""}
+                        valid={regStartDateValid}
+                        inputId="regDateStart"
+                        inputName="eventRegDateStart"
+                        label="Dato åpning*"
+                        errorMessage="Påmelding må åpne før startdato."
+                        required
+                        handleChange={updateEventRegStartDate}
+                      />
+                      <TimeInput
+                        value={eventObject.eventRegStartTime || ""}
+                        valid={regStartTimeValid}
+                        inputId="regTimeStart"
+                        inputName="eventRegTimeStart"
+                        label="Tidspunkt åpning*"
+                        errorMessage="Påmelding må åpne før startdato."
+                        required
+                        handleChange={updateEventRegStartTime}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+              <div className={styles.scheduledRegContainer}>
+                {!eventObject.eventHasRegEnd && (
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => seteventHasRegEnd(true)}
+                  >
+                    <PlusIcon className={styles.addDateDimensions} />
+                    <p className={styles.addDateText}>Påmeldingen stenger</p>
+                  </button>
+                )}
+                {eventObject.eventHasRegEnd && (
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => seteventHasRegEnd(false)}
+                  >
+                    <MinusIcon className={styles.addDateDimensions} />
+                    <p className={styles.addDateText}>Påmeldingen stenger</p>
+                  </button>
+                )}
+                {eventObject.eventHasRegEnd && (
+                  <div className={styles.dateContainer}>
+                    <div className={styles.dateColumn}>
+                      <DateInput
+                        value={eventObject.eventRegEndDate || ""}
+                        valid={regEndDateValid}
+                        inputId="regDateEnd"
+                        inputName="eventRegDateEnd"
+                        label="Dato frist*"
+                        errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
+                        required
+                        handleChange={updateEventRegEndDate}
+                      />
+                      <TimeInput
+                        value={eventObject.eventRegEndTime || ""}
+                        valid={regEndTimeValid}
+                        inputId="regTimeEnd"
+                        inputName="eventRegTimeEnd"
+                        label="Tidspunkt frist*"
+                        errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato"
+                        required
+                        handleChange={updateEventRegEndTime}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </InputPage>
         );
       case 2:
