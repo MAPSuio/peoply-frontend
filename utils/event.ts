@@ -65,17 +65,20 @@ export function isEventRegEndTimeValid(
   eventEndDate?: string,
   eventEndTime?: string,
 ) {
-  if (!regEndTime) {
+  if (!regEndDate || !regEndTime) {
     return false;
   }
 
-  const regStart = formatDateAndTime(regStartDate, regStartTime);
   const regEnd = formatDateAndTime(regEndDate, regEndTime);
 
-  if (eventEndDate && eventEndTime) {
-    const eventEnd = formatDateAndTime(eventEndDate, eventEndTime);
-    return regStart < regEnd && regEnd <= eventEnd;
-  }
+  if (regStartDate && regStartTime) {
+    const regStart = formatDateAndTime(regStartDate, regStartTime);
 
-  return regStart < regEnd;
+    if (eventEndDate && eventEndTime) {
+      const eventEnd = formatDateAndTime(eventEndDate, eventEndTime);
+      return regStart < regEnd && regEnd <= eventEnd;
+    }
+    return regStart < regEnd;
+  }
+  return true;
 }
