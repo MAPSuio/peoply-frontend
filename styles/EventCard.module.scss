@@ -1,116 +1,118 @@
-.eventCardContainer {
+.eventCard {
   background-color: $background-color-card;
   border-radius: $border-radius-regular;
   cursor: pointer;
-  height: 310px;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+  height: 300px;
+  width: 100%;  // TODO: Consider removing this.
 
   @include desktop() {
-    height: 330px;
+    height: 360px;
   }
+}
 
-  .eventCard {
-    border-radius: $border-radius-regular;
-    display: flex;
-    flex-flow: column nowrap;
-    height: 100%;
-    width: 100%;  // TODO: Consider removing this.
+.eventCardImageContainer {
+  border-radius: $border-radius-image-card;
+  flex: 1 0 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 
-    .eventCardImageContainer {
-      border-radius: $border-radius-image-card;
-      height: 40%;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-
-      @include desktop() {
-        height: 40%;
-      }
-    }
-
-    .eventCardInfoContainer {
-      background-color: $background-color-card;
-      border-radius: $border-radius-event-info;
-      height: 60%;
-      padding: $spacer-small;
-      width: 100%;
-
-      .eventCardInfo {
-
-        .eventCardInfoHeaderContainer {
-          align-items: center;
-          display: flex;
-          gap: $spacer-small;
-          justify-content: space-between;
-
-          .title {
-            -webkit-box-orient: vertical;
-            color: $text-color-emphasis;
-            display: -webkit-box;
-            font-size: $font-size-primary;
-            font-weight: $font-weight-medium;
-            -webkit-line-clamp: 2;
-            line-height: $line-height-card-title;
-            overflow: hidden;
-            text-align: left;
-
-            @include desktop() {
-              font-size: $font-size-primary-desktop;
-            }
-          }
-
-          .eventCardInfoHeaderPriceContainer {
-            align-items: center;
-            display: flex;
-            gap: $spacer-very-small;
-            @include monoFont();
-          }
-        }
-
-        .divider {
-          @include divider();
-          margin: $spacer-very-small 0;
-
-          @include desktop() {
-            margin: $spacer-very-small-plus 0;
-          }
-        }
-
-        .eventCardInfoBodyContainer {
-          display: flex;
-
-          .eventCardInfoBody{
-            @include monoFont();
-
-            div {
-              display: flex;
-              flex-flow: column nowrap;
-              gap: $spacer-very-small;
-
-              .eventCardInfoBodyItem {
-                align-items: center;
-                display: flex;
-                flex-direction: row;
-                gap: $spacer-very-small;
-
-                div {
-                  display: flex;
-                  gap: 0;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  @include desktop() {
+    flex: 1 0 0;
   }
-  span {
-    color: $text-color-primary;
-    font-size: $font-size-tertiary;
-    font-weight: $font-weight-regular;
+}
 
-    @include desktop() {
-      font-size: $font-size-tertiary-desktop;
-    }
+.eventCardTitleContainer {
+  align-items: flex-end;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-very-small-plus;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.eventCardInfoContainer {
+  align-items: flex-start;
+  background-color: $background-color-card;
+  border-radius: $border-radius-event-info;
+  display: flex;
+  flex: 1 0 0;
+  padding: 0 $spacer-small 0;
+
+  @include desktop(){
+    flex: 1 0 0;
+  }
+}
+
+.eventCardInfoHeaderContainer {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
+}
+
+.title {
+  -webkit-box-orient: vertical;
+  color: $text-color-emphasis;
+  display: -webkit-box;
+  font-size: $font-size-heading-small;
+  font-weight: $font-weight-medium;
+  -webkit-line-clamp: 2;
+  line-height: $line-height-card-title;
+  overflow: hidden;
+  text-align: left;
+
+  @include desktop() {
+    font-size: $font-size-heading-small-desktop;
+  }
+}
+
+.eventCardInfo {
+  width: 100%;
+}
+
+.eventCardInfoBody{
+  @include monoFont();
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+
+  @include desktop() {
+    gap: $spacer-small;
+  }
+}
+
+.eventCardInfoBodyItem {
+  align-items: center;
+  display: flex;
+  flex-direction: row nowrap;
+  gap: $spacer-very-small;
+}
+
+.data {
+  -webkit-box-orient: vertical;
+  color: $text-color-primary;
+  display: -webkit-box;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-regular;
+  -webkit-line-clamp: 1;
+  line-height: $line-height-hint-text;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.divider {
+  @include divider();
+  margin: $spacer-very-small 0;
+
+  @include desktop() {
+    margin: $spacer-very-small-plus 0;
   }
 }
 
@@ -118,10 +120,27 @@
   color: $text-color-emphasis;
 }
 
+.date {
+  @include uppercase();
+  -webkit-box-orient: vertical;
+  color: $text-color-primary;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-height: $line-height-hint-text;
+  margin-bottom: $spacer-mini;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-tertiary;
+    margin-bottom: $spacer-very-small;
+  }
+}
+
 .iconContainer {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
+  flex-shrink: 0;
   width: 20px;
 
   @include desktop() {
@@ -138,6 +157,17 @@
   @include desktop() {
     height: 16px;
     width: 16px;
+  }
+}
+
+.usersIconContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+
+  .icon {
+    margin-right: $spacer-mini;
   }
 }
 

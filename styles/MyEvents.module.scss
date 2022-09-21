@@ -124,7 +124,7 @@
   }
 }
 
-.eventContainer {  
+.eventContainer {
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-medium;
@@ -269,7 +269,7 @@
     font-size: $font-size-heading-large;
     margin-bottom: $spacer-very-small-plus;
     text-align: left;
-  
+
     @include desktop() {
       font-size: $font-size-heading-large-desktop;
       margin-bottom: $spacer-small;
