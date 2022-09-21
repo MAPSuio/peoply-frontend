@@ -1,0 +1,77 @@
+.card {
+  align-items: center;
+  background-color: $background-color-card;
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-very-small-plus;
+  justify-content: flex-start;
+  max-width: $max-width-small-event-card;
+  padding: $spacer-small;
+  position: relative;
+}
+
+.imageContainer {
+  border-radius: $border-radius-inside-card;
+  box-shadow: $shadow-highlighted-event-card;
+  flex-shrink: 0;
+  height: 120px;
+  overflow: hidden;
+  position: relative;
+  width: 120px;
+
+  @include desktop() {
+    height: 140px;
+    width: 140px;
+  }
+}
+
+.dataContainer {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.eventTitle {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: $font-size-primary;
+  font-weight: $font-weight-medium;
+  -webkit-line-clamp: 2;
+  line-height: $line-height-card-title;
+  margin-bottom: $spacer-very-small;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-primary-desktop;
+  }
+}
+
+.eventDescription {
+  -webkit-box-orient: vertical;
+  color: $text-color-primary;
+  display: -webkit-box;
+  font-size: $font-size-tertiary;
+  -webkit-line-clamp: 2;
+  line-height: $line-height-hint-text;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    -webkit-line-clamp: 3;
+  }
+}
+
+.date {
+  @include uppercase();
+  -webkit-box-orient: vertical;
+  color: $text-color-primary;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-height: $line-height-hint-text;
+  margin-bottom: $spacer-mini;
+  overflow: hidden;
+
+  @include desktop() {
+    font-size: $font-size-tertiary;
+  }
+}
