@@ -44,7 +44,14 @@
 }
 
 .dateContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
   width: 100%;
+
+  @include desktop() {
+    gap: $spacer-medium;
+  }
 }
 
 .textContainer {
@@ -102,4 +109,11 @@
     height: $font-size-secondary-desktop;
     width: $font-size-secondary-desktop;
   }
+}
+
+.scheduledRegContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-medium;
+  width: 100%;
 }

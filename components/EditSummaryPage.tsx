@@ -75,6 +75,8 @@ interface EventObjectProps {
   description: string;
   startDate: string;
   endDate?: string;
+  regStart?: string;
+  regEnd?: string;
   categoryIds: number[];
   capacity?: number | null;
   eventImage?: File;
@@ -105,6 +107,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     endDate: event.endDate
       ? removeTimezone(event.endDate.toString())
       : undefined,
+    regStart: event.regStart
+      ? removeTimezone(event.regStart.toString())
+      : undefined,
+    regEnd: event.regEnd ? removeTimezone(event.regEnd.toString()) : undefined,
     categoryIds: getCategories(event.eventCategories),
     visibility: event.visibility,
     capacity: event.capacity,
@@ -155,6 +161,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [validTitle, setValidTitle] = useState(true);
   const [validStart, setValidStart] = useState(true);
   const [validEnd, setValidEnd] = useState(true);
+  const [validRegStart, setValidRegStart] = useState(true);
+  const [validRegEnd, setValidRegEnd] = useState(true);
   const [validLocationName, setValidLocationName] = useState(true);
   const [validDescription, setValidDescription] = useState(true);
   const [validCategories, setValidCategories] = useState(true);
@@ -278,6 +286,59 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     setValidEnd(laterThan(newDate, tempEventObject.startDate));
   }
 
+  function updateRegStartDate(e: ChangeEvent<HTMLInputElement>) {
+    const newDate = e.target.value + tempEventObject.regStart?.substring(10);
+    setTempEventObject({
+      ...tempEventObject,
+      regStart: newDate,
+    });
+
+    setValidRegStart(laterThan(tempEventObject.startDate, newDate));
+  }
+
+  function updateRegStartTime(e: ChangeEvent<HTMLInputElement>) {
+    const newDate =
+      tempEventObject.regStart?.substring(0, 11) + e.target.value + ":00.000Z";
+
+    setTempEventObject({
+      ...tempEventObject,
+      regStart: newDate,
+    });
+
+    setValidRegStart(laterThan(tempEventObject.startDate, newDate));
+  }
+
+  function updateRegEndDate(e: ChangeEvent<HTMLInputElement>) {
+    const newDate = e.target.value + tempEventObject.regEnd?.substring(10);
+    setTempEventObject({
+      ...tempEventObject,
+      regEnd: newDate,
+    });
+
+    setValidRegEnd(
+      laterThan(tempEventObject.endDate, newDate) &&
+        laterThan(newDate, tempEventObject.regStart),
+    );
+  }
+
+  function updateRegEndTime(e: ChangeEvent<HTMLInputElement>) {
+    const newDate =
+      tempEventObject.regEnd?.substring(0, 10) +
+      "T" +
+      e.target.value +
+      ":00.000Z";
+
+    setTempEventObject({
+      ...tempEventObject,
+      regEnd: newDate,
+    });
+
+    setValidRegEnd(
+      laterThan(tempEventObject.endDate, newDate) &&
+        laterThan(newDate, tempEventObject.regStart),
+    );
+  }
+
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setTempEventObject((tempEventObject) => ({
@@ -313,16 +374,15 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   function setFormData(formData: FormData, eventObject: EventObjectProps) {
     for (const [key, value] of Object.entries(eventObject)) {
       if (value !== null && value !== undefined && value !== "null") {
-        if (key === "startDate" || key === "endDate") {
-          formData.append(key, addTimezone(value));
+        if (["startDate", "endDate", "regStart", "regEnd"].includes(key)) {
+          formData.set(key, addTimezone(value));
         } else {
           formData.set(key, value);
         }
+        /* empty string will delete the attribute in the backend */
+      } else {
+        formData.set(key, "");
       }
-    }
-    //special case where end date is removed
-    if (eventObject.endDate === undefined) {
-      formData.set("endDate", "");
     }
   }
 
@@ -337,7 +397,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       });
 
       addSnack("Oppdatert arrangement", SnackTypes.SUCCESS);
-      router.push(`/events/${event.urlId}`);
+      router.back();
     } catch (e) {
       addSnack(
         "Det skjedde en feil under endring av arrangementet",
@@ -389,6 +449,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     validTitle &&
     validStart &&
     validEnd &&
+    validRegStart &&
+    validRegEnd &&
     validLocationName &&
     validDescription &&
     validCategories;
@@ -523,6 +585,132 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   </div>
                 </>
               )}
+              {!tempEventObject.regStart && (
+                <button
+                  className={styles.addDateContainer}
+                  onClick={() => {
+                    setTempEventObject({
+                      ...tempEventObject,
+                      regStart: tempEventObject.startDate,
+                    });
+                  }}
+                >
+                  <PlusIcon className={styles.addDateDimensions} />
+                  <p className={styles.addDateText}>Påmelding åpner</p>
+                </button>
+              )}
+              {tempEventObject.regStart && (
+                <>
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => {
+                      setTempEventObject({
+                        ...tempEventObject,
+                        regStart: undefined,
+                      });
+                      setValidRegStart(true);
+                    }}
+                  >
+                    <MinusIcon
+                      className={`${styles.addDateDimensions} ${styles.marginBottomMedium}`}
+                    />
+                    <p className={styles.addDateText}>Påmelding åpner</p>
+                  </button>
+                  <div className={`${styles.horizontalContainer} `}>
+                    <DateInput
+                      value={
+                        tempEventObject.regStart
+                          ? getISODateString(tempEventObject.regStart)
+                          : ""
+                      }
+                      inputId="regDateStart"
+                      inputName="eventRegDateStart"
+                      label="Dato åpning"
+                      errorMessage="Påmelding må åpne før startdato."
+                      handleChange={updateRegStartDate}
+                      valid={validRegStart}
+                      initiallyFocused
+                    />
+                    <TimeInput
+                      value={
+                        tempEventObject.regStart
+                          ? getISOTimeString(tempEventObject.regStart)
+                          : ""
+                      }
+                      inputId="regTimeStart"
+                      inputName="eventRegTimeStart"
+                      label="Tidspunkt åpning"
+                      errorMessage="Påmelding må åpne før startdato."
+                      handleChange={updateRegStartTime}
+                      valid={validRegStart}
+                      initiallyFocused
+                    />
+                  </div>
+                </>
+              )}
+              {!tempEventObject.regEnd && (
+                <button
+                  className={styles.addDateContainer}
+                  onClick={() => {
+                    setTempEventObject({
+                      ...tempEventObject,
+                      regEnd: tempEventObject.startDate,
+                    });
+                  }}
+                >
+                  <PlusIcon className={styles.addDateDimensions} />
+                  <p className={styles.addDateText}>Påmelding stenger</p>
+                </button>
+              )}
+              {tempEventObject.regEnd && (
+                <>
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={() => {
+                      setTempEventObject({
+                        ...tempEventObject,
+                        regEnd: undefined,
+                      });
+                      setValidRegEnd(true);
+                    }}
+                  >
+                    <MinusIcon
+                      className={`${styles.addDateDimensions} ${styles.marginBottomMedium}`}
+                    />
+                    <p className={styles.addDateText}>Påmelding stenger</p>
+                  </button>
+                  <div className={`${styles.horizontalContainer} `}>
+                    <DateInput
+                      value={
+                        tempEventObject.regEnd
+                          ? getISODateString(tempEventObject.regEnd)
+                          : ""
+                      }
+                      inputId="regDateEnd"
+                      inputName="eventRegDateEnd"
+                      label="Dato frist"
+                      errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
+                      handleChange={updateRegEndDate}
+                      valid={validRegEnd}
+                      initiallyFocused
+                    />
+                    <TimeInput
+                      value={
+                        tempEventObject.regEnd
+                          ? getISOTimeString(tempEventObject.regEnd)
+                          : ""
+                      }
+                      inputId="regTimeEnd"
+                      inputName="eventRegTimeEnd"
+                      label="Tidspunkt frist"
+                      errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
+                      handleChange={updateRegEndTime}
+                      valid={validRegEnd}
+                      initiallyFocused
+                    />
+                  </div>
+                </>
+              )}
             </>
           }
         >
@@ -533,7 +721,27 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               >
                 Start:{" "}
               </span>
-              {eventObject.endDate && <span>Slutt: </span>}
+              {eventObject.endDate && (
+                <span
+                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+                >
+                  Slutt:{" "}
+                </span>
+              )}
+              {eventObject.regStart && (
+                <span
+                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+                >
+                  Påmelding åpner:
+                </span>
+              )}
+              {eventObject.regEnd && (
+                <span
+                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+                >
+                  Påmelding stenger:
+                </span>
+              )}
             </div>
 
             <div className={`${styles.diagonalContainer} ${styles.startAlign}`}>
@@ -545,7 +753,21 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               {tempEventObject.endDate && (
                 <TimeView
                   ISOtime={tempEventObject.endDate}
-                  styles={styles.dateText}
+                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+                  localTime={false}
+                ></TimeView>
+              )}
+              {tempEventObject.regStart && (
+                <TimeView
+                  ISOtime={tempEventObject.regStart}
+                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+                  localTime={false}
+                ></TimeView>
+              )}
+              {tempEventObject.regEnd && (
+                <TimeView
+                  ISOtime={tempEventObject.regEnd}
+                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
                   localTime={false}
                 ></TimeView>
               )}
@@ -792,6 +1014,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
             label="Slette arrangement"
             description="Er du sikker på at du vil slette arrangementet?"
             buttonText="Slett"
+            danger
             buttonOnClick={deleteEvent}
             secondaryButtonText="Avbryt"
             secondaryButtonOnClick={() => {

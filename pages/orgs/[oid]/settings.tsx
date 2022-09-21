@@ -32,7 +32,7 @@ const OrganizationSettings: NextPage = () => {
   }
 
   if (!isAdminOrOwner) {
-    addSnack("Du har ikke rettigeter til dette.", SnackTypes.ERROR);
+    addSnack("Du har ikke rettigheter til dette.", SnackTypes.ERROR);
     router.push(`/orgs/${oid}`);
   }
 

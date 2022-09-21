@@ -333,3 +333,10 @@
     width: initial;
   }
 }
+
+.orgLink {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}

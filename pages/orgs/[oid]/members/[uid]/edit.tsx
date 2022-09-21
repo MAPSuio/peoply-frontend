@@ -6,17 +6,24 @@ import Button from "../../../../../components/Button";
 import Dropdown from "../../../../../components/Dropdown";
 import HeadComponent from "../../../../../components/HeadComponent";
 import TextInput from "../../../../../components/inputs/TextInput";
+import Modal from "../../../../../components/Modal";
+import SettingsButton from "../../../../../components/SettingsButton";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
 import useSnack from "../../../../../hooks/useSnack";
 import useUser from "../../../../../hooks/useUser";
-import { fetchFromPeoplyApiJson } from "../../../../../services/fetchers";
+import {
+  fetchFromPeoplyApi,
+  fetchFromPeoplyApiJson,
+} from "../../../../../services/fetchers";
 import styles from "../../../../../styles/EditOrganizationUser.module.scss";
 import {
   OrganizationRole,
+  SettingTypes,
   SnackTypes,
   UserOrganizationRoles,
 } from "../../../../../types/types";
+import { getOrganizationRolePrivilege } from "../../../../../utils/functions";
 
 export default function EditOrganizationUser() {
   const goBack = useBack();
@@ -26,6 +33,7 @@ export default function EditOrganizationUser() {
   const { oid, uid } = router.query;
   const [roleDescription, setRoleDescription] = useState("");
   const [roleValue, setRoleValue] = useState<OrganizationRole>();
+  const [modalOpen, setModalOpen] = useState(false);
   const {
     organization,
     organizationUsers,
@@ -34,6 +42,7 @@ export default function EditOrganizationUser() {
     isAdmin,
     loading: loadingOrganization,
     error: organizationError,
+    organizationUser,
   } = useOrganization(oid as string);
 
   /* fill form with data from the user to be edited */
@@ -86,6 +95,18 @@ export default function EditOrganizationUser() {
     }
     return false;
   })();
+
+  const deleteUser = async (uid: string) => {
+    try {
+      await fetchFromPeoplyApi(`/organizations/${oid}/members/${uid}`, {
+        method: "DELETE",
+      });
+      addSnack("Medlem fjernet", SnackTypes.SUCCESS);
+      router.back();
+    } catch (e) {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
+  };
 
   async function handleConfirm() {
     try {
@@ -181,6 +202,26 @@ export default function EditOrganizationUser() {
                 maxLength={35}
               />
             )}
+            {
+              /* ((isAdminOrOwner && userToEdit.role === OrganizationRole.MEMBER) ||
+              (isOwner && userToEdit.role === OrganizationRole.ADMIN))  */
+              organizationUser &&
+                getOrganizationRolePrivilege(organizationUser?.role) >
+                  getOrganizationRolePrivilege(userToEdit.role) && (
+                  <SettingsButton
+                    text="Fjern bruker fra organisasjonen"
+                    type={SettingTypes.DANGER}
+                    onClick={() => setModalOpen(true)}
+                  />
+                )
+            }
+            {isEditingSelf && !isOwner && (
+              <SettingsButton
+                text="Fjern meg fra organisasjonen"
+                type={SettingTypes.DANGER}
+                onClick={() => setModalOpen(true)}
+              />
+            )}
           </div>
           <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
             <Button
@@ -190,6 +231,18 @@ export default function EditOrganizationUser() {
             />
           </div>
         </div>
+        {modalOpen && (
+          <Modal
+            label={`Vil du fjerne ${user?.firstName} ${user?.lastName}?`}
+            description="Dette vil fjerne brukeren fra organisasjonen. Brukeren må inviteres på nytt for å bli medlem igjen."
+            buttonText={`Fjern bruker`}
+            secondaryButtonText="Lukk"
+            buttonOnClick={() => deleteUser(userToEdit?.userId)}
+            secondaryButtonOnClick={() => setModalOpen(false)}
+            closeButtonOnClick={() => setModalOpen(false)}
+            danger
+          />
+        )}
       </>
     );
   }

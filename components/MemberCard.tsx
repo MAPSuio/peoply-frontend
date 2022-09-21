@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "../styles/MemberCard.module.scss";
 import { User } from "../types/types";
 import Avatar from "./Avatar";
-import ChevronRightIcon from "./svgs/ChevronRightIcon";
+import EditIcon from "./svgs/EditIcon";
 
 interface MemberCardProps {
   user: User;
@@ -33,7 +33,7 @@ export default function MemberCard({
       {link && (
         <Link href={link} passHref>
           <a>
-            <ChevronRightIcon />
+            <EditIcon />
           </a>
         </Link>
       )}

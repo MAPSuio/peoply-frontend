@@ -213,6 +213,8 @@ export interface Event {
   urlId: string;
   startDate: Date | string;
   endDate: Date | string | null;
+  regStart: Date | string | null;
+  regEnd: Date | string | null;
   title: string;
   description: string;
   hasFood: boolean;
@@ -369,4 +371,9 @@ export enum Alignment {
   LEFT,
   CENTER,
   RIGHT,
+}
+
+export enum EventDateFormat {
+  SHORT,
+  LONG,
 }

@@ -29,18 +29,25 @@ const Modal = ({
   closeButtonOnClick,
   danger,
 }: ModalProps) => {
-  const clickFunction = () => {
+  const clickFunction = (e: MouseEvent) => {
+    e.preventDefault();
     buttonOnClick && buttonOnClick();
   };
 
-  const secondaryClickFunction = () => {
+  const secondaryClickFunction = (e: MouseEvent) => {
+    e.preventDefault();
     secondaryButtonOnClick && secondaryButtonOnClick();
   };
 
+  const closeClickFunction = (e: any) => {
+    e.preventDefault();
+    closeButtonOnClick && closeButtonOnClick();
+  };
+
   return (
-    <div className={styles.wrapper} onClick={closeButtonOnClick}>
+    <div className={styles.wrapper} onClick={closeClickFunction}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.exitIcon} onClick={closeButtonOnClick}>
+        <button className={styles.exitIcon} onClick={closeClickFunction}>
           <ExitIcon />
         </button>
         <h1 className={styles.title}>{label}</h1>

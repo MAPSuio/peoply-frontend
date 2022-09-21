@@ -3,6 +3,7 @@ import {
   CircleLabels,
   Weekdays,
   OrganizationRole,
+  EventDateFormat,
 } from "../types/types";
 
 function formatDateRange(startDate: Date, endDate?: Date | null): string {
@@ -92,6 +93,67 @@ function formatTimeRange(startDate: Date, endDate: Date | null): string {
   return timeString;
 }
 
+/*
+formatEventDate formats a given start- and optionally end date into a string that is suitable
+for display on the event cards or event page depending on the passed argument.
+*/
+function formatEventDate(
+  startDate: Date,
+  endDate?: Date | null,
+  format?: EventDateFormat,
+): string {
+  if (format === EventDateFormat.SHORT) {
+    if (endDate && !sameDate(startDate, endDate)) {
+      return `${startDate.toLocaleString("no-NO", {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+      })}–${endDate.toLocaleString("no-NO", {
+        month: "short",
+        day: "2-digit",
+      })}`.toUpperCase();
+    } else {
+      if (isToday(startDate)) {
+        return `I dag ${startDate.toLocaleString("no-NO", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`.toUpperCase();
+      } else if (isTomorrow(startDate)) {
+        return `I morgen ${startDate.toLocaleString("no-NO", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`.toUpperCase();
+      }
+
+      return `${startDate.toLocaleString("no-NO", {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+      })} KL. ${startDate.toLocaleString("no-NO", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`.toUpperCase();
+    }
+  }
+
+  return "";
+}
+
+// isToday returns if the supplied date is today or not.
+function isToday(date: Date): boolean {
+  const today = new Date();
+
+  return today.toDateString() === date.toDateString();
+}
+
+// isTomorrow returns if the supplied date is tomorrow or not.
+function isTomorrow(date: Date): boolean {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return tomorrow.toDateString() === date.toDateString();
+}
+
 // Checks if the supplied date is older than today's date (valid).
 function olderThanToday(date: Date): boolean {
   const today = new Date();
@@ -110,12 +172,9 @@ function olderThanStart(dateStart: Date, dateEnd: Date): boolean {
   return dateEnd >= dateStart;
 }
 
-/* Checks if two dates are the same. */
+// Checks if two given dates are the same.
 function sameDate(dateOne: Date, dateTwo: Date): boolean {
-  dateOne.setHours(0, 0, 0, 0);
-  dateTwo.setHours(0, 0, 0, 0);
-
-  return dateOne === dateTwo;
+  return dateOne.toDateString() === dateTwo.toDateString();
 }
 
 /* Formats a date into yyyy-mm-dd. */
@@ -433,7 +492,11 @@ function timeInputEndValid(
 }
 
 /* Check if isoString1 is later than isoString2. */
-function laterThan(isoString1: string, isoString2: string): boolean {
+function laterThan(isoString1?: string, isoString2?: string): boolean {
+  if (!isoString1 || !isoString2) {
+    return true;
+  }
+
   const date1 = new Date(isoString1);
   const date2 = new Date(isoString2);
 
@@ -561,6 +624,7 @@ function throwNotImportedError() {
 export {
   formatDateRange,
   formatTimeRange,
+  formatEventDate,
   olderThanToday,
   getISODate,
   getISOTime,
@@ -577,7 +641,6 @@ export {
   categoryInputValid,
   radioInputValid,
   imageInputValid,
-  sameDate,
   allEventInputsValid,
   getDateString,
   getTimeString,
