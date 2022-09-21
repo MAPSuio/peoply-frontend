@@ -40,9 +40,9 @@ export default function JoinButton({
   event,
   className,
   joinText = "Meld deg på arrangementet",
-  joinedText = "Meld deg av arrangementet",
+  joinedText = "Du er påmeldt arrangementet",
   joinWaitlistText = "Meld deg på venteliste",
-  joinedWaitlistText = "Meld deg av venteliste",
+  joinedWaitlistText = "Du står på venteliste",
   eventFinishedText = "Arrangementet er ferdig",
   countdownText = "Påmelding åpner om",
   regClosedText = "Påmeldingen er stengt",
@@ -177,7 +177,7 @@ export default function JoinButton({
       myRegistration?.regStatus === RegStatus.GOING ||
       myRegistration?.regStatus === RegStatus.WAITLISTED
     ) {
-      return ButtonType.DANGER;
+      return ButtonType.REGISTERED;
     }
     return ButtonType.PRIMARY;
   })();

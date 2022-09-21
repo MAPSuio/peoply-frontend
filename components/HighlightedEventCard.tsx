@@ -235,9 +235,9 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
                 countdownText="Åpner om"
                 updateOnChange={updateRegistrations}
                 joinText="Meld deg på"
-                joinedText="Meld deg av"
-                joinWaitlistText="Stå på venteliste"
-                joinedWaitlistText="Fjern fra venteliste"
+                joinedText="Du er påmeldt"
+                joinWaitlistText="Stell deg i kø"
+                joinedWaitlistText="Du står i kø"
                 eventFinishedText="Arrangementet er ferdig"
                 regClosedText="Påmelding er stengt"
                 useUnregisterModal
