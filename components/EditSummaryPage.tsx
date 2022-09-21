@@ -397,7 +397,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       });
 
       addSnack("Oppdatert arrangement", SnackTypes.SUCCESS);
-      router.push(`/events/${event.urlId}`);
+      router.back();
     } catch (e) {
       addSnack(
         "Det skjedde en feil under endring av arrangementet",
