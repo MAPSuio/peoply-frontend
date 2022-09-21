@@ -1,25 +1,20 @@
 import { NextPage } from "next";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
-import EditProfileImageMenu from "../../components/EditProfileImageMenu";
-import TextInputLong from "../../components/inputs/TextInputLong";
-import MenuModal from "../../components/MenuModal";
 import Button from "../../components/Button";
 import useBack from "../../hooks/useBack";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import styles from "../../styles/EditProfile.module.scss";
+import styles from "../../styles/EditFoodPreference.module.scss";
 import { FoodPreference, SnackTypes } from "../../types/types";
 import Dropdown from "../../components/Dropdown";
 
-const EditProfile: NextPage = () => {
+const FoodPreferences: NextPage = () => {
   const goBack = useBack();
-  const [editImage, setEditImage] = useState(false);
   const { user, loading, reload } = useUser();
-  const [description, setDescription] = useState("");
   const [foodPreference, setFoodPreference] = useState<FoodPreference | null>(
     null,
   );
@@ -27,9 +22,6 @@ const EditProfile: NextPage = () => {
 
   const { addSnack } = useSnack();
   useEffect(() => {
-    if (user?.description) {
-      setDescription(user.description);
-    }
     if (user?.foodPreference) {
       setFoodPreference(user.foodPreference);
     }
@@ -41,26 +33,17 @@ const EditProfile: NextPage = () => {
 
   if (!user) return <></>;
 
-  const handleEditImageModalClose = () => {
-    setEditImage(false);
-    reload();
-  };
-
-  const updateUserDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.target.value);
-  };
-
   const handleConfirm = async () => {
     try {
       await fetchFromPeoplyApiJson("/users/me", {
         method: "PATCH",
-        body: JSON.stringify({ description, foodPreference }),
+        body: JSON.stringify({ foodPreference }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       reload();
-      addSnack("Profil oppdatert", SnackTypes.SUCCESS);
+      addSnack("Matpreferanser oppdatert", SnackTypes.SUCCESS);
     } catch (error) {
-      addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
+      addSnack("Klarte ikke å oppdatere matpreferanser", SnackTypes.ERROR);
     }
   };
 
@@ -91,34 +74,13 @@ const EditProfile: NextPage = () => {
     ];
   }
 
-  const validDescriptionEdit =
-    !(!user?.description && description === "") && // user.desc might be null if user has not edited yet - meaning we should not show confirm button
-    user?.description !== description;
   const validFoodPreferenceEdit =
     foodPreference && user?.foodPreference !== foodPreference;
-  const validEdit = validDescriptionEdit || validFoodPreferenceEdit;
 
   return (
     <div className={styles.container}>
       <BackButton onClick={goBack} />
-      <button
-        className={styles.editImageButton}
-        onClick={() => setEditImage(true)}
-      >
-        <Avatar user={user} size="large" edit />
-      </button>
-      <TextInputLong
-        value={description}
-        handleChange={updateUserDescription}
-        inputName="userDescription"
-        inputId="userDescription"
-        rows={5}
-        label="Beskrivelse"
-        placeholder=""
-        maxLength={120}
-        errorMessage=""
-        className={styles.description}
-      />
+      <Avatar user={user} size="large" />
       <Dropdown
         label="Matpreferanse"
         options={generateFoodPreferenceOptions()}
@@ -127,25 +89,16 @@ const EditProfile: NextPage = () => {
         setValue={setFoodPreference}
         className={styles.foodPreference}
       />
-      {validEdit && (
+      {validFoodPreferenceEdit && (
         <Button
-          disabled={!validEdit}
+          disabled={!validFoodPreferenceEdit}
           text="Lagre endringer"
           onClick={handleConfirm}
-          className={styles.confirm}
+          className={styles.confirmButton}
         />
-      )}
-      {editImage && (
-        <MenuModal label="Endre bilde" onClose={handleEditImageModalClose}>
-          <EditProfileImageMenu
-            onClose={handleEditImageModalClose}
-            endpoint="/users/me"
-            formDataKey="profileImage"
-          />
-        </MenuModal>
       )}
     </div>
   );
 };
 
-export default EditProfile;
+export default FoodPreferences;

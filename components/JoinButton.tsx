@@ -323,7 +323,7 @@ export default function JoinButton({
           description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
           buttonText={`Rediger matpreferanser`}
           secondaryButtonText="Lukk"
-          buttonOnClick={() => router.push("/me/edit")}
+          buttonOnClick={() => router.push("/me/food")}
           secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         />
