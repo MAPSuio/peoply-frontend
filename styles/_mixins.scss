@@ -4,6 +4,12 @@
   }
 }
 
+@mixin shortScreens() {
+  @media screen and (max-height: 600px) {
+    @content;
+  }
+}
+
 @mixin breakPoint($breakpoint) {
   @media screen and (min-width: $breakpoint) {
     @content;
@@ -12,11 +18,18 @@
 
 @mixin fixedButton() {
   bottom: $spacer-medium;
+  max-width: 500px;
   position: fixed;
+  width: 90vw;
   z-index: 998;
 
   @include desktop() {
     bottom: $spacer-large;
+  }
+
+  @include shortScreens() {
+    margin: $spacer-medium 0;
+    position: static;
   }
 }
 
