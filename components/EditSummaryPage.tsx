@@ -1014,6 +1014,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
             label="Slette arrangement"
             description="Er du sikker på at du vil slette arrangementet?"
             buttonText="Slett"
+            danger
             buttonOnClick={deleteEvent}
             secondaryButtonText="Avbryt"
             secondaryButtonOnClick={() => {

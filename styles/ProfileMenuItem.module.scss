@@ -20,8 +20,10 @@
     column-gap: $spacer-small;
     display: flex;
   }
+}
 
-  .danger {
+.danger {
+  p {
     color: $danger-color;
   }
 }

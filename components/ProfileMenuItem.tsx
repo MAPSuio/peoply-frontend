@@ -19,10 +19,10 @@ export default function ProfileMenuItem({
   if (typeof linkOrOnClick === "string") {
     return (
       <Link href={linkOrOnClick} passHref>
-        <a className={styles.container}>
+        <a className={`${styles.container} ${danger && styles.danger}`}>
           <div className={styles.left}>
             <Icon />
-            <p className={danger ? styles.danger : ""}>{text}</p>
+            <p>{text}</p>
           </div>
           <ActionIcon />
         </a>
@@ -30,10 +30,13 @@ export default function ProfileMenuItem({
     );
   }
   return (
-    <button onClick={linkOrOnClick} className={styles.container}>
+    <button
+      onClick={linkOrOnClick}
+      className={`${styles.container} ${danger && styles.danger}`}
+    >
       <div className={styles.left}>
         <Icon />
-        <p className={danger ? styles.danger : ""}>{text}</p>
+        <p>{text}</p>
       </div>
       <ActionIcon />
     </button>

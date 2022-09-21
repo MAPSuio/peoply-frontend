@@ -103,7 +103,7 @@ function formatEventDate(
   format?: EventDateFormat,
 ): string {
   if (format === EventDateFormat.SHORT) {
-    if (endDate) {
+    if (endDate && !sameDate(startDate, endDate)) {
       return `${startDate.toLocaleString("no-NO", {
         weekday: "short",
         month: "short",
@@ -172,12 +172,9 @@ function olderThanStart(dateStart: Date, dateEnd: Date): boolean {
   return dateEnd >= dateStart;
 }
 
-/* Checks if two dates are the same. */
+// Checks if two given dates are the same.
 function sameDate(dateOne: Date, dateTwo: Date): boolean {
-  dateOne.setHours(0, 0, 0, 0);
-  dateTwo.setHours(0, 0, 0, 0);
-
-  return dateOne === dateTwo;
+  return dateOne.toDateString() === dateTwo.toDateString();
 }
 
 /* Formats a date into yyyy-mm-dd. */
@@ -644,7 +641,6 @@ export {
   categoryInputValid,
   radioInputValid,
   imageInputValid,
-  sameDate,
   allEventInputsValid,
   getDateString,
   getTimeString,

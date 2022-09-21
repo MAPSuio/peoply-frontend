@@ -119,7 +119,7 @@ const EventCard = ({ event }: EventCardProps) => {
                     ? registrations
                     : "0"}
                 </span>
-                {event.capacity && `\u200A/\u200A${event.capacity}`}
+                {event.capacity !== null && `\u200A/\u200A${event.capacity}`}
               </p>
             </div>
           </div>
