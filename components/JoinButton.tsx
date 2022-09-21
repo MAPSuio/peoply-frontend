@@ -51,7 +51,7 @@ export default function JoinButton({
   small = false,
   noShadow = false,
 }: JoinButtonProps) {
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser();
   const {
     data: myRegistration,
     error,
@@ -101,6 +101,8 @@ export default function JoinButton({
   }, [event.regStart]);
 
   const loading = (!myRegistration && !error) || isCountdown === undefined;
+
+  const notLoggedIn = !user && !userLoading;
 
   const eventFinished = (() => {
     const endDate = event.endDate && new Date(event.endDate);
@@ -351,7 +353,7 @@ export default function JoinButton({
           e.preventDefault();
           if (buttonFunction) buttonFunction();
         }}
-        loading={loading}
+        loading={notLoggedIn ? false : loading}
         disabled={buttonDisabled}
         small={small}
         noShadow={noShadow}
