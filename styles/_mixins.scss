@@ -13,7 +13,7 @@
 @mixin fixedButton() {
   bottom: $spacer-medium;
   position: fixed;
-  z-index: 999;
+  z-index: 998;
 
   @include desktop() {
     bottom: $spacer-large;
