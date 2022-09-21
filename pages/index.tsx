@@ -66,6 +66,7 @@ const Home: NextPage = ({
     "919650354", // Digitus
     "997875400", // Språktek
     "991739815", // mikro
+    "995251884", // MAPS
     "920547230", // Toastjærn
   ];
 
