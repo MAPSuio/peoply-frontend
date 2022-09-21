@@ -44,19 +44,10 @@
   }
 }
 
-.imageContainer {
-  border-radius: $border-radius-rounded;
-  height: 100px;
+.avatarContainer {
   margin-bottom: $spacer-small;
-  max-width: $max-width-input;
-  overflow: hidden;
-  position: relative;
-  width: 100px;
-
   @include desktop () {
-    height: 200px;
     margin-bottom: $spacer-small-plus;
-    width: 200px;
   }
 }
 

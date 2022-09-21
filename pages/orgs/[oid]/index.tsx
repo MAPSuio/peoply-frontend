@@ -33,10 +33,10 @@ import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Assets.
 import { ParsedUrlQuery } from "querystring";
-import CatImg from "../../../assets/images/cat.jpg";
 
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
+import Avatar from "../../../components/Avatar";
 
 interface OrganizationProps {
   organization: Organization;
@@ -106,27 +106,9 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           )}
         </div>
         <div className={styles.headerContainer}>
-          {org.image ? (
-            <div className={styles.imageContainer}>
-              <Image
-                src={org.image}
-                alt="Organisasjonen sitt bilde"
-                objectFit="cover"
-                layout="fill"
-                objectPosition="center"
-              />
-            </div>
-          ) : (
-            <div className={styles.imageContainer}>
-              <Image
-                src={CatImg}
-                alt="En søt katt"
-                objectFit="cover"
-                layout="fill"
-                objectPosition="center"
-              />
-            </div>
-          )}
+          <div className={styles.avatarContainer}>
+            <Avatar org={org} size="large" />
+          </div>
           <div className={styles.titleContainer}>
             <h1 className={styles.title}>{org.name}</h1>
             {org.orgNr && <SmallCheckCircle purple placeRight small />}
