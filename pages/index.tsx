@@ -68,6 +68,7 @@ const Home: NextPage = ({
     "991739815", // mikro
     "995251884", // MAPS
     "920547230", // Toastjærn
+    "928941027", // IF1
   ];
 
   const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
