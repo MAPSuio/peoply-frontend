@@ -10,8 +10,6 @@ import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButt
 import Link from "next/link";
 import HeadComponent from "../../components/HeadComponent";
 import { useEffect, useState } from "react";
-import useBack from "../../hooks/useBack";
-import Navbar from "../../components/Navbar";
 
 const Login: NextPage = ({
   baseUrl,
@@ -19,7 +17,6 @@ const Login: NextPage = ({
   const { user } = useUser();
   const router = useRouter();
   const [redirectURL, setRedirectURL] = useState<string>("/");
-  const goBack = useBack();
 
   useEffect(() => {
     const redirectUrlFromLocalStorage = localStorage.getItem("redirectURL");
@@ -122,6 +119,19 @@ const Login: NextPage = ({
               <p className={styles.loginButtonText}>
                 Hvis du har logget inn før, vil du bli tatt til din gamle
                 bruker. Hvis ikke vil en ny bruker bli opprettet
+              </p>
+              <p className={styles.loginButtonText}>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`}
+                  onClick={() => {
+                    if (redirectURL) {
+                      localStorage.setItem("redirectURL", redirectURL);
+                    }
+                    return true;
+                  }}
+                >
+                  Har du ikke Vipps?
+                </a>
               </p>
             </div>
           </div>

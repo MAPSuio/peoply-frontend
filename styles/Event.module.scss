@@ -272,7 +272,6 @@
 .primaryButton {
   @include fixedButton();
   align-self: center;
-  width: $page-width-mobile;
 }
 
 .row {

@@ -19,17 +19,7 @@
   }
 
   .confirm {
-    bottom: -4rem;
-    display: flex;
-    justify-content: center;
-    position: fixed;
-    transition: all 0.2s ease-in-out;
-    width: 90%;
-
-    &.show {
-      bottom: 4rem;
-      position: fixed;
-    }
+    @include fixedButton();
   }
 }
 
