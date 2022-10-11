@@ -6,7 +6,9 @@ import ExpandableCard from "../../../components/ExpandableCard";
 import FoodPreferenceDisplay from "../../../components/FoodPreferenceDisplay";
 import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
+import Modal from "../../../components/Modal";
 import SearchField from "../../../components/SearchField";
+import ExitIcon from "../../../components/svgs/ExitIcon";
 import MailIcon from "../../../components/svgs/MailIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCross from "../../../components/svgs/UserCross";
@@ -46,6 +48,9 @@ const Participants = () => {
   const [search, setSearch] = useState("");
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.PARTICIPANTS,
+  );
+  const [banModalUserId, setBanUserId] = useState<string | undefined>(
+    undefined,
   );
   const { data: event, error: eventError } = useSWR<Event>(
     () => (eid ? `/events/${eid}` : false),
@@ -154,6 +159,26 @@ const Participants = () => {
     );
   }
 
+  async function banUser() {
+    try {
+      await fetchFromPeoplyApiJson(`/events/${event?.id}/registrations`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          userId: banModalUserId,
+          regStatus: RegStatus.BANNED,
+        }),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+      addSnack("Bruker utestengt", SnackTypes.SUCCESS);
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under utestenging av bruker",
+        SnackTypes.ERROR,
+      );
+    }
+    setBanUserId(undefined);
+  }
+
   function renderTab(tab: TabOption) {
     switch (tab) {
       case TabOption.PARTICIPANTS:
@@ -217,9 +242,24 @@ const Participants = () => {
                 description={`Meldte seg på ${formatDateRange(
                   new Date(registration.updatedAt),
                 )}`}
-                link={`/users/${registration.userId}`}
+                icon={<ExitIcon />}
+                iconOnClick={() => setBanUserId(registration.userId)}
               />
             ))}
+            {banModalUserId && (
+              <Modal
+                label="Utesteng bruker"
+                description="Er du sikker på at du vil utestenge brukeren fra dette arrangementet? 
+                
+                Brukeren vil ikke kunne melde seg på arrangementet igjen, men du kan gjenopprette brukeren under 'kommer ikke'."
+                buttonText="Utesteng bruker"
+                danger
+                buttonOnClick={banUser}
+                secondaryButtonText="Avbryt"
+                secondaryButtonOnClick={() => setBanUserId(undefined)}
+                closeButtonOnClick={() => setBanUserId(undefined)}
+              ></Modal>
+            )}
           </>
         );
 
@@ -264,7 +304,6 @@ const Participants = () => {
                     } ${invitation.fromUser?.lastName} ${formatDateRange(
                       new Date(invitation.createdAt),
                     )}`}
-                    link={`/users/${invitation.toUser?.id}`}
                   />
                 ),
             )}
@@ -273,14 +312,14 @@ const Participants = () => {
 
       case TabOption.NOT_GOING:
         const notGoing = registrations?.filter(
-          (registration) => registration.regStatus === RegStatus.NOT_GOING,
+          (registration) =>
+            registration.regStatus === RegStatus.NOT_GOING ||
+            registration.regStatus === RegStatus.BANNED,
         );
 
         if (!notGoing?.length) {
           return (
-            <p className={styles.notFound}>
-              Ingen deltakere har meldt seg på enda
-            </p>
+            <p className={styles.notFound}>Ingen deltakere har meldt seg av</p>
           );
         }
 
@@ -306,7 +345,6 @@ const Participants = () => {
                 description={`Meldte seg av ${formatDateRange(
                   new Date(registration.updatedAt),
                 )}`}
-                link={`/users/${registration.userId}`}
               />
             ))}
           </>

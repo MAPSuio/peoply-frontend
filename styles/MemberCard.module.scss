@@ -24,6 +24,13 @@
     stroke: #FFFFFF;
   }
 
+  .icon {
+    @include resetButton();
+    align-items: center;
+    display: flex;
+    padding: 0.5rem;
+  }
+
   .info {
     align-items: center;
     display: flex;

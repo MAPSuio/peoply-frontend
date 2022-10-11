@@ -30,6 +30,7 @@ interface JoinButtonProps {
   eventFinishedText?: string;
   countdownText?: string;
   regClosedText?: string;
+  bannedText?: string;
   updateOnChange?: KeyedMutator<any>;
   useUnregisterModal?: boolean;
   small?: boolean;
@@ -46,6 +47,7 @@ export default function JoinButton({
   eventFinishedText = "Arrangementet er ferdig",
   countdownText = "Påmelding åpner om",
   regClosedText = "Påmeldingen er stengt",
+  bannedText = "Du er utestengt fra arrangementet",
   updateOnChange,
   useUnregisterModal = false,
   small = false,
@@ -158,6 +160,8 @@ export default function JoinButton({
           return joinWaitlistText;
         }
         return joinText;
+      case RegStatus.BANNED:
+        return bannedText;
       default:
         if (freeSpace === false) {
           return joinWaitlistText;
@@ -167,7 +171,12 @@ export default function JoinButton({
   })();
 
   const buttonDisabled = (() => {
-    if (eventFinished || isCountdown || regClosed) {
+    if (
+      eventFinished ||
+      isCountdown ||
+      regClosed ||
+      myRegistration?.regStatus === RegStatus.BANNED
+    ) {
       return true;
     }
 

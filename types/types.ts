@@ -340,6 +340,7 @@ export enum RegStatus {
   GOING = "GOING",
   NOT_GOING = "NOT_GOING",
   WAITLISTED = "WAITLISTED",
+  BANNED = "BANNED",
 }
 
 export enum SectionTypes {
