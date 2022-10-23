@@ -310,8 +310,9 @@
 .descHeaderWrapper {
   display: flex;
   flex-direction: column;
+  gap: $spacer-small;
 
-  @include breakPoint(800px) {
+  @include breakPoint(1045px) {
     align-items: flex-end;
     flex-direction: row-reverse;
     justify-content: space-between;
@@ -322,10 +323,17 @@
 .shareButtons {
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: $spacer-small;
-  margin-bottom: $spacer-medium;
   width: 100%;
+
+  > * {
+    flex-basis: 100px;
+    flex-grow: 1;  
+    flex-shrink: 1;
+    min-width: 100px;
+    width: 100%;
+  }
 
   @include breakPoint(800px) {
     margin-bottom: 0;
@@ -338,4 +346,32 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
+}
+
+
+.announcementsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  margin-top: $spacer-medium;
+  .announcementsHeader {
+    font-size: $font-size-heading-large;
+    margin-bottom: $spacer-very-small-plus;
+    white-space: nowrap;
+
+    @include desktop() {
+      font-size: $font-size-heading-large-desktop;
+      margin-bottom: $spacer-small;
+    }
+
+    @include breakPoint(800px) {
+      margin-bottom: 0;
+    }
+  }
+
+  .announcementCards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-small;
+  }
 }

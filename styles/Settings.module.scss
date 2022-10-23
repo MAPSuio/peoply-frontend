@@ -10,7 +10,13 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+  margin: 0 auto;
+  max-width: $page-width-mobile;
   width: $page-width-mobile;
+
+  .confirm {
+    @include fixedButton();
+  }
 }
 
 .title {
@@ -92,4 +98,12 @@
 
 .marginLeftMedium {
   margin-left: $spacer-medium;
+}
+
+.subsection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  margin-left: $spacer-medium;
+  margin-top: $spacer-small;
 }

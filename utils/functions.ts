@@ -247,6 +247,14 @@ function getTimeString(date: string): string {
   return `${hour}:${minute}`;
 }
 
+function getTimeStringFromDate(date: Date): string {
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  return `${hour < 10 ? "0" + hour : hour}:${
+    minute < 10 ? "0" + minute : minute
+  }`;
+}
+
 /* Gets the weekday of a given date. */
 function getWeekday(date: Date): string {
   const day = date.getDay();
@@ -617,8 +625,38 @@ function queryToString(query: any) {
     .join("&");
 }
 
+function isValidEmail(email: string): boolean {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
+
 function throwNotImportedError() {
   throw new Error("This function is not specified.");
+}
+
+function getTimeSinceString(date: Date) {
+  /* returns string with minutes or hours since if argument is less than 10 hours since now else formatted date string */
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const diffInSeconds = Math.floor(diff / 1000);
+  const diffInMinutes = Math.floor(diff / 1000 / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInSeconds < 60) {
+    return diffInSeconds > 1
+      ? `${diffInSeconds} sekunder siden`
+      : "1 sekund siden";
+  }
+  if (diffInMinutes < 60) {
+    return diffInMinutes > 1
+      ? `${diffInMinutes} minutter siden`
+      : "1 minutt siden";
+  } else if (diffInHours < 10) {
+    return diffInHours > 1 ? `${diffInHours} timer siden` : "1 time siden";
+  } else {
+    return `${date.toLocaleDateString("nb")} ${"  "} ${getTimeStringFromDate(
+      date,
+    )}`;
+  }
 }
 
 export {
@@ -661,4 +699,7 @@ export {
   groupBy,
   calculateEditDistance,
   queryToString,
+  isValidEmail,
+  getTimeSinceString,
+  getTimeStringFromDate,
 };

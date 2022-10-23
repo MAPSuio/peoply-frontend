@@ -47,6 +47,7 @@ import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import {
   ButtonType,
   Event,
+  EventUpdate,
   OrganizationRole,
   Registration,
   RegStatus,
@@ -60,6 +61,8 @@ import { ParsedUrlQuery } from "querystring";
 // Styles.
 import styles from "../../../styles/Event.module.scss";
 import JoinButton from "../../../components/JoinButton";
+import RSSIcon from "../../../components/svgs/RSSIcon";
+import EventUpdateCard from "../../../components/EventUpdateCard";
 
 interface EventProps {
   event: Event;
@@ -88,6 +91,15 @@ const Event = ({ event, baseUrl }: EventProps) => {
   >(
     () =>
       event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+    fetchFromPeoplyApiJson,
+  );
+
+  const {
+    data: updates,
+    error: updatesError,
+    mutate: mutateUpdates,
+  } = useSWR<EventUpdate[]>(
+    () => (event?.id ? `/events/${event.id}/updates` : false),
     fetchFromPeoplyApiJson,
   );
 
@@ -177,7 +189,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
     }
   };
 
-  const isArranger = () => {
+  const isArranger = (() => {
     /* arrangerIds for orgs where the user is ownerOrAdmin */
     const organizationArrangerIdsForUser = orgs
       ?.map((org) => ({
@@ -206,7 +218,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       return true;
     }
     return false;
-  };
+  })();
 
   return (
     <>
@@ -226,7 +238,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
             favorited={favorited}
             loading={!favoriteFetched}
           />
-          {isArranger() && (
+          {isArranger && (
             <EditIconGlass
               className={styles.editIcon}
               onClick={editEventFunc}
@@ -458,6 +470,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   icon={<MailIcon />}
                   iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
                 />
+                {isArranger && (
+                  <LinkButton
+                    href={`/events/${eventData.urlId}/update`}
+                    small
+                    text="Lag oppdatering"
+                    type={ButtonType.SECONDARY}
+                    icon={<RSSIcon />}
+                    iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+                  />
+                )}
               </div>
               <h2 className={styles.descHeader}>Informasjon</h2>
             </div>
@@ -470,6 +492,21 @@ const Event = ({ event, baseUrl }: EventProps) => {
               ))}
             </div>
           </div>
+          {updates && updates.length > 0 && (
+            <div className={styles.announcementsWrapper}>
+              <h2 className={styles.announcementsHeader}>Oppdateringer</h2>
+              <div className={styles.announcementCards}>
+                {updates?.map((update) => (
+                  <EventUpdateCard
+                    key={update.id}
+                    update={update}
+                    isArranger={isArranger}
+                    mutateUpdates={mutateUpdates}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <JoinButton
             event={eventData}
             updateOnChange={updateEvent}
