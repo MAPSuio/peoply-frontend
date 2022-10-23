@@ -30,6 +30,7 @@ import { groupBy } from "../../utils/functions";
 import Modal from "../../components/Modal";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import ModalButton from "../../components/ModalButton";
 
 export default function Notifications() {
   const { user } = useUser();
@@ -327,14 +328,20 @@ export default function Notifications() {
         <Modal
           label={`Arrangementet har matservering`}
           description="For å godta invitasjonen til arrangementet må du fylle ut matpreferanser på profilen din."
-          buttonText={`Rediger matpreferanser`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={() => router.push("/me/edit")}
-          secondaryButtonOnClick={() =>
-            setFoodPreferanceModalOpenModalOpen(false)
-          }
           closeButtonOnClick={() => setFoodPreferanceModalOpenModalOpen(false)}
-        />
+        >
+          <>
+            <ModalButton
+              text="Rediger matpreferanser"
+              onClick={() => router.push("/me/edit")}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setFoodPreferanceModalOpenModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
     </>
   );

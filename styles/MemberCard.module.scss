@@ -1,6 +1,7 @@
 .container {
   @include card();
   align-items: stretch;
+  align-items: center;
   display: flex;
   justify-content: space-between;
   padding: $spacer-very-small $spacer-small;

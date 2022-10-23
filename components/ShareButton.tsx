@@ -1,5 +1,5 @@
 import useSnack from "../hooks/useSnack";
-import { SnackTypes } from "../types/types";
+import { ButtonSize, SnackTypes } from "../types/types";
 import Button, { IconPlacement } from "./Button";
 import ShareIcon from "./svgs/ShareIcon";
 import styles from "../styles/ShareButton.module.scss";
@@ -64,7 +64,7 @@ export function ShareButton({
   return (
     <Button
       text={buttonText}
-      small
+      size={ButtonSize.SMALL}
       width={width}
       onClick={(e: MouseEvent) => buttonOnClick(e)}
       noShadow

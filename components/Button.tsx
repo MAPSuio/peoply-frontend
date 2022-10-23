@@ -2,7 +2,7 @@
 import LoadingWheel from "./LoadingWheel";
 
 // Types.
-import { ButtonType } from "../types/types";
+import { ButtonSize, ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/Button.module.scss";
@@ -20,7 +20,7 @@ interface ButtonProps {
   onClick?: ((e: MouseEvent) => void) | ((e: MouseEvent) => Promise<void>);
   className?: string;
   disabled?: boolean;
-  small?: boolean;
+  size?: ButtonSize;
   width?: string;
   noShadow?: boolean;
   loading?: boolean;
@@ -35,7 +35,7 @@ export default function Button({
   onClick,
   className,
   disabled,
-  small,
+  size = ButtonSize.MEDIUM,
   width,
   noShadow,
   loading,
@@ -45,36 +45,31 @@ export default function Button({
 }: ButtonProps) {
   const [onClickLoadingState, setOnClickLoadingState] = useState(false);
   const [onClickDisableState, setOnClickDisableState] = useState(false);
+
+  const sizeStyle =
+    size === ButtonSize.SMALL
+      ? styles.small
+      : size === ButtonSize.TINY
+      ? styles.tiny
+      : undefined;
+  const shadowStyle = noShadow ? styles.noShadow : undefined;
+
   const buttonStyles = (() => {
     switch (type) {
       case ButtonType.PRIMARY:
-        return `${styles.button} ${small && styles.small} ${
-          noShadow && styles.noShadow
-        }`;
+        return `${styles.button} ${sizeStyle} ${shadowStyle}`;
       case ButtonType.SECONDARY:
-        return `${styles.button} ${styles.secondaryButton} ${
-          small && styles.small
-        } ${noShadow && styles.noShadow}`;
+        return `${styles.button} ${styles.secondaryButton} ${sizeStyle} ${shadowStyle}`;
       case ButtonType.DANGER:
-        return `${styles.button} ${styles.dangerButton} ${
-          small && styles.small
-        } ${noShadow && styles.noShadow}`;
+        return `${styles.button} ${styles.dangerButton} ${sizeStyle} ${shadowStyle}`;
       case ButtonType.WARNING:
-        return `${styles.button} ${styles.warningButton} ${
-          small && styles.small
-        } ${noShadow && styles.noShadow}`;
+        return `${styles.button} ${styles.warningButton} ${sizeStyle} ${shadowStyle}`;
       case ButtonType.HIGHLIGHTEDEVENTCARD:
-        return `${styles.button} ${styles.highlightedEventCardButton} ${
-          small && styles.small
-        } ${noShadow && styles.noShadow}`;
+        return `${styles.button} ${styles.highlightedEventCardButton} ${sizeStyle} ${shadowStyle}`;
       case ButtonType.REGISTERED:
-        return `${styles.button} ${styles.registeredButton} ${
-          small && styles.small
-        } ${noShadow && styles.noShadow}`;
+        return `${styles.button} ${styles.registeredButton} ${sizeStyle} ${shadowStyle}`;
       default:
-        return `${styles.button} ${small && styles.small} ${
-          noShadow && styles.noShadow
-        }`;
+        return `${styles.button} ${sizeStyle} ${shadowStyle}`;
     }
   })();
 

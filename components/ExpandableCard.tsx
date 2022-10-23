@@ -17,20 +17,17 @@ const ExpandableCard = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <button
-      className={`${styles.button} ${className ?? ""}`}
-      onClick={() => setOpen(!open)}
-    >
-      <div className={styles.titleContainer}>
+    <div className={`${styles.button} ${className ?? ""}`}>
+      <button className={styles.titleContainer} onClick={() => setOpen(!open)}>
         <p className={styles.title}>{title}</p>
         {open ? (
           <MinusIcon className={styles.icon} />
         ) : (
           <PlusIcon className={styles.icon} />
         )}
-      </div>
+      </button>
       {open && <div className={styles.childrenContainer}>{children}</div>}
-    </button>
+    </div>
   );
 };
 

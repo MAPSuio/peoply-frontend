@@ -94,6 +94,7 @@
   color: $text-color-primary;
   font-size: $font-size-secondary;
   line-height: $line-height-hint-text;
+  margin-bottom: $spacer-medium;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;

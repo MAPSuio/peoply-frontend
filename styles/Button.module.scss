@@ -152,11 +152,23 @@
 .small {
   font-size: $font-size-secondary;
   padding: $spacer-very-small-plus $spacer-small;
-  width: auto;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
     padding: $spacer-small $spacer-small-plus;
+  }
+}
+
+.tiny {
+  font-size: $font-size-tertiary;  
+  height: fit-content;
+  padding: $spacer-very-small $spacer-very-small;
+  width: fit-content;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    padding: $spacer-very-small $spacer-very-small;
+
   }
 }
 

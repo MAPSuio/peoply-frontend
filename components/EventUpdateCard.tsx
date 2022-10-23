@@ -1,4 +1,9 @@
-import { EventUpdate, EventUpdateVisibility, SnackTypes } from "../types/types";
+import {
+  ButtonType,
+  EventUpdate,
+  EventUpdateVisibility,
+  SnackTypes,
+} from "../types/types";
 import styles from "../styles/EventUpdateCard.module.scss";
 import EyeIcon from "./svgs/EyeIcon";
 import { getTimeSinceString } from "../utils/functions";
@@ -7,6 +12,7 @@ import { useState } from "react";
 import Modal from "./Modal";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import useSnack from "../hooks/useSnack";
+import ModalButton from "./ModalButton";
 
 interface EventUpdateCardProps {
   update: EventUpdate;
@@ -71,17 +77,25 @@ export default function EventUpdateCard({
         <Modal
           label="Slett oppdatering"
           description="Er du sikker på at du vil slette oppdateringen?"
-          buttonText="Slett"
-          danger
-          buttonOnClick={deleteUpdate}
-          secondaryButtonText="Avbryt"
-          secondaryButtonOnClick={() => {
-            setDeleteModalOpen(false);
-          }}
           closeButtonOnClick={() => {
             setDeleteModalOpen(false);
           }}
-        ></Modal>
+        >
+          <>
+            <ModalButton
+              text={"Slett"}
+              onClick={deleteUpdate}
+              type={ButtonType.DANGER}
+            />
+            <ModalButton
+              text={"Avbryt"}
+              onClick={() => {
+                setDeleteModalOpen(false);
+              }}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
     </div>
   );

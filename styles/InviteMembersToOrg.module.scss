@@ -13,14 +13,60 @@
     @include headingContainer();
   }
 
-  .selected {
+  .contentContainer {
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .inviteMembersButton {
+    @include resetButton();
+    align-self: flex-start;
+    display: flex;
+    margin-bottom: $spacer-small;
+
+    p {
+      color: $primary-color-200;
+      font-family: $mono-font;
+      font-size: $font-size-secondary;
+      margin-left: $spacer-very-small;
+    
+      @include desktop() {
+        font-size: $font-size-secondary-desktop;
+      }
+    }
+
+    .plusIconDimensions {
+      height: $font-size-secondary;
+      stroke: $primary-color-200;
+      width: $font-size-secondary;
+    
+      @include desktop() {
+        height: $font-size-secondary-desktop;
+        width: $font-size-secondary-desktop;
+      }
+    }
+  }
+
+  .inviteOrgContainer {
+    align-items: flex-end;
+    align-self: flex-start;
+    display: flex;
+  }
+
+  .arrangerInput {
+    margin-right: $spacer-small;
+  }
+
+  .selected {
+    align-self: flex-start;
     display: flex;
     flex-wrap: wrap;
     gap: $spacer-very-small;
     margin-bottom: $spacer-small;
-    max-width: 600px;
-    width: 100%;
+    margin-top: $spacer-small;
 
     .selectedUser {
       align-items: center;
@@ -30,10 +76,12 @@
       display: flex;
       font-size: $font-size-tertiary;
       gap: $spacer-mini;
+      max-width: 500px;
       padding: $spacer-mini $spacer-small;
 
       svg {
         filter: brightness(0) invert(1);
+        stroke: #FFFFFF;
       }
 
     }

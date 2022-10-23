@@ -7,6 +7,7 @@ import FoodPreferenceDisplay from "../../../components/FoodPreferenceDisplay";
 import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
 import Modal from "../../../components/Modal";
+import ModalButton from "../../../components/ModalButton";
 import SearchField from "../../../components/SearchField";
 import ExitIcon from "../../../components/svgs/ExitIcon";
 import MailIcon from "../../../components/svgs/MailIcon";
@@ -27,6 +28,7 @@ import {
   InvitationStatus,
   User,
   FoodPreference,
+  ButtonType,
 } from "../../../types/types";
 import {
   calculateEditDistance,
@@ -49,17 +51,19 @@ const Participants = () => {
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.PARTICIPANTS,
   );
-  const [banModalUserId, setBanUserId] = useState<string | undefined>(
-    undefined,
-  );
+  const [banUserId, setBanUserId] = useState<string | undefined>(undefined);
+  const [unBanUserId, setUnBanUserId] = useState<string | undefined>(undefined);
+
   const { data: event, error: eventError } = useSWR<Event>(
     () => (eid ? `/events/${eid}` : false),
     fetchFromPeoplyApiJson,
   );
 
-  const { data: registrations, error: registrationsError } = useSWR<
-    Registration[]
-  >(
+  const {
+    data: registrations,
+    error: registrationsError,
+    mutate: mutateRegistrations,
+  } = useSWR<Registration[]>(
     () =>
       event?.id
         ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
@@ -161,18 +165,69 @@ const Participants = () => {
 
   async function banUser() {
     try {
-      await fetchFromPeoplyApiJson(`/events/${event?.id}/registrations`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          userId: banModalUserId,
-          regStatus: RegStatus.BANNED,
-        }),
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-      });
-      addSnack("Bruker utestengt", SnackTypes.SUCCESS);
+      if (event) {
+        await fetchFromPeoplyApiJson(
+          `/events/${event.id}/registrations/${banUserId}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              eventId: event.id,
+              regStatus: RegStatus.BANNED,
+            }),
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+          },
+        );
+        addSnack("Bruker utestengt", SnackTypes.SUCCESS);
+        mutateRegistrations();
+      }
     } catch (e) {
       addSnack(
         "Det skjedde en feil under utestenging av bruker",
+        SnackTypes.ERROR,
+      );
+    }
+    setBanUserId(undefined);
+  }
+
+  async function unBanUser() {
+    try {
+      await fetchFromPeoplyApiJson(
+        `/events/${event?.id}/registrations/${unBanUserId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      addSnack("Fjernet utestenging", SnackTypes.SUCCESS);
+      mutateRegistrations();
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under fjerning av utestenging",
+        SnackTypes.ERROR,
+      );
+    }
+    setUnBanUserId(undefined);
+  }
+
+  async function unregisterUser() {
+    try {
+      if (event) {
+        await fetchFromPeoplyApiJson(
+          `/events/${event.id}/registrations/${banUserId}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              eventId: event.id,
+              regStatus: RegStatus.NOT_GOING,
+            }),
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+          },
+        );
+        addSnack("Suksess", SnackTypes.SUCCESS);
+        mutateRegistrations();
+      }
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under avregistrering av bruker",
         SnackTypes.ERROR,
       );
     }
@@ -198,6 +253,7 @@ const Participants = () => {
           (map, { user }) => {
             if (user.foodPreference) {
               if (map.has(user.foodPreference)) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 map.set(user.foodPreference, map.get(user.foodPreference)! + 1);
               } else {
                 map.set(user.foodPreference, 1);
@@ -246,19 +302,34 @@ const Participants = () => {
                 iconOnClick={() => setBanUserId(registration.userId)}
               />
             ))}
-            {banModalUserId && (
+            {banUserId && (
               <Modal
-                label="Utesteng bruker"
-                description="Er du sikker på at du vil utestenge brukeren fra dette arrangementet? 
-                
-                Brukeren vil ikke kunne melde seg på arrangementet igjen, men du kan gjenopprette brukeren under 'kommer ikke'."
-                buttonText="Utesteng bruker"
-                danger
-                buttonOnClick={banUser}
-                secondaryButtonText="Avbryt"
-                secondaryButtonOnClick={() => setBanUserId(undefined)}
+                label="Fjern bruker"
+                description="Er du sikker på at du vil fjerne brukeren fra dette arrangementet?
+
+                Avmeldte brukere kan melde seg på igjen.
+                Utestengte brukere kan ikke melde seg på arrangementet igjen, men utestengingen kan fjernes under 'kommer ikke' fanen.
+                "
                 closeButtonOnClick={() => setBanUserId(undefined)}
-              ></Modal>
+              >
+                <>
+                  <ModalButton
+                    text="Meld av"
+                    onClick={unregisterUser}
+                    type={ButtonType.WARNING}
+                  />
+                  <ModalButton
+                    text="Utesteng"
+                    onClick={banUser}
+                    type={ButtonType.DANGER}
+                  />
+                  <ModalButton
+                    text="Avbryt"
+                    onClick={() => setBanUserId(undefined)}
+                    type={ButtonType.SECONDARY}
+                  />
+                </>
+              </Modal>
             )}
           </>
         );
@@ -342,11 +413,49 @@ const Participants = () => {
               <MemberCard
                 key={registration.userId}
                 user={registration.user}
-                description={`Meldte seg av ${formatDateRange(
-                  new Date(registration.updatedAt),
-                )}`}
+                description={
+                  registration.regStatus === RegStatus.BANNED
+                    ? "Utestengt"
+                    : `Meldte seg av ${formatDateRange(
+                        new Date(registration.updatedAt),
+                      )}`
+                }
+                icon={
+                  registration.regStatus === RegStatus.BANNED ? (
+                    <button
+                      className={styles.unbanButton}
+                      onClick={() => setUnBanUserId(registration.userId)}
+                    >
+                      {"fjern utestenging"}
+                    </button>
+                  ) : (
+                    <></>
+                  )
+                }
               />
             ))}
+            {unBanUserId && (
+              <>
+                <Modal
+                  label="Fjern utestenging"
+                  description="Er du sikker på at du vil fjerne utestengingen av brukeren?"
+                  closeButtonOnClick={() => setUnBanUserId(undefined)}
+                >
+                  <>
+                    <ModalButton
+                      text={"Fjern utestenging"}
+                      type={ButtonType.DANGER}
+                      onClick={unBanUser}
+                    />
+                    <ModalButton
+                      text={"avbryt"}
+                      onClick={() => setUnBanUserId(undefined)}
+                      type={ButtonType.SECONDARY}
+                    />
+                  </>
+                </Modal>
+              </>
+            )}
           </>
         );
     }

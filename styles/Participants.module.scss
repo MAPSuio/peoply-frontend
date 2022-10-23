@@ -30,6 +30,11 @@
   margin-left: 5%;
 }
 
+.unbanButton {
+  @include resetButton();
+  width: auto;
+}
+
 .header {
   @include headingContainer();
 }

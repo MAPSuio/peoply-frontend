@@ -1,5 +1,4 @@
 .button {
-  @include resetButton();
   @include card();
   display: flex;
   flex-flow: column nowrap;
@@ -10,8 +9,10 @@
 }
 
 .titleContainer {
+  @include resetButton();
   align-items: center;
   display: flex;
+  font-family: $main-font;
   justify-content: space-between;
   width: 100%;
 }

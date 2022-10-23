@@ -18,7 +18,7 @@ import SettingsButton from "../../components/SettingsButton";
 // import SunIcon from "../../components/svgs/SunIcon";
 
 /* Types. */
-import { SettingTypes, SnackTypes } from "../../types/types";
+import { SettingTypes, SnackTypes, ButtonType } from "../../types/types";
 
 /* Styles. */
 import styles from "../../styles/Settings.module.scss";
@@ -26,6 +26,7 @@ import HeadComponent from "../../components/HeadComponent";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
+import ModalButton from "../../components/ModalButton";
 import SwitchInput from "../../components/inputs/SwitchInput";
 import TextInput from "../../components/inputs/TextInput";
 import Button from "../../components/Button";
@@ -296,13 +297,21 @@ const Settings = ({ baseUrl }: SettingsProps) => {
         <Modal
           label={`Vil du slette ${user?.firstName} ${user?.lastName}?`}
           description="Dette vil slette brukeren og all tilknyttet data. Dette kan ikke reverseres."
-          buttonText={`Slett meg`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={deleteMe}
-          secondaryButtonOnClick={() => setModalOpen(false)}
           closeButtonOnClick={() => setModalOpen(false)}
-          danger
-        />
+        >
+          <>
+            <ModalButton
+              text="Slett meg"
+              onClick={deleteMe}
+              type={ButtonType.DANGER}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
     </>
   );

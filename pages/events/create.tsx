@@ -58,6 +58,7 @@ import {
   ImageCaching,
   SnackTypes,
   OrganizationRole,
+  ButtonType,
 } from "../../types/types";
 import { Models } from "azure-maps-rest";
 
@@ -79,6 +80,7 @@ import {
   isEventRegStartDateValid,
   isEventRegStartTimeValid,
 } from "../../utils/event";
+import ModalButton from "../../components/ModalButton";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -1301,21 +1303,29 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
           <Modal
             label="Fortsett opprettelse av arrangement?"
             description="Vi ser at du har et tidligere arrangement som ikke ble postet. Vil du fortsette der du slapp, eller opprette et nytt arrangement?"
-            buttonText="Fortsett"
-            secondaryButtonText="Opprett nytt"
-            buttonOnClick={() => {
-              continueEventCreation();
-              setModalOpen(false);
-            }}
-            secondaryButtonOnClick={() => {
-              startNewEventCreation();
-              setModalOpen(false);
-            }}
             closeButtonOnClick={() => {
               setModalOpen(false);
               startNewEventCreation();
             }}
-          />
+          >
+            <>
+              <ModalButton
+                text="Fortsett"
+                onClick={() => {
+                  continueEventCreation();
+                  setModalOpen(false);
+                }}
+              />
+              <ModalButton
+                text="Opprett nytt"
+                onClick={() => {
+                  startNewEventCreation();
+                  setModalOpen(false);
+                }}
+                type={ButtonType.SECONDARY}
+              />
+            </>
+          </Modal>
         )}
         <div className={styles.container}>
           {getCurrentInputPage(eventObject.currentStep)}

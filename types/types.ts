@@ -404,6 +404,12 @@ export enum ButtonType {
   HIGHLIGHTEDEVENTCARD,
 }
 
+export enum ButtonSize {
+  TINY,
+  SMALL,
+  MEDIUM,
+}
+
 export enum Alignment {
   LEFT,
   CENTER,
