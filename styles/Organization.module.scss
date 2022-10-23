@@ -29,6 +29,7 @@
 
 .title {
   font-size: $font-size-heading-large;
+  text-align: center;
 
   @include desktop() {
     font-size: $font-size-heading-large-desktop;

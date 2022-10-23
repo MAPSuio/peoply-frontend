@@ -6,7 +6,10 @@ import ExpandableCard from "../../../components/ExpandableCard";
 import FoodPreferenceDisplay from "../../../components/FoodPreferenceDisplay";
 import HeadComponent from "../../../components/HeadComponent";
 import MemberCard from "../../../components/MemberCard";
+import Modal from "../../../components/Modal";
+import ModalButton from "../../../components/ModalButton";
 import SearchField from "../../../components/SearchField";
+import ExitIcon from "../../../components/svgs/ExitIcon";
 import MailIcon from "../../../components/svgs/MailIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCross from "../../../components/svgs/UserCross";
@@ -25,6 +28,7 @@ import {
   InvitationStatus,
   User,
   FoodPreference,
+  ButtonType,
 } from "../../../types/types";
 import {
   calculateEditDistance,
@@ -47,14 +51,19 @@ const Participants = () => {
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.PARTICIPANTS,
   );
+  const [banUserId, setBanUserId] = useState<string | undefined>(undefined);
+  const [unBanUserId, setUnBanUserId] = useState<string | undefined>(undefined);
+
   const { data: event, error: eventError } = useSWR<Event>(
     () => (eid ? `/events/${eid}` : false),
     fetchFromPeoplyApiJson,
   );
 
-  const { data: registrations, error: registrationsError } = useSWR<
-    Registration[]
-  >(
+  const {
+    data: registrations,
+    error: registrationsError,
+    mutate: mutateRegistrations,
+  } = useSWR<Registration[]>(
     () =>
       event?.id
         ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
@@ -154,6 +163,77 @@ const Participants = () => {
     );
   }
 
+  async function banUser() {
+    try {
+      if (event) {
+        await fetchFromPeoplyApiJson(
+          `/events/${event.id}/registrations/${banUserId}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              eventId: event.id,
+              regStatus: RegStatus.BANNED,
+            }),
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+          },
+        );
+        addSnack("Bruker utestengt", SnackTypes.SUCCESS);
+        mutateRegistrations();
+      }
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under utestenging av bruker",
+        SnackTypes.ERROR,
+      );
+    }
+    setBanUserId(undefined);
+  }
+
+  async function unBanUser() {
+    try {
+      await fetchFromPeoplyApiJson(
+        `/events/${event?.id}/registrations/${unBanUserId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      addSnack("Fjernet utestenging", SnackTypes.SUCCESS);
+      mutateRegistrations();
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under fjerning av utestenging",
+        SnackTypes.ERROR,
+      );
+    }
+    setUnBanUserId(undefined);
+  }
+
+  async function unregisterUser() {
+    try {
+      if (event) {
+        await fetchFromPeoplyApiJson(
+          `/events/${event.id}/registrations/${banUserId}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              eventId: event.id,
+              regStatus: RegStatus.NOT_GOING,
+            }),
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+          },
+        );
+        addSnack("Suksess", SnackTypes.SUCCESS);
+        mutateRegistrations();
+      }
+    } catch (e) {
+      addSnack(
+        "Det skjedde en feil under avregistrering av bruker",
+        SnackTypes.ERROR,
+      );
+    }
+    setBanUserId(undefined);
+  }
+
   function renderTab(tab: TabOption) {
     switch (tab) {
       case TabOption.PARTICIPANTS:
@@ -173,6 +253,7 @@ const Participants = () => {
           (map, { user }) => {
             if (user.foodPreference) {
               if (map.has(user.foodPreference)) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 map.set(user.foodPreference, map.get(user.foodPreference)! + 1);
               } else {
                 map.set(user.foodPreference, 1);
@@ -217,9 +298,39 @@ const Participants = () => {
                 description={`Meldte seg på ${formatDateRange(
                   new Date(registration.updatedAt),
                 )}`}
-                link={`/users/${registration.userId}`}
+                icon={<ExitIcon />}
+                iconOnClick={() => setBanUserId(registration.userId)}
               />
             ))}
+            {banUserId && (
+              <Modal
+                label="Fjern bruker"
+                description="Er du sikker på at du vil fjerne brukeren fra dette arrangementet?
+
+                Avmeldte brukere kan melde seg på igjen.
+                Utestengte brukere kan ikke melde seg på arrangementet igjen, men utestengingen kan fjernes under 'kommer ikke' fanen.
+                "
+                closeButtonOnClick={() => setBanUserId(undefined)}
+              >
+                <>
+                  <ModalButton
+                    text="Meld av"
+                    onClick={unregisterUser}
+                    type={ButtonType.WARNING}
+                  />
+                  <ModalButton
+                    text="Utesteng"
+                    onClick={banUser}
+                    type={ButtonType.DANGER}
+                  />
+                  <ModalButton
+                    text="Avbryt"
+                    onClick={() => setBanUserId(undefined)}
+                    type={ButtonType.SECONDARY}
+                  />
+                </>
+              </Modal>
+            )}
           </>
         );
 
@@ -264,7 +375,6 @@ const Participants = () => {
                     } ${invitation.fromUser?.lastName} ${formatDateRange(
                       new Date(invitation.createdAt),
                     )}`}
-                    link={`/users/${invitation.toUser?.id}`}
                   />
                 ),
             )}
@@ -273,14 +383,14 @@ const Participants = () => {
 
       case TabOption.NOT_GOING:
         const notGoing = registrations?.filter(
-          (registration) => registration.regStatus === RegStatus.NOT_GOING,
+          (registration) =>
+            registration.regStatus === RegStatus.NOT_GOING ||
+            registration.regStatus === RegStatus.BANNED,
         );
 
         if (!notGoing?.length) {
           return (
-            <p className={styles.notFound}>
-              Ingen deltakere har meldt seg på enda
-            </p>
+            <p className={styles.notFound}>Ingen deltakere har meldt seg av</p>
           );
         }
 
@@ -303,12 +413,49 @@ const Participants = () => {
               <MemberCard
                 key={registration.userId}
                 user={registration.user}
-                description={`Meldte seg av ${formatDateRange(
-                  new Date(registration.updatedAt),
-                )}`}
-                link={`/users/${registration.userId}`}
+                description={
+                  registration.regStatus === RegStatus.BANNED
+                    ? "Utestengt"
+                    : `Meldte seg av ${formatDateRange(
+                        new Date(registration.updatedAt),
+                      )}`
+                }
+                icon={
+                  registration.regStatus === RegStatus.BANNED ? (
+                    <button
+                      className={styles.unbanButton}
+                      onClick={() => setUnBanUserId(registration.userId)}
+                    >
+                      {"fjern utestenging"}
+                    </button>
+                  ) : (
+                    <></>
+                  )
+                }
               />
             ))}
+            {unBanUserId && (
+              <>
+                <Modal
+                  label="Fjern utestenging"
+                  description="Er du sikker på at du vil fjerne utestengingen av brukeren?"
+                  closeButtonOnClick={() => setUnBanUserId(undefined)}
+                >
+                  <>
+                    <ModalButton
+                      text={"Fjern utestenging"}
+                      type={ButtonType.DANGER}
+                      onClick={unBanUser}
+                    />
+                    <ModalButton
+                      text={"avbryt"}
+                      onClick={() => setUnBanUserId(undefined)}
+                      type={ButtonType.SECONDARY}
+                    />
+                  </>
+                </Modal>
+              </>
+            )}
           </>
         );
     }

@@ -4,14 +4,14 @@ import styles from "../../styles/RadioInput.module.scss";
 
 interface RadioInputProps {
   optionsAndIcons: Array<{
-    id: number;
+    id: any;
     text: string;
     hintText?: string;
     icon: React.VoidFunctionComponent;
     active: boolean;
   }>;
   label: string;
-  onClick: (id: number) => void;
+  onClick: (id: any) => void;
 }
 
 const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {

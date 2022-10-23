@@ -1,9 +1,3 @@
-/* Components. */
-import Button from "./Button";
-
-/* Types */
-import { ButtonType } from "../types/types";
-
 /* Styles */
 import styles from "../styles/Modal.module.scss";
 import ExitIcon from "./svgs/ExitIcon";
@@ -11,34 +5,16 @@ import ExitIcon from "./svgs/ExitIcon";
 interface ModalProps {
   label: string;
   description?: string;
-  buttonText?: string;
-  secondaryButtonText?: string;
-  buttonOnClick?: () => void;
-  secondaryButtonOnClick?: () => void;
   closeButtonOnClick?: () => void;
-  danger?: boolean;
+  children?: JSX.Element;
 }
 
 const Modal = ({
   label,
   description,
-  buttonText,
-  secondaryButtonText,
-  buttonOnClick,
-  secondaryButtonOnClick,
   closeButtonOnClick,
-  danger,
+  children,
 }: ModalProps) => {
-  const clickFunction = (e: MouseEvent) => {
-    e.preventDefault();
-    buttonOnClick && buttonOnClick();
-  };
-
-  const secondaryClickFunction = (e: MouseEvent) => {
-    e.preventDefault();
-    secondaryButtonOnClick && secondaryButtonOnClick();
-  };
-
   const closeClickFunction = (e: any) => {
     e.preventDefault();
     closeButtonOnClick && closeButtonOnClick();
@@ -52,24 +28,7 @@ const Modal = ({
         </button>
         <h1 className={styles.title}>{label}</h1>
         <p className={styles.description}>{description}</p>
-        {buttonText && (
-          <Button
-            className={styles.button}
-            text={buttonText}
-            onClick={clickFunction}
-            noShadow
-            type={danger ? ButtonType.DANGER : ButtonType.PRIMARY}
-          />
-        )}
-        {secondaryButtonText && (
-          <Button
-            type={ButtonType.SECONDARY}
-            className={styles.button}
-            text={secondaryButtonText}
-            onClick={secondaryClickFunction}
-            noShadow
-          />
-        )}
+        {children}
       </div>
     </div>
   );

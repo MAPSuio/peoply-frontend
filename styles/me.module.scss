@@ -16,6 +16,7 @@
   .name {
     font-size: $font-size-heading-large;
     margin-top: $spacer-small;
+    text-align: center;
 
     @include desktop() {
       font-size: $font-size-heading-large-desktop;

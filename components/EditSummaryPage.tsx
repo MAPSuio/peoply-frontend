@@ -2,7 +2,13 @@
 import Image from "next/image";
 
 //Types
-import { Event, EventCategory, SnackTypes, Visibility } from "../types/types";
+import {
+  ButtonType,
+  Event,
+  EventCategory,
+  SnackTypes,
+  Visibility,
+} from "../types/types";
 
 // Icons
 import TitleCircle from "./TitleCircle";
@@ -55,6 +61,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
 import { Models } from "azure-maps-rest";
 import TextInputLocationSelect from "./inputs/TextInputLocationSelect";
+import ModalButton from "./ModalButton";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -1013,17 +1020,25 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           <Modal
             label="Slette arrangement"
             description="Er du sikker på at du vil slette arrangementet?"
-            buttonText="Slett"
-            danger
-            buttonOnClick={deleteEvent}
-            secondaryButtonText="Avbryt"
-            secondaryButtonOnClick={() => {
-              setDeleteModalOpen(false);
-            }}
             closeButtonOnClick={() => {
               setDeleteModalOpen(false);
             }}
-          ></Modal>
+          >
+            <>
+              <ModalButton
+                text="Slett"
+                type={ButtonType.DANGER}
+                onClick={deleteEvent}
+              />
+              <ModalButton
+                text="Avbryt"
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                }}
+                type={ButtonType.SECONDARY}
+              />
+            </>
+          </Modal>
         )}
       </div>
     </>

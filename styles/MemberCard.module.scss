@@ -1,6 +1,7 @@
 .container {
   @include card();
   align-items: stretch;
+  align-items: center;
   display: flex;
   justify-content: space-between;
   padding: $spacer-very-small $spacer-small;
@@ -22,6 +23,13 @@
 
   svg {
     stroke: #FFFFFF;
+  }
+
+  .icon {
+    @include resetButton();
+    align-items: center;
+    display: flex;
+    padding: 0.5rem;
   }
 
   .info {

@@ -18,6 +18,7 @@ import { ParsedUrlQuery } from "querystring";
 import HeadComponent from "../../../../components/HeadComponent";
 import { getOrganizationRolePrivilege } from "../../../../utils/functions";
 import useOrganization from "../../../../hooks/useOrganization";
+import EditIcon from "../../../../components/svgs/EditIcon";
 
 interface MembersProps {
   fallbackUsers: UserOrganizationRoles[];
@@ -60,7 +61,10 @@ export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
       const canEdit = isEditingSelf || hasHigherPrivilege;
       return canEdit ? (
         <MemberCard
-          link={`/orgs/${oid}/members/${orgUser.user.id}/edit`}
+          icon={<EditIcon />}
+          iconOnClick={() =>
+            router.push(`/orgs/${oid}/members/${orgUser.user.id}/edit`)
+          }
           user={orgUser.user}
           description={orgUser.roleDescription}
           key={orgUser.user.id}

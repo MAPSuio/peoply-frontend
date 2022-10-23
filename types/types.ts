@@ -14,6 +14,8 @@ export interface User {
   description: string;
   image?: string;
   foodPreference?: FoodPreference;
+  allowEmailFromArranger: boolean;
+  allowEmailPromotions: boolean;
 }
 
 export enum FoodPreference {
@@ -21,6 +23,11 @@ export enum FoodPreference {
   VEGAN = "VEGAN",
   VEGETARIAN = "VEGETARIAN",
   PESCETARIAN = "PESCETARIAN",
+}
+
+export enum EventUpdateVisibility {
+  ALL = "ALL",
+  GOING = "GOING",
 }
 
 export interface GeolocationPostitionObject {
@@ -292,6 +299,35 @@ export interface EventInvitation {
   invitationStatus: InvitationStatus;
 }
 
+export interface EventUpdate {
+  id: string;
+  eventId: string;
+  visibility: EventUpdateVisibility;
+  sendEmail: boolean;
+  subject: string;
+  body: string;
+  replyTo: string;
+  createdByUserId: string;
+  createdByUser?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmailContent {
+  /**
+   * Subject of the email message
+   */
+  subject: string;
+  /**
+   * Plain text version of the email message.
+   */
+  plainText?: string;
+  /**
+   * Html version of the email message.
+   */
+  html?: string;
+}
+
 export enum InputPages {
   TITLE_PAGE = "titlePage",
   DATE_PAGE = "datePage",
@@ -340,6 +376,7 @@ export enum RegStatus {
   GOING = "GOING",
   NOT_GOING = "NOT_GOING",
   WAITLISTED = "WAITLISTED",
+  BANNED = "BANNED",
 }
 
 export enum SectionTypes {
@@ -365,6 +402,12 @@ export enum ButtonType {
   WARNING,
   REGISTERED,
   HIGHLIGHTEDEVENTCARD,
+}
+
+export enum ButtonSize {
+  TINY,
+  SMALL,
+  MEDIUM,
 }
 
 export enum Alignment {

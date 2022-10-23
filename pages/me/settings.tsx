@@ -18,14 +18,21 @@ import SettingsButton from "../../components/SettingsButton";
 // import SunIcon from "../../components/svgs/SunIcon";
 
 /* Types. */
-import { SettingTypes } from "../../types/types";
+import { SettingTypes, SnackTypes, ButtonType } from "../../types/types";
 
 /* Styles. */
 import styles from "../../styles/Settings.module.scss";
 import HeadComponent from "../../components/HeadComponent";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
+import ModalButton from "../../components/ModalButton";
+import SwitchInput from "../../components/inputs/SwitchInput";
+import TextInput from "../../components/inputs/TextInput";
+import Button from "../../components/Button";
+import CheckboxInput from "../../components/inputs/CheckboxInput";
+import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import useSnack from "../../hooks/useSnack";
 
 interface SettingsProps {
   baseUrl: string;
@@ -36,13 +43,38 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   // const [locationAccess, setLocationAccess] = useState(false);
   // const [allowNotifications, setAllowNotifications] = useState(true);
   // const [allowSMSNotifications, setAlllowSMSNotifications] = useState(true);
-  // const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
+  const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
+  const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
+  const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
   // const [activeTheme, setActiveTheme] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(false);
+  const { addSnack } = useSnack();
 
-  const { user, loading, deleteMe } = useUser();
+  const { user, loading, deleteMe, reload } = useUser();
   const goBack = useBack();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+      setAllowEmailFromArranger(user.allowEmailFromArranger);
+      setAllowEmailPromotions(user.allowEmailPromotions);
+
+      /* activate the allow email switch if either email toggles are true */
+      if (user.allowEmailFromArranger || user.allowEmailPromotions) {
+        setAllowEmailNotifications(true);
+      }
+    }
+  }, [user]);
+
+  /* untoggle email switch if both email toggles are false */
+  useEffect(() => {
+    if (!allowEmailFromArranger && !allowEmailPromotions) {
+      setAllowEmailNotifications(false);
+    }
+  }, [allowEmailFromArranger, allowEmailPromotions]);
 
   if (loading) {
     /* TODO: Create actual loading skeleton. */
@@ -54,6 +86,37 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   // const updateTheme = (id: number) => {
   //   setActiveTheme(id);
   // };
+
+  const validAllowEmailFromArrangerEdit =
+    allowEmailFromArranger !== user?.allowEmailFromArranger;
+  const validAllowEmailPromotionsEdit =
+    allowEmailPromotions !== user?.allowEmailPromotions;
+  const validEmailEdit = emailValid && email !== user?.email;
+  const validEdit =
+    validEmailEdit ||
+    validAllowEmailFromArrangerEdit ||
+    validAllowEmailPromotionsEdit;
+
+  const handleConfirm = async () => {
+    try {
+      const body = {
+        ...(validEmailEdit && { email }),
+        ...(validAllowEmailFromArrangerEdit && { allowEmailFromArranger }),
+        ...(validAllowEmailPromotionsEdit && { allowEmailPromotions }),
+      };
+
+      await fetchFromPeoplyApiJson("/users/me", {
+        method: "PATCH",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+      addSnack("Innstillinger oppdatert", SnackTypes.SUCCESS);
+      reload();
+      router.replace("/me");
+    } catch (error) {
+      addSnack("Kunne ikke oppdatere innstillinger", SnackTypes.ERROR);
+    }
+  };
 
   return (
     <>
@@ -139,6 +202,72 @@ const Settings = ({ baseUrl }: SettingsProps) => {
               />
             </div> */}
             <div className={styles.section}>
+              <h2 className={styles.inputHeader}>Epost</h2>
+              <SwitchInput
+                label="Tillat oppdateringer på epost"
+                checked={allowEmailNotifications}
+                onClick={() => {
+                  if (allowEmailNotifications) {
+                    setAllowEmailFromArranger(false);
+                    setAllowEmailPromotions(false);
+                  } else {
+                    setAllowEmailFromArranger(true);
+                    setAllowEmailNotifications(!allowEmailNotifications);
+                  }
+                }}
+              />
+              {allowEmailNotifications && (
+                <div className={styles.subsection}>
+                  <CheckboxInput
+                    label="Motta epost fra arrangementer du skal på"
+                    checked={allowEmailFromArranger}
+                    checkboxId="allowNotifications"
+                    checkboxName="allowNotifications"
+                    onChange={() =>
+                      setAllowEmailFromArranger(!allowEmailFromArranger)
+                    }
+                  />
+                  <CheckboxInput
+                    label="Motta epost fra Peoply-teamet"
+                    checked={allowEmailPromotions}
+                    checkboxId="allowPromotions"
+                    checkboxName="allowPromotions"
+                    onChange={() =>
+                      setAllowEmailPromotions(!allowEmailPromotions)
+                    }
+                  />
+                  <TextInput
+                    value={email}
+                    inputId="subject"
+                    inputName="subject"
+                    label="Foretrukket epost"
+                    errorMessage={`Eposten må være gyldig.`}
+                    placeholder="svar@eksempel.no"
+                    maxLength={100}
+                    handleChange={(e) => setEmail(e.target.value)}
+                    setValid={setEmailValid}
+                    valid={emailValid}
+                    validate
+                    isEmail
+                  />
+                  {/* <SwitchInput
+                    label="Tillat oppdateringer om ventelister"
+                    checked={allowEmailNotifications}
+                    onClick={() =>
+                      setAllowEmailNotifications(!allowEmailNotifications)
+                    }
+                  />
+                  <SwitchInput
+                    label="Tillat eposter fra Peoply-teamet"
+                    checked={allowEmailNotifications}
+                    onClick={() =>
+                      setAllowEmailNotifications(!allowEmailNotifications)
+                    }
+                  /> */}
+                </div>
+              )}
+            </div>
+            <div className={styles.section}>
               <h2 className={styles.inputHeader}>Min bruker</h2>
               <div className={styles.userContainer}>
                 {/* <Link href="/me/data">
@@ -154,19 +283,35 @@ const Settings = ({ baseUrl }: SettingsProps) => {
               </div>
             </div>
           </div>
+          {validEdit && (
+            <Button
+              disabled={!validEdit}
+              text="Lagre innstillinger"
+              onClick={handleConfirm}
+              className={styles.confirm}
+            />
+          )}
         </div>
       </div>
       {modalOpen && (
         <Modal
           label={`Vil du slette ${user?.firstName} ${user?.lastName}?`}
           description="Dette vil slette brukeren og all tilknyttet data. Dette kan ikke reverseres."
-          buttonText={`Slett meg`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={deleteMe}
-          secondaryButtonOnClick={() => setModalOpen(false)}
           closeButtonOnClick={() => setModalOpen(false)}
-          danger
-        />
+        >
+          <>
+            <ModalButton
+              text="Slett meg"
+              onClick={deleteMe}
+              type={ButtonType.DANGER}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
     </>
   );

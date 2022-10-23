@@ -2,18 +2,19 @@ import Link from "next/link";
 import styles from "../styles/MemberCard.module.scss";
 import { User } from "../types/types";
 import Avatar from "./Avatar";
-import EditIcon from "./svgs/EditIcon";
 
 interface MemberCardProps {
   user: User;
   description?: string;
-  link?: string;
+  icon?: JSX.Element;
+  iconOnClick?: () => void;
 }
 
 export default function MemberCard({
   user,
-  link,
   description,
+  icon,
+  iconOnClick: onClick,
 }: MemberCardProps) {
   return (
     <div className={styles.container}>
@@ -30,12 +31,10 @@ export default function MemberCard({
           </div>
         </a>
       </Link>
-      {link && (
-        <Link href={link} passHref>
-          <a>
-            <EditIcon />
-          </a>
-        </Link>
+      {icon && (
+        <button className={styles.icon} onClick={onClick}>
+          {icon}
+        </button>
       )}
     </div>
   );

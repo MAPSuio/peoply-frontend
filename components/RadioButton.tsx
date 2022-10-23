@@ -8,7 +8,7 @@ interface RadioButtonProps {
   Icon: React.FunctionComponent;
   selected?: boolean;
   hintText?: string;
-  onClick: (id: number) => void;
+  onClick: (id: any) => void;
 }
 
 const RadioButton = ({

@@ -59,7 +59,7 @@ const MyEvents = () => {
     fetchFromPeoplyApiJson,
   );
   const { data: eventsGoing, error: myGoingError } = useSWR<Registration[]>(
-    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true`,
+    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true&take=100`,
     fetchFromPeoplyApiJson,
   );
 

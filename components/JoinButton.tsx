@@ -10,6 +10,7 @@ import {
   fetchFromPeoplyApiJson,
 } from "../services/fetchers";
 import {
+  ButtonSize,
   ButtonType,
   Event,
   InvitationStatus,
@@ -19,6 +20,7 @@ import {
 } from "../types/types";
 import Button from "./Button";
 import Modal from "./Modal";
+import ModalButton from "./ModalButton";
 
 interface JoinButtonProps {
   event: Event;
@@ -30,6 +32,7 @@ interface JoinButtonProps {
   eventFinishedText?: string;
   countdownText?: string;
   regClosedText?: string;
+  bannedText?: string;
   updateOnChange?: KeyedMutator<any>;
   useUnregisterModal?: boolean;
   small?: boolean;
@@ -46,6 +49,7 @@ export default function JoinButton({
   eventFinishedText = "Arrangementet er ferdig",
   countdownText = "Påmelding åpner om",
   regClosedText = "Påmeldingen er stengt",
+  bannedText = "Du er utestengt fra arrangementet",
   updateOnChange,
   useUnregisterModal = false,
   small = false,
@@ -158,6 +162,8 @@ export default function JoinButton({
           return joinWaitlistText;
         }
         return joinText;
+      case RegStatus.BANNED:
+        return bannedText;
       default:
         if (freeSpace === false) {
           return joinWaitlistText;
@@ -167,7 +173,12 @@ export default function JoinButton({
   })();
 
   const buttonDisabled = (() => {
-    if (eventFinished || isCountdown || regClosed) {
+    if (
+      eventFinished ||
+      isCountdown ||
+      regClosed ||
+      myRegistration?.regStatus === RegStatus.BANNED
+    ) {
       return true;
     }
 
@@ -323,27 +334,43 @@ export default function JoinButton({
         <Modal
           label={`Arrangementet har matservering`}
           description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
-          buttonText={`Rediger matpreferanser`}
-          secondaryButtonText="Lukk"
-          buttonOnClick={() => router.push("/me/food")}
-          secondaryButtonOnClick={() => setFoodPreferenceModalOpen(false)}
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-        />
+        >
+          <>
+            <ModalButton
+              text="Rediger matpreferanser"
+              onClick={() => router.push("/me/food")}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setFoodPreferenceModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
       {useUnregisterModal && unregisterModalOpen && (
         <Modal
           label="Meld deg av arrangementet"
           description={`Er du sikker på at du vil melde deg av ${event.title}?`}
-          buttonText="Meld deg av"
-          secondaryButtonText="Forbli påmeldt"
-          danger
-          buttonOnClick={() => {
-            updateRegistrationStatus(RegStatus.NOT_GOING);
-            setUnregisterModalOpen(false);
-          }}
-          secondaryButtonOnClick={() => setUnregisterModalOpen(false)}
           closeButtonOnClick={() => setUnregisterModalOpen(false)}
-        />
+        >
+          <>
+            <ModalButton
+              text="Meld deg av"
+              onClick={() => {
+                updateRegistrationStatus(RegStatus.NOT_GOING);
+                setUnregisterModalOpen(false);
+              }}
+              type={ButtonType.DANGER}
+            />
+            <ModalButton
+              text="Forbli påmeldt"
+              onClick={() => setUnregisterModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
+          </>
+        </Modal>
       )}
       <Button
         type={buttonType}
@@ -355,7 +382,7 @@ export default function JoinButton({
         }}
         loading={notLoggedIn ? false : loading}
         disabled={buttonDisabled}
-        small={small}
+        size={small ? ButtonSize.SMALL : ButtonSize.MEDIUM}
         noShadow={noShadow}
       />
     </>

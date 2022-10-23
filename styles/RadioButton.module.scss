@@ -19,6 +19,12 @@
   position: relative;
   transition: background-color $animation-duration ease;
   width: 100%;
+
+  // force proper icon size
+  > svg:first-of-type {
+    height: 36px;
+    width: 36px;
+  }
 }
 
 

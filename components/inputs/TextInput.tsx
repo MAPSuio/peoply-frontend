@@ -3,6 +3,7 @@ import { ChangeEvent, useState } from "react";
 import ErrorIcon from "../svgs/ErrorIcon";
 
 import styles from "../../styles/TextInput.module.scss";
+import { isValidEmail } from "../../utils/functions";
 
 interface TextInputProps {
   value: string;
@@ -18,6 +19,7 @@ interface TextInputProps {
   setValid?: React.Dispatch<React.SetStateAction<boolean>>;
   valid?: boolean;
   validate?: boolean;
+  isEmail?: boolean;
 }
 
 const TextInput = ({
@@ -34,19 +36,21 @@ const TextInput = ({
   setValid,
   valid,
   validate,
+  isEmail,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
   if (setValid) {
-    setValid(
+    const validLength =
       minLength && maxLength
         ? value.length >= minLength && value.length <= maxLength
         : minLength
         ? value.length >= minLength
         : maxLength
         ? value.length <= maxLength
-        : true,
-    );
+        : true;
+    const validEmail = value.length && isEmail ? isValidEmail(value) : true;
+    setValid(validLength && validEmail);
   }
 
   const getInputContainerStyles = () => {
@@ -58,9 +62,9 @@ const TextInput = ({
   };
 
   const getTextInputStyles = () => {
-    if (validate && valid) {
+    if (validate && valid && value.length) {
       return `${styles.textInput} ${styles.valid}`;
-    } else if (validate && focused) {
+    } else if (validate && focused && (required || value.length)) {
       return `${styles.textInput} ${styles.notValid}`;
     } else {
       return `${styles.textInput}`;

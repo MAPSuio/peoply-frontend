@@ -7,6 +7,7 @@ import Dropdown from "../../../../../components/Dropdown";
 import HeadComponent from "../../../../../components/HeadComponent";
 import TextInput from "../../../../../components/inputs/TextInput";
 import Modal from "../../../../../components/Modal";
+import ModalButton from "../../../../../components/ModalButton";
 import SettingsButton from "../../../../../components/SettingsButton";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
@@ -18,6 +19,7 @@ import {
 } from "../../../../../services/fetchers";
 import styles from "../../../../../styles/EditOrganizationUser.module.scss";
 import {
+  ButtonType,
   OrganizationRole,
   SettingTypes,
   SnackTypes,
@@ -235,13 +237,21 @@ export default function EditOrganizationUser() {
           <Modal
             label={`Vil du fjerne ${user?.firstName} ${user?.lastName}?`}
             description="Dette vil fjerne brukeren fra organisasjonen. Brukeren må inviteres på nytt for å bli medlem igjen."
-            buttonText={`Fjern bruker`}
-            secondaryButtonText="Lukk"
-            buttonOnClick={() => deleteUser(userToEdit?.userId)}
-            secondaryButtonOnClick={() => setModalOpen(false)}
             closeButtonOnClick={() => setModalOpen(false)}
-            danger
-          />
+          >
+            <>
+              <ModalButton
+                text="Fjern bruker"
+                onClick={() => deleteUser(userToEdit?.userId)}
+                type={ButtonType.DANGER}
+              />
+              <ModalButton
+                text="Lukk"
+                onClick={() => setModalOpen(false)}
+                type={ButtonType.SECONDARY}
+              />
+            </>
+          </Modal>
         )}
       </>
     );
