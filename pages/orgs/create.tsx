@@ -46,7 +46,7 @@ const Create = ({ baseUrl }: CreateProps) => {
     } catch (error) {
       addSnack("Klarte ikke å lage organisasjon", SnackTypes.ERROR);
     }
-    router.push("/me/orgs");
+    goBack();
   };
 
   return (

@@ -36,16 +36,22 @@ import { queryToString } from "../utils/functions";
 
 // Types.
 import { UrlObject } from "url";
-import { Event, Organization } from "../types/types";
+import { ArrangerFollower, Event, Organization } from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
+import useUser from "../hooks/useUser";
 
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [today] = useState(new Date().toISOString());
   const router = useRouter();
+  const { user } = useUser();
+
+  const { data: followedArrangers, error: followedArrangersError } = useSWR<
+    ArrangerFollower[]
+  >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
   const featuredEventsQuery = {
     featured: true,
@@ -73,6 +79,10 @@ const Home: NextPage = ({
 
   const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
   const eventsOnUioQuery = { ...eventsQuery, categoryIds: "1" }; // UIO category id
+  const eventsFromFollowedArrangersQuery = {
+    ...eventsQuery,
+    arrangerIds: followedArrangers?.map((a) => a.arrangerId),
+  };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(",") };
 
   const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
@@ -97,6 +107,16 @@ const Home: NextPage = ({
     fetchFromPeoplyApiJson,
   );
 
+  const {
+    data: eventsFromFollowedArrangers,
+    error: eventsFromFollowedArrangersError,
+  } = useSWR<Event[]>(
+    followedArrangers && followedArrangers.length > 0
+      ? `/events?${queryToString(eventsFromFollowedArrangersQuery)}`
+      : null,
+    fetchFromPeoplyApiJson,
+  );
+
   return (
     <>
       <HeadComponent
@@ -115,6 +135,17 @@ const Home: NextPage = ({
             seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
             organizations={organizations}
             error={organizationsError}
+          />
+        )}
+        {eventsFromFollowedArrangers && eventsFromFollowedArrangers.length > 0 && (
+          <EventSwiper
+            header="Fra arrangører du følger"
+            seeAllUrl={{
+              pathname: "/events",
+              query: eventsFromFollowedArrangersQuery,
+            }}
+            events={eventsFromFollowedArrangers}
+            error={eventsFromFollowedArrangersError}
           />
         )}
         {eventsOnIFI && eventsOnIFI.length > 0 ? (
@@ -223,7 +254,7 @@ const OrganizationSwiper = ({
       >
         {organizations?.map((organization: Organization) => (
           <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>
-            <Link href={`/orgs/${organization.id}`}>
+            <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
               <a>
                 <OrganizationAvatar organization={organization} />
               </a>

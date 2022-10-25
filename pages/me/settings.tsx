@@ -112,7 +112,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
       });
       addSnack("Innstillinger oppdatert", SnackTypes.SUCCESS);
       reload();
-      router.replace("/me");
+      goBack();
     } catch (error) {
       addSnack("Kunne ikke oppdatere innstillinger", SnackTypes.ERROR);
     }

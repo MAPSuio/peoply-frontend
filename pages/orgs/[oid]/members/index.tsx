@@ -19,6 +19,7 @@ import HeadComponent from "../../../../components/HeadComponent";
 import { getOrganizationRolePrivilege } from "../../../../utils/functions";
 import useOrganization from "../../../../hooks/useOrganization";
 import EditIcon from "../../../../components/svgs/EditIcon";
+import { getOrganization } from "../../../../services/organizations";
 
 interface MembersProps {
   fallbackUsers: UserOrganizationRoles[];
@@ -134,7 +135,10 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as IParams;
-  const users = await fetchFromPeoplyApiJson(`/organizations/${oid}/members`);
+  const organization = await getOrganization(oid);
+  const users = await fetchFromPeoplyApiJson(
+    `/organizations/${organization.id}/members`,
+  );
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -158,7 +162,7 @@ export async function getStaticPaths() {
     "/organizations?take=1000",
   );
   const paths = orgs.map((org: Organization) => ({
-    params: { oid: org.id },
+    params: { oid: org.urlId ?? org.id },
   }));
 
   return { paths, fallback: "blocking" };

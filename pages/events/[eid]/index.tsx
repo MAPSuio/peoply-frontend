@@ -52,6 +52,7 @@ import {
   Registration,
   RegStatus,
   SnackTypes,
+  Visibility,
 } from "../../../types/types";
 
 // Assets.
@@ -227,6 +228,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
         description={eventData.description}
         url={`${baseUrl}/events/${eventData.urlId}`}
         imageUrl={eventData.image}
+        noIndex={
+          eventData.visibility === Visibility.UNLISTED ||
+          eventData.visibility === Visibility.PRIVATE
+        }
       />
 
       <div className={styles.eventWrapper}>
@@ -300,7 +305,10 @@ const Event = ({ event, baseUrl }: EventProps) => {
                       return (
                         <Link
                           key={a.arranger.id}
-                          href={`/orgs/${a.arranger.organization.id}`}
+                          href={`/orgs/${
+                            a.arranger.organization.urlId ??
+                            a.arranger.organization.id
+                          }`}
                           passHref
                         >
                           <a>

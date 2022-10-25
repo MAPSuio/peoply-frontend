@@ -36,11 +36,11 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
       setLoading(true);
       try {
         /* fetch organization data */
-        const organization = getOrganization(oid);
+        const organization = await getOrganization(oid);
         /* fetch organization users */
-        const organizationUsers = getOrganizationUsers(oid);
+        const organizationUsers = getOrganizationUsers(organization.id);
 
-        setOrganization(await organization);
+        setOrganization(organization);
         setOrganizationUsers(await organizationUsers);
 
         if (!organization || !organizationUsers) {

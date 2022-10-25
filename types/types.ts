@@ -171,6 +171,7 @@ export interface UserOrganizationRoles {
 
 export interface Organization {
   id: string;
+  urlId?: string;
   arranger: Arranger;
   arrangerId: string;
   description?: string;
@@ -186,6 +187,15 @@ export interface Arranger {
   organization?: Organization;
   user?: User;
   eventArranger: EventArranger[];
+}
+
+export interface ArrangerFollower {
+  arrangerId: string;
+  userId: string;
+  arranger: Arranger;
+  user: User;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface EventArranger {

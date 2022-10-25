@@ -58,7 +58,7 @@ export default function UpdateEvent() {
 
   if (eventError) {
     addSnack("Kunne ikke hente arrangementet", SnackTypes.ERROR);
-    router.push(`/events/${eid}`);
+    router.replace(`/events/${eid}`);
   }
 
   const onSubmit = async () => {
@@ -79,7 +79,7 @@ export default function UpdateEvent() {
     } catch (e) {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
-    router.push(`/events/${eid}`);
+    goBack();
   };
 
   if (!user) {

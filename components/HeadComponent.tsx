@@ -5,6 +5,7 @@ interface HeadComponentProps {
   description: string;
   imageUrl?: string;
   url?: string;
+  noIndex?: boolean;
 }
 
 const HeadComponent = ({
@@ -12,11 +13,15 @@ const HeadComponent = ({
   description,
   imageUrl,
   url,
+  noIndex = false,
 }: HeadComponentProps) => {
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+
+      {/* Meta tag to disable indexing by Google etc. */}
+      {noIndex && <meta name="robots" content="noindex" />}
 
       {/* Twitter specific */}
       <meta name="twitter:card" content="summary" />

@@ -125,7 +125,7 @@ export default function GlobalSearch({}) {
                 key={org.id}
                 title={org.name}
                 description={"Organisasjon"}
-                link={`/orgs/${org.id}`}
+                link={`/orgs/${org.urlId ?? org.id}`}
               >
                 <Avatar size="medium" org={org} />
               </ResultItem>

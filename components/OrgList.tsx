@@ -15,7 +15,7 @@ export default function OrgList({ orgs }: OrgListProps) {
   return (
     <div className={styles.container}>
       {orgs.map((org, index) => (
-        <Link href={`/orgs/${org.id}`} key={index} passHref>
+        <Link href={`/orgs/${org.urlId ?? org.id}`} key={index} passHref>
           <a className={styles.item}>
             <div>
               <p>{org.name}</p>

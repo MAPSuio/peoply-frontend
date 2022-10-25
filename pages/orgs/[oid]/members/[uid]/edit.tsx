@@ -100,9 +100,12 @@ export default function EditOrganizationUser() {
 
   const deleteUser = async (uid: string) => {
     try {
-      await fetchFromPeoplyApi(`/organizations/${oid}/members/${uid}`, {
-        method: "DELETE",
-      });
+      await fetchFromPeoplyApi(
+        `/organizations/${organization?.id}/members/${uid}`,
+        {
+          method: "DELETE",
+        },
+      );
       addSnack("Medlem fjernet", SnackTypes.SUCCESS);
       router.back();
     } catch (e) {
@@ -114,7 +117,7 @@ export default function EditOrganizationUser() {
     try {
       if (isEditingSelf && userToEdit?.roleDescription !== roleDescription) {
         await fetchFromPeoplyApiJson(
-          `/organizations/${oid}/roleDescription/${user?.id}`,
+          `/organizations/${organization?.id}/roleDescription/${user?.id}`,
           {
             method: "PATCH",
             body: JSON.stringify({ description: roleDescription }),
@@ -123,11 +126,17 @@ export default function EditOrganizationUser() {
         );
       }
       if (userToEdit?.role !== roleValue) {
-        await fetchFromPeoplyApiJson(`/organizations/${oid}/roles`, {
-          method: "PATCH",
-          body: JSON.stringify({ role: roleValue, userId: userToEdit?.userId }),
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-        });
+        await fetchFromPeoplyApiJson(
+          `/organizations/${organization?.id}/roles`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              role: roleValue,
+              userId: userToEdit?.userId,
+            }),
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+          },
+        );
       }
       addSnack("Bruker oppdatert", SnackTypes.SUCCESS);
     } catch (error) {

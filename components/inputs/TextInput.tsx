@@ -20,6 +20,8 @@ interface TextInputProps {
   valid?: boolean;
   validate?: boolean;
   isEmail?: boolean;
+  regExp?: RegExp; // if you want to use a custom regex for validation
+  whiteList?: string[]; // if you want to use a custom whitelist for validation
 }
 
 const TextInput = ({
@@ -37,6 +39,8 @@ const TextInput = ({
   valid,
   validate,
   isEmail,
+  regExp,
+  whiteList,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
@@ -50,7 +54,10 @@ const TextInput = ({
         ? value.length <= maxLength
         : true;
     const validEmail = value.length && isEmail ? isValidEmail(value) : true;
-    setValid(validLength && validEmail);
+    const validRegExp = value.length && regExp ? regExp.test(value) : true;
+    const inWhiteList =
+      value.length && whiteList ? whiteList.includes(value) : true;
+    setValid((validLength && validEmail && validRegExp) || inWhiteList);
   }
 
   const getInputContainerStyles = () => {

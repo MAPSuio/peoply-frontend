@@ -152,7 +152,7 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
       <Link
         href={
           arranger?.org
-            ? `/orgs/${arranger?.org.id}`
+            ? `/orgs/${arranger?.org.urlId ?? arranger?.org.id}`
             : `/users/${arranger?.user?.id}`
         }
       >

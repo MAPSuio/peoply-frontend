@@ -15,12 +15,15 @@ import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 import { Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/EditProfile.module.scss";
 import EditProfileImageMenu from "../../../components/EditProfileImageMenu";
+import TextInput from "../../../components/inputs/TextInput";
 
 const EditOrgProfile: NextPage = () => {
   const goBack = useBack();
   const [editImage, setEditImage] = useState(false);
   const { user, loading, reload } = useUser();
   const [description, setDescription] = useState("");
+  const [urlId, setUrlId] = useState("");
+  const [validUrlId, setValidUrlId] = useState(true); // true by default because we don't want to show an error before the user has typed anything
   const [validEdit, setValidEdit] = useState(false);
   const redirectToLogin = useRedirectToLogin();
   const router = useRouter();
@@ -40,19 +43,24 @@ const EditOrgProfile: NextPage = () => {
     if (org?.description) {
       setDescription(org.description);
     }
+    if (org?.urlId) {
+      setUrlId(org.urlId);
+    }
   }, [org]);
 
   useEffect(() => {
-    /* we must check if it is the first time the user updates desc */
-    if (
+    const validDescEdit =
       !(!org?.description && description === "") &&
-      org?.description !== description
-    ) {
+      org?.description !== description;
+    const validUrlIdEdit =
+      !(!org?.urlId && urlId === "") && org?.urlId !== urlId;
+    /* we must check if it is the first time the user updates desc */
+    if ((validDescEdit || validUrlIdEdit) && validUrlId) {
       setValidEdit(true);
     } else {
       setValidEdit(false);
     }
-  }, [description, org]);
+  }, [urlId, description, org, validUrlId]);
 
   if (!loading && !user) {
     redirectToLogin();
@@ -71,17 +79,29 @@ const EditOrgProfile: NextPage = () => {
     setDescription(e.target.value);
   };
 
+  const updateOrgUrlId = (e: ChangeEvent<HTMLInputElement>) => {
+    setUrlId(e.target.value.toLowerCase());
+  };
+
   const handleConfirm = async () => {
     try {
-      await fetchFromPeoplyApiJson(`/organizations/${oid}`, {
+      await fetchFromPeoplyApiJson(`/organizations/${org.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ description }),
+        body: JSON.stringify({
+          description,
+          urlId: urlId === "" && urlId !== org.urlId ? null : urlId,
+        }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
+      mutate();
       reload();
       addSnack("Profil oppdatert", SnackTypes.SUCCESS);
-    } catch (error) {
-      addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
+    } catch (error: any) {
+      if (error.status === 409) {
+        addSnack("URL-id er allerede i bruk", SnackTypes.ERROR);
+      } else {
+        addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
+      }
     }
   };
 
@@ -106,6 +126,24 @@ const EditOrgProfile: NextPage = () => {
         errorMessage=""
         className={styles.description}
       />
+      <TextInput
+        value={urlId}
+        handleChange={updateOrgUrlId}
+        inputName="orgUrlId"
+        inputId="orgUrlId"
+        label="URL identifikator (kun bokstaver og tall)"
+        placeholder={org.id}
+        maxLength={50}
+        minLength={3}
+        errorMessage=""
+        // regext checking that string only contains letters and numbers
+        regExp={/^[a-z0-9]*$/}
+        whiteList={[""]}
+        valid={validUrlId}
+        setValid={setValidUrlId}
+        validate
+      />
+
       <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
         <Button
           disabled={!validEdit}

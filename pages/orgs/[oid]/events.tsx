@@ -95,7 +95,7 @@ const Events = ({ organization, baseUrl }: EventsProps) => {
       <HeadComponent
         title={`Arrangementer for ${organization.name}`}
         description={`Sjekk ut alle arrangementene til ${organization.name}`}
-        url={`${baseUrl}/orgs/${organization.id}/events`}
+        url={`${baseUrl}/orgs/${organization.urlId ?? organization.id}/events`}
       />
       <BackButton onClick={goBack} className={styles.backButton} />
       <TabSelection

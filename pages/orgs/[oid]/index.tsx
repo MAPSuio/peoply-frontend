@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { GetStaticProps } from "next";
 import useSWR from "swr";
-import Image from "next/image";
 import { useRouter } from "next/router";
 
 // React.
@@ -90,7 +89,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             ? org.description
             : `Organisasjonssiden til ${org.name}`
         }
-        url={`${baseUrl}/orgs/${org?.id}`}
+        url={`${baseUrl}/orgs/${org.urlId ?? org.id}`}
         imageUrl={org.image}
       />
 
@@ -98,7 +97,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         <div className={styles.heading}>
           <BackButton onClick={goBack} className={styles.marginBottomMedium} />
           {isAdminOrOwner && (
-            <Link href={`/orgs/${org.id}/settings`} passHref>
+            <Link href={`/orgs/${org.urlId ?? org.id}/settings`} passHref>
               <a aria-label="innstillinger">
                 <SettingsIcon className={styles.settingsIcon} />
               </a>
@@ -116,14 +115,14 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           <p className={styles.description}>{org.description}</p>
         </div>
         <div className={styles.dataContainer}>
-          <Link href={`${baseUrl}/orgs/${org.id}/members`}>
+          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}>
             <a className={styles.iconContainer}>
               <UserIconCard className={styles.icon} />
               <p className={styles.data}>{orgMembers?.length}</p>
               <p className={styles.dataDescription}>Medlemmer</p>
             </a>
           </Link>
-          <Link href={`${baseUrl}/orgs/${org.id}/events`}>
+          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>
             <a className={styles.iconContainer}>
               <CalendarIconCard className={styles.icon} />
               <p className={styles.data}>{orgEvents?.length}</p>
@@ -134,7 +133,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         <div className={styles.eventWrapper}>
           <div className={styles.eventHeaderContainer}>
             <h2 className={styles.eventHeader}>Kommende arrangementer</h2>
-            <Link href={`${baseUrl}/orgs/${org.id}/events`}>
+            <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>
               <a className={styles.link}>Se alle</a>
             </Link>
           </div>
@@ -194,7 +193,7 @@ export async function getStaticPaths() {
   const organizations = await getXOrganizations(10000);
   const paths = organizations.map((o: Organization) => ({
     params: {
-      oid: o.id,
+      oid: o.urlId ?? o.id,
     },
   }));
 

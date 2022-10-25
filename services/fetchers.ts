@@ -11,6 +11,7 @@ export async function fetchFromPeoplyApiJson(
 export async function fetchFromPeoplyApi(
   resource: RequestInfo,
   init?: RequestInit,
+  // version = "v1",
 ) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}${resource}`;
   let response = await fetch(url, { credentials: "include", ...init });
@@ -22,12 +23,12 @@ export async function fetchFromPeoplyApi(
         ...init,
       });
     } else {
-      throw new Error(`${refresh.status}, ` + refresh.statusText);
+      throw refresh;
     }
   }
 
   if (!response.ok) {
-    throw new Error(`${response.status}, ` + response.statusText);
+    throw response;
   }
 
   return response;

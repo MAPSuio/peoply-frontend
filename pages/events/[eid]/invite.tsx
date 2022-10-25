@@ -124,7 +124,7 @@ export default function InviteUsersToEvent() {
       } catch (e) {
         addSnack("Noe gikk galt", SnackTypes.ERROR);
       }
-      router.push(`/events/${eid}`);
+      goBack();
     }
   };
 

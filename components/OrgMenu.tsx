@@ -56,7 +56,7 @@ export default function OrgMenu({ org }: OrgMenuProps) {
         text="Behandle medlemmer"
         Icon={() => <UsersIcon className={styles.icon} />}
         ActionIcon={ChevronRightIcon}
-        linkOrOnClick={`/orgs/${org.id}/members`}
+        linkOrOnClick={`/orgs/${org.urlId ?? org.id}/members`}
       />
       <span className={styles.divider} />
       <ProfileMenuItem

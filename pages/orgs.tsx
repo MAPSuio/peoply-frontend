@@ -88,7 +88,7 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
           {organizations
             ?.flatMap((org) => org)
             .map((org) => (
-              <Link href={`/orgs/${org.id}`} key={org.id}>
+              <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
                 <a>
                   <OrganizationCard organizationID={org.id} />
                 </a>
