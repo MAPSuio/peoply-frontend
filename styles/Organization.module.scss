@@ -39,9 +39,11 @@
 .description {
   @include normalText();
   font-size: $font-size-secondary;
+  margin-bottom: $spacer-small;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
+    margin-bottom: $spacer-small-plus;
   }
 }
 

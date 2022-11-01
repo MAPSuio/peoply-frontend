@@ -410,12 +410,13 @@ export enum ButtonType {
   SECONDARY,
   DANGER,
   WARNING,
-  REGISTERED,
+  CONFIRMED,
   HIGHLIGHTEDEVENTCARD,
 }
 
 export enum ButtonSize {
   TINY,
+  TINYWITHTEXT,
   SMALL,
   MEDIUM,
 }

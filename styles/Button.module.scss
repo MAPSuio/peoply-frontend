@@ -115,7 +115,7 @@
   }
 }
 
-.registeredButton {
+.confirmedButton {
   background-color: $primary-color-muted;
   color: $primary-color-100;
 
@@ -160,7 +160,7 @@
 }
 
 .tiny {
-  font-size: $font-size-tertiary;  
+  font-size: $font-size-tertiary;
   height: fit-content;
   padding: $spacer-very-small $spacer-very-small;
   width: fit-content;
@@ -168,7 +168,18 @@
   @include desktop() {
     font-size: $font-size-tertiary-desktop;
     padding: $spacer-very-small $spacer-very-small;
+  }
+}
 
+.tinyWithText {
+  font-size: $font-size-tertiary;
+  height: fit-content;
+  padding: $spacer-very-small $spacer-small;
+  width: fit-content;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    padding: $spacer-very-small $spacer-small;
   }
 }
 

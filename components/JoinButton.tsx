@@ -190,7 +190,7 @@ export default function JoinButton({
       myRegistration?.regStatus === RegStatus.GOING ||
       myRegistration?.regStatus === RegStatus.WAITLISTED
     ) {
-      return ButtonType.REGISTERED;
+      return ButtonType.CONFIRMED;
     }
     return ButtonType.PRIMARY;
   })();

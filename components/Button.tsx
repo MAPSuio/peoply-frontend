@@ -1,3 +1,6 @@
+// React.
+import { useState } from "react";
+
 // Components.
 import LoadingWheel from "./LoadingWheel";
 
@@ -6,7 +9,6 @@ import { ButtonSize, ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/Button.module.scss";
-import { useState } from "react";
 
 export enum IconPlacement {
   LEFT = "left",
@@ -46,34 +48,49 @@ export default function Button({
   const [onClickLoadingState, setOnClickLoadingState] = useState(false);
   const [onClickDisableState, setOnClickDisableState] = useState(false);
 
-  const sizeStyle =
-    size === ButtonSize.SMALL
-      ? styles.small
-      : size === ButtonSize.TINY
-      ? styles.tiny
-      : undefined;
-  const shadowStyle = noShadow ? styles.noShadow : undefined;
+  const sizeStyle = (() => {
+    switch (size) {
+      case ButtonSize.TINY:
+        return styles.tiny;
+      case ButtonSize.TINYWITHTEXT:
+        return styles.tinyWithText;
+      case ButtonSize.SMALL:
+        return styles.small;
+      case ButtonSize.MEDIUM:
+        return styles.medium;
+    }
+  })();
 
   const buttonStyles = (() => {
     switch (type) {
       case ButtonType.PRIMARY:
-        return `${styles.button} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${sizeStyle} ${noShadow && styles.noShadow}`;
       case ButtonType.SECONDARY:
-        return `${styles.button} ${styles.secondaryButton} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${styles.secondaryButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       case ButtonType.DANGER:
-        return `${styles.button} ${styles.dangerButton} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${styles.dangerButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       case ButtonType.WARNING:
-        return `${styles.button} ${styles.warningButton} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${styles.warningButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       case ButtonType.HIGHLIGHTEDEVENTCARD:
-        return `${styles.button} ${styles.highlightedEventCardButton} ${sizeStyle} ${shadowStyle}`;
-      case ButtonType.REGISTERED:
-        return `${styles.button} ${styles.registeredButton} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${
+          styles.highlightedEventCardButton
+        } ${sizeStyle} ${noShadow && styles.noShadow}`;
+      case ButtonType.CONFIRMED:
+        return `${styles.button} ${styles.confirmedButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       default:
-        return `${styles.button} ${sizeStyle} ${shadowStyle}`;
+        return `${styles.button} ${sizeStyle} ${noShadow && styles.noShadow}`;
     }
   })();
 
-  const getIconPlacementStyles = () => {
+  const iconPlacementStyles = (() => {
     switch (iconPlacement) {
       case IconPlacement.LEFT:
         return styles.iconLeft;
@@ -82,7 +99,7 @@ export default function Button({
       case IconPlacement.ABOVE_ON_MOBILE:
         return styles.iconAboveOnMobile;
     }
-  };
+  })();
 
   return (
     <button
@@ -107,7 +124,7 @@ export default function Button({
         setOnClickLoadingState(false);
         setOnClickDisableState(false);
       }}
-      className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
+      className={`${buttonStyles} ${className} ${iconPlacementStyles}`}
       style={{ width }}
       disabled={loading || onClickDisableState || disabled}
     >
