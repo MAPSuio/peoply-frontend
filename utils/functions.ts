@@ -139,19 +139,46 @@ function formatEventDate(
   return "";
 }
 
-// isToday returns if the supplied date is today or not.
+/*
+formatFollowedDate formats a given date string from an ArrangerFollower
+createdAt value to the appropriate value for displaying on the ArrangerListItem cards.
+*/
+function formatFollowedDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (isToday(date)) {
+    return "I dag";
+  } else if (wasYesterday(date)) {
+    return "I går";
+  }
+
+  return `${date.toLocaleString("no-NO", {
+    month: "short",
+    day: "2-digit",
+  })}`;
+}
+
+// isToday returns if the given date is today or not.
 function isToday(date: Date): boolean {
   const today = new Date();
 
   return today.toDateString() === date.toDateString();
 }
 
-// isTomorrow returns if the supplied date is tomorrow or not.
+// isTomorrow returns if the given date is tomorrow or not.
 function isTomorrow(date: Date): boolean {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   return tomorrow.toDateString() === date.toDateString();
+}
+
+// wasYesterday returns if the given date was yesterday or not.
+function wasYesterday(date: Date): boolean {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  return yesterday.toDateString() === date.toDateString();
 }
 
 // Checks if the supplied date is older than today's date (valid).
@@ -663,6 +690,7 @@ export {
   formatDateRange,
   formatTimeRange,
   formatEventDate,
+  formatFollowedDate,
   olderThanToday,
   getISODate,
   getISOTime,
