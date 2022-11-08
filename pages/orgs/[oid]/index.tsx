@@ -12,10 +12,11 @@ import HeadComponent from "../../../components/HeadComponent";
 import BackButton from "../../../components/BackButton";
 import LargeEventCard from "../../../components/LargeEventCard";
 import Layout from "../../../components/Layout";
-import UserIconCard from "../../../components/svgs/UserIconCard";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import SettingsIcon from "../../../components/svgs/SettingsIcon";
+import UsersIconCard from "../../../components/svgs/UsersIconCard";
+import FollowIcon from "../../../components/svgs/FollowIcon";
 import Avatar from "../../../components/Avatar";
 import Button from "../../../components/Button";
 
@@ -92,6 +93,15 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     fetchFromPeoplyApiJson,
   );
 
+  const {
+    data: followers,
+    error: followersError,
+    mutate: mutateFollowers,
+  } = useSWR<ArrangerFollower[]>(
+    orgData ? `/organizations/${orgData.id}/followers` : null,
+    fetchFromPeoplyApiJson,
+  );
+
   if (orgLoading) {
     return <></>;
   }
@@ -113,6 +123,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         },
       );
       mutateFollowedArrangers();
+      mutateFollowers();
     } catch (e) {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
@@ -127,6 +138,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         },
       );
       mutateFollowedArrangers();
+      mutateFollowers();
     } catch (e) {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
@@ -198,9 +210,16 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         <div className={styles.dataContainer}>
           <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}>
             <a className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
+              <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
               <p className={styles.data}>{orgMembers?.length}</p>
               <p className={styles.dataDescription}>Medlemmer</p>
+            </a>
+          </Link>
+          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}>
+            <a className={styles.iconContainer}>
+              <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
+              <p className={styles.data}>{followers?.length}</p>
+              <p className={styles.dataDescription}>Følgere</p>
             </a>
           </Link>
           <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>
