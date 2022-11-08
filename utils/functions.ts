@@ -653,7 +653,7 @@ function queryToString(query: any) {
 }
 
 function isValidEmail(email: string): boolean {
-  const re = /\S+@\S+\.\S+/;
+  const re = /\S+@\S+\.\S\S+/;
   return re.test(email);
 }
 

@@ -73,8 +73,9 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   useEffect(() => {
     if (!allowEmailFromArranger && !allowEmailPromotions) {
       setAllowEmailNotifications(false);
+      setEmail(user?.email ?? "");
     }
-  }, [allowEmailFromArranger, allowEmailPromotions]);
+  }, [allowEmailFromArranger, allowEmailPromotions, user?.email]);
 
   if (loading) {
     /* TODO: Create actual loading skeleton. */
@@ -93,15 +94,19 @@ const Settings = ({ baseUrl }: SettingsProps) => {
     allowEmailPromotions !== user?.allowEmailPromotions;
   const validEmailEdit = emailValid && email !== user?.email;
   const validEdit =
-    validEmailEdit ||
-    validAllowEmailFromArrangerEdit ||
-    validAllowEmailPromotionsEdit;
+    emailValid &&
+    (validAllowEmailFromArrangerEdit ||
+      validAllowEmailPromotionsEdit ||
+      email !== user?.email);
 
   const handleConfirm = async () => {
     try {
       const body = {
         ...(validEmailEdit && { email }),
-        ...(validAllowEmailFromArrangerEdit && { allowEmailFromArranger }),
+        ...(validAllowEmailFromArrangerEdit && {
+          allowEmailFromArranger,
+          allowEmailOnWaitlist: allowEmailFromArranger,
+        }),
         ...(validAllowEmailPromotionsEdit && { allowEmailPromotions }),
       };
 
@@ -210,6 +215,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                   if (allowEmailNotifications) {
                     setAllowEmailFromArranger(false);
                     setAllowEmailPromotions(false);
+                    setEmail(user?.email ?? "");
                   } else {
                     setAllowEmailFromArranger(true);
                     setAllowEmailNotifications(!allowEmailNotifications);
