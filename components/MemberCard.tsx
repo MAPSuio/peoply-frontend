@@ -22,8 +22,10 @@ export default function MemberCard({
         <a>
           <div className={styles.info}>
             <Avatar size="medium" user={user} />
-            <div className={styles.name}>
-              <p>{`${user.firstName} ${user.lastName}`}</p>
+            <div className={styles.nameAndDescription}>
+              <p
+                className={styles.name}
+              >{`${user.firstName} ${user.lastName}`}</p>
               {description && (
                 <p className={styles.description}>{description}</p>
               )}

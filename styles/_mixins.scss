@@ -71,6 +71,12 @@
   padding: 0;
 }
 
+@mixin resetList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 @mixin card() {
   background-color: $background-color-card;
   border-radius: $border-radius-regular;

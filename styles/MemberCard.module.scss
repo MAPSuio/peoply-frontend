@@ -4,49 +4,50 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: $spacer-very-small $spacer-small;
+  max-width: $max-width-card;
+  padding: $spacer-very-small-plus $spacer-small;
   width: 100%;
 
-  > a {
-    &:first-child {
-      min-width: max-content;
-      width: 100%;
-    }
-    &:not(:first-child) {
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-      padding: 1rem;
-    }
-  }
-
-
   svg {
-    stroke: #FFFFFF;
+    stroke: $text-color-primary;
   }
 
   .icon {
     @include resetButton();
     align-items: center;
     display: flex;
-    padding: 0.5rem;
+    padding-left: $spacer-small;
   }
 
   .info {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: $spacer-very-small;
+    width: 100%;
 
-    .name {
-      > p:first-child {
-        color: #FFFFFF;
+    .nameAndDescription {
+      .name {
+        color: $text-color-emphasis;
         font-size: $font-size-primary;
-        margin-bottom: $spacer-mini
+        margin-bottom: $spacer-mini;
+
+        @include desktop(){
+          font-size: $font-size-primary-desktop;
+        }
       }
 
       .description {
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
         font-size: $font-size-tertiary;
+        -webkit-line-clamp: 2;
+        line-height: $line-height-hint-text;
         margin-bottom: $spacer-mini;
+        overflow: hidden;
+
+        @include desktop(){
+          font-size: $font-size-tertiary-desktop;
+        }
       }
     }
   }
