@@ -73,6 +73,10 @@ export default function Button({
         return `${styles.button} ${styles.dangerButton} ${sizeStyle} ${
           noShadow && styles.noShadow
         }`;
+      case ButtonType.DANGERSOFT:
+        return `${styles.button} ${styles.dangerSoftButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       case ButtonType.WARNING:
         return `${styles.button} ${styles.warningButton} ${sizeStyle} ${
           noShadow && styles.noShadow
