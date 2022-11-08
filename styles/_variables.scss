@@ -55,6 +55,8 @@ $background-color-button-secondary-disabled: #253140;
 $background-color-button-danger: #FF948C;
 $background-color-button-danger-hover: #FFA59E;
 $background-color-button-danger-disabled: #3B3B48;
+$background-color-button-danger-soft: #4B3C42;
+$background-color-button-danger-soft-hover: #504147;
 $background-color-button-warning: #F4E57F;
 $background-color-button-warning-hover: #FFF296;
 $background-color-button-warning-disabled: #333E44;
@@ -94,6 +96,7 @@ $max-width-card: 500px;
 $max-width-small-event-card: 400px;
 $max-width-event-card: 360px;
 $max-width-highlighted-card: $max-width;
+$max-width-arranger-list-item: 500px;
 $max-width-org-card: 320px;
 $max-width-text: 600px;
 $max-width-text-desktop: 700px;
@@ -137,6 +140,8 @@ $shadow-button-secondary: 0px 8px 20px rgba(63, 76, 92, 0.3);
 $shadow-button-secondary-hover: 0px 10px 25px rgba(63, 76, 92, 0.5);
 $shadow-button-danger: 0px 8px 20px rgba(255, 148, 140, 0.2); /* new value */
 $shadow-button-danger-hover: 0px 10px 25px rgba(255, 148, 140, 0.4); /* new value */
+$shadow-button-danger-soft: 0px 8px 20px rgba(255, 148, 140, 0.15); /* new value */
+$shadow-button-danger-soft-hover: 0px 8px 20px rgba(255, 148, 140, 0.3); /* new value */
 $shadow-button-success: 0px 8px 20px rgba(126, 251, 142, 0.3);
 $shadow-button-success-hover: 0px 8px 20px rgba(126, 251, 142, 0.5);
 $shadow-button-warning: 0px 8px 20px rgba(255, 242, 150, 0.15);
