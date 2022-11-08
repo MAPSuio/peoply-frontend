@@ -98,8 +98,8 @@
 .dataContainer {
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
-  gap: $spacer-large;
+  flex-flow: row wrap;
+  gap: $spacer-medium-plus;
   justify-content: center;
   margin-bottom: $spacer-medium-plus;
 
@@ -171,6 +171,14 @@
     height: 24px;
     width: 24px;
   }
+}
+
+.usersIcon {
+  margin-left: 2px;
+}
+
+.followIcon {
+  margin-left: 4px;
 }
 
 .marginBottomMedium {
