@@ -1,0 +1,45 @@
+.headingContainer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  @include headingContainer();
+}
+
+.followingList {
+  @include resetList();
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small;
+  }
+}
+
+.imageContainer {
+  border: 4px solid $text-color-primary;
+  border-radius: $border-radius-rounded;
+  height: 350px;
+  margin-bottom: $spacer-small;
+  overflow: hidden;
+  position: relative;
+  width: 350px;
+
+  @include desktop() {
+    height: 500px;
+    margin-bottom: $spacer-medium;
+    width: 500px;
+  }
+}
+
+.errorMessage {
+  font-size: $font-size-heading-medium;
+  margin-bottom: $spacer-small;
+  text-align: center;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
+}

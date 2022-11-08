@@ -252,6 +252,10 @@
   margin: $spacer-medium-plus 0;
   text-align: center;
 
+  @include desktop() {
+    margin: $spacer-large 0;
+  }
+
   h1 {
     font-size: $font-size-title;
     margin-bottom: $spacer-very-small;
