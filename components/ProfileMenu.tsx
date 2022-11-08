@@ -1,14 +1,21 @@
-import styles from "../styles/ProfileMenu.module.scss";
+// Components.
 import ProfileMenuItem from "./ProfileMenuItem";
+
+// Hooks.
+import useUser from "../hooks/useUser";
+
+// Assets.
 import UserIcon from "./svgs/UserIcon";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import SettingsIcon from "./svgs/SettingsIcon";
-// import CreditCardIcon from "./svgs/CreditCardIcon";
 import BriefcaseIcon from "./svgs/BriefcaseIcon";
 import MailIcon from "./svgs/MailIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import CloseIcon from "./svgs/CloseIcon";
-import useUser from "../hooks/useUser";
+import UsersIcon from "./svgs/UsersIcon";
+
+// Styles.
+import styles from "../styles/ProfileMenu.module.scss";
 
 export default function ProfileMenu() {
   const { logout } = useUser();
@@ -31,6 +38,12 @@ export default function ProfileMenu() {
         Icon={BriefcaseIcon}
         ActionIcon={ChevronRightIcon}
         linkOrOnClick={"/me/orgs"}
+      />
+      <ProfileMenuItem
+        text="Følger"
+        Icon={UsersIcon}
+        ActionIcon={ChevronRightIcon}
+        linkOrOnClick={"/me/following"}
       />
       <ProfileMenuItem
         text="Innstillinger"
