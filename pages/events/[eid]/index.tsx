@@ -353,11 +353,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 </div>
               </div>
               <div
-                className={`${styles.infoTextContainer} ${
-                  event.hasFood
-                    ? styles.marginBottomSmall
-                    : styles.marginBottomMedium
-                }`}
+                className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
                 {eventData.freeformAddress ? (
                   <a
@@ -402,7 +398,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
               </div>
               {eventData.hasFood && (
                 <div
-                  className={`${styles.infoTextContainer} ${styles.marginBottomMedium}`}
+                  className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
                 >
                   {" "}
                   <div className={styles.iconContainer}>
@@ -420,9 +416,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
               {registrations && (
                 <Link href={`/events/${eventData.urlId}/participants`} passHref>
                   <a>
-                    <div
-                      className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-                    >
+                    <div className={`${styles.infoTextContainer}`}>
                       <div className={styles.iconContainer}>
                         <SmallCheckCircle />
                       </div>

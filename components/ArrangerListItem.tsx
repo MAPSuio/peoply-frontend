@@ -113,7 +113,7 @@ const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
   };
 
   const followButtonText = (() => {
-    return following ? "Følger" : "Følg";
+    return following ? "Avfølg" : "Følg";
   })();
 
   const followButtonType = (() => {
