@@ -55,8 +55,6 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
     }
     if (oid) {
       fetchOrganizationUsers();
-    } else {
-      setLoading(false);
     }
   }, [oid]);
 
