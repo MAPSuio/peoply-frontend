@@ -242,11 +242,13 @@ export default function JoinButton({
         if (event.formQuestion) {
           return setFormQuestionModalOpen(true);
         }
-
-        await createNewRegistration();
-      } else {
-        redirectToLogin();
+        const create = await createNewRegistration();
+        if (!create) {
+          await updateRegistrationStatus(RegStatus.GOING);
+        }
       }
+    } else {
+      redirectToLogin();
     }
   }
 
