@@ -148,11 +148,13 @@ async function registerUser(
   userId: string,
   eventId: string,
   status: RegStatus,
+  formAnswer?: string,
 ) {
   const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
     regStatus: status,
+    formAnswer: formAnswer,
   };
 
   const res: Promise<Registration> = fetchFromPeoplyApiJson(eventUrl, {
@@ -187,11 +189,13 @@ async function updateRegistrationUser(
   userId: string,
   eventId: string,
   status: RegStatus,
+  formAnswer?: string,
 ) {
   const eventUrl = `/users/${userId}/registrations`;
   const requestBody = {
     eventId: eventId,
     regStatus: status,
+    formAnswer: formAnswer,
   };
 
   return fetchFromPeoplyApiJson(eventUrl, {

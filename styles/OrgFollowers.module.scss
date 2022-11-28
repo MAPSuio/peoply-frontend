@@ -1,0 +1,16 @@
+.headingContainer {
+  @include headingContainer();
+}
+
+.followersList {
+  @include resetList();
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small;
+  }
+}

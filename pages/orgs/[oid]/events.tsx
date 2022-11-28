@@ -167,9 +167,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export async function getStaticPaths() {
   const organizations = await getXOrganizations(10000);
   const paths = organizations.map((o: Organization) => ({
-    params: {
-      oid: o.id,
-    },
+    params: { oid: o.urlId ?? o.id },
   }));
 
   return { paths, fallback: "blocking" };

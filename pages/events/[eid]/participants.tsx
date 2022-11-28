@@ -282,6 +282,19 @@ const Participants = () => {
                     />
                   </ExpandableCard>
                 )}
+                {event?.formQuestion && (
+                  <ExpandableCard
+                    title="Spørsmål til deltakere"
+                    className={styles.formQuestionDisplay}
+                  >
+                    {event.formQuestion.split("\n").map((str) => (
+                      <p key={str}>
+                        {str}
+                        <br></br>
+                      </p>
+                    ))}
+                  </ExpandableCard>
+                )}
                 <div className={styles.searchContainer}>
                   <SearchField
                     search={search}
@@ -300,6 +313,7 @@ const Participants = () => {
                 )}`}
                 icon={<ExitIcon />}
                 iconOnClick={() => setBanUserId(registration.userId)}
+                comment={registration.formAnswer}
               />
             ))}
             {banUserId && (

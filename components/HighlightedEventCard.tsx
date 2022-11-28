@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import HeartIconGlass from "./HeartIconGlass";
+import JoinButton from "./JoinButton";
 
 // Hooks.
 import useUser from "../hooks/useUser";
@@ -36,7 +37,6 @@ import CatImg from "../assets/images/cat.jpg";
 
 // Styles.
 import styles from "../styles/HighlightedEventCard.module.scss";
-import JoinButton from "./JoinButton";
 
 interface HighlightedEventCardProps {
   event: Event;

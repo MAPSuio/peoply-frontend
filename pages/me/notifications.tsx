@@ -31,6 +31,7 @@ import Modal from "../../components/Modal";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import ModalButton from "../../components/ModalButton";
+import JoinButton from "../../components/JoinButton";
 
 export default function Notifications() {
   const { user } = useUser();
@@ -169,24 +170,56 @@ export default function Notifications() {
     mutateNotifications();
   }
 
-  function renderNotificationActions(notification: PeoplyNotification) {
-    return (
-      <div className={styles.actions}>
-        <Button
-          onClick={async () =>
-            updateInvitation(notification, InvitationStatus.ACCEPTED)
-          }
-          text="Godta"
-        />
-        <Button
-          text="Avslå"
-          type={ButtonType.SECONDARY}
-          onClick={async () =>
-            updateInvitation(notification, InvitationStatus.DECLINED)
-          }
-        />
-      </div>
-    );
+  /* pass event to render joinButton for eventInvitations */
+  function renderNotificationActions(
+    notification: PeoplyNotification,
+    event?: Event,
+  ) {
+    switch (notification.type) {
+      case NotificationType.INVITATION_ORGANIZATION:
+        return (
+          <div className={styles.actions}>
+            <Button
+              onClick={async () =>
+                updateInvitation(notification, InvitationStatus.ACCEPTED)
+              }
+              text="Godta"
+            />
+            <Button
+              text="Avslå"
+              type={ButtonType.SECONDARY}
+              onClick={async () =>
+                updateInvitation(notification, InvitationStatus.DECLINED)
+              }
+            />
+          </div>
+        );
+      case NotificationType.INVITATION_EVENT:
+        return (
+          event && (
+            <div className={styles.actions}>
+              <JoinButton
+                joinText="Godta"
+                joinedText="Du er påmeldt"
+                event={event}
+                updateOnChange={async () =>
+                  await updateInvitation(
+                    notification,
+                    InvitationStatus.ACCEPTED,
+                  )
+                }
+              />
+              <Button
+                text="Avslå"
+                type={ButtonType.SECONDARY}
+                onClick={async () =>
+                  updateInvitation(notification, InvitationStatus.DECLINED)
+                }
+              />
+            </div>
+          )
+        );
+    }
   }
 
   function renderEventInvitations(invitations: EventInvitationNotification[]) {
@@ -238,7 +271,7 @@ export default function Notifications() {
             <p className={styles.hoursSince}>
               {renderTimeSince(oldestInvitation)}
             </p>
-            {renderNotificationActions(oldestInvitation)}
+            {renderNotificationActions(oldestInvitation, event)}
           </div>
         </div>
       );

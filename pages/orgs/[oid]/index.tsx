@@ -5,37 +5,51 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import BackButton from "../../../components/BackButton";
 import LargeEventCard from "../../../components/LargeEventCard";
 import Layout from "../../../components/Layout";
-import UserIconCard from "../../../components/svgs/UserIconCard";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import SettingsIcon from "../../../components/svgs/SettingsIcon";
+import UsersIconCard from "../../../components/svgs/UsersIconCard";
+import FollowIcon from "../../../components/svgs/FollowIcon";
+import Avatar from "../../../components/Avatar";
+import Button from "../../../components/Button";
 
 // Hooks.
 import useBack from "../../../hooks/useBack";
 import useSnack from "../../../hooks/useSnack";
 import useOrganization from "../../../hooks/useOrganization";
+import useUser from "../../../hooks/useUser";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 
 // Services.
 import {
   getOrganization,
   getXOrganizations,
 } from "../../../services/organizations";
-import { Event, Organization, SnackTypes } from "../../../types/types";
-import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
+import {
+  ArrangerFollower,
+  ButtonSize,
+  ButtonType,
+  Event,
+  Organization,
+  SnackTypes,
+} from "../../../types/types";
+import {
+  fetchFromPeoplyApi,
+  fetchFromPeoplyApiJson,
+} from "../../../services/fetchers";
 
 // Assets.
 import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
-import Avatar from "../../../components/Avatar";
 
 interface OrganizationProps {
   organization: Organization;
@@ -48,6 +62,8 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   const router = useRouter();
   const { oid } = router.query;
   const today = useRef(new Date().toISOString());
+  const { user } = useUser();
+  const redirectToLogin = useRedirectToLogin();
 
   const {
     organization: orgData,
@@ -68,6 +84,24 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     },
   );
 
+  const {
+    data: followedArrangers,
+    error: followedArrangersError,
+    mutate: mutateFollowedArrangers,
+  } = useSWR<ArrangerFollower[]>(
+    user ? `/users/${user.id}/following` : null,
+    fetchFromPeoplyApiJson,
+  );
+
+  const {
+    data: followers,
+    error: followersError,
+    mutate: mutateFollowers,
+  } = useSWR<ArrangerFollower[]>(
+    orgData ? `/organizations/${orgData.id}/followers` : null,
+    fetchFromPeoplyApiJson,
+  );
+
   if (orgLoading) {
     return <></>;
   }
@@ -79,6 +113,57 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
 
   /* use either fresh or fallback data */
   const org = orgData ?? organization;
+
+  const followArranger = async () => {
+    try {
+      await fetchFromPeoplyApi(
+        `/users/${user?.id}/following/${org.arrangerId}`,
+        {
+          method: "POST",
+        },
+      );
+      mutateFollowedArrangers();
+      mutateFollowers();
+    } catch (e) {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
+  };
+
+  const unfollowArranger = async () => {
+    try {
+      await fetchFromPeoplyApi(
+        `/users/${user?.id}/following/${org.arrangerId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      mutateFollowedArrangers();
+      mutateFollowers();
+    } catch (e) {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
+  };
+
+  const following = (() => {
+    const arrangers = followedArrangers?.map((arranger) => arranger.arrangerId);
+    return arrangers?.includes(org.arrangerId);
+  })();
+
+  const followButtonFunction = () => {
+    if (user) {
+      following ? unfollowArranger() : followArranger();
+    } else {
+      redirectToLogin();
+    }
+  };
+
+  const followButtonText = (() => {
+    return following ? "Følger" : "Følg";
+  })();
+
+  const followButtonType = (() => {
+    return following ? ButtonType.CONFIRMED : ButtonType.PRIMARY;
+  })();
 
   return (
     <>
@@ -113,13 +198,28 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             {org.orgNr && <SmallCheckCircle purple placeRight small />}
           </div>
           <p className={styles.description}>{org.description}</p>
+          <Button
+            text={followButtonText}
+            size={ButtonSize.TINYWITHTEXT}
+            type={followButtonType}
+            noShadow
+            onClick={followButtonFunction}
+            loading={!followedArrangers}
+          />
         </div>
         <div className={styles.dataContainer}>
           <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}>
             <a className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
+              <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
               <p className={styles.data}>{orgMembers?.length}</p>
               <p className={styles.dataDescription}>Medlemmer</p>
+            </a>
+          </Link>
+          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}>
+            <a className={styles.iconContainer}>
+              <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
+              <p className={styles.data}>{followers?.length}</p>
+              <p className={styles.dataDescription}>Følgere</p>
             </a>
           </Link>
           <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>

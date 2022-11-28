@@ -53,10 +53,9 @@ const TextInput = ({
         : maxLength
         ? value.length <= maxLength
         : true;
-    const validEmail = value.length && isEmail ? isValidEmail(value) : true;
-    const validRegExp = value.length && regExp ? regExp.test(value) : true;
-    const inWhiteList =
-      value.length && whiteList ? whiteList.includes(value) : true;
+    const validEmail = isEmail ? isValidEmail(value) : true;
+    const validRegExp = regExp ? regExp.test(value) : true;
+    const inWhiteList = whiteList ? whiteList.includes(value) : false;
     setValid((validLength && validEmail && validRegExp) || inWhiteList);
   }
 

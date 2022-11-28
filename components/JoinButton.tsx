@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
@@ -13,14 +12,18 @@ import {
   ButtonSize,
   ButtonType,
   Event,
+  FoodPreference,
   InvitationStatus,
   Registration,
   RegStatus,
   SnackTypes,
 } from "../types/types";
 import Button from "./Button";
+import Dropdown from "./Dropdown";
+import FormQuestionModal from "./FormQuestionModal";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
+import styles from "../styles/JoinButton.module.scss";
 
 interface JoinButtonProps {
   event: Event;
@@ -55,7 +58,7 @@ export default function JoinButton({
   small = false,
   noShadow = false,
 }: JoinButtonProps) {
-  const { user, loading: userLoading } = useUser();
+  const { user, loading: userLoading, reload: reloadUser } = useUser();
   const {
     data: myRegistration,
     error,
@@ -70,9 +73,11 @@ export default function JoinButton({
 
   const [countdown, setCountdown] = useState<string>();
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
+  const [foodPreference, setFoodPreference] = useState<FoodPreference>();
+  const [formQuestionModalOpen, setFormQuestionModalOpen] = useState(false);
+  const [formQuestionAnswer, setFormQuestionAnswer] = useState("");
   const [unregisterModalOpen, setUnregisterModalOpen] = useState(false);
   const [isCountdown, setIsCountdown] = useState<boolean>();
-  const router = useRouter();
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
 
@@ -190,10 +195,41 @@ export default function JoinButton({
       myRegistration?.regStatus === RegStatus.GOING ||
       myRegistration?.regStatus === RegStatus.WAITLISTED
     ) {
-      return ButtonType.REGISTERED;
+      return ButtonType.CONFIRMED;
     }
     return ButtonType.PRIMARY;
   })();
+
+  async function createNewRegistration() {
+    if (!user) {
+      return;
+    }
+
+    let newRegistration: Registration | undefined;
+    try {
+      newRegistration = await registerUser(
+        user.id,
+        event.id,
+        RegStatus.GOING,
+        formQuestionAnswer,
+      );
+    } catch (e) {
+      newRegistration = undefined;
+    }
+
+    if (newRegistration) {
+      updateRegistration();
+      updateOnChange && updateOnChange();
+      if (newRegistration.regStatus === RegStatus.GOING) {
+        addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+      } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
+        addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
+      }
+    } else {
+      addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+    }
+    return newRegistration;
+  }
 
   async function registerForEvent() {
     if (user) {
@@ -202,31 +238,14 @@ export default function JoinButton({
         if (event.hasFood && !user.foodPreference) {
           return setFoodPreferenceModalOpen(true);
         }
-        let newRegistration: Registration | undefined;
-        try {
-          newRegistration = await registerUser(
-            user.id,
-            event.id,
-            RegStatus.GOING,
-          );
-        } catch (e) {
-          newRegistration = undefined;
-        }
 
-        if (newRegistration) {
-          updateRegistration();
-          updateOnChange && updateOnChange();
-          if (newRegistration.regStatus === RegStatus.GOING) {
-            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-          } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
-            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-          }
-        } else {
-          addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+        if (event.formQuestion) {
+          return setFormQuestionModalOpen(true);
         }
-        return newRegistration;
-      } else {
-        addSnack("Dette arrangementet er ferdig.", SnackTypes.ERROR);
+        const create = await createNewRegistration();
+        if (!create) {
+          await updateRegistrationStatus(RegStatus.GOING);
+        }
       }
     } else {
       redirectToLogin();
@@ -239,6 +258,11 @@ export default function JoinButton({
       if (status === RegStatus.GOING && event.hasFood && !user.foodPreference) {
         return setFoodPreferenceModalOpen(true);
       }
+
+      if (status === RegStatus.GOING && event.formQuestion) {
+        return setFormQuestionModalOpen(true); // flow is resumed in answerFormQuestion()
+      }
+
       let success = undefined;
       try {
         success = (await updateRegistrationUser(
@@ -266,11 +290,70 @@ export default function JoinButton({
     }
   }
 
+  /* called when answer to form question is submitted (Not very DRY code...) */
+  async function answerFormQuestion() {
+    if (!user) {
+      return;
+    }
+
+    /* assume food has already been set here */
+    switch (myRegistration?.regStatus) {
+      case RegStatus.NOT_GOING:
+        let success = undefined;
+        try {
+          success = (await updateRegistrationUser(
+            user.id,
+            event.id,
+            RegStatus.GOING,
+            formQuestionAnswer,
+          )) as Registration;
+        } catch (e) {}
+        if (success) {
+          updateRegistration();
+          updateOnChange && (await updateOnChange());
+          if (success.regStatus === RegStatus.GOING) {
+            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+          } else if (success.regStatus === RegStatus.WAITLISTED) {
+            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
+          } else if (success.regStatus === RegStatus.NOT_GOING) {
+            addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
+          }
+        } else {
+          addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
+        }
+        break;
+      case RegStatus.INVITED:
+        try {
+          await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify({
+              status: InvitationStatus.ACCEPTED,
+              formAnswer: formQuestionAnswer,
+            }),
+          });
+          updateRegistration();
+          updateOnChange && updateOnChange();
+          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
+        } catch (e) {
+          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        }
+        break;
+      default:
+        createNewRegistration();
+    }
+  }
+
   async function acceptInvitation() {
     /* force user to update food prefs if food is served */
     if (event.hasFood && !user?.foodPreference) {
       return setFoodPreferenceModalOpen(true);
     }
+
+    if (event.formQuestion) {
+      return setFormQuestionModalOpen(true);
+    }
+
     try {
       await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {
         method: "PATCH",
@@ -295,7 +378,6 @@ export default function JoinButton({
     if (isCountdown) {
       return undefined;
     }
-
     switch (myRegistration?.regStatus) {
       case RegStatus.GOING:
         return () => {
@@ -328,6 +410,23 @@ export default function JoinButton({
     }
   })();
 
+  const changeFoodPreference = async (foodPreference?: FoodPreference) => {
+    if (foodPreference === undefined) {
+      return;
+    }
+    setFoodPreference(foodPreference);
+    await fetchFromPeoplyApi("/users/me", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        foodPreference,
+      }),
+    });
+    reloadUser();
+  };
+
   return (
     <>
       {foodPreferenceModalOpen && (
@@ -336,18 +435,52 @@ export default function JoinButton({
           description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         >
-          <>
+          <div className={styles.modal}>
+            <Dropdown
+              className={styles.foodPreferenceDropdown}
+              options={[
+                {
+                  value: undefined,
+                  label: "Velg matpreferanse",
+                  isDefault: foodPreference !== undefined,
+                },
+                {
+                  value: FoodPreference.NO_PREFERENCE,
+                  label: "Ingen preferanse",
+                },
+                { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
+                { value: FoodPreference.VEGAN, label: "Veganer" },
+                { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
+              ]}
+              setValue={changeFoodPreference}
+              value={foodPreference}
+              label="Matpreferanse"
+              inputId="food-preference"
+            />
             <ModalButton
-              text="Rediger matpreferanser"
-              onClick={() => router.push("/me/food")}
+              text="Lagre"
+              onClick={async () => {
+                await registerForEvent();
+                setFoodPreferenceModalOpen(false);
+              }}
+              disabled={user?.foodPreference === null}
             />
             <ModalButton
               text="Lukk"
               onClick={() => setFoodPreferenceModalOpen(false)}
               type={ButtonType.SECONDARY}
             />
-          </>
+          </div>
         </Modal>
+      )}
+      {formQuestionModalOpen && (
+        <FormQuestionModal
+          formAnswer={formQuestionAnswer}
+          formQuestion={event.formQuestion ?? ""}
+          setFormAnswer={setFormQuestionAnswer}
+          setModalOpen={setFormQuestionModalOpen}
+          onSubmit={answerFormQuestion}
+        />
       )}
       {useUnregisterModal && unregisterModalOpen && (
         <Modal

@@ -35,7 +35,7 @@ export function SnackbarProvider({
 
   const addSnack = useCallback(
     (label: string, type?: SnackTypes) =>
-      setSnacks((snacks) => [{ label: label, type: type }, ...snacks]),
+      setSnacks((snacks) => [{ label: label, type: type } /* , ...snacks */]),
     [],
   );
 

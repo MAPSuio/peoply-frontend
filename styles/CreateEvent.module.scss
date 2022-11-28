@@ -117,3 +117,10 @@
   gap: $spacer-medium;
   width: 100%;
 }
+
+.participantQuestion {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  width: 100%;
+}

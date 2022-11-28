@@ -3,51 +3,70 @@
   align-items: stretch;
   align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  padding: $spacer-very-small $spacer-small;
+  padding: $spacer-very-small-plus $spacer-small;
   width: 100%;
 
-  > a {
-    &:first-child {
-      min-width: max-content;
-      width: 100%;
-    }
-    &:not(:first-child) {
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-      padding: 1rem;
-    }
-  }
-
-
   svg {
-    stroke: #FFFFFF;
+    stroke: $text-color-emphasis;
   }
 
   .icon {
     @include resetButton();
     align-items: center;
     display: flex;
-    padding: 0.5rem;
+    padding-left: $spacer-small;
   }
 
   .info {
     align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: $spacer-very-small;
+    width: 100%;
 
     .name {
-      > p:first-child {
-        color: #FFFFFF;
-        font-size: $font-size-primary;
-        margin-bottom: $spacer-mini
+      margin-bottom: $spacer-mini;
+
+      @include desktop(){
+        font-size: $font-size-primary-desktop;
       }
 
-      .description {
-        font-size: $font-size-tertiary;
-        margin-bottom: $spacer-mini;
+      p {
+        color: $text-color-emphasis;
+        font-size: $font-size-primary;
       }
     }
+
+    .description {
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+      font-size: $font-size-tertiary;
+      -webkit-line-clamp: 2;
+      line-height: $line-height-hint-text;
+      margin-bottom: $spacer-mini;
+      overflow: hidden;
+
+      @include desktop(){
+        font-size: $font-size-tertiary-desktop;
+      }
+    }
+    
   }
+}
+
+.comment {
+  color: $text-color-primary;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  margin: $spacer-small 0;
+  text-align: left;
+  width: 100%;
+}
+
+.user {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

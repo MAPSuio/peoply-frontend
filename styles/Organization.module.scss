@@ -39,9 +39,11 @@
 .description {
   @include normalText();
   font-size: $font-size-secondary;
+  margin-bottom: $spacer-small;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
+    margin-bottom: $spacer-small-plus;
   }
 }
 
@@ -96,8 +98,8 @@
 .dataContainer {
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
-  gap: $spacer-large;
+  flex-flow: row wrap;
+  gap: $spacer-medium-plus;
   justify-content: center;
   margin-bottom: $spacer-medium-plus;
 
@@ -169,6 +171,14 @@
     height: 24px;
     width: 24px;
   }
+}
+
+.usersIcon {
+  margin-left: 2px;
+}
+
+.followIcon {
+  margin-left: 4px;
 }
 
 .marginBottomMedium {

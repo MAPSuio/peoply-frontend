@@ -71,6 +71,12 @@
   padding: 0;
 }
 
+@mixin resetList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 @mixin card() {
   background-color: $background-color-card;
   border-radius: $border-radius-regular;
@@ -245,6 +251,10 @@
 @mixin headingContainer() {
   margin: $spacer-medium-plus 0;
   text-align: center;
+
+  @include desktop() {
+    margin: $spacer-large 0;
+  }
 
   h1 {
     font-size: $font-size-title;

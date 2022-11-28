@@ -1,0 +1,49 @@
+.listItem {
+  max-width: $max-width-arranger-list-item;
+  padding: $spacer-very-small $spacer-small;
+  width: 100%;
+  @include card();
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-medium;
+  justify-content: space-between;
+}
+
+.info {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-small;
+}
+
+.name {
+  color: $text-color-emphasis;
+  font-size: $font-size-secondary;
+  margin-bottom: $spacer-mini;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.description {
+  color: $text-color-primary;
+  font-size: $font-size-tertiary;
+  margin-bottom: $spacer-mini;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.data {
+  text-transform: lowercase;
+}
+
+.button {
+  border-radius: $border-radius-inside-card;
+}

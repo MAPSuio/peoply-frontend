@@ -160,7 +160,12 @@ export default function UpdateEvent() {
               checked={sendEmail}
               checkboxId="allowNotifications"
               checkboxName="allowNotifications"
-              onChange={() => setSendEmail(!sendEmail)}
+              onChange={() => {
+                setSendEmail(!sendEmail);
+                if (sendEmail) {
+                  setReplyToMailValid(true);
+                }
+              }}
               className={styles.emailCheckBox}
             />
             {sendEmail && (

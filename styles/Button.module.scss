@@ -104,6 +104,23 @@
   }
 }
 
+.dangerSoftButton {
+  background-color: $background-color-button-danger-soft;
+  box-shadow: $shadow-button-danger;
+  color: $danger-color;
+
+  &:disabled {
+    background-color: $background-color-button-danger-disabled;
+  }
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: $background-color-button-danger-soft-hover;
+      box-shadow: $shadow-button-danger-soft-hover;
+    }
+  }
+}
+
 .highlightedEventCardButton {
   background-color: $background-color-button-highlighted-event-card;
   color: $text-color-black;
@@ -115,7 +132,7 @@
   }
 }
 
-.registeredButton {
+.confirmedButton {
   background-color: $primary-color-muted;
   color: $primary-color-100;
 
@@ -160,7 +177,7 @@
 }
 
 .tiny {
-  font-size: $font-size-tertiary;  
+  font-size: $font-size-tertiary;
   height: fit-content;
   padding: $spacer-very-small $spacer-very-small;
   width: fit-content;
@@ -168,7 +185,18 @@
   @include desktop() {
     font-size: $font-size-tertiary-desktop;
     padding: $spacer-very-small $spacer-very-small;
+  }
+}
 
+.tinyWithText {
+  font-size: $font-size-tertiary;
+  height: fit-content;
+  padding: $spacer-very-small $spacer-small;
+  width: fit-content;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    padding: $spacer-very-small $spacer-small;
   }
 }
 

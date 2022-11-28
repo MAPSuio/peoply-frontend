@@ -27,7 +27,14 @@ const Modal = ({
           <ExitIcon />
         </button>
         <h1 className={styles.title}>{label}</h1>
-        <p className={styles.description}>{description}</p>
+        <div className={styles.descriptionContainer}>
+          {description?.split("\n").map((str, index) => (
+            <p className={styles.description} key={index}>
+              {str}
+              <br></br>
+            </p>
+          ))}
+        </div>
         {children}
       </div>
     </div>

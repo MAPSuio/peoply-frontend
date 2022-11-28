@@ -102,7 +102,7 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                   <ul>
                     <li className={styles.marginBottomVerySmall}>
                       <span className={styles.emphasis}>
-                        Vi bruker bare Vipps logg inn
+                        Vi bruker bare Vipps og Google logg inn
                       </span>
                       <ul className={styles.reducedPadding}>
                         <li>
@@ -110,18 +110,19 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                           appen er ekte.
                         </li>
                         <li>
-                          Dette gjør at vi bare henter de dataene du allerede
-                          har valgt å lagre i Vipps.
+                          Dette gjør at vi bare henter noen av dataene du
+                          allerede har valgt å lagre i Vipps eller Google.
                         </li>
                         <li>
                           Dette gjør at vi kan være sikre på at dataene vi
-                          henter er verifiserbare og godkjent av Vipps.
+                          henter er verifiserbare og godkjent av Vipps eller
+                          Google.
                         </li>
                       </ul>
                     </li>
                     <li className={styles.marginBottomVerySmall}>
                       <span className={styles.emphasis}>
-                        Vi lagrer og prosesseserer all data i Norge.
+                        Vi lagrer og prosesserer all data i Norge.
                       </span>
                       <ul className={styles.reducedPadding}>
                         <li>
@@ -133,8 +134,8 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                           raskere enn andre som f.eks. befinner seg i USA.
                         </li>
                         <li>
-                          For de litt mer teknisk intereserte, så har vi valgt å
-                          benytte oss av Azure skytjenesten for hosting av
+                          For de litt mer teknisk interesserte, så har vi valgt
+                          å benytte oss av Azure skytjeneste for hosting av
                           frontend- og backend-kode og database. Dette er i
                           skrivende stund den eneste skytjenesten som har
                           servere i Norge.
@@ -167,7 +168,7 @@ const FAQ = ({ baseUrl }: FAQProps) => {
             <div className={styles.section}>
               <h2 className={styles.sectionHeader}>Arrangementer</h2>
               <div className={styles.cardContainer}>
-                <ExpandableCard title="Kan andre se at jeg har meldt meg på et gitt arrangement?">
+                <ExpandableCard title="Kan andre se at jeg har meldt meg på et arrangement?">
                   <p>
                     Kun arrangøren kan se at du er deltaker på et arrangement.
                   </p>
