@@ -38,7 +38,7 @@ export default function ProfileMenuItem({
         <Icon />
         <p>{text}</p>
       </div>
-      <ActionIcon />
+      <ActionIcon className={danger && styles.danger} />
     </button>
   );
 }
