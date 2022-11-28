@@ -157,7 +157,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
   };
 
   const editEventFunc = () => {
-    router.push(router.asPath + "/edit");
+    router.push(`/events/${eventData.urlId}/edit`);
   };
 
   const getArrangerImageOrIcon = () => {
