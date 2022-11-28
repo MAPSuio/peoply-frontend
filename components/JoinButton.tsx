@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
@@ -13,14 +12,17 @@ import {
   ButtonSize,
   ButtonType,
   Event,
+  FoodPreference,
   InvitationStatus,
   Registration,
   RegStatus,
   SnackTypes,
 } from "../types/types";
 import Button from "./Button";
+import Dropdown from "./Dropdown";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
+import styles from "../styles/JoinButton.module.scss";
 
 interface JoinButtonProps {
   event: Event;
@@ -55,7 +57,7 @@ export default function JoinButton({
   small = false,
   noShadow = false,
 }: JoinButtonProps) {
-  const { user, loading: userLoading } = useUser();
+  const { user, loading: userLoading, reload: reloadUser } = useUser();
   const {
     data: myRegistration,
     error,
@@ -70,9 +72,9 @@ export default function JoinButton({
 
   const [countdown, setCountdown] = useState<string>();
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
+  const [foodPreference, setFoodPreference] = useState<FoodPreference>();
   const [unregisterModalOpen, setUnregisterModalOpen] = useState(false);
   const [isCountdown, setIsCountdown] = useState<boolean>();
-  const router = useRouter();
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
 
@@ -328,6 +330,23 @@ export default function JoinButton({
     }
   })();
 
+  const changeFoodPreference = async (foodPreference?: FoodPreference) => {
+    if (foodPreference === undefined) {
+      return;
+    }
+    setFoodPreference(foodPreference);
+    await fetchFromPeoplyApi("/users/me", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        foodPreference,
+      }),
+    });
+    reloadUser();
+  };
+
   return (
     <>
       {foodPreferenceModalOpen && (
@@ -337,9 +356,34 @@ export default function JoinButton({
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         >
           <>
+            <Dropdown
+              className={styles.foodPreferenceDropdown}
+              options={[
+                {
+                  value: undefined,
+                  label: "Velg matpreferanse",
+                  isDefault: foodPreference !== undefined,
+                },
+                {
+                  value: FoodPreference.NO_PREFERENCE,
+                  label: "Ingen preferanse",
+                },
+                { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
+                { value: FoodPreference.VEGAN, label: "Veganer" },
+                { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
+              ]}
+              setValue={changeFoodPreference}
+              value={foodPreference}
+              label="Matpreferanse"
+              inputId="food-preference"
+            />
             <ModalButton
-              text="Rediger matpreferanser"
-              onClick={() => router.push("/me/food")}
+              text="Meld på"
+              onClick={async () => {
+                await registerForEvent();
+                setFoodPreferenceModalOpen(false);
+              }}
+              disabled={user?.foodPreference === null}
             />
             <ModalButton
               text="Lukk"

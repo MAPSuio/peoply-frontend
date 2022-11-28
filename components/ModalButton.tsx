@@ -7,6 +7,7 @@ interface ModalButtonProps {
   onClick: () => void;
   type?: ButtonType;
   noShadow?: boolean;
+  disabled?: boolean;
 }
 
 const ModalButton = ({
@@ -14,6 +15,7 @@ const ModalButton = ({
   onClick,
   type,
   noShadow = false,
+  disabled = false,
 }: ModalButtonProps) => {
   return (
     <Button
@@ -22,6 +24,7 @@ const ModalButton = ({
       onClick={onClick}
       noShadow={noShadow}
       type={type}
+      disabled={disabled}
     />
   );
 };
