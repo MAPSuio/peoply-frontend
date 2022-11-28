@@ -93,10 +93,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export async function getStaticPaths() {
   const orgs = await getXOrganizations(1000);
   const paths = orgs.map((org) => ({
-    params: { oid: org.id },
+    params: { oid: org.urlId ?? org.id },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: "blocking" };
 }
 
 export default OrgFollowers;
