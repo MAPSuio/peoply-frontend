@@ -29,11 +29,13 @@
   flex-flow: column nowrap;
   justify-content: center;
   padding: $spacer-medium;
+  padding-top: $spacer-medium-plus;
   position: relative;
   width: $page-width-mobile;
 
   @include desktop() {
-    width: auto;
+    max-width: $max-width-modal-desktop;
+    width: 100%;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -90,11 +92,14 @@
   }
 }
 
+.descriptionContainer {
+  margin-bottom: $spacer-medium;
+}
+
 .description {
   color: $text-color-primary;
   font-size: $font-size-secondary;
   line-height: $line-height-hint-text;
-  margin-bottom: $spacer-medium;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;

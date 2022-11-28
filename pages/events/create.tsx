@@ -1,12 +1,12 @@
-/* Next.js. */
+// Next.js.
 import { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
-/* React. */
+// React.
 import { useState, ChangeEvent, useEffect } from "react";
 
-/* Components. */
+// Components.
 import DateInput from "../../components/inputs/DateInput";
 import TimeInput from "../../components/inputs/TimeInput";
 import TextInput from "../../components/inputs/TextInput";
@@ -18,8 +18,9 @@ import RadioInput from "../../components/inputs/RadioInput";
 import Modal from "../../components/Modal";
 import TextInputLocationSelect from "../../components/inputs/TextInputLocationSelect";
 import Dropdown from "../../components/Dropdown";
-import Header from "../../components/Header";
 import HeadComponent from "../../components/HeadComponent";
+import ModalButton from "../../components/ModalButton";
+import CheckboxInput from "../../components/inputs/CheckboxInput";
 
 import SummaryPage from "../../components/SummaryPage";
 import InputPage from "../../components/InputPage";
@@ -30,14 +31,16 @@ import UnlistedIcon from "../../components/svgs/UnlistedIcon";
 import PublicIcon from "../../components/svgs/PublicIcon";
 import PlusIcon from "../../components/svgs/PlusIcon";
 import MinusIcon from "../../components/svgs/MinusIcon";
+import NoFoodIcon from "../../components/svgs/NoFoodIcon";
+import FoodIcon from "../../components/svgs/FoodIcon";
 
-/* Hooks. */
+// Hooks.
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useUser from "../../hooks/useUser";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import useSnack from "../../hooks/useSnack";
 
-/* Utils */
+// Utils
 import {
   getInputPageData,
   allEventInputsValid,
@@ -50,7 +53,23 @@ import {
   getOrganizationRolePrivilege,
 } from "../../utils/functions";
 
-/* Types. */
+import {
+  eventDescriptionMaxLength,
+  eventDescriptionMinLength,
+  eventLocationNameMaxLength,
+  eventLocationNameMinLength,
+  eventTitleMaxLength,
+  eventTitleMinLength,
+} from "../../utils/constants";
+
+import {
+  isEventRegEndDateValid,
+  isEventRegEndTimeValid,
+  isEventRegStartDateValid,
+  isEventRegStartTimeValid,
+} from "../../utils/event";
+
+// Types.
 import {
   Event,
   InputPages,
@@ -62,25 +81,8 @@ import {
 } from "../../types/types";
 import { Models } from "azure-maps-rest";
 
-/* Styles. */
+// Styles.
 import styles from "../../styles/CreateEvent.module.scss";
-import NoFoodIcon from "../../components/svgs/NoFoodIcon";
-import FoodIcon from "../../components/svgs/FoodIcon";
-import {
-  eventDescriptionMaxLength,
-  eventDescriptionMinLength,
-  eventLocationNameMaxLength,
-  eventLocationNameMinLength,
-  eventTitleMaxLength,
-  eventTitleMinLength,
-} from "../../utils/constants";
-import {
-  isEventRegEndDateValid,
-  isEventRegEndTimeValid,
-  isEventRegStartDateValid,
-  isEventRegStartTimeValid,
-} from "../../utils/event";
-import ModalButton from "../../components/ModalButton";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -104,6 +106,8 @@ export interface EventObjectProps {
   eventHasCapacity: boolean;
   eventCapacity: string;
   eventHasFood: boolean;
+  eventHasFormQuestion: boolean;
+  eventFormQuestion?: string;
   eventExtraInfoValid: boolean;
   eventImage?: File;
   eventImageValid: boolean;
@@ -144,6 +148,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventVisibility: Visibility.PUBLIC,
     eventHasCapacity: false,
     eventHasFood: false,
+    eventHasFormQuestion: false,
+    eventFormQuestion: "",
     eventImage: undefined,
     eventCapacity: "",
     eventExtraInfoValid: eventExtraInfoValid,
@@ -484,6 +490,30 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     updateLocalStorage({
       ...eventObject,
       eventHasFood: eventHasFood,
+    });
+  };
+
+  const setEventHasFormQuestion = (value: boolean) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventHasFormQuestion: value,
+      eventFormQuestion: value ? eventObject.eventFormQuestion : "",
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventHasFormQuestion: value,
+      eventFormQuestion: value ? eventObject.eventFormQuestion : "",
+    });
+  };
+
+  const updateEventFormQuestion = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventFormQuestion: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventFormQuestion: e.target.value,
     });
   };
 
@@ -1176,6 +1206,30 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   onClick={updateHasFood}
                   label="Skal det serveres mat på arrangementet?"
                 />
+              </div>
+              <div className={styles.FormQuestion}>
+                <CheckboxInput
+                  onChange={() =>
+                    setEventHasFormQuestion(!eventObject.eventHasFormQuestion)
+                  }
+                  checked={eventObject.eventHasFormQuestion}
+                  label="Spørsmål til deltakere"
+                  checkboxId="FormQuestion"
+                  checkboxName="FormQuestion"
+                />
+                {eventObject.eventHasFormQuestion && (
+                  <TextInputLong
+                    value={eventObject.eventFormQuestion ?? ""}
+                    handleChange={updateEventFormQuestion}
+                    inputId="FormQuestionInput"
+                    inputName="FormQuestionInput"
+                    label="Spørsmål til deltakere"
+                    maxLength={100}
+                    placeholder="F.eks. Hva er din favorittmat?"
+                    errorMessage=""
+                    rows={4}
+                  />
+                )}
               </div>
             </div>
           </InputPage>

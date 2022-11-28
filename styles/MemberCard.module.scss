@@ -3,13 +3,13 @@
   align-items: stretch;
   align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  max-width: $max-width-card;
   padding: $spacer-very-small-plus $spacer-small;
   width: 100%;
 
   svg {
-    stroke: $text-color-primary;
+    stroke: $text-color-emphasis;
   }
 
   .icon {
@@ -25,30 +25,48 @@
     gap: $spacer-very-small;
     width: 100%;
 
-    .nameAndDescription {
-      .name {
+    .name {
+      margin-bottom: $spacer-mini;
+
+      @include desktop(){
+        font-size: $font-size-primary-desktop;
+      }
+
+      p {
         color: $text-color-emphasis;
         font-size: $font-size-primary;
-        margin-bottom: $spacer-mini;
-
-        @include desktop(){
-          font-size: $font-size-primary-desktop;
-        }
-      }
-
-      .description {
-        -webkit-box-orient: vertical;
-        display: -webkit-box;
-        font-size: $font-size-tertiary;
-        -webkit-line-clamp: 2;
-        line-height: $line-height-hint-text;
-        margin-bottom: $spacer-mini;
-        overflow: hidden;
-
-        @include desktop(){
-          font-size: $font-size-tertiary-desktop;
-        }
       }
     }
+
+    .description {
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+      font-size: $font-size-tertiary;
+      -webkit-line-clamp: 2;
+      line-height: $line-height-hint-text;
+      margin-bottom: $spacer-mini;
+      overflow: hidden;
+
+      @include desktop(){
+        font-size: $font-size-tertiary-desktop;
+      }
+    }
+    
   }
+}
+
+.comment {
+  color: $text-color-primary;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  margin: $spacer-small 0;
+  text-align: left;
+  width: 100%;
+}
+
+.user {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

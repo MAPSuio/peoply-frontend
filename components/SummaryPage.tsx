@@ -33,6 +33,7 @@ import UserCircle from "./UserCircle";
 import useUser from "../hooks/useUser";
 import FoodIcon from "./svgs/FoodIcon";
 import NoFoodIcon from "./svgs/NoFoodIcon";
+import HelpCircleIcon from "./svgs/HelpCircleIcon";
 
 interface SummaryPageProps {
   title: string;
@@ -127,6 +128,11 @@ const SummaryPage = ({
     }
     formData.set("visibility", `${eventObject.eventVisibility}`);
     formData.set("hasFood", `${eventObject.eventHasFood}`);
+
+    /* Append participant question. */
+    if (eventObject.eventHasFormQuestion && eventObject.eventFormQuestion) {
+      formData.set("formQuestion", eventObject.eventFormQuestion);
+    }
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventObject.eventActiveCategories);
@@ -405,6 +411,16 @@ const SummaryPage = ({
               <div className={styles.dataItemContainer}>
                 <NoFoodIcon className={styles.dataIconDimensions} />
                 <p className={styles.dataLabel}>Ingen matservering</p>
+              </div>
+            )}
+            {eventObject.eventFormQuestion && (
+              <div className={styles.dataItemContainer}>
+                <HelpCircleIcon className={styles.dataIconDimensions} />
+                <p className={styles.dataLabel}>
+                  {eventObject.eventFormQuestion.length > 30
+                    ? eventObject.eventFormQuestion.slice(0, 29) + "...?"
+                    : eventObject.eventFormQuestion}
+                </p>
               </div>
             )}
           </div>

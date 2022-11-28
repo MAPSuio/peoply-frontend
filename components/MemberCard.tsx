@@ -8,6 +8,7 @@ interface MemberCardProps {
   description?: string;
   icon?: JSX.Element;
   iconOnClick?: () => void;
+  comment?: string;
 }
 
 export default function MemberCard({
@@ -15,28 +16,41 @@ export default function MemberCard({
   description,
   icon,
   iconOnClick: onClick,
+  comment,
 }: MemberCardProps) {
   return (
     <div className={styles.container}>
-      <Link href={`/users/${user.id}`} passHref>
-        <a>
-          <div className={styles.info}>
-            <Avatar size="medium" user={user} />
-            <div className={styles.nameAndDescription}>
-              <p
-                className={styles.name}
-              >{`${user.firstName} ${user.lastName}`}</p>
-              {description && (
-                <p className={styles.description}>{description}</p>
-              )}
+      <div className={styles.user}>
+        <Link href={`/users/${user.id}`} passHref>
+          <a>
+            <div className={styles.info}>
+              <Avatar size="medium" user={user} />
+              <div className={styles.nameAndDescription}>
+                <div className={styles.name}>
+                  <p>{`${user.firstName} ${user.lastName}`}</p>
+                </div>
+                {description && (
+                  <p className={styles.description}>{description}</p>
+                )}
+              </div>
             </div>
-          </div>
-        </a>
-      </Link>
-      {icon && (
-        <button className={styles.icon} onClick={onClick}>
-          {icon}
-        </button>
+          </a>
+        </Link>
+        {icon && (
+          <button className={styles.icon} onClick={onClick}>
+            {icon}
+          </button>
+        )}
+      </div>
+      {comment && (
+        <div className={styles.comment}>
+          {comment.split("\n").map((str) => (
+            <p key={str}>
+              {str}
+              <br></br>
+            </p>
+          ))}
+        </div>
       )}
     </div>
   );

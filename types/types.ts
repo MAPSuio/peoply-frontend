@@ -223,6 +223,7 @@ export interface Registration {
   updatedAt: string;
   regStatus: RegStatus;
   attendance: boolean;
+  formAnswer?: string;
 }
 
 export interface Event {
@@ -252,6 +253,7 @@ export interface Event {
   freeformAddress?: string;
   latitude?: number;
   longitude?: number;
+  formQuestion?: string;
 
   eventArrangers?: EventArranger[];
   registrations?: Registration[];
