@@ -5,6 +5,7 @@ import { GetStaticProps } from "next";
 import BackButton from "../../../components/BackButton";
 import Layout from "../../../components/Layout";
 import MemberCard from "../../../components/MemberCard";
+import HeadComponent from "../../../components/HeadComponent";
 
 // Hooks.
 import useBack from "../../../hooks/useBack";
@@ -28,8 +29,6 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/OrgFollowers.module.scss";
-import ExitIcon from "../../../components/svgs/ExitIcon";
-import ChevronRightIcon from "../../../components/svgs/ChevronRightIcon";
 
 interface OrgFollowersProps {
   org: Organization;
@@ -41,23 +40,32 @@ const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
   const goBack = useBack();
 
   return (
-    <Layout align={Alignment.CENTER}>
-      <BackButton onClick={goBack} />
-      <div className={styles.headingContainer}>
-        <h1>Følgere</h1>
-        <p>Her kan du se alle følgerne til {org.name}</p>
-      </div>
-      <ul className={styles.followersList}>
-        {followers.map((follower) => (
-          <li key={follower.arrangerId}>
-            <MemberCard
-              user={follower.user}
-              description={follower.user.description}
-            />
-          </li>
-        ))}
-      </ul>
-    </Layout>
+    <>
+      <HeadComponent
+        title={`Følgerne til ${org.name}`}
+        description={`Se hvem som følger ${org.name}`}
+        url={`${baseUrl}/orgs/${org.urlId ?? org.id}`}
+        imageUrl={org.image}
+      />
+
+      <Layout align={Alignment.CENTER}>
+        <BackButton onClick={goBack} />
+        <div className={styles.headingContainer}>
+          <h1>Følgere</h1>
+          <p>Her kan du se alle følgerne til {org.name}</p>
+        </div>
+        <ul className={styles.followersList}>
+          {followers.map((follower) => (
+            <li key={follower.arrangerId}>
+              <MemberCard
+                user={follower.user}
+                description={follower.user.description}
+              />
+            </li>
+          ))}
+        </ul>
+      </Layout>
+    </>
   );
 };
 
