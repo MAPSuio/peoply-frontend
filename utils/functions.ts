@@ -6,6 +6,8 @@ import {
   EventDateFormat,
 } from "../types/types";
 
+import React from "react";
+
 function formatDateRange(startDate: Date, endDate?: Date | null): string {
   let dateString: string;
   // if start date, month and year is today
@@ -686,6 +688,22 @@ function getTimeSinceString(date: Date) {
   }
 }
 
+function injectLink(str: string) {
+  const urlRegex = /(https?:\/\/[^\s,]+)/g; // url cannot contain whitespace or comma
+  const split = str.split(urlRegex);
+  return split.map((s, i) => {
+    if (urlRegex.test(s)) {
+      return React.createElement(
+        "a",
+        { href: s, target: "_blank", rel: "noopener noreferrer", key: i },
+        s,
+      );
+    } else {
+      return s;
+    }
+  });
+}
+
 export {
   formatDateRange,
   formatTimeRange,
@@ -730,4 +748,5 @@ export {
   isValidEmail,
   getTimeSinceString,
   getTimeStringFromDate,
+  injectLink,
 };

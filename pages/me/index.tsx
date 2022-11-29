@@ -9,6 +9,7 @@ import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
 import HeadComponent from "../../components/HeadComponent";
+import { injectLink } from "../../utils/functions";
 
 const Me: NextPage = () => {
   const { user, loading } = useUser();
@@ -38,7 +39,9 @@ const Me: NextPage = () => {
             <h1
               className={styles.name}
             >{`${user.firstName} ${user.lastName}`}</h1>
-            <p className={styles.description}>{user.description}</p>
+            <p className={styles.description}>
+              {injectLink(user.description ?? "")}
+            </p>
           </div>
           <ProfileMenu />
         </div>
