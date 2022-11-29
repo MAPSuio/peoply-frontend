@@ -55,6 +55,8 @@ const Home: NextPage = ({
 
   const featuredEventsQuery = {
     featured: true,
+    afterDate: today,
+    orderBy: "startDate",
   };
 
   const eventsQuery = {
@@ -78,7 +80,6 @@ const Home: NextPage = ({
   ];
 
   const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
-  const eventsOnUioQuery = { ...eventsQuery, categoryIds: "1" }; // UIO category id
   const eventsFromFollowedArrangersQuery = {
     ...eventsQuery,
     arrangerIds: followedArrangers?.map((a) => a.arrangerId),
@@ -89,10 +90,7 @@ const Home: NextPage = ({
     `/events?${queryToString(eventsOnIfiQuery)}`,
     fetchFromPeoplyApiJson,
   );
-  const { data: eventsOnUiO, error: eventsOnUiOError } = useSWR<Event[]>(
-    `/events?${queryToString(eventsOnUioQuery)}`,
-    fetchFromPeoplyApiJson,
-  );
+
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
     fetchFromPeoplyApiJson,
@@ -156,14 +154,7 @@ const Home: NextPage = ({
             error={eventsOnIFIError}
           />
         ) : undefined}
-        {eventsOnUiO && eventsOnUiO.length > 0 ? (
-          <EventSwiper
-            header={"Hva skjer på UiO?"}
-            seeAllUrl={{ pathname: `/events`, query: eventsOnUioQuery }}
-            events={eventsOnUiO}
-            error={eventsOnUiOError}
-          />
-        ) : undefined}
+
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
             header={"Hva skjer fremover?"}
