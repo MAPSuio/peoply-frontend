@@ -29,6 +29,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/OrgFollowers.module.scss";
+import useSWR from "swr";
 
 interface OrgFollowersProps {
   org: Organization;
@@ -39,15 +40,22 @@ interface OrgFollowersProps {
 const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
   const goBack = useBack();
 
+  const { data: followersData, error: followersError } = useSWR<
+    ArrangerFollower[]
+  >(`/organizations/${org.id}/followers`, fetchFromPeoplyApiJson, {
+    fallbackData: followers,
+  });
+
+  if (!followersData) {
+    return <></>;
+  }
+
   return (
     <>
       <HeadComponent
-        title={`Følgerne til ${org.name}`}
-        description={`Se hvem som følger ${org.name}`}
-        url={`${baseUrl}/orgs/${org.urlId ?? org.id}`}
-        imageUrl={org.image}
+        title={`${org.name} | Følgere`}
+        description={`Følgere for ${org.name}`}
       />
-
       <Layout align={Alignment.CENTER}>
         <BackButton onClick={goBack} />
         <div className={styles.headingContainer}>
@@ -55,8 +63,8 @@ const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
           <p>Her kan du se alle følgerne til {org.name}</p>
         </div>
         <ul className={styles.followersList}>
-          {followers.map((follower) => (
-            <li className={styles.listItem} key={follower.arrangerId}>
+          {followersData.map((follower) => (
+            <li key={follower.arrangerId}>
               <MemberCard
                 user={follower.user}
                 description={follower.user.description}

@@ -92,17 +92,16 @@ const Settings = ({ baseUrl }: SettingsProps) => {
     allowEmailFromArranger !== user?.allowEmailFromArranger;
   const validAllowEmailPromotionsEdit =
     allowEmailPromotions !== user?.allowEmailPromotions;
-  const validEmailEdit = emailValid && email !== user?.email;
+  // const validEmailEdit = emailValid && email !== user?.email;
   const validEdit =
-    emailValid &&
-    (validAllowEmailFromArrangerEdit ||
-      validAllowEmailPromotionsEdit ||
-      email !== user?.email);
+    validAllowEmailFromArrangerEdit ||
+    validAllowEmailPromotionsEdit ||
+    email !== user?.email;
 
   const handleConfirm = async () => {
     try {
       const body = {
-        ...(validEmailEdit && { email }),
+        // ...(validEmailEdit && { email }),
         ...(validAllowEmailFromArrangerEdit && {
           allowEmailFromArranger,
           allowEmailOnWaitlist: allowEmailFromArranger,
@@ -242,7 +241,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                       setAllowEmailPromotions(!allowEmailPromotions)
                     }
                   />
-                  <TextInput
+                  {/* <TextInput
                     value={email}
                     inputId="subject"
                     inputName="subject"
@@ -255,7 +254,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                     valid={emailValid}
                     validate
                     isEmail
-                  />
+                  /> */}
                   {/* <SwitchInput
                     label="Tillat oppdateringer om ventelister"
                     checked={allowEmailNotifications}
