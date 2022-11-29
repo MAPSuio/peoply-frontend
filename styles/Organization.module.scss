@@ -96,15 +96,15 @@
 }
 
 .dataContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  gap: $spacer-medium-plus;
-  justify-content: center;
+  align-self: center;
+  column-gap: $spacer-small;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: $spacer-medium-plus;
+  place-items: center;
 
   @include desktop() {
-    gap: $spacer-very-large;
+    column-gap: $spacer-large-plus;
     margin-bottom: $spacer-large;
   }
 }
