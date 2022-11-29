@@ -14,3 +14,10 @@
     gap: $spacer-small;
   }
 }
+
+.listItem {
+  display: flex;
+  justify-content: center;
+  max-width: $max-width-member-card;
+  width: 100%;
+}

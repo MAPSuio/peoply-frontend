@@ -41,7 +41,11 @@ import {
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
-import { formatDateRange, formatTimeRange } from "../../../utils/functions";
+import {
+  formatDateRange,
+  formatTimeRange,
+  injectLink,
+} from "../../../utils/functions";
 
 // Types.
 import {
@@ -488,7 +492,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
             <div className={styles.descriptionContainer}>
               {eventData.description.split("\n").map((str) => (
                 <p key={str} className={styles.descText}>
-                  {str}
+                  {injectLink(str)}
                   <br></br>
                 </p>
               ))}

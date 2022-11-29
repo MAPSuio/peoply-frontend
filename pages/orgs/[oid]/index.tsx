@@ -50,6 +50,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
+import { injectLink } from "../../../utils/functions";
 
 interface OrganizationProps {
   organization: Organization;
@@ -197,7 +198,14 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             <h1 className={styles.title}>{org.name}</h1>
             {org.orgNr && <SmallCheckCircle purple placeRight small />}
           </div>
-          <p className={styles.description}>{org.description}</p>
+          <div className={styles.description}>
+            {org.description?.split("\n").map((str) => (
+              <p key={str} className={styles.descText}>
+                {injectLink(str)}
+                <br></br>
+              </p>
+            ))}
+          </div>
           <Button
             text={followButtonText}
             size={ButtonSize.TINYWITHTEXT}

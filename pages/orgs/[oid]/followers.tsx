@@ -5,6 +5,7 @@ import { GetStaticProps } from "next";
 import BackButton from "../../../components/BackButton";
 import Layout from "../../../components/Layout";
 import MemberCard from "../../../components/MemberCard";
+import HeadComponent from "../../../components/HeadComponent";
 
 // Hooks.
 import useBack from "../../../hooks/useBack";
@@ -28,8 +29,7 @@ import { ParsedUrlQuery } from "querystring";
 
 // Styles.
 import styles from "../../../styles/OrgFollowers.module.scss";
-import ExitIcon from "../../../components/svgs/ExitIcon";
-import ChevronRightIcon from "../../../components/svgs/ChevronRightIcon";
+import useSWR from "swr";
 
 interface OrgFollowersProps {
   org: Organization;
@@ -40,24 +40,40 @@ interface OrgFollowersProps {
 const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
   const goBack = useBack();
 
+  const { data: followersData, error: followersError } = useSWR<
+    ArrangerFollower[]
+  >(`/organizations/${org.id}/followers`, fetchFromPeoplyApiJson, {
+    fallbackData: followers,
+  });
+
+  if (!followersData) {
+    return <></>;
+  }
+
   return (
-    <Layout align={Alignment.CENTER}>
-      <BackButton onClick={goBack} />
-      <div className={styles.headingContainer}>
-        <h1>Følgere</h1>
-        <p>Her kan du se alle følgerne til {org.name}</p>
-      </div>
-      <ul className={styles.followersList}>
-        {followers.map((follower) => (
-          <li key={follower.arrangerId}>
-            <MemberCard
-              user={follower.user}
-              description={follower.user.description}
-            />
-          </li>
-        ))}
-      </ul>
-    </Layout>
+    <>
+      <HeadComponent
+        title={`${org.name} | Følgere`}
+        description={`Følgere for ${org.name}`}
+      />
+      <Layout align={Alignment.CENTER}>
+        <BackButton onClick={goBack} />
+        <div className={styles.headingContainer}>
+          <h1>Følgere</h1>
+          <p>Her kan du se alle følgerne til {org.name}</p>
+        </div>
+        <ul className={styles.followersList}>
+          {followersData.map((follower) => (
+            <li key={follower.arrangerId}>
+              <MemberCard
+                user={follower.user}
+                description={follower.user.description}
+              />
+            </li>
+          ))}
+        </ul>
+      </Layout>
+    </>
   );
 };
 
