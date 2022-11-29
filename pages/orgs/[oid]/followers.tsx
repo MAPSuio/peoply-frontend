@@ -64,7 +64,7 @@ const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
         </div>
         <ul className={styles.followersList}>
           {followersData.map((follower) => (
-            <li key={follower.arrangerId}>
+            <li className={styles.listItem} key={follower.arrangerId}>
               <MemberCard
                 user={follower.user}
                 description={follower.user.description}
