@@ -1,5 +1,5 @@
 .wrapper {
-  background-color: $background-color-card;
+  background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-inside-card;
   max-width: 500px;
   position: relative;
@@ -28,7 +28,7 @@
   }
 
   input {
-    background-color: $background-color-card;
+    background-color: var(--background-color-card, $background-color-card);
     padding: $spacer-small-plus;
     width: calc(100% + 2px);
 
@@ -42,13 +42,13 @@
 
   .results {
     backdrop-filter: blur(3px);
-    background-color: $background-color-card;
+    background-color: var(--background-color-card, $background-color-card);
     display: flex;
     flex-direction: column;
     position: absolute;
     width: 100%;
     z-index: 999;
-    
+
     .item {
       align-items: center;
       display: flex;
@@ -90,5 +90,5 @@
 }
 
 .check {
-  stroke: $success-color;
+  stroke: var(--success-color, $success-color);
 }

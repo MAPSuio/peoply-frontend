@@ -1,4 +1,5 @@
 // Primary color variations.
+$primary-color-600: #4D21F7;
 $primary-color-400: #7C4DFF;
 $primary-color-400-hover: #8356FF;
 $primary-color-200: #B89BFE;
@@ -6,14 +7,22 @@ $primary-color-200-hover: #C3A9FF;
 $primary-color-100: #D5C3FE;
 $primary-color-muted: #594F78;
 
+// Primary colors variations for light theme.
+/* Light theme colors here... */
+
 // Secondary color variations.
 $secondary-color-200: #FEB99B;
+$secondary-color-800: #DD601F;
+
+// Secondary colors variations for light theme.
+/* Light theme colors here... */
 
 // Status colors.
 $success-color: #7EFB8E;
 $success-color-hover: #9BFFA9;
 $success-color-muted: #406155;
 $success-color-input: #4C6F66;
+$success-color-border: #4C6F66;
 $success-color-switch: #00E054;
 $error-color: #FF948C;
 $warning-color: #F4E57F;
@@ -23,18 +32,38 @@ $danger-color: #FF948C;
 $danger-color-button: #FF8C96;
 $danger-color-button-hover: #FF9DA5;
 
-// Background colors.
+// Status colors variations for light theme.
+/* TODO: Check this. */
+$success-color-light: #007F25;
+$success-color-hover-light: #9BFFA9;
+$success-color-muted-light: #406155;
+$success-color-input-light: #E5FEE8;
+$success-color-border-light: #7EFB8E;
+$success-color-switch-light: #00E054;
+$error-color-light: #CF1809;
+$warning-color-light: #85680B;
+$warning-color-hover-light: #FFF296;
+$info-color-light: #9ED6FE;
+$danger-color-light: #DD2112;
+$danger-color-button-light: #FF8C96;
+$danger-color-button-hover-light: #FF9DA5;
+$danger-color-button-soft-light: #CF1809;
+
+// Background colors for default theme.
 $background-color-primary: #1E2630;
 $background-color-card: #303A47;
 $background-color-card-hover: #3F4C5C;
 $background-color-card-transparent: rgba(48, 58, 71, 0.7);
 $background-color-modal-transparent: rgba(6, 9, 13, 0.8);
 $background-color-modal: #1E2630;
+$background-color-circle: $primary-color-muted;
 $background-color-price-tag: #FFFFFF;
+$background-color-check: #406155;
 $background-color-glass: rgba(115, 130, 149, 0.7);
-$background-color-navbar: #49515C;
+$background-color-navbar: rgba(63, 76, 92, 0.5);
 $background-color-calendar-tag: #303A47;
-$background-color-input: #3F4C5C;
+$background-color-input: #1E2630;
+$background-color-input-hover: #303A47;
 $background-color-input-muted: #303A47;
 $background-color-tag: #303A47;
 $background-color-progress-circle: #3F4C5C;
@@ -46,8 +75,6 @@ $background-color-switch-container: #303A47;
 $background-color-switch: #63768D;
 $background-color-button-disabled: #2E3453;
 $background-color-button-secondary: #303A47;
-$background-color-button-event-card: #4E5F72;
-$background-color-button-event-card-hover: #596B80;
 $background-color-button-highlighted-event-card: #FFFFFF;
 $background-color-button-highlighted-event-card-hover: #DBDBDB;
 $background-color-button-secondary-hover: #3F4957;
@@ -60,27 +87,159 @@ $background-color-button-danger-soft-hover: #504147;
 $background-color-button-warning: #F4E57F;
 $background-color-button-warning-hover: #FFF296;
 $background-color-button-warning-disabled: #333E44;
+$background-color-button-warning-soft: #4D544F;
+$background-color-button-warning-soft-hover: #555B51;
+$background-color-button-confirmed: $primary-color-muted;
+$background-color-button-confirmed-hover: #60557F;
 $background-color-avatar: #738295;
 $background-color-avatar-gradient: #3F4C5C;
 $background-color-snack: #FFFFFF;
 
+// Background colors for night theme.
+$background-color-primary-night: #000000;
+$background-color-card-night: #232029;
+$background-color-card-hover-night: #44414B;
+$background-color-card-transparent-night: rgba(48, 58, 71, 0.7);
+$background-color-modal-transparent-night: rgba(38, 38, 38, 0.8);
+$background-color-modal-night: #000000;
+$background-color-circle: $primary-color-muted;
+$background-color-price-tag-night: #FFFFFF;
+$background-color-check: #406155;
+$background-color-glass-night: rgba(80, 97, 120, 0.7);
+$background-color-navbar-night: rgba(68, 65, 75, 0.5);
+$background-color-calendar-tag-night: #232029;
+$background-color-input-night: #000000;
+$background-color-input-hover-night: #232029;
+$background-color-input-muted-night: #232029;
+$background-color-tag-night: #232029;
+$background-color-progress-circle-night: #44414B;
+$background-color-progress-circle-active-night: #ABB5C1;
+$background-color-progress-connector-night: #232029;
+$background-color-progress-connector-active-night: #738295;
+$background-color-settings-button-night: #232029;
+$background-color-switch-container-night: #232029;
+$background-color-switch-night: #63768D;
+$background-color-button-disabled-night: #2E3453;
+$background-color-button-secondary-night: #232029;
+$background-color-button-event-card-night: #4E5F72;
+$background-color-button-event-card-hover-night: #596B80;
+$background-color-button-highlighted-event-card-night: #FFFFFF;
+$background-color-button-highlighted-event-card-hover-night: #DBDBDB;
+$background-color-button-secondary-hover-night: #2C2932;
+$background-color-button-secondary-disabled-night: #253140;
+$background-color-button-danger-night: #FF948C;
+$background-color-button-danger-hover-night: #FFA59E;
+$background-color-button-danger-disabled-night: #3B3B48;
+$background-color-button-danger-soft-night: #4B3C42;
+$background-color-button-danger-soft-hover-night: #504147;
+$background-color-button-warning-night: #F4E57F;
+$background-color-button-warning-hover-night: #FFF296;
+$background-color-button-warning-disabled-night: #333E44;
+$background-color-avatar-night: #738295;
+$background-color-avatar-gradient-night: #44414B;
+$background-color-snack-night: #FFFFFF;
+
+// Background colors for light theme.
+$background-color-primary-light: #F1F1F1;
+$background-color-card-light: #FFFFFF;
+$background-color-card-hover-light: #FFFFFF;
+$background-color-card-transparent-light: rgba(48, 58, 71, 0.7);
+$background-color-modal-transparent-light: rgba(6, 9, 13, 0.8);
+$background-color-modal-light: #FFFFFF;
+$background-color-circle-light: #EBE4FF;
+$background-color-price-tag-light: #FFFFFF;
+$background-color-check-light: #D2F3D6;
+$background-color-glass-light: rgba(115, 130, 149, 0.7);
+$background-color-navbar-light: rgba(255, 255, 255, 0.5);
+$background-color-calendar-tag-light: #FFFFFF;
+$background-color-input-light: #FFFFFF;
+$background-color-input-muted-light: #FFFFFF;
+$background-color-tag-light: #FFFFFF;
+$background-color-progress-circle-light: #8A8A8A;
+$background-color-progress-circle-active-light: #282338;
+$background-color-progress-connector-light: #D3D3D3;
+$background-color-progress-connector-active-light: #727272;
+$background-color-settings-button-light: #FFFFFF;
+$background-color-switch-container-light: #FFFFFF;
+$background-color-switch-light: #F1F1F1;
+$background-color-button-disabled-light: #9EA2BD;
+$background-color-button-secondary-light: #FFFFFF;
+$background-color-button-secondary-hover-light: #F4F4F4;
+$background-color-button-secondary-disabled-light: #253140;
+$background-color-button-highlighted-event-card-light: #FFFFFF;
+$background-color-button-highlighted-event-card-hover-light: #DBDBDB;
+$background-color-button-danger-light: #FF948C;
+$background-color-button-danger-hover-light: #FFA59E;
+$background-color-button-danger-disabled-light: #3B3B48;
+$background-color-button-danger-soft-light: #FFEAEC;
+$background-color-button-danger-soft-hover-light: #F5E0E2;
+$background-color-button-warning-light: #F4E57F;
+$background-color-button-warning-hover-light: #FFF296;
+$background-color-button-warning-disabled-light: #333E44;
+$background-color-button-warning-soft-light: #4D544F;
+$background-color-button-warning-soft-hover-light: #555B51;
+$background-color-button-confirmed-light: #EBE4FF;
+$background-color-button-confirmed-hover-light: #DFD7F5;
+$background-color-avatar-light: #738295;
+$background-color-avatar-gradient-light: #3F4C5C;
+$background-color-snack-light: #FFFFFF;
+
 // Text colors.
-$text-color-emphasis: #FFFFFF;
 $text-color-primary: #A9AAB7;
+$text-color-emphasis: #FFFFFF;
+$text-color-button: #FFFFFF;
+$text-color-link: $primary-color-200;
 $text-color-input: #C1C3D0;
 $text-color-black: #2C263C;
+
+// Text colors for night theme.
+$text-color-primary-night: #A9AAB7;
+$text-color-emphasis-night: #EDEBF0;
+$text-color-button-night: #FFFFFF;
+$text-color-link-night: $primary-color-200;
+$text-color-input-night: #C1C3D0;
+$text-color-black-night: #2C263C;
+
+// Text colors for light theme.
+$text-color-primary-light: #5D5967;
+$text-color-emphasis-light: #282338;
+$text-color-button-light: #FFFFFF;
+$text-color-link-light: $primary-color-600;
+$text-color-input-light: #727076;
+$text-color-black-light: #FFFFFF;
 
 // Misc colors.
 $red-color: #FF8595;
 $black-color: #000000;
-$navbar-inactive-color: #ADADAE;
+$navbar-inactive-color: $text-color-primary;
+$divider-color: #404F5F;
+$primary-color-logo: $primary-color-200;
+$secondary-color-logo: $secondary-color-200;
+$border-color: #83919E;
+$border-color-input: #525F6D;
+$border-color-secondary-button: transparent;
+$icon-color: #2C263C;
+$summary-icon-color: $primary-color-200;
+$confirmed-button-color: $primary-color-100;
+
+// Misc colors for night theme.
+$divider-color-night: #3B3743;
+$border-color-input-night: #474747;
+
+// Misc colors for light theme.
+$divider-color-light: #E4E4E4;
+$navbar-inactive-color-light: #88868F;
+$primary-color-logo-light: $primary-color-600;
+$secondary-color-logo-light: $secondary-color-800;
+$border-color-light: none;
+$border-color-input-light: #D8DBDF;
+$border-color-secondary-button-light: #D8DBDF;
+$icon-color-light: #7EFB8E;
+$summary-icon-color-light: $primary-color-600;
+$confirmed-button-color-light: $primary-color-600;
 
 // Borders.
 $image-border: 4px solid #A9AAB7;
-
-// Divider colors.
-$divider-color: #404F5F;
-$divider-color-highlighted-event-card: #56697C;
 
 // Misc.
 $max-width: 1200px;
@@ -129,7 +288,8 @@ $border-radius-image-card: $border-radius-regular $border-radius-regular 0 0;
 $border-radius-event-info: 0 0 $border-radius-regular $border-radius-regular;
 
 // Shadows
-$shadow-tag: 0px 4px 10px rgba(124, 77, 255, 0.3);
+$shadow-tag: 0px 4px 10px rgba(0, 0, 0, 0.3);
+$shadow-tag-active: 0px 4px 10px rgba(124, 77, 255, 0.3);
 $shadow-avatar: 0px 3px 7px rgba(0, 0, 0, 0.2);
 $shadow-avatar-large: 0px 5px 12px rgba(0, 0, 0, 0.2);
 $shadow-check: 0 3px 7px rgba(126, 251, 142, 0.3);
@@ -148,6 +308,7 @@ $shadow-button-success: 0px 8px 20px rgba(126, 251, 142, 0.3);
 $shadow-button-success-hover: 0px 8px 20px rgba(126, 251, 142, 0.5);
 $shadow-button-warning: 0px 8px 20px rgba(255, 242, 150, 0.15);
 $shadow-button-warning-hover: 0px 8px 20px rgba(255, 242, 15, 0.25);
+$shadow-button-confirmed: 0px 8px 20px rgba(124, 77, 255, 0.1);
 $shadow-snack: 0px 5px 12px rgba(115, 130, 149, 0.2);
 $shadow-snack-success: 0px 5px 12px rgba(126, 251, 142, 0.2);
 $shadow-snack-warning: 0px 5px 12px rgba(255, 242, 150, 0.2);
@@ -156,8 +317,22 @@ $shadow-slider: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 $shadow-switch: 0px 4px 10px rgba(0, 0, 0, 0.2);
 $shadow-event-image: 0px 10px 25px rgba(0, 0, 0, 0.2);
 $shadow-calendar-tag: 0px 3px 8px rgba(0, 0, 0, 0.2);
-$shadow-highlighted-event-card: 0px 10px 25px rgba(0, 0, 0, 0.2);
+$shadow-highlighted-event-card: none;
 $shadow-small-event-card: 0px 5px 12px rgba(0, 0, 0, 0.2);
+$shadow-event-card: none;
+$shadow-event-card-hover: none;
+$shadow-search: none;
+$shadow-input: none;
+
+// Shadows for light theme.
+$shadow-tag-light: 0px 4px 10px rgba(106, 106, 106, 0.2);
+$shadow-highlighted-event-card-light: 0px 20px 50px rgba(106, 106, 106, 0.08);
+$shadow-event-card-light: 0 8px 20px rgba(106, 106, 106, 0.08);
+$shadow-event-card-hover-light: 0 13px 32px rgba(106, 106, 106, 0.2);
+$shadow-search-light: 0px 7px 17px rgba(106, 106, 106, 0.2);
+$shadow-input-light: 0px 5px 12px rgba(106, 106, 106, 0.2);
+$shadow-button-confirmed-light: 0px 8px 20px rgba(124, 77, 255, 0.1);
+$shadow-button-confirmed-hover-light: 0px 8px 20px rgba(124, 77, 255, 0.3);
 
 // Font families.
 $main-font: "Space Grotesk", sans-serif;

@@ -37,7 +37,9 @@ const SummaryCard = ({
   return (
     <button
       onClick={() => onClick(inputId)}
-      className={styles.summaryCardContainer}
+      className={`${styles.summaryCardContainer} ${
+        !editClosed && styles.noHover
+      }`}
     >
       <div className={styles.iconContainer}>
         {Icon}

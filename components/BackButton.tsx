@@ -19,7 +19,7 @@ export default function BackButton({
 
   return (
     <button onClick={onClick} tabIndex={0} className={classes} style={style}>
-      <ChevronIcon />
+      <ChevronIcon className={styles.icon} />
       <span>Tilbake</span>
     </button>
   );

@@ -40,7 +40,7 @@
 }
 
 .textInput::placeholder {
-  color: $text-color-input;
+  color: var(--text-color-input, $text-color-input);
 }
 
 .errorContainer {
@@ -53,19 +53,15 @@
 
 .errorIcon {
   @include errorIconDimensions();
-  stroke: $error-color;
-}
-
-.valid {
-  border: 1px solid $success-color;
+  stroke: var(--error-color, $error-color);
 }
 
 .notValid {
-  border: 1px solid $error-color;
+  outline: 1px solid var(--error-color, $error-color);
 }
 
 .required {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 
@@ -90,7 +86,7 @@
   }
 
   .item {
-    background-color: $background-color-card;
+    background-color: var(--background-color-card, $background-color-card);
     display: flex;
     flex-direction: column;
     font-size: $font-size-secondary;
@@ -111,9 +107,13 @@
     background-color: transparent;
 
     svg {
-      stroke: $text-color-emphasis;
+      stroke: var(--text-color-emphasis, $text-color-emphasis);
     }
   }
+}
+
+.asterisk {
+  color: var(--error-color, $error-color);
 }
 
 .loadingCircle {
@@ -122,4 +122,12 @@
 
 .divider {
   @include divider();
+}
+
+.card {
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--background-color-input, $background-color-input);
+    }
+  }
 }

@@ -18,7 +18,7 @@
 }
 
 .title {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-primary;
   font-weight: $font-weight-medium;
   margin-right: $spacer-small;
@@ -32,7 +32,7 @@
 .icon {
   flex-shrink: 0;
   height: 24px;
-  stroke: $text-color-emphasis;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
   width: 24px;
 }
 
@@ -53,12 +53,12 @@
   }
 
   > p {
-    color: $text-color-primary;
+    color: var(--text-color-primary, $text-color-primary);
     line-height: $line-height-text;
   }
 
   > ul, ol {
-    color: $text-color-primary;
+    color: var(--text-color-primary, $text-color-primary);
     padding-left: $spacer-medium;
   }
 }

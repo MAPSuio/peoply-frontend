@@ -1,4 +1,5 @@
 .inputContainer {
+  align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
   max-width: $max-width-input;
@@ -32,10 +33,6 @@
   }
 }
 
-.dateInput::-webkit-calendar-picker-indicator {
-  background-image: url('../assets/svgs/calendar_icon.svg');
-}
-
 .errorContainer {
   @include errorContainer();
 }
@@ -45,19 +42,31 @@
   text-align: left
 }
 
-.valid {
-  border: 1px solid $success-color;
-}
-
 .notValid {
-  border: 1px solid $error-color;
+  outline: 1px solid var(--error-color, $error-color);
 }
 
 .required {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .errorIcon {
   @include errorIconDimensions();
-  stroke: $error-color;
+  stroke: var(--error-color, $error-color);
+}
+
+.asterisk {
+  color: var(--error-color, $error-color);
+}
+
+.labelValid {
+  color: var(--success-color, $success-color);
+}
+
+.card {
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--background-color-input, $background-color-input);
+    }
+  }
 }

@@ -1,6 +1,8 @@
-import styles from "../styles/RadioButton.module.scss";
-
+// Components.
 import SmallCheckCircle from "../components/SmallCheckCircle";
+
+// Styles.
+import styles from "../styles/RadioButton.module.scss";
 
 interface RadioButtonProps {
   id: number;
@@ -9,6 +11,7 @@ interface RadioButtonProps {
   selected?: boolean;
   hintText?: string;
   onClick: (id: any) => void;
+  card?: boolean;
 }
 
 const RadioButton = ({
@@ -18,11 +21,12 @@ const RadioButton = ({
   selected,
   hintText,
   onClick,
+  card,
 }: RadioButtonProps) => {
   const getRadioButtonStyles = () => {
     return selected
-      ? `${styles.buttonContainer} ${styles.selected}`
-      : styles.buttonContainer;
+      ? `${styles.buttonContainer} ${styles.selected} ${card && styles.card}`
+      : `${styles.buttonContainer} ${card && styles.card}`;
   };
 
   const getHintTextStyles = () => {
@@ -36,7 +40,9 @@ const RadioButton = ({
       <button className={radioButtonStyles} onClick={() => onClick(id)}>
         <Icon />
         <p className={styles.radioButtonText}>{text}</p>
-        {selected && <SmallCheckCircle placeBottomCenter />}
+        {selected && (
+          <SmallCheckCircle placeBottomCenter className={styles.checkIcon} />
+        )}
       </button>
       {hintText && <p className={hintTextStyles}>{hintText}</p>}
     </div>

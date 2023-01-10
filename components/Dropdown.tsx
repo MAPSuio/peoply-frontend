@@ -7,6 +7,7 @@ interface DropdownProps {
   inputId: string;
   setValue: (value: any) => void;
   className?: string;
+  card?: boolean;
 }
 
 export default function Dropdown({
@@ -16,6 +17,7 @@ export default function Dropdown({
   inputId,
   setValue,
   className,
+  card,
 }: DropdownProps) {
   return (
     <div className={className}>
@@ -30,7 +32,7 @@ export default function Dropdown({
         </div>
       )}
       <select
-        className={styles.dropdown}
+        className={`${styles.dropdown} ${card && styles.card}`}
         name={label}
         id={inputId}
         value={value}

@@ -1,15 +1,15 @@
 .progressConnector {
-  background-color: $background-color-progress-connector;
+  background-color: var(--background-color-progress-connector, $background-color-progress-connector);
   height: 2px;
   width: 16px;
 }
 
 .active {
-  background-color: $background-color-progress-connector-active;
+  background-color: var(--background-color-progress-connector-active, $background-color-progress-connector-active);
 }
 
 .success {
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
 }
 
 @include createEventDesktop() {

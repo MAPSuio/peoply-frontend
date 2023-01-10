@@ -4,6 +4,7 @@
 /* Hooks. */
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
+import useTheme from "next-theme";
 
 /* Components. */
 import BackButton from "../../components/BackButton";
@@ -11,11 +12,11 @@ import BackButton from "../../components/BackButton";
 // import CheckboxInput from "../../components/inputs/CheckboxInput";
 // import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 import SettingsButton from "../../components/SettingsButton";
+import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 
-/* Assets. */
-// import SunsetIcon from "../../components/svgs/SunsetIcon";
-// import NightIcon from "../../components/svgs/NightIcon";
-// import SunIcon from "../../components/svgs/SunIcon";
+import SunsetIcon from "../../components/svgs/SunsetIcon";
+import NightIcon from "../../components/svgs/NightIcon";
+import SunIcon from "../../components/svgs/SunIcon";
 
 /* Types. */
 import { SettingTypes, SnackTypes, ButtonType } from "../../types/types";
@@ -28,7 +29,6 @@ import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import ModalButton from "../../components/ModalButton";
 import SwitchInput from "../../components/inputs/SwitchInput";
-import TextInput from "../../components/inputs/TextInput";
 import Button from "../../components/Button";
 import CheckboxInput from "../../components/inputs/CheckboxInput";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
@@ -46,7 +46,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
   const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
   const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
-  // const [activeTheme, setActiveTheme] = useState(1);
+  const { theme, setTheme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(false);
@@ -84,9 +84,15 @@ const Settings = ({ baseUrl }: SettingsProps) => {
     router.push("/");
   }
 
-  // const updateTheme = (id: number) => {
-  //   setActiveTheme(id);
-  // };
+  const updateTheme = (id: number) => {
+    if (id === 1) {
+      setTheme("dark");
+    } else if (id === 2) {
+      setTheme("night");
+    } else if (id === 3) {
+      setTheme("light");
+    }
+  };
 
   const validAllowEmailFromArrangerEdit =
     allowEmailFromArranger !== user?.allowEmailFromArranger;
@@ -179,7 +185,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                 />
               </div>
             </div> */}
-            {/* <div className={styles.section}>
+            <div className={styles.section}>
               <h2 className={styles.inputHeader}>Visning/tema</h2>
               <RadioInputSmall
                 optionsAndIcons={[
@@ -187,24 +193,24 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                     id: 1,
                     text: "Skumring",
                     icon: SunsetIcon,
-                    active: activeTheme === 1,
+                    active: theme === "dark",
                   },
                   {
                     id: 2,
                     text: "Natt",
                     icon: NightIcon,
-                    active: activeTheme === 2,
+                    active: theme === "night",
                   },
                   {
                     id: 3,
-                    text: "Lys",
+                    text: "Dag",
                     icon: SunIcon,
-                    active: activeTheme === 3,
+                    active: theme === "light",
                   },
                 ]}
                 onClick={updateTheme}
               />
-            </div> */}
+            </div>
             <div className={styles.section}>
               <h2 className={styles.inputHeader}>Epost</h2>
               <SwitchInput

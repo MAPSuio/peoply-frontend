@@ -1,6 +1,6 @@
-import styles from "../styles/TitleCircle.module.scss";
-
 import TitleIcon from "./svgs/TitleIcon";
+
+import styles from "../styles/TitleCircle.module.scss";
 
 interface TitleCircleProps {
   className?: string;

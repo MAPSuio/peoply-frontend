@@ -1,6 +1,6 @@
 .switchContainer {
   align-items: center;
-  background-color: $background-color-switch-container;
+  background-color: var(--background-color-switch-container, $background-color-switch-container);
   border-radius: $border-radius-regular;
   display: flex;
   flex-flow: row nowrap;
@@ -11,7 +11,7 @@
 }
 
 .label {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-right: $spacer-small;
@@ -23,7 +23,7 @@
 
 .switch {
   @include resetButton();
-  background-color: $background-color-switch;
+  background-color: var(--background-color-switch, $background-color-switch);
   border-radius: $border-radius-round;
   box-shadow: $shadow-slider;
   height: 32px;
@@ -45,7 +45,7 @@
 }
 
 .checked {
-  background-color: $success-color-switch;
+  background-color: var(--success-color-switch, $success-color-switch);
 }
 
 .checked > .switchControl {

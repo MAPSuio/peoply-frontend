@@ -12,7 +12,7 @@
   }
 
   > .logo {
-    background: linear-gradient(90deg, $primary-color-200, $secondary-color-200);
+    background: linear-gradient(90deg, var(--primary-color-logo, $primary-color-logo), var(--secondary-color-logo, $secondary-color-logo));
     background-clip: text;
     font-size: $font-size-heading-medium;
     font-weight: $font-weight-medium;
@@ -26,7 +26,7 @@
   }
 
   a {
-    color: $text-color-emphasis;
+    color: var(--text-color-emphasis, $text-color-emphasis);
     margin: 0;
   }
 
@@ -43,7 +43,6 @@
 
     svg {
       height: 18px;
-      stroke: #FFFFFF;
       width: 18px;
 
       @include desktop() {

@@ -1,15 +1,12 @@
 .container {
-  align-items: center;
-  background-color: $success-color-muted;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
+  @include iconCircle();
+  background-color: var(--background-color-check, $background-color-check);
   padding: 4px;
-  stroke: $success-color;
+  stroke: var(--success-color, $success-color);
 }
 
 .placeBottomCenter {
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
   bottom: 0;
   box-shadow: $shadow-check;
   left: 50%;
@@ -26,8 +23,8 @@
 }
 
 .purple {
-  background-color: $primary-color-400;
-  stroke: $text-color-emphasis;
+  background-color: var(--primary-color-400, $primary-color-400);
+  stroke: var(--text-color-button, $text-color-button);
 }
 
 .small {

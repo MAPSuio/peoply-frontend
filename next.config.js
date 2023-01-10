@@ -17,7 +17,7 @@ module.exports = withPWA({
 
   reactStrictMode: true,
   sassOptions: {
-    prependData: `@import "variables"; @import "mixins";`,
+    prependData: `@import "variables"; @import "mixins"; @import "themes";`,
   },
 
   images: {

@@ -1,11 +1,15 @@
-import styles from "../styles/DateCircle.module.scss";
-
 import DateIcon from "./svgs/DateIcon";
 
-export default function DateCircle() {
+import styles from "../styles/DateCircle.module.scss";
+
+interface DateCircleProps {
+  className?: string;
+}
+
+export default function DateCircle({ className }: DateCircleProps) {
   return (
     <div className={styles.container}>
-      <DateIcon />
+      <DateIcon className={className} />
     </div>
   );
 }

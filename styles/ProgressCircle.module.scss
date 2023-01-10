@@ -8,7 +8,7 @@
 
 .container {
   align-items: center;
-  background-color: $background-color-progress-circle;
+  background-color: var(--background-color-progress-circle, $background-color-progress-circle);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -45,16 +45,16 @@
 }
 
 .labelActive {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .active {
-  background-color: $background-color-progress-circle-active;
+  background-color: var(--background-color-progress-circle-active, $background-color-progress-circle-active);
 }
 
 .success {
-  background-color: $success-color;
-  stroke: $black-color;
+  background-color: var(--success-color, $success-color);
+  stroke: var(--icon-color, $icon-color);
 }
 
 @include createEventDesktop() {

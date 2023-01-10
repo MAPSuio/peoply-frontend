@@ -7,6 +7,14 @@
 
 .noErrorPadding {
   padding-bottom: calc($spacer-very-small + $font-size-tertiary);
+
+  @include desktop {
+    padding-bottom: calc($spacer-very-small-plus + $font-size-tertiary-desktop);
+  }
+}
+
+.labelContainer {
+  @include labelContainer();
 }
 
 .label {
@@ -14,42 +22,43 @@
 }
 
 .numberInput {
-  background-color: $background-color-input;
-  border: 1px solid transparent;
-  color: $text-color-emphasis;
-  font-size: $font-size-input;
+  @include input();
   max-width: $max-width-input-number;
-  padding: $spacer-very-small $spacer-small;
 }
 
 .numberInput::placeholder {
-  color: $text-color-input;
+  color: var(--text-color-input, $text-color-input);
 }
 
 .errorContainer {
-  display: flex;
-  margin-top: $spacer-very-small;
+  @include errorContainer();
 }
 
 .errorText {
-  color: $error-color;
+  color: var(--error-color, $error-color);
   font-size: $font-size-tertiary;
   margin-left: $spacer-very-small;
 }
 
 .errorIcon {
   @include errorIconDimensions();
-  stroke: $error-color;
-}
-
-.valid {
-  border: 1px solid $success-color;
+  stroke: var(--error-color, $error-color);
 }
 
 .notValid {
-  border: 1px solid $error-color;
+  outline: 1px solid var(--error-color, $error-color);
 }
 
 .required {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+.asterisk {
+  color: var(--error-color, $error-color);
+}
+
+.labelValid {
+  .asterisk {
+    color: var(--success-color, $success-color);
+  }
 }

@@ -1,9 +1,10 @@
 .tagContainer {
   @include resetButton();
   align-items: center;
-  background-color: $background-color-tag;
+  background-color: var(--background-color-tag, $background-color-tag);
   border-radius: $border-radius-round;
-  color: $text-color-primary;
+  box-shadow: none;
+  color: var(--text-color-primary, $text-color-primary);
   cursor: pointer;
   display: flex;
   font-family: $mono-font;
@@ -11,15 +12,33 @@
   justify-content: center;
   padding: $spacer-very-small $spacer-small;
   text-transform: capitalize;
+  transition: box-shadow $animation-duration ease;
 
   @include desktop() {
     font-size: $font-size-tertiary-desktop;
+
+    &:hover {
+      box-shadow: var(--shadow-tag, $shadow-tag);
+    }
   }
 }
 
 .active {
-  background-color: $primary-color-400;
-  box-shadow: $shadow-tag;
-  color: $text-color-emphasis;
+  background-color: var(--primary-color-400, $primary-color-400);
+  color: var(--text-color-button, $text-color-button);
   font-weight: $font-weight-bold;
+
+  @include desktop() {
+    &:hover {
+      box-shadow: var(--shadow-tag-active, $shadow-tag-active);
+    }
+  }
+}
+
+.noShadow {
+  @include desktop() {
+    &:hover {
+      box-shadow: none;
+    }
+  }
 }

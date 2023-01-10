@@ -78,7 +78,7 @@
 }
 
 .addDateText {
-  color: $primary-color-200;
+  color: var(--text-color-link, $text-color-link);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-left: $spacer-very-small;
@@ -102,7 +102,7 @@
 
 .addDateDimensions {
   height: $font-size-secondary;
-  stroke: $primary-color-200;
+  stroke: var(--text-color-link, $text-color-link);
   width: $font-size-secondary;
 
   @include desktop() {

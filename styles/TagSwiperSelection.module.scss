@@ -8,16 +8,16 @@
 
 .pill {
   @include resetButton();
-  background-color: $background-color-tag;
+  background-color: var(--background-color-tag, $background-color-tag);
   border-radius: $border-radius-round;
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   padding: $spacer-mini $spacer-small;
 
   &.selected {
-    background-color: $primary-color-400;
-    
+    background-color: var(--primary-color-400, $primary-color-400);
+
     span {
-      color: $text-color-emphasis;
+      color: var(--text-color-emphasis, $text-color-emphasis);
       font-weight: $font-weight-bold;
     }
   }

@@ -1,5 +1,5 @@
 .container {
-  background-color: $primary-color-400;
+  background-color: var(--primary-color-400, $primary-color-400);
   border-radius: $border-radius-round;
   height: 56px;
   position: relative;

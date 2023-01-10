@@ -1,6 +1,6 @@
 .container {
   align-items: center;
-  background-color: $primary-color-muted;
+  background-color: var(--primary-color-muted, $primary-color-muted);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -8,7 +8,7 @@
 
   svg {
     height: 14px;
-    stroke: $primary-color-200;
+    stroke: var(--primary-color-200, $primary-color-200);
     width: 14px;
   }
 }

@@ -40,7 +40,7 @@ const NumberInput = ({
 
   const getNumberInputStyles = () => {
     if (focused && validNumber) {
-      return `${styles.numberInput} ${styles.valid}`;
+      return styles.numberInput;
     } else if (focused && !validNumber) {
       return `${styles.numberInput} ${styles.notValid}`;
     } else {
@@ -48,14 +48,33 @@ const NumberInput = ({
     }
   };
 
+  const getLabelValidStyles = () => {
+    if (validNumber) {
+      return styles.labelValid;
+    }
+  };
+
   const numberInputStyles = getNumberInputStyles();
   const inputContainerStyles = getInputContainerStyles();
+  const labelValidStyles = getLabelValidStyles();
 
   return (
     <div className={inputContainerStyles}>
-      <label className={`${styles.label} ${styles.required}`} htmlFor={inputId}>
-        {label}
-      </label>
+      <div className={`${styles.labelContainer} ${labelValidStyles}`}>
+        {required ? (
+          <label
+            className={`${styles.label} ${styles.required}`}
+            htmlFor={inputId}
+          >
+            {label}
+            <span className={styles.asterisk}> *</span>
+          </label>
+        ) : (
+          <label className={styles.label} htmlFor={inputId}>
+            {`${label} (frivillig)`}
+          </label>
+        )}
+      </div>
       <input
         className={numberInputStyles}
         type="number"

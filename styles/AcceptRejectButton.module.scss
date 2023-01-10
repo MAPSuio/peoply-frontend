@@ -1,5 +1,5 @@
 .check {
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
   cursor: pointer;
   display: flex;
   margin-right: $spacer-small;
@@ -16,7 +16,7 @@
 .icon {
   height: 16px;
   justify-content: center;
-  stroke: $text-color-black;
+  stroke: var(--text-color-black, $text-color-black);
   width: 16px;
 }
 

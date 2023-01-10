@@ -1,33 +1,38 @@
-export default function DateIcon() {
+interface DateIconProps {
+  className?: string;
+}
+
+export default function DateIcon({ className }: DateIconProps) {
   return (
     <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
+      className={className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11.0833 2.33333H2.91667C2.27233 2.33333 1.75 2.85566 1.75 3.49999V11.6667C1.75 12.311 2.27233 12.8333 2.91667 12.8333H11.0833C11.7277 12.8333 12.25 12.311 12.25 11.6667V3.49999C12.25 2.85566 11.7277 2.33333 11.0833 2.33333Z"
-        stroke="#B89BFE"
+        d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M9.33337 1.16667V3.50001"
-        stroke="#B89BFE"
+        d="M16 2V6"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M4.66663 1.16667V3.50001"
-        stroke="#B89BFE"
+        d="M8 2V6"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M1.75 5.83333H12.25"
-        stroke="#B89BFE"
+        d="M3 10H21"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

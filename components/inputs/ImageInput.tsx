@@ -28,6 +28,8 @@ interface ImageInputProps {
   required?: boolean;
   imageCached?: ImageCaching;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  noExtraInfo?: boolean;
+  card?: boolean;
 }
 
 const ImageInput = ({
@@ -41,6 +43,8 @@ const ImageInput = ({
   required,
   onChange,
   imageCached,
+  noExtraInfo,
+  card,
 }: ImageInputProps) => {
   const imageInput = useRef<HTMLInputElement>(null);
 
@@ -63,14 +67,33 @@ const ImageInput = ({
   const oldFileNotCached =
     !fileTooLarge && imageCached === ImageCaching.REFRESH_MESSAGE;
 
+  const getLabelValidStyles = () => {
+    if (!fileTooLarge) {
+      return styles.labelValid;
+    }
+  };
+
   const imageSource = value
     ? value && URL.createObjectURL(value)
     : placeholder ?? PlaceholderImage;
   const imageInputStyles = getImageInputStyles();
+  const labelValidStyles = getLabelValidStyles();
 
   return (
-    <div className={imageInputStyles}>
-      <p className={styles.label}>{label}</p>
+    <div className={`${imageInputStyles} ${labelValidStyles}`}>
+      {required ? (
+        <label
+          className={`${styles.label} ${styles.required}`}
+          htmlFor={inputId}
+        >
+          {label}
+          {!noExtraInfo && <span className={styles.asterisk}> *</span>}
+        </label>
+      ) : (
+        <label className={styles.label} htmlFor={inputId}>
+          {`${label} ${!noExtraInfo ? "(frivillig)" : ""}`}
+        </label>
+      )}
       <div className={styles.imageContainer}>
         <Image
           src={imageSource}
@@ -90,7 +113,10 @@ const ImageInput = ({
         ref={imageInput}
         onChange={onChange}
       />
-      <button className={styles.imageInputButton} onClick={clickImageInput}>
+      <button
+        className={`${styles.imageInputButton} ${card && styles.card}`}
+        onClick={clickImageInput}
+      >
         <span className={styles.imageInputButtonLabel}>{buttonLabel}</span>
       </button>
       {fileTooLarge && (

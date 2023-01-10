@@ -15,6 +15,7 @@ interface TextInputLocationSelectProps {
   onLocationSelect: (location?: Models.SearchFuzzyResult) => void;
   selectedLocation?: Models.SearchFuzzyResult;
   options?: SearchFuzzyOptions;
+  card?: boolean;
 }
 
 const TextInputLocationSelect = ({
@@ -26,6 +27,7 @@ const TextInputLocationSelect = ({
   onLocationSelect,
   selectedLocation,
   options,
+  card,
 }: TextInputLocationSelectProps) => {
   const [focused, setFocused] = useState(false);
   const [search, setSearch] = useState<string>();
@@ -45,11 +47,11 @@ const TextInputLocationSelect = ({
 
   const textInputStyles = (() => {
     if (valid) {
-      return `${styles.textInput} ${styles.valid}`;
+      return `${styles.textInput} ${card && styles.card}`;
     } else if (focused) {
-      return `${styles.textInput} ${styles.notValid}`;
+      return `${styles.textInput} ${styles.notValid} ${card && styles.card}`;
     } else {
-      return `${styles.textInput}`;
+      return `${styles.textInput} ${card && styles.card}`;
     }
   })();
 
@@ -102,12 +104,19 @@ const TextInputLocationSelect = ({
     <div className={inputContainerStyles}>
       {label && (
         <div className={styles.labelContainer}>
-          <label
-            className={`${styles.label} ${required && styles.required}`}
-            htmlFor={inputId}
-          >
-            {label}
-          </label>
+          {required ? (
+            <label
+              className={`${styles.label} ${styles.required}`}
+              htmlFor={inputId}
+            >
+              {label}
+              <span className={styles.asterisk}> *</span>
+            </label>
+          ) : (
+            <label className={styles.label} htmlFor={inputId}>
+              {`${label} (frivillig)`}
+            </label>
+          )}
         </div>
       )}
       <div className={styles.inputAndIconContainer}>

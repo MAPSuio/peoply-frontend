@@ -68,7 +68,7 @@ export function ShareButton({
       width={width}
       onClick={(e: MouseEvent) => buttonOnClick(e)}
       noShadow
-      icon={<ShareIcon />}
+      icon={<ShareIcon className={styles.icon} />}
       iconPlacement={iconPlacement}
       className={styles.shareButton}
     />

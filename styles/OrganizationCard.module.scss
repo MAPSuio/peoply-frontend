@@ -10,7 +10,7 @@
     padding: $spacer-small $spacer-small $spacer-medium;
 
     &:hover {
-      background-color: $background-color-card-hover;
+      background-color: var(--background-color-card-hover, $background-color-card-hover);
     }
   }
 }
@@ -65,7 +65,7 @@
 
 .icon {
   height: $font-size-secondary;
-  stroke: $text-color-primary;
+  stroke: var(--text-color-primary, $text-color-primary);
   stroke-width: 2;
   width: $font-size-secondary;
 
@@ -76,7 +76,7 @@
 }
 
 .data {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-data-small;
   font-weight: $font-weight-regular;
   @include monoFont();

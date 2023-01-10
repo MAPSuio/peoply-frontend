@@ -6,28 +6,35 @@
 }
 
 html {
-  /* To make sure the date picker and similar elements are dark on desktop.  */
-  color-scheme: dark;
   /* make room for scrollbar at all times to prevent content from moving */
   overflow-y: scroll;
 }
 
+html.dark, html.night {
+  /* To make sure the date picker and similar elements are dark on desktop.  */
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
 html,
 body {
-  background-color: $background-color-primary;
+  background-color: var(--background-color-primary, $background-color-primary);
   font-family: "Space Grotesk", sans-serif;
   margin: 0;
   padding: 0;
 }
 
 a {
-  color: $primary-color-200;
-  font-weight: 700;
+  color: var(--text-color-link, $text-color-link);
+  font-weight: $font-weight-bold;
   text-decoration: none;
 }
 
 p, span {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
 }
 
 h1,
@@ -42,7 +49,7 @@ p {
 }
 
 p {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-primary;
   font-weight: $font-weight-regular;
   line-height: 1;
@@ -50,14 +57,14 @@ p {
 }
 
 h1, h2 {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-weight: $font-weight-bold;
   line-height: 1;
   word-break: break-word;
 }
 
 h1 {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-title;
   font-weight: $font-weight-bold;
   letter-spacing: $letter-spacing-header-large;
@@ -76,11 +83,11 @@ button, input, select, textarea {
 }
 
 label {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
 }
 
 /* input:focus {
-  outline-color: $primary-color-200;
+  outline-color: var(--primary-color-200, $primary-color-200);
 } */
 
 ul, ol {

@@ -1,25 +1,26 @@
-interface PlaceIconProps {
+interface UserIconProps {
   className?: string;
 }
 
-export default function PlaceIcon({ className }: PlaceIconProps) {
+export default function UserIcon({ className }: UserIconProps) {
   return (
     <svg
       className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      color="currentColor"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11.6667 12.25V11.0833C11.6667 10.4645 11.4209 9.871 10.9833 9.43342C10.5457 8.99583 9.95221 8.75 9.33337 8.75H4.66671C4.04787 8.75 3.45438 8.99583 3.01679 9.43342C2.57921 9.871 2.33337 10.4645 2.33337 11.0833V12.25"
+        d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M6.99996 6.41667C8.28862 6.41667 9.33329 5.372 9.33329 4.08333C9.33329 2.79467 8.28862 1.75 6.99996 1.75C5.71129 1.75 4.66663 2.79467 4.66663 4.08333C4.66663 5.372 5.71129 6.41667 6.99996 6.41667Z"
+        d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

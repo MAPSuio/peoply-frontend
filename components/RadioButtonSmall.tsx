@@ -29,7 +29,9 @@ const RadioButtonSmall = ({
       >
         <Icon />
         <p className={styles.radioButtonText}>{text}</p>
-        {selected && <SmallCheckCircle placeBottomCenter />}
+        {selected && (
+          <SmallCheckCircle placeBottomCenter className={styles.checkIcon} />
+        )}
       </button>
       {hintText && (
         <p className={`${styles.hintText} ${selected && styles.emphasis}`}>

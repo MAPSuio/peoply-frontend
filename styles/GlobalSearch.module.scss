@@ -1,28 +1,37 @@
 .wrapper {
-  background-color: $background-color-card;
+  background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-inside-card;
   margin: $spacer-small;
   position: relative;
 }
-  
+
 .inputContainer {
   align-items: center;
   border-radius: $border-radius-inside-card;
   display: flex;
+  outline: 1px solid var(--border-color-input, $border-color-input);
   padding: 0 $spacer-small;
-  
-  &.focused {
-    outline: 2px solid #FFFFFF;
+  transition: all $animation-duration ease;
+
+  &:hover {
+    box-shadow: var(--shadow-search, $shadow-search);
+    outline: 1px solid transparent;
   }
-  
+
+  &.focused {
+    box-shadow: var(--shadow-search, $shadow-search);
+    outline: 1px solid transparent;
+  }
+
   input {
-    background-color: $background-color-card;
+    background-color: var(--background-color-card, $background-color-card);
+    color: var(--text-color-emphasis, $text-color-emphasis);
     padding: $spacer-small;
     width: calc(100% + 2px);
-    
+
     &:focus{
       outline: none;
-    } 
+    }
   }
 }
 
@@ -48,4 +57,8 @@
     margin: 0 auto;
     margin-top: $spacer-small;
   }
+}
+
+.icon {
+  stroke: var(--text-color-primary, $text-color-primary);
 }

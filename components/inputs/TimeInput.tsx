@@ -14,6 +14,8 @@ interface TimeInputProps {
   required?: boolean;
   handleChange: (e: any) => void;
   initiallyFocused?: boolean;
+  noExtraInfo?: boolean;
+  card?: boolean;
 }
 
 const TimeInput = ({
@@ -26,6 +28,8 @@ const TimeInput = ({
   required,
   handleChange,
   initiallyFocused = false,
+  noExtraInfo,
+  card,
 }: TimeInputProps) => {
   const [focused, setFocused] = useState(initiallyFocused);
 
@@ -39,11 +43,11 @@ const TimeInput = ({
 
   const getTimeInputStyles = () => {
     if (valid) {
-      return `${styles.timeInput} ${styles.valid}`;
+      return `${styles.timeInput} ${card && styles.card}`;
     } else if (focused && !valid) {
-      return `${styles.timeInput} ${styles.notValid}`;
+      return `${styles.timeInput} ${styles.notValid} ${card && styles.card}`;
     } else {
-      return styles.timeInput;
+      return `${styles.timeInput} ${card && styles.card}`;
     }
   };
 
@@ -52,13 +56,27 @@ const TimeInput = ({
 
   return (
     <div className={inputContainerStyles}>
-      {label && (
+      {label && required ? (
         <label
           className={`${styles.label} ${styles.required}`}
           htmlFor={inputId}
         >
           {label}
+          {!noExtraInfo && (
+            <span
+              className={`${styles.asterisk} ${valid && styles.labelValid}`}
+            >
+              {" "}
+              *
+            </span>
+          )}
         </label>
+      ) : (
+        label && (
+          <label className={styles.label} htmlFor={inputId}>
+            {`${label} ${!noExtraInfo ? "(frivillig)" : ""}`}
+          </label>
+        )
       )}
       <input
         className={timeInputStyles}

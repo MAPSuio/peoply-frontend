@@ -8,6 +8,7 @@ import { Event, Organization } from "../types/types";
 import Avatar from "./Avatar";
 import { calculateEditDistance } from "../utils/functions";
 import TagSwiperSelection from "./TagSwiperSelection";
+import useTheme from "next-theme";
 
 enum FilterOption {
   ALL = "ALL",
@@ -24,7 +25,7 @@ export default function GlobalSearch({}) {
   const [selectedFilter, setSelectedFilter] = useState(FilterOption.ALL);
   const [events, setEvents] = useState<Event[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-
+  const { theme, setTheme } = useTheme();
   /* hook to fetch whenever search term changes */
   useEffect(() => {
     const performSearch = async () => {
@@ -178,7 +179,11 @@ export default function GlobalSearch({}) {
             focused ? styles.focused : ""
           }`}
         >
-          {loading ? <LoadingWheel /> : <SearchIcon />}
+          {loading ? (
+            <LoadingWheel dark={theme === "light"} />
+          ) : (
+            <SearchIcon className={styles.icon} />
+          )}
           <input
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}

@@ -187,7 +187,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       } else {
         return (
           <div className={styles.iconContainer}>
-            <UserCircle />
+            <UserCircle className={styles.icon} />
           </div>
         );
       }
@@ -333,7 +333,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
                 <div className={styles.iconContainer}>
-                  <DateCircle />
+                  <DateCircle className={styles.icon} />
                 </div>
                 <div>
                   <p
@@ -367,7 +367,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                     rel="noreferrer"
                   >
                     <div className={styles.iconContainer}>
-                      <PlaceCircle />
+                      <PlaceCircle className={styles.icon} />
                     </div>
                     <div>
                       <p
@@ -387,7 +387,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 ) : (
                   <>
                     <div className={styles.iconContainer}>
-                      <PlaceCircle />
+                      <PlaceCircle className={styles.icon} />
                     </div>
 
                     <div>
@@ -422,7 +422,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   <a>
                     <div className={`${styles.infoTextContainer}`}>
                       <div className={styles.iconContainer}>
-                        <SmallCheckCircle />
+                        <SmallCheckCircle
+                          className={`${styles.icon} ${styles.checkIcon}`}
+                        />
                       </div>
                       <p className={styles.infoText}>
                         <span className={styles.emphasis}>{`${
@@ -443,7 +445,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
                 >
                   <div className={styles.iconContainer}>
-                    <SmallCheckCircle />
+                    <SmallCheckCircle
+                      className={`${styles.icon} ${styles.checkIcon}`}
+                    />
                   </div>
                   <p className={styles.infoText}>
                     <span className={styles.emphasis}>{`${
@@ -475,6 +479,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                   type={ButtonType.SECONDARY}
                   icon={<MailIcon />}
                   iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+                  noShadow
                 />
                 {isArranger && (
                   <LinkButton
@@ -484,6 +489,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                     type={ButtonType.SECONDARY}
                     icon={<RSSIcon />}
                     iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+                    noShadow
                   />
                 )}
               </div>

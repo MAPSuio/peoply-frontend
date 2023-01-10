@@ -13,7 +13,7 @@ export default function NotificationIndicator({
     <Link href="/me/notifications" passHref>
       <a className={styles.container}>
         {hasUnreadNotifications && <div className={styles.counter} />}
-        <BellIcon />
+        <BellIcon className={styles.icon} />
       </a>
     </Link>
   );

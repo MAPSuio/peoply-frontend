@@ -6,14 +6,14 @@
 }
 
 .checkbox {
-  accent-color: $primary-color-400;
+  accent-color: var(--primary-color-400, $primary-color-400);
   height: 24px;
   margin-right: $spacer-small;
   width: 24px;
 }
 
 .label {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
 
@@ -23,5 +23,5 @@
 }
 
 .disabled {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
 }

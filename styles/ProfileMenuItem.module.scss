@@ -7,12 +7,12 @@
   padding: $spacer-small;
 
   p {
-    color: $text-color-emphasis;
+    color: var(--text-color-emphasis, $text-color-emphasis);
   }
 
   svg {
     height: 1rem;
-    stroke: $primary-color-200;
+    stroke: var(--text-color-link, $text-color-link);
     width: 1rem;
   }
 
@@ -24,10 +24,10 @@
 
 .danger {
   p {
-    color: $danger-color;
+    color: var(--danger-color, $danger-color);
   }
 
   svg {
-    stroke: $danger-color;
+    stroke: var(--danger-color, $danger-color);
   }
 }

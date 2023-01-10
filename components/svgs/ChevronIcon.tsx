@@ -1,6 +1,11 @@
-export default function ChevronIcon() {
+interface ChevronIconProps {
+  className?: string;
+}
+
+export default function ChevronIcon({ className }: ChevronIconProps) {
   return (
     <svg
+      className={className}
       width="8"
       height="14"
       viewBox="0 0 8 14"
@@ -9,7 +14,6 @@ export default function ChevronIcon() {
     >
       <path
         d="M7 13L1 7L7 1"
-        stroke="white"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

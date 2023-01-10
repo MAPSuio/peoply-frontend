@@ -12,7 +12,7 @@
 }
 
 .title {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-heading-large;
   font-weight: $font-weight-regular;
   margin-right: $spacer-very-small;

@@ -2,10 +2,14 @@ import PlaceIconSummary from "./svgs/PlaceIconSummary";
 
 import styles from "../styles/PlaceCircleSummary.module.scss";
 
-const PlaceCircleSummary = () => {
+interface PlaceCircleSummaryProps {
+  className?: string;
+}
+
+const PlaceCircleSummary = ({ className }: PlaceCircleSummaryProps) => {
   return (
     <div className={styles.container}>
-      <PlaceIconSummary />
+      <PlaceIconSummary className={className} />
     </div>
   );
 };

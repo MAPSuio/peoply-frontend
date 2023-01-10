@@ -19,6 +19,8 @@ interface TextInputLongProps {
   validate?: boolean;
   valid?: boolean;
   setValid?: React.Dispatch<React.SetStateAction<boolean>>;
+  noExtraInfo?: boolean;
+  card?: boolean;
 }
 
 const TextInputLong = ({
@@ -36,6 +38,8 @@ const TextInputLong = ({
   validate,
   valid,
   setValid,
+  noExtraInfo,
+  card,
 }: TextInputLongProps) => {
   const [focused, setFocused] = useState(false);
 
@@ -53,26 +57,43 @@ const TextInputLong = ({
 
   const getTextInputLongStyles = () => {
     if (validate && valid) {
-      return `${styles.textInputLong} ${styles.valid}`;
+      return `${styles.textInputLong} ${card && styles.card}`;
     } else if (validate && focused) {
-      return `${styles.textInputLong} ${styles.notValid}`;
+      return `${styles.textInputLong} ${styles.notValid} ${
+        card && styles.card
+      }`;
     } else {
-      return styles.textInputLong;
+      return `${styles.textInputLong} ${card && styles.card}`;
     }
   };
+
+  const getLabelValidStyles = () => {
+    if (validate && valid && value.length) {
+      return styles.labelValid;
+    }
+  };
+
+  const labelValidStyles = getLabelValidStyles();
 
   const textInputLongStyles = getTextInputLongStyles();
   const inputContainerStyles = getInputContainerStyles();
 
   return (
     <div className={`${inputContainerStyles} ${className}`}>
-      <div className={styles.labelContainer}>
-        <label
-          className={`${styles.label} ${styles.required}`}
-          htmlFor={inputId}
-        >
-          {label}
-        </label>
+      <div className={`${styles.labelContainer} ${labelValidStyles}`}>
+        {required ? (
+          <label
+            className={`${styles.label} ${styles.required}`}
+            htmlFor={inputId}
+          >
+            {label}
+            {!noExtraInfo && <span className={styles.asterisk}> *</span>}
+          </label>
+        ) : (
+          <label className={styles.label} htmlFor={inputId}>
+            {`${label} ${!noExtraInfo ? "(frivillig)" : ""}`}
+          </label>
+        )}
         <p className={styles.lengthText}>{`${value.length}/${maxLength}`}</p>
       </div>
       <textarea

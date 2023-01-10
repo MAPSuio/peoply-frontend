@@ -1,14 +1,21 @@
 .dropdown {
-  background-color: $background-color-input;
   border-right: $spacer-small solid transparent;
-  padding: 0.5rem 1rem;
   width: 100%;
+  @include input();
 }
 
 .labelContainer {
   @include labelContainer();
-  
+
   label {
-    color: #FFF;
+    @include label();
+  }
+}
+
+.card {
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--background-color-input, $background-color-input);
+    }
   }
 }

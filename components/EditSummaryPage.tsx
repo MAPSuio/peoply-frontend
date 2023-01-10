@@ -1,7 +1,7 @@
 // Next
 import Image from "next/image";
 
-//Types
+// Types
 import {
   ButtonType,
   Event,
@@ -39,10 +39,10 @@ import TimeView from "./TimeView";
 import Modal from "./Modal";
 import TextInputLong from "./inputs/TextInputLong";
 
-//Styles
+// Styles
 import styles from "../styles/SummaryPage.module.scss";
 
-//Hooks
+// Hooks
 import { useRouter } from "next/router";
 import useSnack from "../hooks/useSnack";
 import useSWR from "swr";
@@ -466,7 +466,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       <div className={styles.summaryContainer}>
         <SummaryCard
           inputId={0}
-          Icon={<TitleCircle />}
+          Icon={<TitleCircle className={styles.summaryIcon} />}
           editButtonVisible
           editButtonDisabled={editOpen}
           onCheck={acceptChange}
@@ -488,6 +488,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               setValid={setValidTitle}
               valid={validTitle}
               validate
+              noExtraInfo
+              card
             />
           }
         >
@@ -498,7 +500,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCheck={acceptChange}
           onCross={rejectChange}
           inputId={1}
-          Icon={<CalendarCircleSummary />}
+          Icon={<CalendarCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           editButtonDisabled={editOpen}
           editButtonOnClick={() => setEditOpen(true)}
@@ -516,6 +518,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   errorMessage="Dato må være i dag eller i fremtiden."
                   handleChange={updateStartDate}
                   valid={validStart}
+                  noExtraInfo
+                  card
                 />
                 <TimeInput
                   value={getISOTimeString(tempEventObject.startDate)}
@@ -525,6 +529,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   errorMessage="Tiden må være i fremtiden."
                   handleChange={updateStartTime}
                   valid={validStart}
+                  noExtraInfo
+                  card
                 />
               </div>
               {!tempEventObject.endDate && (
@@ -537,7 +543,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     });
                   }}
                 >
-                  <PlusIcon className={styles.addDateDimensions} />
+                  <PlusIcon className={styles.addDateIcon} />
                   <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
                 </button>
               )}
@@ -554,7 +560,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     }}
                   >
                     <MinusIcon
-                      className={`${styles.addDateDimensions} ${styles.marginBottomMedium}`}
+                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
                     />
                     <p className={styles.addDateText}>
                       Sluttdato og -tidspunkt
@@ -574,6 +580,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateEndDate}
                       valid={validEnd}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                     <TimeInput
                       value={
@@ -588,6 +596,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateEndTime}
                       valid={validEnd}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                   </div>
                 </>
@@ -602,7 +612,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     });
                   }}
                 >
-                  <PlusIcon className={styles.addDateDimensions} />
+                  <PlusIcon className={styles.addDateIcon} />
                   <p className={styles.addDateText}>Påmelding åpner</p>
                 </button>
               )}
@@ -619,7 +629,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     }}
                   >
                     <MinusIcon
-                      className={`${styles.addDateDimensions} ${styles.marginBottomMedium}`}
+                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
                     />
                     <p className={styles.addDateText}>Påmelding åpner</p>
                   </button>
@@ -637,6 +647,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateRegStartDate}
                       valid={validRegStart}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                     <TimeInput
                       value={
@@ -651,6 +663,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateRegStartTime}
                       valid={validRegStart}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                   </div>
                 </>
@@ -665,7 +679,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     });
                   }}
                 >
-                  <PlusIcon className={styles.addDateDimensions} />
+                  <PlusIcon className={styles.addDateIcon} />
                   <p className={styles.addDateText}>Påmelding stenger</p>
                 </button>
               )}
@@ -682,7 +696,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     }}
                   >
                     <MinusIcon
-                      className={`${styles.addDateDimensions} ${styles.marginBottomMedium}`}
+                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
                     />
                     <p className={styles.addDateText}>Påmelding stenger</p>
                   </button>
@@ -700,6 +714,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateRegEndDate}
                       valid={validRegEnd}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                     <TimeInput
                       value={
@@ -714,6 +730,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       handleChange={updateRegEndTime}
                       valid={validRegEnd}
                       initiallyFocused
+                      noExtraInfo
+                      card
                     />
                   </div>
                 </>
@@ -788,7 +806,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={2}
-          Icon={<PlaceCircleSummary />}
+          Icon={<PlaceCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validLocationName}
           inputComponent={
@@ -797,7 +815,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 value={tempEventObject.locationName}
                 inputId="locationName"
                 inputName="eventLocationName"
-                label="Kallenavn på stedet*"
+                label="Kallenavn på stedet"
                 placeholder="F.eks. Bliss"
                 maxLength={100}
                 minLength={1}
@@ -807,6 +825,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 setValid={setValidLocationName}
                 valid={validLocationName}
                 validate
+                noExtraInfo
+                card
               />
 
               <TextInputLocationSelect
@@ -815,6 +835,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 placeholder="F.eks. Gaustadalléen 23B"
                 onLocationSelect={setLocation}
                 selectedLocation={location}
+                card
                 options={
                   ipInfo
                     ? {
@@ -845,7 +866,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={3}
-          Icon={<InfoCircleSummary />}
+          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validDescription}
           inputComponent={
@@ -863,6 +884,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 setValid={setValidDescription}
                 valid={validDescription}
                 validate
+                noExtraInfo
+                card
               />
             </>
           }
@@ -878,7 +901,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={4}
-          Icon={<InfoCircleSummary />}
+          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validCategories}
           inputComponent={
@@ -890,6 +913,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               style={styles.categoryTag}
               setValid={setValidCategories}
               valid={validCategories}
+              noExtraInfo
             />
           }
         >
@@ -920,7 +944,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={5}
-          Icon={<ImageCircleSummary />}
+          Icon={<ImageCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           inputComponent={
             <>
@@ -933,6 +957,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 buttonLabel="Endre bilde"
                 errorMessage="Bildet kan ikke være så stort."
                 onChange={updateEventImage}
+                noExtraInfo
+                card
               />
               <a className={styles.deleteImage} onClick={deleteImage}>
                 Slett bilde
@@ -957,7 +983,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={6}
-          Icon={<DataCircleSummary />}
+          Icon={<DataCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           inputComponent={
             <>
@@ -981,7 +1007,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   },
                 ]}
                 onClick={updateVisibility}
-                label="Privat eller ikke oppført arrangement?*"
+                label="Privat eller ikke oppført arrangement?"
+                card
               />
             </>
           }
@@ -989,12 +1016,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           <div className={styles.dataContainer}>
             {eventObject.visibility === Visibility.UNLISTED ? (
               <div className={styles.dataItemContainer}>
-                <PrivateIconSmall className={styles.dataIconDimensions} />{" "}
+                <PrivateIconSmall className={styles.dataIcon} />{" "}
                 <p className={styles.dataLabel}>Ikke oppført</p>
               </div>
             ) : eventObject.visibility === Visibility.PUBLIC ? (
               <div className={styles.dataItemContainer}>
-                <PublicIconSmall className={styles.dataIconDimensions} />
+                <PublicIconSmall className={styles.dataIcon} />
                 <p className={styles.dataLabel}>Offentlig</p>
               </div>
             ) : (

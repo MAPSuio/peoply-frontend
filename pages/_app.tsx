@@ -5,6 +5,7 @@ import { UserProvider } from "../hooks/useUser";
 import { SnackbarProvider } from "../hooks/useSnack";
 import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
+import { ThemeProvider } from "next-theme";
 // import { AppInsightsContext } from "@microsoft/applicationinsights-react-js";
 // import { reactPlugin } from "../AzureApplicationInsight/AppInsight";
 
@@ -14,17 +15,19 @@ function MyApp({ Component, pageProps }: AppProps) {
     <UserProvider>
       <SnackbarProvider>
         <NotificationsProvider>
-          <Head>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1"
-            />
-          </Head>
-          <div className={styles.wrapper}>
-            <div className={styles.container}>
-              <Component {...pageProps} />
+          <ThemeProvider attribute="class" themes={["light", "dark", "night"]}>
+            <Head>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1"
+              />
+            </Head>
+            <div className={styles.wrapper}>
+              <div className={styles.container}>
+                <Component {...pageProps} />
+              </div>
             </div>
-          </div>
+          </ThemeProvider>
         </NotificationsProvider>
       </SnackbarProvider>
     </UserProvider>

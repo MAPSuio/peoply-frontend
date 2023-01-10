@@ -6,33 +6,33 @@ const LimitIconSmall = ({ className }: LimitIconSmallProps) => {
   return (
     <svg
       className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M9.33337 12.25V11.0833C9.33337 10.4645 9.08754 9.871 8.64996 9.43342C8.21237 8.99583 7.61888 8.75 7.00004 8.75H2.91671C2.29787 8.75 1.70438 8.99583 1.26679 9.43342C0.829207 9.871 0.583374 10.4645 0.583374 11.0833V12.25"
-        stroke="#B89BFE"
+        d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M4.95833 6.41667C6.247 6.41667 7.29167 5.372 7.29167 4.08333C7.29167 2.79467 6.247 1.75 4.95833 1.75C3.66967 1.75 2.625 2.79467 2.625 4.08333C2.625 5.372 3.66967 6.41667 4.95833 6.41667Z"
-        stroke="#B89BFE"
+        d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M10.5 4.66666L13.4167 7.58332"
-        stroke="#B89BFE"
+        d="M18 8L23 13"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M13.4167 4.66666L10.5 7.58332"
-        stroke="#B89BFE"
+        d="M23 8L18 13"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

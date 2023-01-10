@@ -81,6 +81,10 @@ export default function Button({
         return `${styles.button} ${styles.warningButton} ${sizeStyle} ${
           noShadow && styles.noShadow
         }`;
+      case ButtonType.WARNINGSOFT:
+        return `${styles.button} ${styles.warningSoftButton} ${sizeStyle} ${
+          noShadow && styles.noShadow
+        }`;
       case ButtonType.HIGHLIGHTEDEVENTCARD:
         return `${styles.button} ${
           styles.highlightedEventCardButton

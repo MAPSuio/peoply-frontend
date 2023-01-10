@@ -1,11 +1,21 @@
 .summaryCardContainer {
   @include card();
   align-items: flex-start;
+  box-shadow: var(--shadow-event-card, $shadow-event-card);
+  cursor: pointer;
   display: flex;
   flex-flow: column nowrap;
   max-width: $max-width-input;
   padding: $spacer-small;
+  transition: box-shadow $animation-duration ease;
   width: 100%;
+
+  @include desktop() {
+    &:hover {
+      background-color: var(--background-color-card-hover, $background-color-card-hover);
+      box-shadow: var(--shadow-event-card-hover, $shadow-event-card-hover);
+    }
+  }
 }
 
 .iconContainer {
@@ -19,4 +29,13 @@
 
 .marginTopSmall {
   margin-top: $spacer-small;
+}
+
+.noHover {
+  @include desktop() {
+    &:hover {
+      background-color: var(--background-color-card, $background-color-card);
+      box-shadow: var(--shadow-event-card, $shadow-event-card);
+    }
+  }
 }

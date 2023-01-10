@@ -8,6 +8,7 @@ import Avatar from "./Avatar";
 import LoadingWheel from "./LoadingWheel";
 import CheckIcon from "./svgs/CheckIcon";
 import SearchIcon from "./svgs/SearchIcon";
+import useTheme from "next-theme";
 
 interface UserSearchProps {
   onUserSelect: (user: User) => void;
@@ -26,6 +27,7 @@ export default function UserSelect({
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [focused, setFocused] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [queuedSearch, setQueuedSearch] =
     useState<ReturnType<typeof setTimeout>>();
 
@@ -81,7 +83,7 @@ export default function UserSelect({
           users.length ? styles.show : ""
         }`}
       >
-        {loading ? <LoadingWheel /> : <SearchIcon />}
+        {loading ? <LoadingWheel dark={theme === "light"} /> : <SearchIcon />}
         <input
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

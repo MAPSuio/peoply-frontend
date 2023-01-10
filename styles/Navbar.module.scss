@@ -15,9 +15,9 @@
   }
 
   .container {
-    @include background-opacity($background-color-input, 0.85);
     align-items: flex-start;
     backdrop-filter: blur(8px);
+    background-color: var(--background-color-navbar, $background-color-navbar);
     display: flex;
     justify-content: space-between;
     padding: $spacer-very-small-plus $spacer-medium;
@@ -46,7 +46,7 @@
     }
 
     .underline {
-      background-color: $text-color-emphasis;
+      background-color: var(--text-color-emphasis, $text-color-emphasis);
       border-radius: $border-radius-round;
       display: block;
       height: 2px;
@@ -57,7 +57,6 @@
 
     .button {
       margin-top: -$spacer-medium;
-      
     }
   }
 }
@@ -68,7 +67,7 @@
 
 .icon {
   height: 24px;
-  stroke: $navbar-inactive-color;
+  stroke: var(--navbar-inactive-color, $navbar-inactive-color);
   width: 24px;
 
   @include desktop() {
@@ -77,6 +76,6 @@
   }
 
   &.active {
-    stroke: $text-color-emphasis;
+    stroke: var(--text-color-emphasis, $text-color-emphasis);
   }
 }

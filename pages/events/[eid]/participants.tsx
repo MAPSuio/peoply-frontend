@@ -177,7 +177,7 @@ const Participants = () => {
             headers: { "Content-Type": "application/json; charset=utf-8" },
           },
         );
-        addSnack("Bruker utestengt", SnackTypes.SUCCESS);
+        addSnack("Brukeren ble utestengt", SnackTypes.SUCCESS);
         mutateRegistrations();
       }
     } catch (e) {
@@ -222,7 +222,7 @@ const Participants = () => {
             headers: { "Content-Type": "application/json; charset=utf-8" },
           },
         );
-        addSnack("Suksess", SnackTypes.SUCCESS);
+        addSnack("Brukeren ble meldt av arrangementet", SnackTypes.SUCCESS);
         mutateRegistrations();
       }
     } catch (e) {
@@ -330,17 +330,20 @@ const Participants = () => {
                   <ModalButton
                     text="Meld av"
                     onClick={unregisterUser}
-                    type={ButtonType.WARNING}
+                    type={ButtonType.WARNINGSOFT}
+                    noShadow
                   />
                   <ModalButton
                     text="Utesteng"
                     onClick={banUser}
-                    type={ButtonType.DANGER}
+                    type={ButtonType.DANGERSOFT}
+                    noShadow
                   />
                   <ModalButton
                     text="Avbryt"
                     onClick={() => setBanUserId(undefined)}
                     type={ButtonType.SECONDARY}
+                    noShadow
                   />
                 </>
               </Modal>

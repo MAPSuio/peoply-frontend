@@ -158,10 +158,11 @@ export default function InviteUsersToEvent() {
                     inputId="arrangerInput"
                     className={styles.arrangerInput}
                     setValue={setOrgArrangerId}
+                    card
                   />
 
                   <Button
-                    icon={<PlusIcon />}
+                    icon={<PlusIcon className={styles.addIcon} />}
                     size={ButtonSize.TINY}
                     type={ButtonType.PRIMARY}
                     text={""}
@@ -181,7 +182,7 @@ export default function InviteUsersToEvent() {
                   {`${user.firstName.slice(0, 1).toUpperCase()}. ${
                     user.lastName
                   }`}
-                  <CloseIcon />
+                  <CloseIcon className={styles.closeIcon} />
                 </button>
               ))}
             </div>

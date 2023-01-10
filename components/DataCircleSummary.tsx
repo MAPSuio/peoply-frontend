@@ -2,10 +2,14 @@ import DataIconSummary from "./svgs/DataIconSummary";
 
 import styles from "../styles/DataCircleSummary.module.scss";
 
-const DataCircleSummary = () => {
+interface DataCircleSummaryProps {
+  className?: string;
+}
+
+const DataCircleSummary = ({ className }: DataCircleSummaryProps) => {
   return (
     <div className={styles.container}>
-      <DataIconSummary />
+      <DataIconSummary className={className} />
     </div>
   );
 };

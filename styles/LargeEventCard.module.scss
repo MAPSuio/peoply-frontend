@@ -1,8 +1,9 @@
 .cardWrapper {
   align-items: center;
-  background-color: $background-color-card;
+  background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;
-  color: $text-color-emphasis;
+  box-shadow: var(--shadow-event-card, $shadow-event-card);
+  color: var(--text-color-emphasis, $text-color-emphasis);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -73,7 +74,7 @@
 
 .icon {
   height: $font-size-secondary;
-  stroke: $text-color-primary;
+  stroke: var(--text-color-primary, $text-color-primary);
   width: $font-size-secondary;
 }
 
@@ -88,11 +89,11 @@
 }
 
 .emphasis {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .divider {
-  background-color: $divider-color;
+  background-color: var(--divider-color, $divider-color);
   border-radius: $border-radius-regular;
   display: block;
   height: 1px;

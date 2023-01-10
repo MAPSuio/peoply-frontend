@@ -2,7 +2,7 @@
 .wrapper {
   align-items: center;
   backdrop-filter: blur(3px);
-  background-color: $background-color-modal-transparent;
+  background-color: var(--background-color-modal-transparent, $background-color-modal-transparent);
   bottom: 0;
   display: flex;
   flex-flow: column nowrap;
@@ -23,7 +23,7 @@
   animation-fill-mode: both;
   animation-name: modal-enter-reduced-motion;
   animation-timing-function: ease;
-  background-color: $background-color-modal;
+  background-color: var(--background-color-modal, $background-color-modal);
   border-radius: $border-radius-regular;
   display: flex;
   flex-flow: column nowrap;
@@ -47,12 +47,12 @@
   @include resetButton();
   position: absolute;
   right: $spacer-very-small;
-  stroke: $text-color-emphasis;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
   top: $spacer-very-small;
 }
 
 .title, .description {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   max-width: $max-width-input;
   text-align: center;
 }
@@ -68,54 +68,54 @@
 }
 
 .button {
-  background-color: $primary-color-200;
+  background-color: var(--primary-color-200, $primary-color-200);
   border-radius: $border-radius-inside-card;
   box-shadow: $shadow-button-light;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
   margin-top: $spacer-medium;
 
   @include desktop() {
     &:hover {
-      background-color: $primary-color-200-hover;
+      background-color: var(--primary-color-200-hover, $primary-color-200-hover);
       box-shadow: $shadow-button-light-hover;
     }
   }
 }
 
 .warning {
-  background-color: $warning-color;
+  background-color: var(--warning-color, $warning-color);
   box-shadow: $shadow-button-warning;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
-      background-color: $warning-color-hover;
+      background-color: var(--warning-color-hover, $warning-color-hover);
       box-shadow: $shadow-button-warning-hover;
     }
   }
 }
 
 .success {
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
   box-shadow: $shadow-button-success;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
-      background-color: $success-color-hover;
+      background-color: var(--success-color-hover, $success-color-hover);
       box-shadow: $shadow-button-success-hover;
     }
   }
 }
 
 .danger {
-  background-color: $danger-color-button;
+  background-color: var(--danger-color-button, $danger-color-button);
   box-shadow: $shadow-button-danger;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
-      background-color: $danger-color-button-hover;
+      background-color: var(--danger-color-button-hover, $danger-color-button-hover);
       box-shadow: $shadow-button-danger-hover;
     }
   }

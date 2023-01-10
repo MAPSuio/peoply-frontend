@@ -13,11 +13,13 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import PublicIcon from "../../../components/svgs/PublicIcon";
 import UnlistedIcon from "../../../components/svgs/UnlistedIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
+import UserCheckLight from "../../../components/svgs/UserCheckLight";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
+import useTheme from "next-theme";
 import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
@@ -35,6 +37,7 @@ export default function UpdateEvent() {
   const { user, loading } = useUser();
   const { addSnack } = useSnack();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const { eid } = router.query;
   const { data: event, error: eventError } = useSWR<Event>(
     () => (eid ? `/events/${eid}` : false),
@@ -100,14 +103,14 @@ export default function UpdateEvent() {
           <BackButton onClick={goBack} />
           <div className={styles.header}>
             <h1>Lag oppdatering</h1>
-            <p>Kommuniserer med deltakere av ditt arrangement</p>
+            <p>Kommuniser med deltakere av ditt arrangement</p>
           </div>
           <div className={styles.form}>
             <TextInput
               value={subject}
               inputId="subject"
               inputName="subject"
-              label="Emne*"
+              label="Emne"
               maxLength={100}
               minLength={3}
               errorMessage={`Emnet må være mellom ${3} og ${100} tegn`}
@@ -123,7 +126,7 @@ export default function UpdateEvent() {
               inputName="updateContent"
               inputId="updateContent"
               rows={8}
-              label="Innhold*"
+              label="Innhold"
               placeholder=""
               maxLength={440}
               errorMessage="Innholdet kan ikke være tomt."
@@ -148,7 +151,7 @@ export default function UpdateEvent() {
                   text: "Kun deltakere",
                   hintText:
                     "Oppdateringen kan kun ses på arrangementsiden av deltakere.",
-                  icon: UserCheck,
+                  icon: theme === "light" ? UserCheckLight : UserCheck,
                   active: visibility === EventUpdateVisibility.GOING,
                 },
               ]}

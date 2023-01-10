@@ -1,8 +1,3 @@
 .container {
-  align-items: center;
-  background-color: $primary-color-muted;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  padding: $spacer-very-small;
+  @include iconCircle();
 }

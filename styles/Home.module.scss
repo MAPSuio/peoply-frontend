@@ -1,10 +1,9 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: $spacer-medium-plus;
 
   @include desktop() {
-    gap: $spacer-large;
+    gap: $spacer-small;
   }
 
   .swiperContainer {
@@ -21,7 +20,7 @@
       }
 
       h1 {
-        color: $text-color-emphasis;
+        color: var(--text-color-emphasis, $text-color-emphasis);
         font-size: $font-size-heading-medium;
 
         @include desktop() {
@@ -34,10 +33,12 @@
 
 .mySwiperSlide {
   max-width: $max-width-event-card;
+  padding-bottom: $spacer-medium-plus;
   width: 80%;
 }
 
 .swiperSlideOrg {
+  padding-bottom: $spacer-medium-plus;
   width: $avatar-size-large;
 
   @include desktop() {

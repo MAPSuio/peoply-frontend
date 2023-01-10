@@ -9,7 +9,7 @@
   width: 100%;
 
   svg {
-    stroke: $text-color-emphasis;
+    stroke: var(--text-color-emphasis, $text-color-emphasis);
   }
 
   .icon {
@@ -33,7 +33,7 @@
       }
 
       p {
-        color: $text-color-emphasis;
+        color: var(--text-color-emphasis, $text-color-emphasis);
         font-size: $font-size-primary;
       }
     }
@@ -55,7 +55,7 @@
 }
 
 .comment {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   display: flex;
   flex-direction: column;
   gap: $spacer-very-small;

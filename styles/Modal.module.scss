@@ -2,7 +2,7 @@
 .wrapper {
   align-items: center;
   backdrop-filter: blur($background-blur-soft);
-  background-color: $background-color-modal-transparent;
+  background-color: var(--background-color-modal-transparent, $background-color-modal-transparent);
   bottom: 0;
   display: flex;
   flex-flow: column nowrap;
@@ -23,7 +23,7 @@
   animation-fill-mode: both;
   animation-name: modal-enter-reduced-motion;
   animation-timing-function: ease;
-  background-color: $background-color-modal;
+  background-color: var(--background-color-modal, $background-color-modal);
   border-radius: $border-radius-regular;
   display: flex;
   flex-flow: column nowrap;
@@ -47,7 +47,7 @@
   @include resetButton();
   position: absolute;
   right: $spacer-very-small;
-  stroke: $text-color-emphasis;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
   top: $spacer-very-small;
 
   @include desktop() {
@@ -57,17 +57,16 @@
 }
 
 .title, .description {
-  max-width: $max-width-input;
   text-align: center;
 }
 
 .title {
-  color: $text-color-emphasis;
-  font-size: $font-size-heading-large;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-medium;
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
-    font-size: $danger-color-button;
+    font-size: $font-size-heading-medium-desktop;
     margin-bottom: $spacer-small-plus;
   }
 }
@@ -97,7 +96,7 @@
 }
 
 .description {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-secondary;
   line-height: $line-height-hint-text;
 

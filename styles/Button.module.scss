@@ -1,9 +1,9 @@
 .button {
   @include resetButton();
   align-items: center;
-  background-color: $primary-color-400;
+  background-color: var(--primary-color-400, $primary-color-400);
   box-shadow: $shadow-button;
-  color: $text-color-emphasis;
+  color: var(--text-color-button, $text-color-button);
   cursor: pointer;
   font-size: $font-size-primary;
   font-weight: $font-weight-bold;
@@ -42,15 +42,13 @@
 
   svg {
     height: 24px;
-    min-width: 24px;
-    stroke: $text-color-emphasis;
     width: 24px;
   }
 
   &:disabled {
-    background-color: $background-color-button-disabled;
+    background-color: var(--background-color-button-disabled, $background-color-button-disabled);
     box-shadow: none;
-    color: $text-color-primary;
+    color: var(--text-color-button-disabled, $text-color-primary);
     cursor: initial;
     font-weight: $font-weight-regular;
   }
@@ -59,7 +57,7 @@
     font-size: $font-size-primary-desktop;
 
     &:hover:not(:disabled) {
-      background-color: $primary-color-400-hover;
+      background-color: var(--primary-color-400-hover, $primary-color-400-hover);
       box-shadow: $shadow-button-hover;
     }
   }
@@ -71,96 +69,117 @@
 }
 
 .secondaryButton {
-  background-color: $background-color-button-secondary;
+  background-color: var(--background-color-button-secondary, $background-color-button-secondary);
   box-shadow: $shadow-button-secondary;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-weight: $font-weight-regular;
+  outline: 1px solid var(--border-color-secondary-button, $border-color-secondary-button);
 
   &:disabled {
-    background-color: $background-color-button-secondary-disabled;
+    background-color: var(--background-color-button-secondary-disabled, $background-color-button-secondary-disabled);
   }
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $background-color-button-secondary-hover;
+      background-color: var(--background-color-button-secondary-hover, $background-color-button-secondary-hover);
       box-shadow: $shadow-button-secondary-hover;
     }
   }
 }
 
 .dangerButton {
-  background-color: $background-color-button-danger;
+  background-color: var(--background-color-button-danger, $background-color-button-danger);
   box-shadow: $shadow-button-danger;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 
   &:disabled {
-    background-color: $background-color-button-danger-disabled;
+    background-color: var(--background-color-button-danger-disabled, $background-color-button-danger-disabled);
   }
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $background-color-button-danger-hover;
+      background-color: var(--background-color-button-danger-hover, $background-color-button-danger-hover);
       box-shadow: $shadow-button-danger-hover;
     }
   }
 }
 
 .dangerSoftButton {
-  background-color: $background-color-button-danger-soft;
+  background-color: var(--background-color-button-danger-soft, $background-color-button-danger-soft);
   box-shadow: $shadow-button-danger;
-  color: $danger-color;
+  color: var(--danger-color-button-soft, $danger-color);
 
   &:disabled {
-    background-color: $background-color-button-danger-disabled;
+    background-color: var(--background-color-button-danger-disabled, $background-color-button-danger-disabled);
   }
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $background-color-button-danger-soft-hover;
+      background-color: var(--background-color-button-danger-soft-hover, $background-color-button-danger-soft-hover);
       box-shadow: $shadow-button-danger-soft-hover;
     }
   }
 }
 
 .highlightedEventCardButton {
-  background-color: $background-color-button-highlighted-event-card;
-  color: $text-color-black;
+  background-color: var(--background-color-button-highlighted-event-card, $background-color-button-highlighted-event-card);
+  color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $background-color-button-highlighted-event-card-hover;
+      background-color: var(--background-color-button-highlighted-event-card-hover, $background-color-button-highlighted-event-card-hover);
     }
   }
 }
 
 .confirmedButton {
-  background-color: $primary-color-muted;
-  color: $primary-color-100;
+  background-color: var(--background-color-button-confirmed, $background-color-button-confirmed);
+  box-shadow: var(--shadow-button-confirmed, $shadow-button-confirmed);
+  color: var(--confirmed-button-color, $confirmed-button-color);
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $primary-color-muted;
+      background-color: var(--background-color-button-confirmed-hover, $background-color-button-confirmed-hover);
+      box-shadow: var(--shadow-button-confirmed-hover, $shadow-button-hover);
     }
   }
 
   &:disabled {
-    background-color: $primary-color-muted;
-    color: $primary-color-200;
+    background-color: var(--background-color-button-confirmed, $background-color-button-confirmed);
+    color: var(--primary-color-200, $primary-color-200);
     font-weight: $font-weight-regular;
   }
 }
 
 .warningButton {
-  background-color: $background-color-button-warning;
+  background-color: var(--background-color-button-warning, $background-color-button-warning);
   box-shadow: $shadow-button-warning;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 
   &:disabled {
-    background-color: $background-color-button-warning-disabled;
+    background-color: var(--background-color-button-warning-disabled, $background-color-button-warning-disabled);
   }
 
   @include desktop() {
     &:hover:not(:disabled) {
-      background-color: $background-color-button-warning-hover;
+      background-color: var(--background-color-button-warning-hover, $background-color-button-warning-hover);
+      box-shadow: $shadow-button-warning-hover;
+    }
+  }
+}
+
+.warningSoftButton {
+  background-color: var(--background-color-button-warning-soft, $background-color-button-warning-soft);
+  box-shadow: $shadow-button-warning;
+  color: var(--warning-color, $warning-color);
+
+  &:disabled {
+    background-color: var(--background-color-button-warning-disabled, $background-color-button-warning-disabled);
+  }
+
+  @include desktop() {
+    &:hover:not(:disabled) {
+      background-color: var(--background-color-button-warning-soft-hover, $background-color-button-warning-soft-hover);
       box-shadow: $shadow-button-warning-hover;
     }
   }

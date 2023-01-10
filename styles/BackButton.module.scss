@@ -8,6 +8,15 @@
   margin-top: $spacer-small;
 
   span {
-    color: $text-color-primary;
+    color: var(--text-color-primary, $text-color-primary);
+    font-size: $font-size-tertiary;
+
+    @include desktop() {
+      font-size: $font-size-tertiary-desktop;
+    }
   }
+}
+
+.icon {
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
 }

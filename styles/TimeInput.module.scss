@@ -38,22 +38,33 @@
 .errorText {
   @include errorText();
   text-align: left
-
-}
-
-.valid {
-  border: 1px solid $success-color;
 }
 
 .notValid {
-  border: 1px solid $error-color;
+  outline: 1px solid var(--error-color, $error-color);
 }
 
 .required {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .errorIcon {
   @include errorIconDimensions();
-  stroke: $error-color;
+  stroke: var(--error-color, $error-color);
+}
+
+.asterisk {
+  color: var(--error-color, $error-color);
+}
+
+.labelValid {
+  color: var(--success-color, $success-color);
+}
+
+.card {
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--background-color-input, $background-color-input);
+    }
+  }
 }

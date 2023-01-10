@@ -779,7 +779,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 value={eventObject.eventTitle}
                 inputId="title"
                 inputName="eventTitle"
-                label="Tittel på arrangementet*"
+                label="Tittel på arrangementet"
                 placeholder="F.eks. Peoply launch party"
                 maxLength={eventTitleMaxLength}
                 minLength={eventTitleMinLength}
@@ -829,7 +829,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   valid={eventDateStartValid}
                   inputId="dateStart"
                   inputName="eventDateStart"
-                  label="Dato start*"
+                  label="Dato start"
                   errorMessage="Dato må være i dag eller i fremtiden."
                   required
                   handleChange={updateEventDateStart}
@@ -839,7 +839,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   valid={eventTimeStartValid}
                   inputId="timeStart"
                   inputName="eventTimeStart"
-                  label="Tidspunkt start*"
+                  label="Tidspunkt start"
                   errorMessage="Tiden må være i fremtiden."
                   required
                   handleChange={updateEventTimeStart}
@@ -871,7 +871,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                       valid={eventDateEndValid}
                       inputId="dateEnd"
                       inputName="eventDateEnd"
-                      label="Dato slutt*"
+                      label="Dato slutt"
                       errorMessage="Sluttdato kan ikke være før startdato."
                       required
                       handleChange={updateEventDateEnd}
@@ -881,7 +881,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                       valid={eventTimeEndValid}
                       inputId="timeEnd"
                       inputName="eventTimeEnd"
-                      label="Tidspunkt slutt*"
+                      label="Tidspunkt slutt"
                       errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
                       required
                       handleChange={updateEventTimeEnd}
@@ -916,7 +916,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                         valid={regStartDateValid}
                         inputId="regDateStart"
                         inputName="eventRegDateStart"
-                        label="Dato åpning*"
+                        label="Dato åpning"
                         errorMessage="Påmelding må åpne før startdato."
                         required
                         handleChange={updateEventRegStartDate}
@@ -926,7 +926,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                         valid={regStartTimeValid}
                         inputId="regTimeStart"
                         inputName="eventRegTimeStart"
-                        label="Tidspunkt åpning*"
+                        label="Tidspunkt åpning"
                         errorMessage="Påmelding må åpne før startdato."
                         required
                         handleChange={updateEventRegStartTime}
@@ -962,7 +962,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                         valid={regEndDateValid}
                         inputId="regDateEnd"
                         inputName="eventRegDateEnd"
-                        label="Dato frist*"
+                        label="Dato frist"
                         errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
                         required
                         handleChange={updateEventRegEndDate}
@@ -972,7 +972,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                         valid={regEndTimeValid}
                         inputId="regTimeEnd"
                         inputName="eventRegTimeEnd"
-                        label="Tidspunkt frist*"
+                        label="Tidspunkt frist"
                         errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato"
                         required
                         handleChange={updateEventRegEndTime}
@@ -1004,7 +1004,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 value={eventObject.eventLocationName}
                 inputId="locationName"
                 inputName="eventLocationName"
-                label="Kallenavn på stedet*"
+                label="Kallenavn på stedet"
                 placeholder="F.eks. Bliss"
                 maxLength={eventLocationNameMaxLength}
                 minLength={eventLocationNameMinLength}
@@ -1059,7 +1059,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   inputId="description"
                   inputName="eventDescription"
                   rows={12}
-                  label="Beskrivelse av arrangementet*"
+                  label="Beskrivelse av arrangementet"
                   placeholder="F.eks. Peoply inviterer til julebord. Det blir god mat og forhåpentligvis god stemning!"
                   maxLength={eventDescriptionMaxLength}
                   errorMessage="Beskrivelsen kan ikke være tom"
@@ -1175,7 +1175,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     value={eventObject.eventCapacity}
                     inputId="capacity"
                     inputName="eventCapacity"
-                    label="Antall deltakere*"
+                    label="Antall deltakere"
                     placeholder="0"
                     errorMessage="Antall deltakere kan ikke være tom eller null."
                     required
@@ -1369,6 +1369,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   continueEventCreation();
                   setModalOpen(false);
                 }}
+                noShadow
               />
               <ModalButton
                 text="Opprett nytt"
@@ -1377,6 +1378,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   setModalOpen(false);
                 }}
                 type={ButtonType.SECONDARY}
+                noShadow
               />
             </>
           </Modal>

@@ -53,13 +53,13 @@
 
 .addDateContainer {
   @include resetButton();
-  
+
   display: flex;
   padding: $spacer-very-small 0;
 }
 
 .addDateText {
-  color: $primary-color-200;
+  color: var(--text-color-link, $text-color-link);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-left: $spacer-very-small;
@@ -69,9 +69,9 @@
   }
 }
 
-.addDateDimensions {
+.addDateIcon {
   height: $font-size-secondary;
-  stroke: $primary-color-200;
+  stroke: var(--text-color-link, $text-color-link);
   width: $font-size-secondary;
 
   @include desktop() {
@@ -82,7 +82,7 @@
 
 .deleteButton {
   background-color: transparent;
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   cursor: pointer;
   font-size: $font-size-primary;
   margin-top: -1rem;
@@ -91,7 +91,7 @@
 
 .deleteImage {
   align-self: center;
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-primary;
   margin-top: -1rem;
   text-decoration: underline;
@@ -106,12 +106,8 @@
   width: 100%;
 }
 
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
-}
-
 .titleText {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
   line-height: 1.5;
@@ -123,7 +119,7 @@
 }
 
 .dateText {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
@@ -134,6 +130,7 @@
 }
 
 .placeText {
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
@@ -141,6 +138,15 @@
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
+  }
+}
+
+.address {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
   }
 }
 
@@ -187,14 +193,10 @@
 .dataItemContainer {
   display: flex;
   flex-flow: row nowrap;
-  
-  svg {
-    stroke: $primary-color-200;
-  }
 }
 
 .dataLabel {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-left: $spacer-very-small;
@@ -229,7 +231,7 @@
 
 .categoryLabel {
   font-size: $font-size-secondary;
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   margin-bottom: $spacer-very-small;
 
   @include desktop() {
@@ -239,24 +241,33 @@
 }
 
 .categoryTag {
-  background-color: $background-color-button-secondary-hover;
-  color: $text-color-emphasis
+  background-color: var(--background-color-button-secondary-hover, background-color-button-secondary-hover);
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .textColorPrimary {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
 }
 
 .marginBottomVerySmall {
   margin-bottom: $spacer-very-small;
 }
 
+.marginBottomSmall {
+  margin-bottom: $spacer-small;
+}
+
+.marginBottomMedium {
+  margin-bottom: $spacer-medium;
+}
+
 .marginRightVerySmall {
   margin-right: $spacer-very-small;
 }
 
-.dataIconDimensions {
+.dataIcon {
   @include dataIconDimensions();
+  stroke: var(--summary-icon-color, $summary-icon-color);
 }
 
 .startAlign {
@@ -289,5 +300,16 @@
 
   .progressBarContainer {
     margin-bottom: 0;
+  }
+}
+
+.summaryIcon {
+  height: 20px;
+  stroke: var(--summary-icon-color, $summary-icon-color);
+  width: 20px;
+
+  @include desktop() {
+    height: 24px;
+    width: 24px;
   }
 }

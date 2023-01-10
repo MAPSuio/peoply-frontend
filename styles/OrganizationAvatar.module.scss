@@ -8,7 +8,7 @@
 
 .name {
   -webkit-box-orient: vertical;
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   display: -webkit-box;
   font-size: $font-size-tertiary;
   font-weight: $font-weight-regular;

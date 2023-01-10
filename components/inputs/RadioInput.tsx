@@ -12,9 +12,15 @@ interface RadioInputProps {
   }>;
   label: string;
   onClick: (id: any) => void;
+  card?: boolean;
 }
 
-const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {
+const RadioInput = ({
+  optionsAndIcons,
+  label,
+  onClick,
+  card,
+}: RadioInputProps) => {
   return (
     <div className={styles.radioInputWrapper}>
       <p className={styles.labelText}>{label}</p>
@@ -34,6 +40,7 @@ const RadioInput = ({ optionsAndIcons, label, onClick }: RadioInputProps) => {
               Icon={optionIcon}
               selected={isSelected}
               onClick={onClick}
+              card={card}
             />
           );
         })}

@@ -1,5 +1,5 @@
 .label {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
 
@@ -10,7 +10,7 @@
 
 .container {
   align-items: center;
-  background-color: $background-color-snack;
+  background-color: var(--background-color-snack, $background-color-snack);
   border-radius: $border-radius-regular;
   bottom: 128px;
   display: flex;
@@ -25,7 +25,7 @@
   z-index: $z-index-snack;
 
   .label {
-    color: $text-color-black;
+    color: var(--text-color-black, $text-color-black);
   }
 }
 
@@ -45,11 +45,11 @@
 }
 
 .success {
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
   box-shadow: none;
 
   .label {
-    color: $text-color-black;
+    color: var(--text-color-black, $text-color-black);
   }
 }
 
@@ -58,11 +58,11 @@
 }
 
 .warning {
-  background-color: $warning-color;
+  background-color: var(--warning-color, $warning-color);
   box-shadow: none;
 
   .label {
-    color: $text-color-black;
+    color: var(--text-color-black, $text-color-black);
   }
 }
 
@@ -71,11 +71,11 @@
 }
 
 .error {
-  background-color: $error-color;
+  background-color: var(--error-color, $error-color);
   box-shadow: none;
 
   .label {
-    color: $text-color-black;
+    color: var(--text-color-black, $text-color-black);
   }
 }
 
@@ -86,7 +86,7 @@
 .icon {
   height: $font-size-secondary;
   margin-right: $spacer-small;
-  stroke: $text-color-emphasis;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
   width: $font-size-secondary;
 
   @include desktop() {
@@ -96,15 +96,15 @@
 }
 
 .successIcon {
-  stroke: $text-color-black;
+  stroke: var(--text-color-black, $text-color-black);
 }
 
 .warningIcon {
-  stroke: $text-color-black;
+  stroke: var(--text-color-black, $text-color-black);
 }
 
 .errorIcon {
-  stroke: $text-color-black;
+  stroke: var(--text-color-black, $text-color-black);
 }
 
 .labelContainer {

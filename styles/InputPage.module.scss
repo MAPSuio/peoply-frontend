@@ -19,7 +19,7 @@
     height: 24px;
     svg {
       height: 24px;
-      stroke: $text-color-emphasis;
+      stroke: var(--text-color-emphasis, $text-color-emphasis);
       width: 24px;
     }
     @include desktop() {

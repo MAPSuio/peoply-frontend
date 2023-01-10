@@ -22,6 +22,8 @@ interface TextInputProps {
   isEmail?: boolean;
   regExp?: RegExp; // if you want to use a custom regex for validation
   whiteList?: string[]; // if you want to use a custom whitelist for validation
+  noExtraInfo?: boolean;
+  card?: boolean;
 }
 
 const TextInput = ({
@@ -41,6 +43,8 @@ const TextInput = ({
   isEmail,
   regExp,
   whiteList,
+  noExtraInfo,
+  card,
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
@@ -61,34 +65,49 @@ const TextInput = ({
 
   const getInputContainerStyles = () => {
     if (validate && (valid || !focused)) {
-      return `${styles.inputContainer} ${styles.noErrorPadding}`;
+      return `${styles.inputContainer} ${styles.noErrorPadding}
+      }`;
     } else {
-      return styles.inputContainer;
+      return `${styles.inputContainer}`;
     }
   };
 
   const getTextInputStyles = () => {
     if (validate && valid && value.length) {
-      return `${styles.textInput} ${styles.valid}`;
+      return `${styles.textInput} ${card && styles.card}`;
     } else if (validate && focused && (required || value.length)) {
-      return `${styles.textInput} ${styles.notValid}`;
+      return `${styles.textInput} ${styles.notValid} ${card && styles.card}`;
     } else {
-      return `${styles.textInput}`;
+      return `${styles.textInput} ${card && styles.card}`;
+    }
+  };
+
+  const getLabelValidStyles = () => {
+    if (validate && valid && value.length) {
+      return styles.labelValid;
     }
   };
 
   const textInputStyles = getTextInputStyles();
   const inputContainerStyles = getInputContainerStyles();
+  const labelValidStyles = getLabelValidStyles();
 
   return (
     <div className={inputContainerStyles}>
-      <div className={styles.labelContainer}>
-        <label
-          className={`${styles.label} ${styles.required}`}
-          htmlFor={inputId}
-        >
-          {label}
-        </label>
+      <div className={`${styles.labelContainer} ${labelValidStyles}`}>
+        {required ? (
+          <label
+            className={`${styles.label} ${styles.required}`}
+            htmlFor={inputId}
+          >
+            {label}
+            {!noExtraInfo && <span className={styles.asterisk}> *</span>}
+          </label>
+        ) : (
+          <label className={styles.label} htmlFor={inputId}>
+            {`${label} ${!noExtraInfo ? "(frivillig)" : ""}`}
+          </label>
+        )}
         <p className={styles.lengthText}>{`${value.length}/${maxLength}`}</p>
       </div>
       <input

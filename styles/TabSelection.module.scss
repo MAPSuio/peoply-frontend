@@ -15,10 +15,10 @@
   padding-top: $spacer-small;
   position: relative;
   width: 100%;
-  
+
   span{
     font-size: $font-size-secondary;
-    transition: color $animation-duration ease-in-out;
+    transition: color $animation-duration ease;
 
     @include desktop() {
       font-size: $font-size-primary-desktop;
@@ -28,10 +28,10 @@
   svg {
     fill: none;
     height: 24px;
-    stroke: $text-color-primary;
+    stroke: var(--text-color-primary, $text-color-primary);
     transition: all $animation-duration ease;
     width: 24px;
-  
+
     @include desktop {
       height: 32px;
       width: 32px;
@@ -40,14 +40,14 @@
   }
 }
 .selected {
-    
+
   span {
-    color: #FFF;
+    color: var(--text-color-emphasis, $text-color-emphasis);
     font-weight: $font-weight-medium;
   }
 
   svg {
-    stroke: $text-color-emphasis;
+    stroke: var(--text-color-emphasis, $text-color-emphasis);
   }
 
   .activeLine {
@@ -55,7 +55,7 @@
     animation-fill-mode: both;
     animation-name: line-enter-reduced-motion;
     animation-timing-function: ease;
-    background-color: $text-color-emphasis;
+    background-color: var(--text-color-emphasis, $text-color-emphasis);
     bottom: 0px;
     height: 1px;
     left: 0;
@@ -63,29 +63,29 @@
     position: absolute;
     right: 0;
     width: 100%;
-  
+
     @media (prefers-reduced-motion: no-preference) {
       animation-name: line-enter-reduced-motion, line-enter-full-motion;
     }
   }
-  
+
   /* The reduced motion version of the animation. */
   @keyframes line-enter-reduced-motion {
     from {
       opacity: 0;
     }
-  
+
     to {
       opacity: 1;
     }
   }
-  
+
   /* The full motion version of the animation. */
   @keyframes line-enter-full-motion {
     from {
       width: 0%;
     }
-  
+
     to {
       width: 100%;
     }

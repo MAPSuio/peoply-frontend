@@ -20,7 +20,7 @@
     }
 
     .indicator {
-      background-color: $success-color;
+      background-color: var(--success-color, $success-color);
       border-radius: 50%;
       min-height: 16px;
       min-width: 16px;

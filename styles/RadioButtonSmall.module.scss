@@ -9,19 +9,31 @@
 .buttonContainer {
   @include resetButton();
   align-items: center;
-  background-color: $background-color-input;
+  background-color: var(--background-color-input, $background-color-input);
   border-radius: $border-radius-regular;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   margin-bottom: $spacer-small;
+  outline: 1px solid var(--border-color-input, $border-color-input);
   padding: $spacer-small-plus $spacer-small;
   position: relative;
-  transition: background-color $animation-duration ease;
+  transition: box-shadow $animation-duration ease;
   width: 100%;
 
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--background-color-input-hover, $background-color-input-hover);
+      outline: 1px solid transparent;
+    }
+
+    &:hover {
+      box-shadow: var(--shadow-input, $shadow-input);
+    }
+  }
+
   svg:not(:last-child) {
-    stroke: $text-color-emphasis;
+    stroke: var(--text-color-emphasis, $text-color-emphasis);
   }
 }
 
@@ -36,19 +48,38 @@
 }
 
 .emphasis {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .selected {
-  background-color: $success-color-input;
+  background-color: var(--success-color-input, $success-color-input);
+  outline: 1px solid var(--success-color-border, $success-color-border);
+
+  @include desktop() {
+    &:focus, &:hover {
+      background-color: var(--success-color-input, $success-color-input);
+    }
+
+    &:focus {
+      outline: 1px solid var(--success-color-border, $success-color-border);
+    }
+
+    &:hover {
+      outline: 1px solid transparent;
+    }
+  }
 }
 
 .radioButtonText {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   margin-top: $spacer-very-small;
   text-transform: capitalize;
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
   }
+}
+
+.checkIcon {
+  stroke: var(--icon-color, $icon-color);
 }

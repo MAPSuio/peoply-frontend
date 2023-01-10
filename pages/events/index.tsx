@@ -54,7 +54,6 @@ const Events: NextPage = () => {
         description="Home page of Peoply"
         url={`${process.env.NEXT_PUBLIC_BASE_URL}${router.asPath}`}
       />
-      <Header />
       <BackButton onClick={goBack} style={{ marginLeft: "5%" }} />
       <EventList
         events={events && events?.length > 0 ? events.flatMap((ev) => ev) : []}

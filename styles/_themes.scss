@@ -1,0 +1,403 @@
+html.dark {
+
+  // Primary colors.
+  --primary-color-400: #{$primary-color-400};
+  --primary-color-400-hover: #{$primary-color-400-hover};
+  --primary-color-200: #{$primary-color-200};
+  --primary-color-200-hover: #{$primary-color-200-hover};
+  --primary-color-100: #{$primary-color-100};
+  --primary-color-muted: #{$primary-color-muted};
+
+  // Secondary colors.
+  --secondary-color-200: #{$secondary-color-200};
+
+  // Status colors.
+  --success-color: #{$success-color};
+  --success-color-hover: #{$success-color-hover};
+  --success-color-muted: #{$success-color-muted};
+  --success-color-input: #{$success-color-input};
+  --success-color-border: #{$success-color-border};
+  --success-color-switch: #{$success-color-switch};
+  --error-color: #{$error-color};
+  --warning-color: #{$warning-color};
+  --warning-color-hover: #{$warning-color-hover};
+  --info-color: #{$info-color};
+  --danger-color: #{$danger-color};
+  --danger-color-button: #{$danger-color-button};
+  --danger-color-button-hover: #{$danger-color-button-hover};
+  --danger-color-button-soft: #{$danger-color};
+
+  // Background colors.
+  --background-color-primary: #{$background-color-primary};
+  --background-color-card: #{$background-color-card};
+  --background-color-card-hover: #{$background-color-card-hover};
+  --background-color-card-transparent: #{$background-color-card-transparent};
+  --background-color-modal-transparent: #{$background-color-modal-transparent};
+  --background-color-modal: #{$background-color-modal};
+  --background-color-circle: #{$background-color-circle};
+  --background-color-price-tag: #{$background-color-price-tag};
+  --background-color-check: #{$background-color-check};
+  --background-color-glass: #{$background-color-glass};
+  --background-color-navbar: #{$background-color-navbar};
+  --background-color-calendar-tag: #{$background-color-calendar-tag};
+  --background-color-input: #{$background-color-input};
+  --background-color-input-hover: #{$background-color-input-hover};
+  --background-color-input-muted: #{$background-color-input-muted};
+  --background-color-tag: #{$background-color-tag};
+  --background-color-progress-circle: #{$background-color-progress-circle};
+  --background-color-progress-circle-active: #{$background-color-progress-circle-active};
+  --background-color-progress-connector: #{$background-color-progress-connector};
+  --background-color-progress-connector-active: #{$background-color-progress-connector-active};
+  --background-color-settings-button: #{$background-color-settings-button};
+  --background-color-switch-container: #{$background-color-switch-container};
+  --background-color-switch: #{$background-color-switch};
+  --background-color-button-disabled: #{$background-color-button-disabled};
+  --background-color-button-secondary: #{$background-color-button-secondary};
+  --background-color-button-highlighted-event-card: #{$background-color-button-highlighted-event-card};
+  --background-color-button-highlighted-event-card-hover: #{$background-color-button-highlighted-event-card-hover};
+  --background-color-button-secondary-hover: #{$background-color-button-secondary-hover};
+  --background-color-button-secondary-disabled: #{$background-color-button-secondary-disabled};
+  --background-color-button-danger: #{$background-color-button-danger};
+  --background-color-button-danger-hover: #{$background-color-button-danger-hover};
+  --background-color-button-danger-disabled: #{$background-color-button-danger-disabled};
+  --background-color-button-danger-soft: #{$background-color-button-danger-soft};
+  --background-color-button-danger-soft-hover: #{$background-color-button-danger-soft-hover};
+  --background-color-button-warning: #{$background-color-button-warning};
+  --background-color-button-warning-hover: #{$background-color-button-warning-hover};
+  --background-color-button-warning-disabled: #{$background-color-button-warning-disabled};
+  --background-color-button-warning-soft: #{$background-color-button-warning-soft};
+  --background-color-button-warning-soft-hover: #{$background-color-button-warning-soft-hover};
+  --background-color-button-confirmed: #{$background-color-button-confirmed};
+  --background-color-button-confirmed-hover: #{$background-color-button-confirmed-hover};
+  --background-color-avatar: #{$background-color-avatar};
+  --background-color-avatar-gradient: #{$background-color-avatar-gradient};
+  --background-color-snack: #{$background-color-snack};
+
+  // Text colors.
+  --text-color-primary: #{$text-color-primary};
+  --text-color-emphasis: #{$text-color-emphasis};
+  --text-color-button: #{$text-color-button};
+  --text-color-button-disabled: #{text-color-primary};
+  --text-color-link: #{$text-color-link};
+  --text-color-input: #{$text-color-input};
+  --text-color-black: #{$text-color-black};
+
+  // Misc. colors.
+  --divider-color: #{$divider-color};
+  --navbar-inactive-color: #{$navbar-inactive-color};
+  --primary-color-logo: #{$primary-color-logo};
+  --secondary-color-logo: #{$secondary-color-logo};
+  --border-color: #{$border-color};
+  --border-color-input: #{$border-color-input};
+  --border-color-secondary-button: #{$border-color-secondary-button};
+  --icon-color: #{$icon-color};
+  --summary-icon-color: #{$summary-icon-color};
+  --confirmed-button-color: #{$confirmed-button-color};
+
+  // Shadows.
+  --shadow-tag: #{$shadow-tag};
+  --shadow-tag-active: #{$shadow-tag-active};
+  --shadow-avatar: #{$shadow-avatar};
+  --shadow-avatar-large: #{$shadow-avatar-large};
+  --shadow-check: #{$shadow-check};
+  --shadow-add: #{$shadow-add};
+  --shadow-button: #{$shadow-button};
+  --shadow-button-hover: #{$shadow-button-hover};
+  --shadow-button-light: #{$shadow-button-light};
+  --shadow-button-light-hover: #{$shadow-button-light-hover};
+  --shadow-button-secondary: #{$shadow-button-secondary};
+  --shadow-button-secondary-hover: #{$shadow-button-secondary-hover};
+  --shadow-button-danger: #{$shadow-button-danger};
+  --shadow-button-danger-hover: #{$shadow-button-danger-hover};
+  --shadow-button-danger-soft: #{$shadow-button-danger-soft};
+  --shadow-button-danger-soft-hover: #{$shadow-button-danger-soft-hover};
+  --shadow-button-success: #{$shadow-button-success};
+  --shadow-button-success-hover: #{$shadow-button-success-hover};
+  --shadow-button-warning: #{$shadow-button-warning};
+  --shadow-button-warning-hover: #{$shadow-button-warning-hover};
+  --shadow-button-confirmed: #{$shadow-button-confirmed};
+  --shadow-button-confirmed-hover: #{$shadow-button-hover};
+  --shadow-snack: #{$shadow-snack};
+  --shadow-snack-success: #{$shadow-snack-success};
+  --shadow-snack-warning: #{$shadow-snack-warning};
+  --shadow-snack-error: #{$shadow-snack-error};
+  --shadow-slider: #{$shadow-slider};
+  --shadow-switch: #{$shadow-switch};
+  --shadow-event-image: #{$shadow-event-image};
+  --shadow-calendar-tag: #{$shadow-calendar-tag};
+  --shadow-highlighted-event-card: #{$shadow-highlighted-event-card};
+  --shadow-small-event-card: #{$shadow-small-event-card};
+  --shadow-event-card: #{$shadow-event-card};
+  --shadow-event-card-hover: #{$shadow-event-card-hover};
+  --shadow-search: #{$shadow-search};
+  --shadow-input: #{$shadow-input};
+}
+
+html.night {
+
+  // Primary colors.
+  --primary-color-400: #{$primary-color-400};
+  --primary-color-400-hover: #{$primary-color-400-hover};
+  --primary-color-200: #{$primary-color-200};
+  --primary-color-200-hover: #{$primary-color-200-hover};
+  --primary-color-100: #{$primary-color-100};
+  --primary-color-muted: #{$primary-color-muted};
+
+  // Secondary colors.
+  --secondary-color-200: #{$secondary-color-200};
+
+  // Status colors.
+  --success-color: #{$success-color};
+  --success-color-hover: #{$success-color-hover};
+  --success-color-muted: #{$success-color-muted};
+  --success-color-input: #{$success-color-input};
+  --success-color-border: #{$success-color-border};
+  --success-color-switch: #{$success-color-switch};
+  --error-color: #{$error-color};
+  --warning-color: #{$warning-color};
+  --warning-color-hover: #{$warning-color-hover};
+  --info-color: #{$info-color};
+  --danger-color: #{$danger-color};
+  --danger-color-button: #{$danger-color-button};
+  --danger-color-button-hover: #{$danger-color-button-hover};
+  --danger-color-button-soft: #{$danger-color};
+
+  // Background colors.
+  --background-color-primary: #{$background-color-primary-night};
+  --background-color-card: #{$background-color-card-night};
+  --background-color-card-hover: #{$background-color-card-hover-night};
+  --background-color-card-transparent: #{$background-color-card-transparent-night};
+  --background-color-modal-transparent: #{$background-color-modal-transparent-night};
+  --background-color-modal: #{$background-color-modal-night};
+  --background-color-circle: #{$background-color-circle};
+  --background-color-price-tag: #{$background-color-price-tag-night};
+  --background-color-check: #{$background-color-check};
+  --background-color-glass: #{$background-color-glass-night};
+  --background-color-navbar: #{$background-color-navbar-night};
+  --background-color-calendar-tag: #{$background-color-calendar-tag-night};
+  --background-color-input: #{$background-color-input-night};
+  --background-color-input-hover: #{$background-color-input-hover-night};
+  --background-color-input-muted: #{$background-color-input-muted-night};
+  --background-color-tag: #{$background-color-tag-night};
+  --background-color-progress-circle: #{$background-color-progress-circle-night};
+  --background-color-progress-circle-active: #{$background-color-progress-circle-active-night};
+  --background-color-progress-connector: #{$background-color-progress-connector-night};
+  --background-color-progress-connector-active: #{$background-color-progress-connector-active-night};
+  --background-color-settings-button: #{$background-color-settings-button-night};
+  --background-color-switch-container: #{$background-color-switch-container-night};
+  --background-color-switch: #{$background-color-switch-night};
+  --background-color-button-disabled: #{$background-color-button-disabled-night};
+  --background-color-button-secondary: #{$background-color-button-secondary-night};
+  --background-color-button-highlighted-event-card: #{$background-color-button-highlighted-event-card-night};
+  --background-color-button-highlighted-event-card-hover: #{$background-color-button-highlighted-event-card-hover-night};
+  --background-color-button-secondary-hover: #{$background-color-button-secondary-hover-night};
+  --background-color-button-secondary-disabled: #{$background-color-button-secondary-disabled-night};
+  --background-color-button-danger: #{$background-color-button-danger-night};
+  --background-color-button-danger-hover: #{$background-color-button-danger-hover-night};
+  --background-color-button-danger-disabled: #{$background-color-button-danger-disabled-night};
+  --background-color-button-danger-soft: #{$background-color-button-danger-soft-night};
+  --background-color-button-danger-soft-hover: #{$background-color-button-danger-soft-hover-night};
+  --background-color-button-warning: #{$background-color-button-warning-night};
+  --background-color-button-warning-hover: #{$background-color-button-warning-hover-night};
+  --background-color-button-warning-disabled: #{$background-color-button-warning-disabled-night};
+  --background-color-button-warning-soft: #{$background-color-button-warning-soft};
+  --background-color-button-warning-soft-hover: #{$background-color-button-warning-soft-hover};
+  --background-color-button-confirmed: #{$background-color-button-confirmed};
+  --background-color-button-confirmed-hover: #{$background-color-button-confirmed-hover};
+  --background-color-avatar: #{$background-color-avatar-night};
+  --background-color-avatar-gradient: #{$background-color-avatar-gradient-night};
+  --background-color-snack: #{$background-color-snack-night};
+
+  // Text colors.
+  --text-color-primary: #{$text-color-primary-night};
+  --text-color-emphasis: #{$text-color-emphasis-night};
+  --text-color-button: #{$text-color-button-night};
+  --text-color-button-disabled: #{text-color-primary-night};
+  --text-color-link: #{$text-color-link-night};
+  --text-color-input: #{$text-color-input-night};
+  --text-color-black: #{$text-color-black-night};
+
+  // Misc. colors.
+  --divider-color: #{$divider-color-night};
+  --navbar-inactive-color: #{$navbar-inactive-color};
+  --primary-color-logo: #{$primary-color-logo};
+  --secondary-color-logo: #{$secondary-color-logo};
+  --border-color: #{$border-color};
+  --border-color-input: #{$border-color-input-night};
+  --border-color-secondary-button: #{$border-color-secondary-button};
+  --icon-color: #{$icon-color};
+  --summary-icon-color: #{$summary-icon-color};
+  --confirmed-button-color: #{$confirmed-button-color};
+
+  // Shadows.
+  --shadow-tag: #{$shadow-tag};
+  --shadow-tag-active: #{$shadow-tag-active};
+  --shadow-avatar: #{$shadow-avatar};
+  --shadow-avatar-large: #{$shadow-avatar-large};
+  --shadow-check: #{$shadow-check};
+  --shadow-add: #{$shadow-add};
+  --shadow-button: #{$shadow-button};
+  --shadow-button-hover: #{$shadow-button-hover};
+  --shadow-button-light: #{$shadow-button-light};
+  --shadow-button-light-hover: #{$shadow-button-light-hover};
+  --shadow-button-secondary: #{$shadow-button-secondary};
+  --shadow-button-secondary-hover: #{$shadow-button-secondary-hover};
+  --shadow-button-danger: #{$shadow-button-danger};
+  --shadow-button-danger-hover: #{$shadow-button-danger-hover};
+  --shadow-button-danger-soft: #{$shadow-button-danger-soft};
+  --shadow-button-danger-soft-hover: #{$shadow-button-danger-soft-hover};
+  --shadow-button-success: #{$shadow-button-success};
+  --shadow-button-success-hover: #{$shadow-button-success-hover};
+  --shadow-button-warning: #{$shadow-button-warning};
+  --shadow-button-warning-hover: #{$shadow-button-warning-hover};
+  --shadow-button-confirmed: #{$shadow-button-confirmed};
+  --shadow-button-confirmed-hover: #{$shadow-button-hover};
+  --shadow-snack: #{$shadow-snack};
+  --shadow-snack-success: #{$shadow-snack-success};
+  --shadow-snack-warning: #{$shadow-snack-warning};
+  --shadow-snack-error: #{$shadow-snack-error};
+  --shadow-slider: #{$shadow-slider};
+  --shadow-switch: #{$shadow-switch};
+  --shadow-event-image: #{$shadow-event-image};
+  --shadow-calendar-tag: #{$shadow-calendar-tag};
+  --shadow-highlighted-event-card: #{$shadow-highlighted-event-card};
+  --shadow-small-event-card: #{$shadow-small-event-card};
+  --shadow-event-card: #{$shadow-event-card};
+  --shadow-event-card-hover: #{$shadow-event-card-hover};
+  --shadow-search: #{$shadow-search};
+  --shadow-input: #{$shadow-input};
+}
+
+html.light {
+  // Primary colors.
+  --primary-color-400: #{$primary-color-400};
+  --primary-color-400-hover: #{$primary-color-400-hover};
+  --primary-color-200: #{$primary-color-200};
+  --primary-color-200-hover: #{$primary-color-200-hover};
+  --primary-color-100: #{$primary-color-100};
+  --primary-color-muted: #{$primary-color-muted};
+
+  // Secondary colors.
+  --secondary-color-200: #{$secondary-color-200};
+
+  // Status colors.
+  --success-color: #{$success-color-light};
+  --success-color-hover: #{$success-color-hover-light};
+  --success-color-muted: #{$success-color-muted-light};
+  --success-color-input: #{$success-color-input-light};
+  --success-color-border: #{$success-color-border-light};
+  --success-color-switch: #{$success-color-switch-light};
+  --error-color: #{$error-color-light};
+  --warning-color: #{$warning-color-light};
+  --warning-color-hover: #{$warning-color-hover-light};
+  --info-color: #{$info-color-light};
+  --danger-color: #{$danger-color-light};
+  --danger-color-button: #{$danger-color-button-light};
+  --danger-color-button-hover: #{$danger-color-button-hover-light};
+  --danger-color-button-soft: #{$danger-color-button-soft-light};
+
+  // Background colors.
+  --background-color-primary: #{$background-color-primary-light};
+  --background-color-card: #{$background-color-card-light};
+  --background-color-card-hover: #{$background-color-card-hover-light};
+  --background-color-card-transparent: #{$background-color-card-transparent-light};
+  --background-color-modal-transparent: #{$background-color-modal-transparent-light};
+  --background-color-modal: #{$background-color-modal-light};
+  --background-color-circle: #{$background-color-circle-light};
+  --background-color-price-tag: #{$background-color-price-tag-light};
+  --background-color-check: #{$background-color-check-light};
+  --background-color-glass: #{$background-color-glass-light};
+  --background-color-navbar: #{$background-color-navbar-light};
+  --background-color-calendar-tag: #{$background-color-calendar-tag-light};
+  --background-color-input: #{$background-color-input-light};
+  --background-color-input-hover: #{$background-color-input-light};
+  --background-color-input-muted: #{$background-color-input-muted-light};
+  --background-color-tag: #{$background-color-tag-light};
+  --background-color-progress-circle: #{$background-color-progress-circle-light};
+  --background-color-progress-circle-active: #{$background-color-progress-circle-active-light};
+  --background-color-progress-connector: #{$background-color-progress-connector-light};
+  --background-color-progress-connector-active: #{$background-color-progress-connector-active-light};
+  --background-color-settings-button: #{$background-color-settings-button-light};
+  --background-color-switch-container: #{$background-color-switch-container-light};
+  --background-color-switch: #{$background-color-switch-light};
+  --background-color-button-disabled: #{$background-color-button-disabled-light};
+  --background-color-button-secondary: #{$background-color-button-secondary-light};
+  --background-color-button-highlighted-event-card: #{$background-color-button-highlighted-event-card-light};
+  --background-color-button-highlighted-event-card-hover: #{$background-color-button-highlighted-event-card-hover-light};
+  --background-color-button-secondary-hover: #{$background-color-button-secondary-hover-light};
+  --background-color-button-secondary-disabled: #{$background-color-button-secondary-disabled-light};
+  --background-color-button-danger: #{$background-color-button-danger-light};
+  --background-color-button-danger-hover: #{$background-color-button-danger-hover-light};
+  --background-color-button-danger-disabled: #{$background-color-button-danger-disabled-light};
+  --background-color-button-danger-soft: #{$background-color-button-danger-soft-light};
+  --background-color-button-danger-soft-hover: #{$background-color-button-danger-soft-hover-light};
+  --background-color-button-warning: #{$background-color-button-warning-light};
+  --background-color-button-warning-hover: #{$background-color-button-warning-hover-light};
+  --background-color-button-warning-disabled: #{$background-color-button-warning-disabled-light};
+  --background-color-button-warning-soft: #{$background-color-button-warning-soft};
+  --background-color-button-warning-soft-hover: #{$background-color-button-warning-soft-hover};
+  --background-color-button-confirmed: #{$background-color-button-confirmed-light};
+  --background-color-button-confirmed-hover: #{$background-color-button-confirmed-hover-light};
+  --background-color-avatar: #{$background-color-avatar-light};
+  --background-color-avatar-gradient: #{$background-color-avatar-gradient-light};
+  --background-color-snack: #{$background-color-snack-light};
+
+  // Text colors.
+  --text-color-primary: #{$text-color-primary-light};
+  --text-color-emphasis: #{$text-color-emphasis-light};
+  --text-color-button: #{$text-color-button-light};
+  --text-color-button-disabled: #{$text-color-emphasis-light};
+  --text-color-link: #{$text-color-link-light};
+  --text-color-input: #{$text-color-input-light};
+  --text-color-black: #{$text-color-black-light};
+
+  // Misc. colors.
+  --divider-color: #{$divider-color-light};
+  --navbar-inactive-color: #{$navbar-inactive-color-light};
+  --primary-color-logo: #{$primary-color-logo-light};
+  --secondary-color-logo: #{$secondary-color-logo-light};
+  --border-color: #{$border-color-light};
+  --border-color-input: #{$border-color-input-light};
+  --border-color-secondary-button: #{$border-color-secondary-button-light};
+  --icon-color: #{$icon-color-light};
+  --summary-icon-color: #{$summary-icon-color-light};
+  --confirmed-button-color: #{$confirmed-button-color-light};
+
+  // Shadows.
+  --shadow-tag: #{$shadow-tag-light};
+  --shadow-tag-active: #{$shadow-tag-active};
+  --shadow-avatar: #{$shadow-avatar};
+  --shadow-avatar-large: #{$shadow-avatar-large};
+  --shadow-check: #{$shadow-check};
+  --shadow-add: #{$shadow-add};
+  --shadow-button: #{$shadow-button};
+  --shadow-button-hover: #{$shadow-button-hover};
+  --shadow-button-light: #{$shadow-button-light};
+  --shadow-button-light-hover: #{$shadow-button-light-hover};
+  --shadow-button-secondary: #{$shadow-button-secondary};
+  --shadow-button-secondary-hover: #{$shadow-button-secondary-hover};
+  --shadow-button-danger: #{$shadow-button-danger};
+  --shadow-button-danger-hover: #{$shadow-button-danger-hover};
+  --shadow-button-danger-soft: #{$shadow-button-danger-soft};
+  --shadow-button-danger-soft-hover: #{$shadow-button-danger-soft-hover};
+  --shadow-button-success: #{$shadow-button-success};
+  --shadow-button-success-hover: #{$shadow-button-success-hover};
+  --shadow-button-warning: #{$shadow-button-warning};
+  --shadow-button-warning-hover: #{$shadow-button-warning-hover};
+  --shadow-button-confirmed: #{$shadow-button-confirmed-light};
+  --shadow-button-confirmed-hover: #{$shadow-button-confirmed-hover-light};
+  --shadow-snack: #{$shadow-snack};
+  --shadow-snack-success: #{$shadow-snack-success};
+  --shadow-snack-warning: #{$shadow-snack-warning};
+  --shadow-snack-error: #{$shadow-snack-error};
+  --shadow-slider: #{$shadow-slider};
+  --shadow-switch: #{$shadow-switch};
+  --shadow-event-image: #{$shadow-event-image};
+  --shadow-calendar-tag: #{$shadow-calendar-tag};
+  --shadow-highlighted-event-card: #{$shadow-highlighted-event-card-light};
+  --shadow-small-event-card: #{$shadow-small-event-card};
+  --shadow-event-card: #{$shadow-event-card-light};
+  --shadow-event-card-hover: #{$shadow-event-card-hover-light};
+  --shadow-search: #{$shadow-search-light};
+  --shadow-input: #{$shadow-input-light};
+}

@@ -1,6 +1,8 @@
+// Components.
 import Tag from "../Tag";
 import ErrorIcon from "../svgs/ErrorIcon";
 
+// Styles.
 import styles from "../../styles/CategoryInput.module.scss";
 
 interface CategoryInputProps {
@@ -11,6 +13,7 @@ interface CategoryInputProps {
   style?: string;
   setValid?: React.Dispatch<React.SetStateAction<boolean>>;
   valid?: boolean;
+  noExtraInfo?: boolean;
 }
 
 const CategoryInput = ({
@@ -21,6 +24,7 @@ const CategoryInput = ({
   style,
   setValid,
   valid,
+  noExtraInfo,
 }: CategoryInputProps) => {
   const getCategoryContainerStyles = () => {
     return activeCategories.length > 0
@@ -36,7 +40,15 @@ const CategoryInput = ({
 
   return (
     <div className={styles.categoryInputWrapper}>
-      <p className={styles.categoryLabel}>Kategori(er)</p>
+      <p className={styles.categoryLabel}>
+        Kategori(er){" "}
+        {!noExtraInfo && (
+          <span className={`${styles.asterisk} ${valid && styles.labelValid}`}>
+            {" "}
+            *
+          </span>
+        )}
+      </p>
       <div className={categoryContainerStyles}>
         {categories.map((cat) => {
           return (

@@ -6,21 +6,21 @@ const PublicIconSmall = ({ className }: PublicIconSmallProps) => {
   return (
     <svg
       className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M0.583374 7.00001C0.583374 7.00001 2.91671 2.33334 7.00004 2.33334C11.0834 2.33334 13.4167 7.00001 13.4167 7.00001C13.4167 7.00001 11.0834 11.6667 7.00004 11.6667C2.91671 11.6667 0.583374 7.00001 0.583374 7.00001Z"
-        stroke="#B89BFE"
+        d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M7 8.75C7.9665 8.75 8.75 7.9665 8.75 7C8.75 6.0335 7.9665 5.25 7 5.25C6.0335 5.25 5.25 6.0335 5.25 7C5.25 7.9665 6.0335 8.75 7 8.75Z"
-        stroke="#B89BFE"
+        d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

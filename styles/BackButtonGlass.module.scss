@@ -2,7 +2,7 @@
   @include resetButton();
   align-items: center;
   backdrop-filter: blur($background-blur);
-  background-color: $background-color-glass;
+  background-color: var(--background-color-glass, $background-color-glass);
   border-radius: $border-radius-icon;
   display: flex;
   justify-content: center;

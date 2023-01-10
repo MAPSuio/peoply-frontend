@@ -7,8 +7,8 @@
   position: relative;
 
   &.default {
-    background: linear-gradient($background-color-avatar, $background-color-avatar-gradient);
-    background-color: $background-color-avatar;
+    background: linear-gradient(var(--background-color-avatar, $background-color-avatar), var(--background-color-avatar-gradient, $background-color-avatar-gradient));
+    background-color: var(--background-color-avatar, $background-color-avatar)
   }
 
   img {

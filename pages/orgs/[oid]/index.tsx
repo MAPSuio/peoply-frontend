@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";

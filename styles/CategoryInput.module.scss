@@ -1,4 +1,5 @@
 .categoryInputWrapper {
+  align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
   max-width: $max-width-input;
@@ -40,5 +41,13 @@
 
 .errorIcon {
   @include errorIconDimensions();
-  stroke: $error-color;
+  stroke: var(--error-color, $error-color);
+}
+
+.asterisk {
+  color: var(--error-color, $error-color);
+}
+
+.labelValid {
+  color: var(--success-color, $success-color);
 }

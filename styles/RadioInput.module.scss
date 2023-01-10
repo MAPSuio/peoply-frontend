@@ -1,4 +1,5 @@
 .radioInputWrapper {
+  align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
   max-width: $max-width-input;
@@ -13,7 +14,7 @@
 
 .labelText {
   @include label();
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   margin-bottom: $spacer-very-small;
 
   @include desktop() {

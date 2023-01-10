@@ -86,7 +86,7 @@
 }
 
 .eventHeader {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-heading-medium;
   font-weight: $font-weight-bold;
 
@@ -130,7 +130,7 @@
 }
 
 .data {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-data;
   font-weight: $font-weight-bold;
   @include monoFont();
@@ -163,7 +163,7 @@
 
 .icon {
   height: 16px;
-  stroke: $primary-color-200;
+  stroke: var(--text-color-link, $text-color-link);
   stroke-width: 2;
   width: 16px;
 

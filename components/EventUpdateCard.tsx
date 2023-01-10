@@ -36,7 +36,7 @@ export default function EventUpdateCard({
           method: "DELETE",
         },
       );
-      addSnack("Oppdatering slettet", SnackTypes.WARNING);
+      addSnack("Oppdatering slettet");
       mutateUpdates && mutateUpdates();
     } catch (e) {
       addSnack("Kunne ikke slette oppdatering", SnackTypes.ERROR);
@@ -85,7 +85,8 @@ export default function EventUpdateCard({
             <ModalButton
               text={"Slett"}
               onClick={deleteUpdate}
-              type={ButtonType.DANGER}
+              type={ButtonType.DANGERSOFT}
+              noShadow
             />
             <ModalButton
               text={"Avbryt"}
@@ -93,6 +94,7 @@ export default function EventUpdateCard({
                 setDeleteModalOpen(false);
               }}
               type={ButtonType.SECONDARY}
+              noShadow
             />
           </>
         </Modal>

@@ -28,11 +28,11 @@
     margin-bottom: $spacer-small;
 
     p {
-      color: $primary-color-200;
+      color: var(--primary-color-200, $primary-color-200);
       font-family: $mono-font;
       font-size: $font-size-secondary;
       margin-left: $spacer-very-small;
-    
+
       @include desktop() {
         font-size: $font-size-secondary-desktop;
       }
@@ -40,9 +40,9 @@
 
     .plusIconDimensions {
       height: $font-size-secondary;
-      stroke: $primary-color-200;
+      stroke: var(--primary-color-200, $primary-color-200);
       width: $font-size-secondary;
-    
+
       @include desktop() {
         height: $font-size-secondary-desktop;
         width: $font-size-secondary-desktop;
@@ -70,7 +70,7 @@
 
     .selectedUser {
       align-items: center;
-      background-color: $background-color-card;
+      background-color: var(--background-color-card, $background-color-card);
       border-radius: $border-radius-round;
       cursor: pointer;
       display: flex;
@@ -78,12 +78,6 @@
       gap: $spacer-mini;
       max-width: 500px;
       padding: $spacer-mini $spacer-small;
-
-      svg {
-        filter: brightness(0) invert(1);
-        stroke: #FFFFFF;
-      }
-
     }
   }
 }
@@ -91,4 +85,12 @@
 .primaryButton {
   @include fixedButton();
   width: 90%;
+}
+
+.addIcon {
+  stroke: var(--text-color-button, $text-color-button);
+}
+
+.closeIcon {
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
 }

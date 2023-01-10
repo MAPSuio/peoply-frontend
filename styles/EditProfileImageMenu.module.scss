@@ -22,14 +22,14 @@
   }
 
   .removeImage {
-    color: $danger-color;
+    color: var(--danger-color, $danger-color);
   }
 
   .divider {
     @include divider();
     align-self: center;
     border: 0; // reset border from divider()
-    border-top: 1px solid $divider-color;
+    border-top: 1px solid var(--divider-color, $divider-color);
     width: 100%;
   }
 }

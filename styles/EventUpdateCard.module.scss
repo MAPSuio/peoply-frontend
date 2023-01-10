@@ -25,7 +25,7 @@
       line-height: 0;
 
       svg {
-        stroke: $text-color-input;
+        stroke: var(--text-color-input, $text-color-input);
       }
     }
 
@@ -33,11 +33,11 @@
 
   .visibility {
     align-items: center;
-    color: $text-color-input;
+    color: var(--text-color-input, $text-color-input);
     display: flex;
     font-size: $font-size-tertiary;
     gap: $spacer-very-small;
-    order: 1; 
+    order: 1;
 
     @include desktop() {
       font-size: $font-size-tertiary-desktop;
@@ -53,7 +53,7 @@
       @include normalText();
       white-space: wrap;
       word-wrap: break-word;
-      
+
     }
   }
 

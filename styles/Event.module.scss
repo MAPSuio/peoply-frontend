@@ -94,7 +94,7 @@
 }
 
 .eventCalendarTag {
-  background-color: $background-color-calendar-tag;
+  background-color: var(--background-color-calendar-tag, $background-color-calendar-tag);
   border-radius: $border-radius-regular;
   box-shadow: $shadow-calendar-tag;
   padding: $spacer-small $spacer-small $spacer-very-small;
@@ -107,7 +107,7 @@
 
 .eventCalendarTagFlair {
   align-items: center;
-  background-color: $primary-color-200;
+  background-color: var(--primary-color-logo, $primary-color-logo);
   border-radius: $border-radius-calendar-flair;
   display: flex;
   height: 14px;
@@ -125,11 +125,11 @@
 
 .month {
   @include uppercase();
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
 }
 
 .date {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-heading-large;
   font-weight: $font-weight-bold;
 
@@ -139,9 +139,9 @@
 }
 
 .eventPriceTag {
-  background-color: $background-color-price-tag;
+  background-color: var(--background-color-price-tag, $background-color-price-tag);
   border-radius: $border-radius-regular;
-  color: $text-color-black;
+  color: var(--text-color-black, $text-color-black);
   font-family: $mono-font;
   font-weight: $font-weight-bold;
   padding: $spacer-small;
@@ -201,7 +201,7 @@
 }
 
 .eventInfoCard {
-  background-color: $background-color-card;
+  background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;
   display: flex;
   flex-flow: column nowrap;
@@ -258,6 +258,21 @@
   }
 }
 
+.icon {
+  height: 14px;
+  stroke: var(--summary-icon-color, $summary-icon-color);
+  width: 14px;
+
+  @include desktop() {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+.checkIcon {
+  stroke: var(--success-color, $success-color);
+}
+
 .title {
   font-size: $font-size-title;
   margin-bottom: $spacer-small;
@@ -281,11 +296,11 @@
 }
 
 .emphasis {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .primaryColor {
-  color: $primary-color-200;
+  color: var(--text-color-link, $text-color-link);
 }
 
 .marginBottomMini {
@@ -329,7 +344,7 @@
 
   > * {
     flex-basis: 100px;
-    flex-grow: 1;  
+    flex-grow: 1;
     flex-shrink: 1;
     min-width: 100px;
     width: 100%;

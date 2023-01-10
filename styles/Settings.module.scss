@@ -38,18 +38,10 @@
 }
 
 .inputHeader {
-  color: $text-color-primary;
-  font-size: $font-size-tertiary;
-  font-weight: $font-weight-regular;
-  letter-spacing: 0.12em;
+  @include uppercase();
+  color: var(--text-color-primary, $text-color-primary);
   margin-bottom: $spacer-very-small-plus;
   text-transform: uppercase;
-
-  @include desktop() {
-    font-size: $font-size-tertiary-desktop;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
 }
 
 .imageContainer {

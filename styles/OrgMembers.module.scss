@@ -18,7 +18,7 @@
     width: 100%;
 
     h2 {
-      color: $text-color-primary;
+      color: var(--text-color-primary, $text-color-primary);
       font-size: $font-size-tertiary;
       font-weight: $font-weight-medium;
       letter-spacing: 1.5px;

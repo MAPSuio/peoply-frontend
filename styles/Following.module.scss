@@ -19,7 +19,7 @@
 }
 
 .imageContainer {
-  border: 4px solid $text-color-primary;
+  border: 4px solid var(--text-color-primary, $text-color-primary);
   border-radius: $border-radius-rounded;
   height: 350px;
   margin-bottom: $spacer-small;

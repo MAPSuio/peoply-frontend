@@ -44,13 +44,13 @@
 }
 
 .sectionHeader {
-  color: $text-color-primary;
+  color: var(--text-color-primary, $text-color-primary);
   margin-bottom: $spacer-very-small-plus;
   @include uppercase();
 }
 
 .emphasis {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
 .regularWeight {
@@ -93,7 +93,7 @@
 }
 
 .contactText {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-primary;
   line-height: $line-height-text;
 
@@ -108,10 +108,8 @@
 }
 
 .divider {
-  background-color: $divider-color;
-  height: 1px;
+  @include divider();
   margin-bottom: $spacer-medium;
-  width: 100%;
 }
 
 .infoText:not(:last-child) {

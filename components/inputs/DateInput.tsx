@@ -15,6 +15,8 @@ interface DateInputProps {
   required?: boolean;
   handleChange: (e: any) => void;
   initiallyFocused?: boolean;
+  noExtraInfo?: boolean;
+  card?: boolean;
 }
 
 const DateInput = ({
@@ -27,6 +29,8 @@ const DateInput = ({
   required,
   handleChange,
   initiallyFocused = false,
+  noExtraInfo,
+  card,
 }: DateInputProps) => {
   const [focused, setFocused] = useState(initiallyFocused);
 
@@ -40,11 +44,11 @@ const DateInput = ({
 
   const getDateInputStyles = () => {
     if (valid) {
-      return `${styles.dateInput} ${styles.valid}`;
+      return `${styles.dateInput} ${card && styles.card}`;
     } else if (focused) {
-      return `${styles.dateInput} ${styles.notValid}`;
+      return `${styles.dateInput} ${styles.notValid} ${card && styles.card}`;
     } else {
-      return styles.dateInput;
+      return `${styles.dateInput} ${card && styles.card}`;
     }
   };
 
@@ -54,13 +58,27 @@ const DateInput = ({
 
   return (
     <div className={inputContainerStyles}>
-      {label && (
+      {label && required ? (
         <label
           className={`${styles.label} ${styles.required}`}
           htmlFor={inputId}
         >
           {label}
+          {!noExtraInfo && (
+            <span
+              className={`${styles.asterisk} ${valid && styles.labelValid}`}
+            >
+              {" "}
+              *
+            </span>
+          )}
         </label>
+      ) : (
+        label && (
+          <label className={styles.label} htmlFor={inputId}>
+            {`${label} ${!noExtraInfo ? "(frivillig)" : ""}`}
+          </label>
+        )
       )}
       <input
         className={dateInputStyles}

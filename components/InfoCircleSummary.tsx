@@ -2,10 +2,14 @@ import InfoIconSummary from "./svgs/InfoIconSummary";
 
 import styles from "../styles/InfoCircleSummary.module.scss";
 
-const InfoCircleSummary = () => {
+interface InfoCircleSummaryProps {
+  className?: string;
+}
+
+const InfoCircleSummary = ({ className }: InfoCircleSummaryProps) => {
   return (
     <div className={styles.container}>
-      <InfoIconSummary />
+      <InfoIconSummary className={className} />
     </div>
   );
 };

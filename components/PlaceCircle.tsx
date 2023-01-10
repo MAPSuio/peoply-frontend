@@ -1,11 +1,15 @@
-import styles from "../styles/PlaceCircle.module.scss";
-
 import PlaceIcon from "./svgs/PlaceIcon";
 
-export default function PlaceCircle() {
+import styles from "../styles/PlaceCircle.module.scss";
+
+interface PlaceCircleProps {
+  className?: string;
+}
+
+export default function PlaceCircle({ className }: PlaceCircleProps) {
   return (
     <div className={styles.container}>
-      <PlaceIcon />
+      <PlaceIcon className={className} />
     </div>
   );
 }

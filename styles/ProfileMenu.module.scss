@@ -1,5 +1,5 @@
 .container {
-  background-color: $background-color-card;
+  background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;
   display: flex;
   flex-direction: column;
@@ -14,6 +14,6 @@
   }
 
   .icon {
-    stroke: $primary-color-200;
+    stroke: var(--primary-color-200, $primary-color-200);
   }
 }

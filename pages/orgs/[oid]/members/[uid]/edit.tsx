@@ -252,7 +252,7 @@ export default function EditOrganizationUser() {
               <ModalButton
                 text="Fjern bruker"
                 onClick={() => deleteUser(userToEdit?.userId)}
-                type={ButtonType.DANGER}
+                type={ButtonType.DANGERSOFT}
               />
               <ModalButton
                 text="Lukk"

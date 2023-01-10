@@ -1,6 +1,6 @@
 .button {
   align-items: center;
-  background-color: $background-color-settings-button;
+  background-color: var(--background-color-settings-button, $background-color-settings-button);
   border-radius: $border-radius-regular;
   cursor: pointer;
   display: flex;
@@ -12,7 +12,7 @@
 
   svg {
     height: $font-size-secondary;
-    stroke: $text-color-emphasis;
+    stroke: var(--text-color-emphasis, $text-color-emphasis);
     width: $font-size-secondary;
 
     @include desktop() {
@@ -23,7 +23,7 @@
 }
 
 .buttonText {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   font-family: $mono-font;
   font-size: $font-size-secondary;
   margin-right: $spacer-very-small;
@@ -34,9 +34,9 @@
 }
 
 .warning {
-  color: $warning-color;
+  color: var(--warning-color, $warning-color);
 }
 
 .danger {
-  color: $danger-color;
+  color: var(--danger-color, $danger-color);
 }

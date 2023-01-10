@@ -2,10 +2,14 @@ import CalendarIconSummary from "./svgs/CalendarIconSummary";
 
 import styles from "../styles/CalendarCircleSummary.module.scss";
 
-const CalendarCircleSummary = () => {
+interface CalendarCircleSummaryProps {
+  className?: string;
+}
+
+const CalendarCircleSummary = ({ className }: CalendarCircleSummaryProps) => {
   return (
     <div className={styles.container}>
-      <CalendarIconSummary />
+      <CalendarIconSummary className={className} />
     </div>
   );
 };
