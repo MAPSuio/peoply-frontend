@@ -76,6 +76,7 @@ const Create = ({ baseUrl }: CreateProps) => {
             validate
             valid={nameValid}
             setValid={setNameValid}
+            required
           />
           <TextInputLong
             value={description}

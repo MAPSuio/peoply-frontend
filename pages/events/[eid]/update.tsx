@@ -114,7 +114,7 @@ export default function UpdateEvent() {
               maxLength={100}
               minLength={3}
               errorMessage={`Emnet må være mellom ${3} og ${100} tegn`}
-              required={true}
+              required
               handleChange={(e) => setSubject(e.target.value)}
               setValid={setSubjectValid}
               valid={subjectValid}
@@ -185,6 +185,7 @@ export default function UpdateEvent() {
                 valid={replyToMailValid}
                 validate
                 isEmail
+                required
               />
             )}
           </div>
