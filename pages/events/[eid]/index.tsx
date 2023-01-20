@@ -521,7 +521,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
           )}
           <JoinButton
             event={eventData}
-            updateOnChange={updateEvent}
+            updateOnChange={[updateEvent, mutateUpdates]}
             className={styles.primaryButton}
           />
         </div>
