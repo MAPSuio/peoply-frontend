@@ -48,7 +48,7 @@ export default function JoinButton({
   joinText = "Meld deg på arrangementet",
   joinedText = "Du er påmeldt arrangementet",
   joinWaitlistText = "Meld deg på venteliste",
-  joinedWaitlistText = "Du står på venteliste",
+  joinedWaitlistText,
   eventFinishedText = "Arrangementet er ferdig",
   countdownText = "Påmelding åpner om",
   regClosedText = "Påmeldingen er stengt",
@@ -67,6 +67,14 @@ export default function JoinButton({
     () =>
       user?.id && event.id
         ? `/users/${user.id}/registrations/${event.id}`
+        : false,
+    fetchFromPeoplyApiJson,
+  );
+
+  const { data: waitlistPosition } = useSWR<number>(
+    () =>
+      user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
+        ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
         : false,
     fetchFromPeoplyApiJson,
   );
@@ -165,7 +173,9 @@ export default function JoinButton({
         }
         return joinText;
       case RegStatus.WAITLISTED:
-        return joinedWaitlistText;
+        return (
+          joinedWaitlistText ?? `Du er nr. ${waitlistPosition} på ventelisten`
+        );
       case RegStatus.INVITED:
         if (freeSpace === false) {
           return joinWaitlistText;

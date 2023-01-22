@@ -10,9 +10,9 @@ import Modal from "../../../components/Modal";
 import ModalButton from "../../../components/ModalButton";
 import SearchField from "../../../components/SearchField";
 import ExitIcon from "../../../components/svgs/ExitIcon";
-import MailIcon from "../../../components/svgs/MailIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCross from "../../../components/svgs/UserCross";
+import WaitlistIcon from "../../../components/svgs/WaitlistIcon";
 import TabSelection from "../../../components/TabSelection";
 import useBack from "../../../hooks/useBack";
 import useSnack from "../../../hooks/useSnack";
@@ -25,7 +25,6 @@ import {
   Event,
   RegStatus,
   EventInvitation,
-  InvitationStatus,
   User,
   FoodPreference,
   ButtonType,
@@ -38,8 +37,8 @@ import { getFormattedName } from "../../../utils/user";
 
 enum TabOption {
   PARTICIPANTS = "PARTICIPANTS",
-  INVITATIONS = "INVITATIONS",
   NOT_GOING = "NOT_GOING",
+  WAITLIST = "WAITLIST",
 }
 
 const Participants = () => {
@@ -91,8 +90,8 @@ const Participants = () => {
     switch (tabOption) {
       case TabOption.PARTICIPANTS:
         return "Deltakere";
-      case TabOption.INVITATIONS:
-        return "Invitasjoner";
+      case TabOption.WAITLIST:
+        return "Venteliste";
       case TabOption.NOT_GOING:
         return "Kommer ikke";
     }
@@ -234,6 +233,41 @@ const Participants = () => {
     setBanUserId(undefined);
   }
 
+  function renderBanModal() {
+    return (
+      <Modal
+        label="Fjern bruker"
+        description="Er du sikker på at du vil fjerne brukeren fra dette arrangementet?
+
+        Avmeldte brukere kan melde seg på igjen.
+        Utestengte brukere kan ikke melde seg på arrangementet igjen, men utestengingen kan fjernes under 'kommer ikke' fanen.
+        "
+        closeButtonOnClick={() => setBanUserId(undefined)}
+      >
+        <>
+          <ModalButton
+            text="Meld av"
+            onClick={unregisterUser}
+            type={ButtonType.WARNINGSOFT}
+            noShadow
+          />
+          <ModalButton
+            text="Utesteng"
+            onClick={banUser}
+            type={ButtonType.DANGERSOFT}
+            noShadow
+          />
+          <ModalButton
+            text="Avbryt"
+            onClick={() => setBanUserId(undefined)}
+            type={ButtonType.SECONDARY}
+            noShadow
+          />
+        </>
+      </Modal>
+    );
+  }
+
   function renderTab(tab: TabOption) {
     switch (tab) {
       case TabOption.PARTICIPANTS:
@@ -316,63 +350,44 @@ const Participants = () => {
                 comment={registration.formAnswer}
               />
             ))}
-            {banUserId && (
-              <Modal
-                label="Fjern bruker"
-                description="Er du sikker på at du vil fjerne brukeren fra dette arrangementet?
-
-                Avmeldte brukere kan melde seg på igjen.
-                Utestengte brukere kan ikke melde seg på arrangementet igjen, men utestengingen kan fjernes under 'kommer ikke' fanen.
-                "
-                closeButtonOnClick={() => setBanUserId(undefined)}
-              >
-                <>
-                  <ModalButton
-                    text="Meld av"
-                    onClick={unregisterUser}
-                    type={ButtonType.WARNINGSOFT}
-                    noShadow
-                  />
-                  <ModalButton
-                    text="Utesteng"
-                    onClick={banUser}
-                    type={ButtonType.DANGERSOFT}
-                    noShadow
-                  />
-                  <ModalButton
-                    text="Avbryt"
-                    onClick={() => setBanUserId(undefined)}
-                    type={ButtonType.SECONDARY}
-                    noShadow
-                  />
-                </>
-              </Modal>
-            )}
+            {banUserId && renderBanModal()}
           </>
         );
 
-      case TabOption.INVITATIONS:
-        const pending = invitations?.filter(
-          (invitation) =>
-            invitation.invitationStatus === InvitationStatus.PENDING,
+      case TabOption.WAITLIST:
+        const waitlisted = registrations?.filter(
+          ({ regStatus }) => regStatus === RegStatus.WAITLISTED,
         );
 
-        if (!pending?.length) {
-          return (
-            <p className={styles.notFound}>Ingen invitasjoner er avventende</p>
-          );
+        if (!waitlisted?.length) {
+          return <p className={styles.notFound}>Ventelisten er tom</p>;
         }
 
-        const filteredPending = pending
-          .filter(
-            (invitation) =>
-              invitation.toUser && searchFilter(invitation.toUser),
-          )
-          .sort((invA, invB) => sortByEditDistance(invA.toUser, invB.toUser));
+        const filteredWaitlisted = waitlisted
+          .filter((registration) => searchFilter(registration.user))
+          .sort((regA, regB) => sortByEditDistance(regA.user, regB.user))
+          .sort(
+            (regA, regB) =>
+              new Date(regA.createdAt).getTime() -
+              new Date(regB.createdAt).getTime(),
+          );
 
         return (
           <>
-            {pending.length && (
+            {event?.formQuestion && (
+              <ExpandableCard
+                title="Spørsmål til deltakere"
+                className={styles.formQuestionDisplay}
+              >
+                {event.formQuestion.split("\n").map((str) => (
+                  <p key={str}>
+                    {str}
+                    <br></br>
+                  </p>
+                ))}
+              </ExpandableCard>
+            )}
+            {waitlisted.length && (
               <div className={styles.searchContainer}>
                 <SearchField
                   search={search}
@@ -381,20 +396,19 @@ const Participants = () => {
                 />
               </div>
             )}
-            {filteredPending?.map(
-              (invitation) =>
-                invitation.toUser && (
-                  <MemberCard
-                    key={invitation.id}
-                    user={invitation.toUser}
-                    description={`Invitert av ${
-                      invitation.fromUser?.firstName
-                    } ${invitation.fromUser?.lastName} ${formatDateRange(
-                      new Date(invitation.createdAt),
-                    )}`}
-                  />
-                ),
-            )}
+            {filteredWaitlisted?.map((registration) => (
+              <MemberCard
+                key={registration.userId}
+                user={registration.user}
+                description={`Meldte seg på ${formatDateRange(
+                  new Date(registration.updatedAt),
+                )}`}
+                icon={<ExitIcon />}
+                iconOnClick={() => setBanUserId(registration.userId)}
+                comment={registration.formAnswer}
+              />
+            ))}
+            {banUserId && renderBanModal()}
           </>
         );
 
@@ -500,9 +514,17 @@ const Participants = () => {
               icon: <UserCheck />,
             },
             {
-              label: convertTabOptionToLabel(TabOption.INVITATIONS),
-              value: TabOption.INVITATIONS,
-              icon: <MailIcon />,
+              label: convertTabOptionToLabel(TabOption.WAITLIST),
+              value: TabOption.WAITLIST,
+              icon: (
+                <WaitlistIcon
+                  amount={
+                    registrations?.filter(
+                      ({ regStatus }) => regStatus === RegStatus.WAITLISTED,
+                    ).length
+                  }
+                />
+              ),
             },
             {
               label: convertTabOptionToLabel(TabOption.NOT_GOING),
