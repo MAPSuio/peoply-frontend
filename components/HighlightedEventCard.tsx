@@ -233,7 +233,7 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
               <JoinButton
                 event={event}
                 countdownText="Åpner om"
-                updateOnChange={updateRegistrations}
+                updateOnChange={[updateRegistrations]}
                 joinText="Meld deg på"
                 joinedText="Du er påmeldt"
                 joinWaitlistText="Stell deg i kø"
