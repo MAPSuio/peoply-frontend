@@ -36,7 +36,7 @@ interface JoinButtonProps {
   countdownText?: string;
   regClosedText?: string;
   bannedText?: string;
-  updateOnChange?: KeyedMutator<any>;
+  updateOnChange?: KeyedMutator<any>[];
   useUnregisterModal?: boolean;
   small?: boolean;
   noShadow?: boolean;
@@ -48,7 +48,7 @@ export default function JoinButton({
   joinText = "Meld deg på arrangementet",
   joinedText = "Du er påmeldt arrangementet",
   joinWaitlistText = "Meld deg på venteliste",
-  joinedWaitlistText = "Du står på venteliste",
+  joinedWaitlistText,
   eventFinishedText = "Arrangementet er ferdig",
   countdownText = "Påmelding åpner om",
   regClosedText = "Påmeldingen er stengt",
@@ -67,6 +67,14 @@ export default function JoinButton({
     () =>
       user?.id && event.id
         ? `/users/${user.id}/registrations/${event.id}`
+        : false,
+    fetchFromPeoplyApiJson,
+  );
+
+  const { data: waitlistPosition } = useSWR<number>(
+    () =>
+      user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
+        ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
         : false,
     fetchFromPeoplyApiJson,
   );
@@ -108,6 +116,10 @@ export default function JoinButton({
     }, 1000);
     return () => clearInterval(int);
   }, [event.regStart]);
+
+  const runUpdate = () => {
+    updateOnChange?.forEach((mutate) => mutate());
+  };
 
   const loading = (!myRegistration && !error) || isCountdown === undefined;
 
@@ -161,7 +173,9 @@ export default function JoinButton({
         }
         return joinText;
       case RegStatus.WAITLISTED:
-        return joinedWaitlistText;
+        return (
+          joinedWaitlistText ?? `Du er nr. ${waitlistPosition} på ventelisten`
+        );
       case RegStatus.INVITED:
         if (freeSpace === false) {
           return joinWaitlistText;
@@ -219,7 +233,7 @@ export default function JoinButton({
 
     if (newRegistration) {
       updateRegistration();
-      updateOnChange && updateOnChange();
+      runUpdate();
       if (newRegistration.regStatus === RegStatus.GOING) {
         addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
       } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
@@ -273,7 +287,7 @@ export default function JoinButton({
       } catch (e) {}
       if (success) {
         updateRegistration();
-        updateOnChange && updateOnChange();
+        runUpdate();
         if (success.regStatus === RegStatus.GOING) {
           addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
         } else if (success.regStatus === RegStatus.WAITLISTED) {
@@ -310,7 +324,7 @@ export default function JoinButton({
         } catch (e) {}
         if (success) {
           updateRegistration();
-          updateOnChange && (await updateOnChange());
+          runUpdate();
           if (success.regStatus === RegStatus.GOING) {
             addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
           } else if (success.regStatus === RegStatus.WAITLISTED) {
@@ -333,7 +347,7 @@ export default function JoinButton({
             }),
           });
           updateRegistration();
-          updateOnChange && updateOnChange();
+          runUpdate();
           addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
         } catch (e) {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
@@ -363,7 +377,7 @@ export default function JoinButton({
         }),
       });
       updateRegistration();
-      updateOnChange && updateOnChange();
+      runUpdate();
       addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
     } catch (e) {
       addSnack("Noe gikk galt", SnackTypes.ERROR);

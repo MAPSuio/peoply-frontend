@@ -90,7 +90,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     error: followedArrangersError,
     mutate: mutateFollowedArrangers,
   } = useSWR<ArrangerFollower[]>(
-    user ? `/users/${user.id}/following` : null,
+    user ? `/users/${user.id}/following` : false,
     fetchFromPeoplyApiJson,
   );
 
@@ -212,7 +212,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             type={followButtonType}
             noShadow
             onClick={followButtonFunction}
-            loading={!followedArrangers}
+            loading={user && !followedArrangers}
           />
         </div>
         <div className={styles.dataContainer}>

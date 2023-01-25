@@ -599,9 +599,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   /* description */
   if (
     !eventDescriptionValid &&
-    eventDescription.length > eventDescriptionMinLength &&
-    eventDescription.length < eventDescriptionMaxLength &&
-    eventActiveCategories.length
+    eventDescription.length >= eventDescriptionMinLength &&
+    eventDescription.length <= eventDescriptionMaxLength &&
+    eventActiveCategories.length > 0
   ) {
     setEventDescriptionValid(true);
     setEventActiveCategoriesValid(true);
@@ -1228,6 +1228,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     placeholder="F.eks. Hva er din favorittmat?"
                     errorMessage=""
                     rows={4}
+                    required
                   />
                 )}
               </div>

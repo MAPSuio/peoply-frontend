@@ -37,6 +37,7 @@ export default function FormQuestionModal({
           maxLength={150}
           valid={formAnswer.length > 0}
           validate
+          required
         />
         <ModalButton
           text="Send svar"

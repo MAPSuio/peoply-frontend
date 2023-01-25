@@ -202,12 +202,13 @@ export default function Notifications() {
                 joinText="Godta"
                 joinedText="Du er påmeldt"
                 event={event}
-                updateOnChange={async () =>
-                  await updateInvitation(
-                    notification,
-                    InvitationStatus.ACCEPTED,
-                  )
-                }
+                updateOnChange={[
+                  async () =>
+                    await updateInvitation(
+                      notification,
+                      InvitationStatus.ACCEPTED,
+                    ),
+                ]}
               />
               <Button
                 text="Avslå"
