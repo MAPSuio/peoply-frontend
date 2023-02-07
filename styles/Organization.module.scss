@@ -6,6 +6,7 @@
 
   .settingsIcon {
     height: 24px;
+    stroke: $text-color-primary;
     width: 24px;
 
     @include desktop() {
