@@ -28,7 +28,11 @@ const NumberInput = ({
 }: NumberInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  const validNumber = parseInt(value) > 0;
+  // a number is valid if it is greater than 0 and less than or equal to max if max exists
+  let validNumber = parseInt(value) > 0;
+  if (max) {
+    validNumber = validNumber && parseInt(value) <= parseInt(max);
+  }
 
   const getInputContainerStyles = () => {
     if (validNumber || !focused) {
