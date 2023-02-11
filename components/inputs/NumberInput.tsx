@@ -10,6 +10,7 @@ interface NumberInputProps {
   label: string;
   placeholder: string;
   max?: string;
+  min?: string;
   errorMessage: string;
   required?: boolean;
   handleChange: (e: any) => void;
@@ -22,6 +23,7 @@ const NumberInput = ({
   label,
   placeholder,
   max,
+  min = "0",
   errorMessage,
   required,
   handleChange,
@@ -88,7 +90,7 @@ const NumberInput = ({
         placeholder={placeholder}
         onChange={handleChange}
         onClick={() => setFocused(true)}
-        min={1}
+        min={min}
         max={max}
         required={required}
         autoComplete="off"

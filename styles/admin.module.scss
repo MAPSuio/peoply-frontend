@@ -7,7 +7,7 @@
 }
 
 .input {
-  // align-self: flex-start;
+  margin-bottom: $spacer-small;
 }
 
 .cardContainer {
@@ -18,12 +18,11 @@
   justify-content: center;
   
   .card {
-    background-color: rgb(20, 121, 121);
-    background-color: $background-color-card;
+    background-color: var(--background-color-card, $background-color-card);
     border-radius: 6px;
     padding: $spacer-medium;
     width: 100%;
-
+    
     @include desktop() {
       width: 40%;
     }

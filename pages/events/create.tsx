@@ -1177,6 +1177,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                     inputName="eventCapacity"
                     label="Antall deltakere"
                     placeholder="0"
+                    min="1"
                     errorMessage="Antall deltakere kan ikke være tom eller null."
                     required
                     handleChange={updateEventCapacity}

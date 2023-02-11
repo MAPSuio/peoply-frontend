@@ -14,7 +14,7 @@ const Stats: NextPage = () => {
   const { user, loading } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const goBack = useBack();
-  const [days, setDays] = useState(7);
+  const [days, setDays] = useState("7");
 
   if (loading) {
     return <></>;
@@ -40,18 +40,14 @@ const Stats: NextPage = () => {
             <NumberInput
               value={days + ""}
               max={"1000"}
+              min={"0"}
               inputId={"0"}
               inputName={"a"}
               label={"Antall dager"}
-              placeholder={"0"}
+              placeholder={""}
               errorMessage={"oppgi et tall mellom 1 og 1000"}
               handleChange={(e) => {
-                if (
-                  !isNaN(parseInt(e.target.value)) &&
-                  e.target.value !== "0"
-                ) {
-                  setDays(parseInt(e.target.value));
-                }
+                setDays(e.target.value);
               }}
             />
           </div>
@@ -60,26 +56,29 @@ const Stats: NextPage = () => {
             <InfoCard
               title={"Nye brukere"}
               endpoint={
-                "/moderation/info/new-users?days=" + (days > 1000 ? 0 : days)
+                "/moderation/info/new-users?days=" +
+                (days === "" || parseInt(days) > 1000 ? 0 : days)
               }
             />
             <InfoCard
               title={"Nye arrangementer"}
               endpoint={
-                "/moderation/info/new-events?days=" + (days > 1000 ? 0 : days)
+                "/moderation/info/new-events?days=" +
+                (days === "" || parseInt(days) > 1000 ? 0 : days)
               }
             />
             <InfoCard
               title={"Aktiviteter"}
               endpoint={
                 "/moderation/info/new-registrations?days=" +
-                (days > 1000 ? 0 : days)
+                (days === "" || parseInt(days) > 1000 ? 0 : days)
               }
             />
             <InfoCard
               title={"Nye Organisasjoner"}
               endpoint={
-                "/moderation/info/new-orgs?days=" + (days > 1000 ? 0 : days)
+                "/moderation/info/new-orgs?days=" +
+                (days === "" || parseInt(days) > 1000 ? 0 : days)
               }
             />
 
@@ -87,7 +86,7 @@ const Stats: NextPage = () => {
               title={"Nye Favoriseringer"}
               endpoint={
                 "/moderation/info/new-favorites?days=" +
-                (days > 1000 ? 0 : days)
+                (days === "" || parseInt(days) > 1000 ? 0 : days)
               }
             />
           </div>
