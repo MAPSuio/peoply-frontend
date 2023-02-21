@@ -6,7 +6,7 @@ import {
 } from "../types/types";
 import styles from "../styles/EventUpdateCard.module.scss";
 import EyeIcon from "./svgs/EyeIcon";
-import { getTimeSinceString } from "../utils/functions";
+import { getTimeSinceString, injectLink } from "../utils/functions";
 import TrashIcon from "./svgs/TrashIcon";
 import { useState } from "react";
 import Modal from "./Modal";
@@ -67,7 +67,7 @@ export default function EventUpdateCard({
       </div>
       <div className={styles.body}>
         {update.body.split("\n").map((line, i) => (
-          <p key={i}>{line}</p>
+          <p key={i}>{injectLink(line)}</p>
         ))}
       </div>
       <p className={styles.date}>
