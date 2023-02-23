@@ -79,17 +79,17 @@ const Home: NextPage = ({
     "928941027", // IF1
   ];
 
-  const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
+  // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
   const eventsFromFollowedArrangersQuery = {
     ...eventsQuery,
     arrangerIds: followedArrangers?.map((a) => a.arrangerId),
   };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(",") };
 
-  const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
-    `/events?${queryToString(eventsOnIfiQuery)}`,
-    fetchFromPeoplyApiJson,
-  );
+  // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
+  //   `/events?${queryToString(eventsOnIfiQuery)}`,
+  //   fetchFromPeoplyApiJson,
+  // );
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
@@ -146,7 +146,7 @@ const Home: NextPage = ({
             error={eventsFromFollowedArrangersError}
           />
         )}
-        {eventsOnIFI && eventsOnIFI.length > 0 ? (
+        {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper
             header={"Hva skjer på IFI?"}
             seeAllUrl={{ pathname: `/events`, query: eventsOnIfiQuery }}
@@ -154,7 +154,7 @@ const Home: NextPage = ({
             error={eventsOnIFIError}
           />
         ) : undefined}
-
+ */}
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
             header={"Hva skjer fremover?"}
