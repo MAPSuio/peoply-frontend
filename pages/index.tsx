@@ -77,6 +77,7 @@ const Home: NextPage = ({
     "995251884", // MAPS
     "920547230", // Toastjærn
     "928941027", // IF1
+    "930732273", // ifi FOKUS
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
