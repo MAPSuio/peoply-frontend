@@ -45,7 +45,6 @@ import useUser from "../hooks/useUser";
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [today] = useState(new Date().toISOString());
   const router = useRouter();
   const { user } = useUser();
 
@@ -53,14 +52,18 @@ const Home: NextPage = ({
     ArrangerFollower[]
   >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
+  const today = new Date();
+  today.setHours(today.getHours() - 2);
+  const todayString = today.toISOString();
+
   const featuredEventsQuery = {
     featured: true,
-    afterDate: today,
+    afterDate: todayString,
     orderBy: "startDate",
   };
 
   const eventsQuery = {
-    afterDate: today,
+    afterDate: todayString,
     orderBy: "startDate",
   };
 

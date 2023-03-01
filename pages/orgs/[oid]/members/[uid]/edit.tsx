@@ -36,6 +36,7 @@ export default function EditOrganizationUser() {
   const [roleDescription, setRoleDescription] = useState("");
   const [roleValue, setRoleValue] = useState<OrganizationRole>();
   const [modalOpen, setModalOpen] = useState(false);
+  const [changeOwnerModalOpen, setchangeOwnerModalOpen] = useState(false);
   const {
     organization,
     organizationUsers,
@@ -107,6 +108,20 @@ export default function EditOrganizationUser() {
         },
       );
       addSnack("Medlem fjernet", SnackTypes.SUCCESS);
+      router.back();
+    } catch (e) {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
+  };
+
+  const changeOwner = async (uid: string) => {
+    try {
+      await fetchFromPeoplyApi(`/organizations/${organization?.id}/owner`, {
+        method: "PATCH",
+        body: JSON.stringify({ newOwnerId: uid }),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+      addSnack("Eier endret", SnackTypes.SUCCESS);
       router.back();
     } catch (e) {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
@@ -226,6 +241,13 @@ export default function EditOrganizationUser() {
                   />
                 )
             }
+            {isOwner && !isEditingSelf && (
+              <SettingsButton
+                text="Gjør brukeren til eier"
+                type={SettingTypes.DANGER}
+                onClick={() => setchangeOwnerModalOpen(true)}
+              />
+            )}
             {isEditingSelf && !isOwner && (
               <SettingsButton
                 text="Fjern meg fra organisasjonen"
@@ -244,7 +266,7 @@ export default function EditOrganizationUser() {
         </div>
         {modalOpen && (
           <Modal
-            label={`Vil du fjerne ${user?.firstName} ${user?.lastName}?`}
+            label={`Vil du fjerne brukeren?`}
             description="Dette vil fjerne brukeren fra organisasjonen. Brukeren må inviteres på nytt for å bli medlem igjen."
             closeButtonOnClick={() => setModalOpen(false)}
           >
@@ -257,6 +279,26 @@ export default function EditOrganizationUser() {
               <ModalButton
                 text="Lukk"
                 onClick={() => setModalOpen(false)}
+                type={ButtonType.SECONDARY}
+              />
+            </>
+          </Modal>
+        )}
+        {changeOwnerModalOpen && (
+          <Modal
+            label={`Vil du gjøre brukeren til eier?`}
+            description="Dette vil gjøre brukeren til eier og fjerne deg som eier."
+            closeButtonOnClick={() => setchangeOwnerModalOpen(false)}
+          >
+            <>
+              <ModalButton
+                text="Gjør til eier"
+                onClick={() => changeOwner(userToEdit?.userId)}
+                type={ButtonType.DANGERSOFT}
+              />
+              <ModalButton
+                text="Lukk"
+                onClick={() => setchangeOwnerModalOpen(false)}
                 type={ButtonType.SECONDARY}
               />
             </>
