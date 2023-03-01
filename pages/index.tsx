@@ -5,7 +5,7 @@ import Link from "next/link";
 import useSWR from "swr";
 
 // React.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components.
 import EventCard from "../components/EventCard";
@@ -47,14 +47,20 @@ const Home: NextPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const { user } = useUser();
+  const [todayString, setTodayString] = useState<string>(
+    new Date().toISOString(),
+  );
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
     ArrangerFollower[]
   >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
-  const today = new Date();
-  today.setHours(today.getHours() - 2);
-  const todayString = today.toISOString();
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(today.getHours() - 2);
+    const s = today.toISOString();
+    setTodayString(s);
+  }, []);
 
   const featuredEventsQuery = {
     featured: true,
