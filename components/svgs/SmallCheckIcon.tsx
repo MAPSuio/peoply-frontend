@@ -1,8 +1,12 @@
 interface SmallCheckIconProps {
   className?: string;
+  strokeWidth?: string;
 }
 
-export default function SmallCheckIcon({ className }: SmallCheckIconProps) {
+export default function SmallCheckIcon({
+  className,
+  strokeWidth = "2",
+}: SmallCheckIconProps) {
   return (
     <svg
       className={className}
@@ -14,7 +18,7 @@ export default function SmallCheckIcon({ className }: SmallCheckIconProps) {
     >
       <path
         d="M11.6667 3.5L5.25004 9.91667L2.33337 7"
-        strokeWidth="2"
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

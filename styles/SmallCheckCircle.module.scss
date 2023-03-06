@@ -46,3 +46,13 @@
     width: 10px;
   }
 }
+
+.ultraSmall {
+  height: 6px;
+  width: 6px;
+
+  @include desktop() {
+    height: 8px;
+    width: 8px;
+  }
+}

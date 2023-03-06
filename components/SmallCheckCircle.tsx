@@ -8,6 +8,7 @@ interface SmallCheckCircleProps {
   purple?: boolean;
   small?: boolean;
   verySmall?: boolean;
+  ultraSmall?: boolean;
   className?: string;
 }
 
@@ -17,6 +18,7 @@ export default function SmallCheckCircle({
   placeRight,
   small,
   verySmall,
+  ultraSmall,
   className,
 }: SmallCheckCircleProps) {
   const getCheckCircleStyles = () => {
@@ -30,9 +32,10 @@ export default function SmallCheckCircle({
   return (
     <div className={checkCircleStyles}>
       <SmallCheckIcon
-        className={`${small && styles.small} ${
-          verySmall && styles.verySmall
+        className={`${small && styles.small} ${verySmall && styles.verySmall} ${
+          ultraSmall && styles.ultraSmall
         } ${className}`}
+        strokeWidth={ultraSmall ? "3" : undefined}
       />
     </div>
   );

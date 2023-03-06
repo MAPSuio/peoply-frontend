@@ -21,6 +21,7 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 
 // Styles.
 import styles from "../styles/EventCard.module.scss";
+import SmallCheckCircle from "./SmallCheckCircle";
 
 interface EventCardProps {
   event: Event;
@@ -136,6 +137,12 @@ const EventCard = ({ event }: EventCardProps) => {
                   </p>
                 ))}
               </div>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
+              {event.eventArrangers &&
+                event.eventArrangers[0].arranger.organization?.orgNr && (
+                  <SmallCheckCircle purple ultraSmall />
+                )}
             </div>
             <div className={styles.eventCardInfoBodyItem}>
               <div className={styles.iconContainer}>
