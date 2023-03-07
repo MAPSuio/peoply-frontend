@@ -14,6 +14,8 @@ import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
 import { FoodPreference, SnackTypes } from "../../types/types";
 import Dropdown from "../../components/Dropdown";
+import CategoryInput from "../../components/inputs/CategoryInput";
+import useSWR from "swr";
 
 const EditProfile: NextPage = () => {
   const goBack = useBack();
@@ -23,7 +25,13 @@ const EditProfile: NextPage = () => {
   const [foodPreference, setFoodPreference] = useState<FoodPreference | null>(
     null,
   );
+  const [activeAllergens, setActiveAllergens] = useState<number[]>([]);
   const redirectToLogin = useRedirectToLogin();
+
+  const { data: allergens } = useSWR<{ id: number; name: string }[]>(
+    "/allergens",
+    fetchFromPeoplyApiJson,
+  );
 
   const { addSnack } = useSnack();
   useEffect(() => {
@@ -32,6 +40,11 @@ const EditProfile: NextPage = () => {
     }
     if (user?.foodPreference) {
       setFoodPreference(user.foodPreference);
+    }
+    if (user?.userAllergens && user?.userAllergens?.length > 0) {
+      setActiveAllergens(
+        user?.userAllergens?.map((allergen) => allergen.allergenId),
+      );
     }
   }, [user]);
 
@@ -54,7 +67,11 @@ const EditProfile: NextPage = () => {
     try {
       await fetchFromPeoplyApiJson("/users/me", {
         method: "PATCH",
-        body: JSON.stringify({ description, foodPreference }),
+        body: JSON.stringify({
+          description,
+          foodPreference,
+          allergens: activeAllergens,
+        }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       reload();
@@ -96,7 +113,10 @@ const EditProfile: NextPage = () => {
     user?.description !== description;
   const validFoodPreferenceEdit =
     foodPreference && user?.foodPreference !== foodPreference;
-  const validEdit = validDescriptionEdit || validFoodPreferenceEdit;
+  const validAllergenEdit =
+    activeAllergens.length !== user?.userAllergens?.length;
+  const validEdit =
+    validDescriptionEdit || validFoodPreferenceEdit || validAllergenEdit;
 
   return (
     <div className={styles.container}>
@@ -127,6 +147,22 @@ const EditProfile: NextPage = () => {
         setValue={setFoodPreference}
         className={styles.foodPreference}
       />
+      {allergens && (
+        <CategoryInput
+          title="Allergen(er)"
+          activeCategories={activeAllergens}
+          onClick={(id: number) =>
+            setActiveAllergens((prev) => {
+              if (activeAllergens.includes(id)) {
+                return prev.filter((allergen) => allergen !== id);
+              }
+              return [...prev, id];
+            })
+          }
+          categories={allergens}
+          errorMessage=""
+        />
+      )}
       {validEdit && (
         <Button
           disabled={!validEdit}

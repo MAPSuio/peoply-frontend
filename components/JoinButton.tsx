@@ -24,6 +24,7 @@ import FormQuestionModal from "./FormQuestionModal";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
 import styles from "../styles/JoinButton.module.scss";
+import CategoryInput from "./inputs/CategoryInput";
 
 interface JoinButtonProps {
   event: Event;
@@ -79,6 +80,11 @@ export default function JoinButton({
     fetchFromPeoplyApiJson,
   );
 
+  const { data: allergens } = useSWR<{ id: number; name: string }[]>(
+    "/allergens",
+    fetchFromPeoplyApiJson,
+  );
+
   const [countdown, setCountdown] = useState<string>();
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
   const [foodPreference, setFoodPreference] = useState<FoodPreference>();
@@ -86,6 +92,7 @@ export default function JoinButton({
   const [formQuestionAnswer, setFormQuestionAnswer] = useState("");
   const [unregisterModalOpen, setUnregisterModalOpen] = useState(false);
   const [isCountdown, setIsCountdown] = useState<boolean>();
+  const [activeAllergens, setActiveAllergens] = useState<number[]>([]);
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
 
@@ -120,6 +127,9 @@ export default function JoinButton({
   const runUpdate = () => {
     updateOnChange?.forEach((mutate) => mutate());
   };
+
+  const hasSetAllergens = () =>
+    localStorage.getItem("hasSetAllergens") === "true";
 
   const loading = (!myRegistration && !error) || isCountdown === undefined;
 
@@ -249,13 +259,14 @@ export default function JoinButton({
     if (user) {
       if (!regClosed && !eventFinished) {
         /* force user to update food prefs if food is served */
-        if (event.hasFood && !user.foodPreference) {
+        if (event.hasFood && (!user.foodPreference || !hasSetAllergens())) {
           return setFoodPreferenceModalOpen(true);
         }
 
         if (event.formQuestion) {
           return setFormQuestionModalOpen(true);
         }
+
         const create = await createNewRegistration();
         if (!create) {
           await updateRegistrationStatus(RegStatus.GOING);
@@ -269,7 +280,11 @@ export default function JoinButton({
   async function updateRegistrationStatus(status: RegStatus) {
     if (user) {
       /* force user to update food prefs if food is served */
-      if (status === RegStatus.GOING && event.hasFood && !user.foodPreference) {
+      if (
+        status === RegStatus.GOING &&
+        event.hasFood &&
+        (!user.foodPreference || !hasSetAllergens())
+      ) {
         return setFoodPreferenceModalOpen(true);
       }
 
@@ -360,7 +375,7 @@ export default function JoinButton({
 
   async function acceptInvitation() {
     /* force user to update food prefs if food is served */
-    if (event.hasFood && !user?.foodPreference) {
+    if (event.hasFood && (!user?.foodPreference || !hasSetAllergens())) {
       return setFoodPreferenceModalOpen(true);
     }
 
@@ -446,34 +461,65 @@ export default function JoinButton({
       {foodPreferenceModalOpen && (
         <Modal
           label={`Arrangementet har matservering`}
-          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din."
+          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din. Dette kan endres på profilen din senere."
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         >
           <div className={styles.modal}>
-            <Dropdown
-              className={styles.foodPreferenceDropdown}
-              options={[
-                {
-                  value: undefined,
-                  label: "Velg matpreferanse",
-                  isDefault: foodPreference !== undefined,
-                },
-                {
-                  value: FoodPreference.NO_PREFERENCE,
-                  label: "Ingen preferanse",
-                },
-                { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
-                { value: FoodPreference.VEGAN, label: "Veganer" },
-                { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
-              ]}
-              setValue={changeFoodPreference}
-              value={foodPreference}
-              label="Matpreferanse"
-              inputId="food-preference"
-            />
+            {!user?.foodPreference && (
+              <Dropdown
+                className={styles.foodPreferenceDropdown}
+                options={[
+                  {
+                    value: undefined,
+                    label: "Velg matpreferanse",
+                    isDefault: foodPreference !== undefined,
+                  },
+                  {
+                    value: FoodPreference.NO_PREFERENCE,
+                    label: "Ingen preferanse",
+                  },
+                  { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
+                  { value: FoodPreference.VEGAN, label: "Veganer" },
+                  { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
+                ]}
+                setValue={changeFoodPreference}
+                value={foodPreference}
+                label="Matpreferanse"
+                inputId="food-preference"
+              />
+            )}
+            {!hasSetAllergens() && (
+              <CategoryInput
+                title="Allergen(er)"
+                activeCategories={activeAllergens}
+                onClick={(id: number) =>
+                  setActiveAllergens((prev) => {
+                    if (activeAllergens.includes(id)) {
+                      return prev.filter((allergen) => allergen !== id);
+                    }
+                    return [...prev, id];
+                  })
+                }
+                categories={allergens!}
+                errorMessage=""
+              />
+            )}
             <ModalButton
               text="Lagre"
               onClick={async () => {
+                if (!hasSetAllergens()) {
+                  await fetchFromPeoplyApi("/users/me", {
+                    method: "PATCH",
+                    headers: {
+                      "Content-Type": "application/json; charset=utf-8",
+                    },
+                    body: JSON.stringify({
+                      allergens: activeAllergens,
+                    }),
+                  });
+                  localStorage.setItem("hasSetAllergens", "true");
+                }
+
                 await registerForEvent();
                 setFoodPreferenceModalOpen(false);
               }}

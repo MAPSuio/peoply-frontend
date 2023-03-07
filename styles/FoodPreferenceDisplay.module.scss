@@ -1,16 +1,37 @@
-.container {
+.outerContainer {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column;
   gap: $spacer-small;
-  width: 100%;
 
-  .foodPreference {
-    align-items: center;
+  .container {
     display: flex;
-    gap: $spacer-mini;
+    flex-flow: row wrap;
+    gap: $spacer-small;
+    width: 100%;
 
-    .emoji {
-      white-space: nowrap;
+    .foodPreference {
+      align-items: center;
+      display: flex;
+      gap: $spacer-mini;
+
+      .emoji {
+        white-space: nowrap;
+      }
     }
   }
+
+  .outerAllergenContainer {
+    display: flex;
+    flex-flow: column;
+    gap: $spacer-very-small;
+    .allergenContainer {
+      .foodPreference {
+        .count {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+  }
+
 }

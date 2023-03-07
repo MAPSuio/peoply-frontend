@@ -6,6 +6,7 @@ import ErrorIcon from "../svgs/ErrorIcon";
 import styles from "../../styles/CategoryInput.module.scss";
 
 interface CategoryInputProps {
+  title?: string;
   categories: Array<{ id: number; name: string }>;
   activeCategories: Array<number>;
   errorMessage: string;
@@ -17,6 +18,7 @@ interface CategoryInputProps {
 }
 
 const CategoryInput = ({
+  title = "Kategori(er)",
   categories,
   activeCategories,
   errorMessage,
@@ -27,6 +29,8 @@ const CategoryInput = ({
   noExtraInfo,
 }: CategoryInputProps) => {
   const getCategoryContainerStyles = () => {
+    if (valid === undefined)
+      return `${styles.categoryInputContainer} ${styles.noErrorPadding}`;
     return activeCategories.length > 0
       ? `${styles.categoryInputContainer} ${styles.noErrorPadding}`
       : styles.categoryInputContainer;
@@ -41,7 +45,7 @@ const CategoryInput = ({
   return (
     <div className={styles.categoryInputWrapper}>
       <p className={styles.categoryLabel}>
-        Kategori(er){" "}
+        {title}{" "}
         {!noExtraInfo && (
           <span className={`${styles.asterisk} ${valid && styles.labelValid}`}>
             {" "}
@@ -62,7 +66,7 @@ const CategoryInput = ({
           );
         })}
       </div>
-      {!valid && (
+      {valid === false && (
         <div className={styles.errorContainer}>
           <ErrorIcon className={styles.errorIcon} />
           <p className={styles.errorText}>{errorMessage}</p>

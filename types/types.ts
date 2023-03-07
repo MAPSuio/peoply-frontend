@@ -16,6 +16,10 @@ export interface User {
   foodPreference?: FoodPreference;
   allowEmailFromArranger: boolean;
   allowEmailPromotions: boolean;
+  userAllergens?: {
+    allergenId: number;
+    allergen: { id: number; name: string };
+  }[];
 }
 
 export enum FoodPreference {

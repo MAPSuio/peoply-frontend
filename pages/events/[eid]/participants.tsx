@@ -283,20 +283,54 @@ const Participants = () => {
           );
         }
 
-        const foodPreferenceMap: Map<FoodPreference, number> = going.reduce(
-          (map, { user }) => {
-            if (user.foodPreference) {
-              if (map.has(user.foodPreference)) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                map.set(user.foodPreference, map.get(user.foodPreference)! + 1);
+        const foodPreferenceMap: Map<
+          FoodPreference,
+          Map<string, number>
+        > = going.reduce((map, { user }) => {
+          if (user.foodPreference) {
+            if (map.has(user.foodPreference)) {
+              if (user.userAllergens && user.userAllergens.length > 0) {
+                const mapKey = user.userAllergens
+                  ?.sort((a, b) => a.allergenId - b.allergenId)
+                  .map((a) => a.allergen.name)
+                  .join(", ");
+
+                if (map.get(user.foodPreference)?.has(mapKey)) {
+                  map.get(user.foodPreference)?.set(
+                    mapKey,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    map.get(user.foodPreference)!.get(mapKey)! + 1,
+                  );
+                } else {
+                  map.get(user.foodPreference)?.set(mapKey, 1);
+                }
               } else {
-                map.set(user.foodPreference, 1);
+                map.get(user.foodPreference)?.set("", 1);
+              }
+            } else {
+              map.set(user.foodPreference, new Map<string, number>());
+              if (user.userAllergens && user.userAllergens.length > 0) {
+                const mapKey = user.userAllergens
+                  ?.sort((a, b) => a.allergenId - b.allergenId)
+                  .map((a) => a.allergen.name)
+                  .join(", ");
+
+                if (map.get(user.foodPreference)?.has(mapKey)) {
+                  map.get(user.foodPreference)?.set(
+                    mapKey,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    map.get(user.foodPreference)!.get(mapKey)! + 1,
+                  );
+                } else {
+                  map.get(user.foodPreference)?.set(mapKey, 1);
+                }
+              } else {
+                map.get(user.foodPreference)?.set("", 1);
               }
             }
-            return map;
-          },
-          new Map<FoodPreference, number>(),
-        );
+          }
+          return map;
+        }, new Map<FoodPreference, Map<string, number>>());
 
         const filteredGoing = going
           .filter((registration) => searchFilter(registration.user))
