@@ -89,13 +89,23 @@ export default function FoodPreferenceDisplay({
                     {Array.from(allergensMap.entries())
                       .sort((a, b) => b[1] - a[1])
                       .map(([allergen, count]) => {
-                        return (
-                          <li key={allergen}>
-                            <span className={styles.allergen}>
-                              {allergen} ({count})
-                            </span>
-                          </li>
-                        );
+                        if (allergen !== "") {
+                          return (
+                            <li key={allergen}>
+                              <span className={styles.allergen}>
+                                {allergen} ({count})
+                              </span>
+                            </li>
+                          );
+                        } else {
+                          return (
+                            <li key={allergen}>
+                              <span className={styles.allergen}>
+                                Ingen allergier ({count})
+                              </span>
+                            </li>
+                          );
+                        }
                       })}
                   </ul>
                 </div>
