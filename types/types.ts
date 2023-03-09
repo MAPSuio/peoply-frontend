@@ -20,6 +20,9 @@ export interface User {
     allergenId: number;
     allergen: { id: number; name: string };
   }[];
+  userSeenUpdates?: {
+    update: UserSeenUpdateType;
+  }[];
 }
 
 export enum FoodPreference {
@@ -438,4 +441,8 @@ export enum Alignment {
 export enum EventDateFormat {
   SHORT,
   LONG,
+}
+
+export enum UserSeenUpdateType {
+  HAS_SET_ALLERGENS = "HAS_SET_ALLERGENS",
 }

@@ -77,6 +77,7 @@ export function UserProvider({
           setError(error.message);
         }
       };
+
       fetchOrganizations();
     }
   }, [user, reload]);
@@ -124,7 +125,7 @@ export function UserProvider({
       reload: () => setReload(!reload),
       ipInfo,
     }),
-    [user, currentOrg, orgs, loading, error, reload, ipInfo],
+    [user, loading, error, currentOrg, orgs, ipInfo, reload],
   );
 
   return (

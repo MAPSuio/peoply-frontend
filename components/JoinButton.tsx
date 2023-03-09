@@ -17,6 +17,7 @@ import {
   Registration,
   RegStatus,
   SnackTypes,
+  UserSeenUpdateType,
 } from "../types/types";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
@@ -124,12 +125,49 @@ export default function JoinButton({
     return () => clearInterval(int);
   }, [event.regStart]);
 
+  useEffect(() => {
+    if (user) {
+      if (user.foodPreference) {
+        setFoodPreference(user.foodPreference);
+      }
+      if (user.userAllergens!.length > 0) {
+        setActiveAllergens(user?.userAllergens!.map((a) => a.allergenId));
+        fetchFromPeoplyApiJson(
+          `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
+          {
+            method: "POST",
+          },
+        );
+      }
+      if (localStorage.getItem("hasSetAllergens") === "true") {
+        localStorage.removeItem("hasSetAllergens");
+        fetchFromPeoplyApiJson(
+          `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
+        ).then((res) => {
+          if (!res) {
+            fetchFromPeoplyApiJson(
+              `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
+              {
+                method: "POST",
+              },
+            );
+          }
+        });
+      }
+    }
+  }, [user]);
+
   const runUpdate = () => {
     updateOnChange?.forEach((mutate) => mutate());
   };
 
-  const hasSetAllergens = () =>
-    localStorage.getItem("hasSetAllergens") === "true";
+  const hasSeenUpdate = (update: UserSeenUpdateType) => {
+    return user?.userSeenUpdates?.some((u) => u.update === update);
+  };
+
+  const userHasSeenUpdateLive = async (update: UserSeenUpdateType) => {
+    return fetchFromPeoplyApiJson(`/users/me/seenUpdate/${update}`);
+  };
 
   const loading = (!myRegistration && !error) || isCountdown === undefined;
 
@@ -259,7 +297,11 @@ export default function JoinButton({
     if (user) {
       if (!regClosed && !eventFinished) {
         /* force user to update food prefs if food is served */
-        if (event.hasFood && (!user.foodPreference || !hasSetAllergens())) {
+        const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
+          UserSeenUpdateType.HAS_SET_ALLERGENS,
+        );
+
+        if (event.hasFood && (!user.foodPreference || !hasSeenAllergenUpdate)) {
           return setFoodPreferenceModalOpen(true);
         }
 
@@ -280,10 +322,14 @@ export default function JoinButton({
   async function updateRegistrationStatus(status: RegStatus) {
     if (user) {
       /* force user to update food prefs if food is served */
+      const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
+        UserSeenUpdateType.HAS_SET_ALLERGENS,
+      );
+
       if (
         status === RegStatus.GOING &&
         event.hasFood &&
-        (!user.foodPreference || !hasSetAllergens())
+        (!user.foodPreference || !hasSeenAllergenUpdate)
       ) {
         return setFoodPreferenceModalOpen(true);
       }
@@ -375,7 +421,11 @@ export default function JoinButton({
 
   async function acceptInvitation() {
     /* force user to update food prefs if food is served */
-    if (event.hasFood && (!user?.foodPreference || !hasSetAllergens())) {
+    const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
+      UserSeenUpdateType.HAS_SET_ALLERGENS,
+    );
+
+    if (event.hasFood && (!user?.foodPreference || !hasSeenAllergenUpdate)) {
       return setFoodPreferenceModalOpen(true);
     }
 
@@ -465,30 +515,28 @@ export default function JoinButton({
           closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
         >
           <div className={styles.modal}>
-            {!user?.foodPreference && (
-              <Dropdown
-                className={styles.foodPreferenceDropdown}
-                options={[
-                  {
-                    value: undefined,
-                    label: "Velg matpreferanse",
-                    isDefault: foodPreference !== undefined,
-                  },
-                  {
-                    value: FoodPreference.NO_PREFERENCE,
-                    label: "Ingen preferanse",
-                  },
-                  { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
-                  { value: FoodPreference.VEGAN, label: "Veganer" },
-                  { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
-                ]}
-                setValue={changeFoodPreference}
-                value={foodPreference}
-                label="Matpreferanse"
-                inputId="food-preference"
-              />
-            )}
-            {!hasSetAllergens() && (
+            <Dropdown
+              className={styles.foodPreferenceDropdown}
+              options={[
+                {
+                  value: undefined,
+                  label: "Velg matpreferanse",
+                  isDefault: foodPreference !== undefined,
+                },
+                {
+                  value: FoodPreference.NO_PREFERENCE,
+                  label: "Ingen preferanse",
+                },
+                { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
+                { value: FoodPreference.VEGAN, label: "Veganer" },
+                { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
+              ]}
+              setValue={changeFoodPreference}
+              value={foodPreference}
+              label="Matpreferanse"
+              inputId="food-preference"
+            />
+            {!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS) && (
               <CategoryInput
                 title="Allergen(er)"
                 activeCategories={activeAllergens}
@@ -507,7 +555,7 @@ export default function JoinButton({
             <ModalButton
               text="Lagre"
               onClick={async () => {
-                if (!hasSetAllergens()) {
+                if (!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS)) {
                   await fetchFromPeoplyApi("/users/me", {
                     method: "PATCH",
                     headers: {
@@ -517,9 +565,14 @@ export default function JoinButton({
                       allergens: activeAllergens,
                     }),
                   });
-                  localStorage.setItem("hasSetAllergens", "true");
+                  await fetchFromPeoplyApiJson(
+                    `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
+                    {
+                      method: "POST",
+                    },
+                  );
                 }
-
+                reloadUser();
                 await registerForEvent();
                 setFoodPreferenceModalOpen(false);
               }}
