@@ -14,8 +14,7 @@
     "lint:stylelint": "npx stylelint '**/*.{css,scss}'"
   },
   "dependencies": {
-    "@microsoft/applicationinsights-react-js": "^3.4.0",
-    "@microsoft/applicationinsights-web": "^2.8.6",
+    "@vercel/analytics": "^0.1.11",
     "next": "12.1.0",
     "next-pwa": "^5.5.2",
     "next-theme": "^0.1.5",
