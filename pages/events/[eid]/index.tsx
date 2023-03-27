@@ -538,7 +538,7 @@ interface IParams extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { eid } = context.params as IParams;
 
-  const event = await getEventData(eid);
+  const event = await getEventData(eid.toUpperCase());
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   if (!event) {
