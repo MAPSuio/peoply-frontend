@@ -87,6 +87,7 @@ const Home: NextPage = ({
     "920547230", // Toastjærn
     "928941027", // IF1
     "930732273", // ifi FOKUS
+    "930289264", // IFI-Logen
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
