@@ -88,6 +88,7 @@ const Home: NextPage = ({
     "928941027", // IF1
     "930732273", // ifi FOKUS
     "930289264", // IFI-Logen
+    "928728854", // readLine
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
