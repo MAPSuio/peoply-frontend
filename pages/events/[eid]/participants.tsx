@@ -380,8 +380,8 @@ const Participants = () => {
           .sort((regA, regB) => sortByEditDistance(regA.user, regB.user))
           .sort(
             (regA, regB) =>
-              new Date(regA.createdAt).getTime() -
-              new Date(regB.createdAt).getTime(),
+              new Date(regA.updatedAt).getTime() -
+              new Date(regB.updatedAt).getTime(),
           );
 
         return (
