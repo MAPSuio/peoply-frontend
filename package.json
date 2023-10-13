@@ -16,7 +16,9 @@
   "dependencies": {
     "@types/node": "^20.2.3",
     "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.6",
     "@vercel/analytics": "^1.0.1",
+    "azure-maps-rest": "^2.0.8",
     "next": "^12.1.0",
     "next-pwa": "^5.5.2",
     "next-theme": "^0.1.5",
@@ -31,7 +33,6 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
-    "azure-maps-rest": "^2.0.8",
     "eslint": "^8.41.0",
     "eslint-config-next": "^13.4.3",
     "eslint-config-prettier": "^8.3.0",
