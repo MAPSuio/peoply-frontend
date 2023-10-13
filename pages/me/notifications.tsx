@@ -48,7 +48,7 @@ export default function Notifications() {
     mutate: mutateNotifications,
   } = useSWR<PeoplyNotification[]>(
     () =>
-      user && !notifications?.length
+      user
         ? `/users/${user.id}/notifications?` // add ? to not use cache...
         : false,
     fetchFromPeoplyApiJson,
