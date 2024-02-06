@@ -927,7 +927,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                       key={categoryId}
                       text={
                         allCategories !== undefined
-                          ? allCategories[categoryId - 1].name
+                          ? allCategories.find((c: any) => c.id === categoryId)
+                              ?.name
                           : "..."
                       }
                       active={true}
