@@ -97,7 +97,7 @@ const Home: NextPage = ({
     ...eventsQuery,
     arrangerIds: followedArrangers?.map((a) => a.arrangerId),
   };
-  const ifiOrgsQuery = { orgNrs: ifiOrgs.join(",") };
+  const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
 
   // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
   //   `/events?${queryToString(eventsOnIfiQuery)}`,
