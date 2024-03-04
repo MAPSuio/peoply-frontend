@@ -90,6 +90,7 @@ const Home: NextPage = ({
     "930289264", // IFI-Logen
     "928728854", // readLine
     "996784991", // FUI
+    "931559265", // BrewFI
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
