@@ -36,11 +36,19 @@ import { queryToString } from "../utils/functions";
 
 // Types.
 import { UrlObject } from "url";
-import { ArrangerFollower, Event, Organization } from "../types/types";
+import {
+  ArrangerFollower,
+  ButtonType,
+  Event,
+  Organization,
+} from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
+import modalStyles from "../styles/Modal.module.scss";
 import useUser from "../hooks/useUser";
+import Modal from "../components/Modal";
+import ModalButton from "../components/ModalButton";
 
 const Home: NextPage = ({
   baseUrl,
@@ -50,6 +58,8 @@ const Home: NextPage = ({
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
   );
+  const [showPeoplyVippsModal, setShowPeoplyVippsModal] =
+    useState<boolean>(false);
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
     ArrangerFollower[]
@@ -60,6 +70,13 @@ const Home: NextPage = ({
     today.setHours(today.getHours() - 2);
     const s = today.toISOString();
     setTodayString(s);
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("peoply-vipps-modal-closed")) {
+      return;
+    }
+    setShowPeoplyVippsModal(true);
   }, []);
 
   const featuredEventsQuery = {
@@ -179,6 +196,62 @@ const Home: NextPage = ({
         ) : undefined}
       </div>
       <Navbar />
+      {showPeoplyVippsModal && (
+        <Modal
+          label="Peoply må legges ned 😢"
+          // description="Vipps legger Logg-inn bak betalingsmur 1. august 2024. Hvis noen foreninger ønsker å holde liv i Peoply, ta gjerne kontakt med oss på post@decidable.no. Vi øverfører gjerne driften til en forening som ønsker å drifte tjenesten videre, og kanskje til og med videreutvikle den! Vi bistår selvfølgelig med oppsett av infrastruktur og gir dere en innføring i kodebasen. Dette er en kul mulighet for studenter til å få erfaring med å drifte en tjeneste som brukes av mange studenter på IFI."
+          closeButtonOnClick={() => {
+            localStorage.setItem("peoply-vipps-modal-closed", "true");
+            setShowPeoplyVippsModal(false);
+          }}
+        >
+          <>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+                marginTop: "-2rem",
+                marginBottom: "1rem",
+              }}
+            >
+              <p className={modalStyles.description}>
+                Vipps legger Logg-inn bak betalingsmur 1. august 2024.
+              </p>
+              <p className={modalStyles.description}>
+                Hvis noen foreninger ønsker å holde liv i Peoply, ta gjerne
+                kontakt med oss på post@decidable.no.
+              </p>
+              <p className={modalStyles.description}>
+                Vi øverfører gjerne driften til en forening som ønsker å drifte
+                tjenesten videre, og kanskje til og med videreutvikle den! Vi
+                bistår selvfølgelig med oppsett av infrastruktur og gir dere en
+                innføring i kodebasen.
+              </p>
+              <p className={modalStyles.description}>
+                Dette er en kul mulighet for studenter til å få erfaring med å
+                drifte en tjeneste som brukes av mange studenter på IFI.
+              </p>
+            </div>
+            <ModalButton
+              text="Okei 😢"
+              onClick={() => {
+                localStorage.setItem("peoply-vipps-modal-closed", "true");
+                setShowPeoplyVippsModal(false);
+              }}
+            />
+            <ModalButton
+              text="Ta kontakt! 🚀"
+              type={ButtonType.HIGHLIGHTEDEVENTCARD}
+              onClick={() => {
+                window.open("mailto:post@decidable.no?subject=Peoply");
+                localStorage.setItem("peoply-vipps-modal-closed", "true");
+                setShowPeoplyVippsModal(false);
+              }}
+            />
+          </>
+        </Modal>
+      )}
     </>
   );
 };
