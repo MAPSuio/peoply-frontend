@@ -58,7 +58,7 @@ const Home: NextPage = ({
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
   );
-  const [showPeoplyVippsModal, setShowPeoplyVippsModal] =
+  const [showPeoplyMapsModal, setShowPeoplyMapsModal] =
     useState<boolean>(false);
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
@@ -73,10 +73,10 @@ const Home: NextPage = ({
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("peoply-vipps-modal-closed")) {
+    if (localStorage.getItem("peoply-maps-modal-closed")) {
       return;
     }
-    setShowPeoplyVippsModal(true);
+    setShowPeoplyMapsModal(true);
   }, []);
 
   const featuredEventsQuery = {
@@ -196,13 +196,13 @@ const Home: NextPage = ({
         ) : undefined}
       </div>
       <Navbar />
-      {showPeoplyVippsModal && (
+      {showPeoplyMapsModal && (
         <Modal
-          label="Peoply må legges ned 😢"
+          label="MAPS tar over! 🎉"
           // description="Vipps legger Logg-inn bak betalingsmur 1. august 2024. Hvis noen foreninger ønsker å holde liv i Peoply, ta gjerne kontakt med oss på post@decidable.no. Vi øverfører gjerne driften til en forening som ønsker å drifte tjenesten videre, og kanskje til og med videreutvikle den! Vi bistår selvfølgelig med oppsett av infrastruktur og gir dere en innføring i kodebasen. Dette er en kul mulighet for studenter til å få erfaring med å drifte en tjeneste som brukes av mange studenter på IFI."
           closeButtonOnClick={() => {
-            localStorage.setItem("peoply-vipps-modal-closed", "true");
-            setShowPeoplyVippsModal(false);
+            localStorage.setItem("peoply-maps-modal-closed", "true");
+            setShowPeoplyMapsModal(false);
           }}
         >
           <>
@@ -212,41 +212,42 @@ const Home: NextPage = ({
                 flexDirection: "column",
                 gap: "1rem",
                 marginTop: "-2rem",
+
                 marginBottom: "1rem",
               }}
             >
               <p className={modalStyles.description}>
-                Vipps legger Logg-inn bak betalingsmur 1. august 2024.
+                Vi i MAPS har vært så heldig å få overta eierskap og drift av
+                Peoply fra Decidable.
               </p>
+           
               <p className={modalStyles.description}>
-                Hvis noen foreninger ønsker å holde liv i Peoply, ta gjerne
-                kontakt med oss på post@decidable.no.
+                Ta gjerne kontakt med oss på mail om det skulle være noe. Vi
+                gleder oss til å komme i gang!
               </p>
-              <p className={modalStyles.description}>
-                Vi øverfører gjerne driften til en forening som ønsker å drifte
-                tjenesten videre, og kanskje til og med videreutvikle den! Vi
-                bistår selvfølgelig med oppsett av infrastruktur og gir dere en
-                innføring i kodebasen.
-              </p>
-              <p className={modalStyles.description}>
-                Dette er en kul mulighet for studenter til å få erfaring med å
-                drifte en tjeneste som brukes av mange studenter på IFI.
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <img src='/maps.jpg' className={modalStyles.description} width='300px' alt='Nature' />
+              </div>
+
+              <p className={modalStyles.description}>PS: Kom på Will Code For Drinks 27/09 🥳</p>
+
             </div>
             <ModalButton
-              text="Okei 😢"
+              text="kult🔥"
               onClick={() => {
-                localStorage.setItem("peoply-vipps-modal-closed", "true");
-                setShowPeoplyVippsModal(false);
+                localStorage.setItem("peoply-maps-modal-closed", "true");
+                setShowPeoplyMapsModal(false);
               }}
             />
             <ModalButton
               text="Ta kontakt! 🚀"
               type={ButtonType.HIGHLIGHTEDEVENTCARD}
               onClick={() => {
-                window.open("mailto:post@decidable.no?subject=Peoply");
-                localStorage.setItem("peoply-vipps-modal-closed", "true");
-                setShowPeoplyVippsModal(false);
+                window.open(
+                  "mailto:maps-kontakt@studorg.uio.no?subject=Peoply",
+                );
+                localStorage.setItem("peoply-maps-modal-closed", "true");
+                setShowPeoplyMapsModal(false);
               }}
             />
           </>
