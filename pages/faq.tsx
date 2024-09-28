@@ -122,12 +122,12 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                     </li>
                     <li className={styles.marginBottomVerySmall}>
                       <span className={styles.emphasis}>
-                        Vi lagrer og prosesserer all data i Norge.
+                        Vi lagrer og prosesserer all data i Europa.
                       </span>
                       <ul className={styles.reducedPadding}>
                         <li>
                           All data og kode som kjøres på plattformen vår
-                          behandles og lagres i Norge.
+                          behandles og lagres i Europa.
                         </li>
                         <li>
                           Dette gjør også at plattformen vår kan føles litt
@@ -135,10 +135,8 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                         </li>
                         <li>
                           For de litt mer teknisk interesserte, så har vi valgt
-                          å benytte oss av Azure skytjeneste for hosting av
-                          frontend- og backend-kode og database. Dette er i
-                          skrivende stund den eneste skytjenesten som har
-                          servere i Norge.
+                          å benytte oss av DigitalOcean skytjeneste for hosting
+                          av frontend- og backend-kode og database.
                         </li>
                       </ul>
                     </li>
@@ -200,7 +198,9 @@ const FAQ = ({ baseUrl }: FAQProps) => {
             </div>
             <div className={styles.section}>
               <span className={styles.divider} />
-              <p className={styles.infoText}>MAPS</p>
+              <p className={styles.infoText}>
+                MAPS - Matematikk, Algoritmer og Programmering for Studenter
+              </p>
               <p className={styles.infoText}>Orgnr: 995 251 884</p>
               <p className={styles.infoText}>
                 Adresse: Postboks 1080 Blindern, 0316 Oslo
