@@ -199,7 +199,9 @@ const FAQ = ({ baseUrl }: FAQProps) => {
             <div className={styles.section}>
               <span className={styles.divider} />
               <p className={styles.infoText}>
-                MAPS - Matematikk, Algoritmer og Programmering for Studenter
+                <a href="https://foreninger.uio.no/maps/">
+                  MAPS - Matematikk, Algoritmer og Programmering for Studenter
+                </a>
               </p>
               <p className={styles.infoText}>Orgnr: 995 251 884</p>
               <p className={styles.infoText}>
