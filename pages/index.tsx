@@ -108,6 +108,7 @@ const Home: NextPage = ({
     "928728854", // readLine
     "996784991", // FUI
     "931559265", // BrewFI
+    "998088062", // FIFI
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
@@ -220,17 +221,30 @@ const Home: NextPage = ({
                 Vi i MAPS har vært så heldig å få overta eierskap og drift av
                 Peoply fra Decidable.
               </p>
-           
+
               <p className={modalStyles.description}>
                 Ta gjerne kontakt med oss på mail om det skulle være noe. Vi
                 gleder oss til å komme i gang!
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <img src='/maps.jpg' className={modalStyles.description} width='300px' alt='Nature' />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <img
+                  src="/maps.jpg"
+                  className={modalStyles.description}
+                  width="300px"
+                  alt="Nature"
+                />
               </div>
 
-              <p className={modalStyles.description}>PS: Kom på Will Code For Drinks 27/09 🥳</p>
-
+              <p className={modalStyles.description}>
+                PS: Kom på Will Code For Drinks 27/09 🥳
+              </p>
             </div>
             <ModalButton
               text="kult🔥"
