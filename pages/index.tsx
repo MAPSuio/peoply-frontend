@@ -109,6 +109,7 @@ const Home: NextPage = ({
     "996784991", // FUI
     "931559265", // BrewFI
     "998088062", // FIFI
+    "934263286", //Quizifi
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
