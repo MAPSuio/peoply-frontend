@@ -50,7 +50,7 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
     [router.query],
   );
 
-  const pageSize = 10;
+  const pageSize = 5;
   const getKey = getGetKey(orgQueryUrl, pageSize);
 
   const {
@@ -63,6 +63,18 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
       if (data[data.length - 1].length < pageSize) setIsMoreOrgs(false);
     },
   });
+
+  //filters dups from load more
+  const uniqueOrganizations = useMemo(() => {
+    const allOrgs = organizations?.flatMap((org) => org) ?? [];
+    const orgMap = new Map();
+    allOrgs.forEach((org) => {
+      if (!orgMap.has(org.id)) {
+        orgMap.set(org.id, org);
+      }
+    });
+    return Array.from(orgMap.values());
+  }, [organizations]);
 
   const nextPage = isMoreOrgs
     ? () => {
@@ -85,15 +97,13 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
         </div>
         {organizationsError && <div className={styles.errorContainer}></div>}
         <div className={styles.orgList}>
-          {organizations
-            ?.flatMap((org) => org)
-            .map((org) => (
-              <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
-                <a>
-                  <OrganizationCard organizationID={org.id} />
-                </a>
-              </Link>
-            ))}
+          {uniqueOrganizations.map((org) => (
+            <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
+              <a>
+                <OrganizationCard organizationID={org.id} />
+              </a>
+            </Link>
+          ))}
         </div>
         {nextPage && <Button text="Last inn flere" onClick={nextPage} />}
       </Layout>
