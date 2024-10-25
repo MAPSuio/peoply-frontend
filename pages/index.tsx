@@ -110,6 +110,7 @@ const Home: NextPage = ({
     "931559265", // BrewFI
     "998088062", // FIFI
     "934263286", //Quizifi
+    "913439511", //Fadderstyret
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
