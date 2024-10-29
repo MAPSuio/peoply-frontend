@@ -111,6 +111,7 @@ const Home: NextPage = ({
     "998088062", // FIFI
     "934263286", //Quizifi
     "934136306", // Ifi Rastløs
+    "913439511", //Fadderstyret
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
