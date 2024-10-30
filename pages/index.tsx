@@ -3,6 +3,7 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useSWR from "swr";
+import Image from "next/image";
 
 // React.
 import { useEffect, useState } from "react";
@@ -237,7 +238,7 @@ const Home: NextPage = ({
                   height: "100%",
                 }}
               >
-                <img
+                <Image
                   src="/maps.jpg"
                   className={modalStyles.description}
                   width="300px"
@@ -348,7 +349,7 @@ const OrganizationSwiper = ({
         slidesPerView={"auto"}
         freeMode={{ enabled: true }}
       >
-        {organizations?.map((organization: Organization) => (
+        {organizations?.reverse().map((organization: Organization) => (
           <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>
             <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
               <a>
