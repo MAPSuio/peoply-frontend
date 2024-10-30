@@ -73,7 +73,7 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
         orgMap.set(org.id, org);
       }
     });
-    return Array.from(orgMap.values());
+    return Array.from(orgMap.values()).reverse();
   }, [organizations]);
 
   const nextPage = isMoreOrgs
