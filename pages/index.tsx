@@ -110,10 +110,11 @@ const Home: NextPage = ({
     "996784991", // FUI
     "931559265", // BrewFI
     "998088062", // FIFI
-    "934263286", //Quizifi
+    "934263286", // Quizifi
     "934136306", // Ifi Rastløs
-    "913439511", //Fadderstyret
+    "913439511", // Fadderstyret
     "932075024", // RealitIFI
+    "815417712", // >Output 
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
