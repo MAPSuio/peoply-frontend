@@ -46,10 +46,7 @@ import {
 
 // Styles.
 import styles from "../styles/Home.module.scss";
-import modalStyles from "../styles/Modal.module.scss";
 import useUser from "../hooks/useUser";
-import Modal from "../components/Modal";
-import ModalButton from "../components/ModalButton";
 
 const Home: NextPage = ({
   baseUrl,
@@ -59,8 +56,6 @@ const Home: NextPage = ({
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
   );
-  const [showPeoplyMapsModal, setShowPeoplyMapsModal] =
-    useState<boolean>(false);
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
     ArrangerFollower[]
@@ -71,13 +66,6 @@ const Home: NextPage = ({
     today.setHours(today.getHours() - 2);
     const s = today.toISOString();
     setTodayString(s);
-  }, []);
-
-  useEffect(() => {
-    if (localStorage.getItem("peoply-maps-modal-closed")) {
-      return;
-    }
-    setShowPeoplyMapsModal(true);
   }, []);
 
   const featuredEventsQuery = {
@@ -117,17 +105,11 @@ const Home: NextPage = ({
     "815417712", // >Output 
   ];
 
-  // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
   const eventsFromFollowedArrangersQuery = {
     ...eventsQuery,
     arrangerIds: followedArrangers?.map((a) => a.arrangerId),
   };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
-
-  // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
-  //   `/events?${queryToString(eventsOnIfiQuery)}`,
-  //   fetchFromPeoplyApiJson,
-  // );
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
@@ -184,15 +166,6 @@ const Home: NextPage = ({
             error={eventsFromFollowedArrangersError}
           />
         )}
-        {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
-          <EventSwiper
-            header={"Hva skjer på IFI?"}
-            seeAllUrl={{ pathname: `/events`, query: eventsOnIfiQuery }}
-            events={eventsOnIFI}
-            error={eventsOnIFIError}
-          />
-        ) : undefined}
- */}
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
             header={"Hva skjer fremover?"}
@@ -203,76 +176,6 @@ const Home: NextPage = ({
         ) : undefined}
       </div>
       <Navbar />
-      {showPeoplyMapsModal && (
-        <Modal
-          label="MAPS tar over! 🎉"
-          // description="Vipps legger Logg-inn bak betalingsmur 1. august 2024. Hvis noen foreninger ønsker å holde liv i Peoply, ta gjerne kontakt med oss på post@decidable.no. Vi øverfører gjerne driften til en forening som ønsker å drifte tjenesten videre, og kanskje til og med videreutvikle den! Vi bistår selvfølgelig med oppsett av infrastruktur og gir dere en innføring i kodebasen. Dette er en kul mulighet for studenter til å få erfaring med å drifte en tjeneste som brukes av mange studenter på IFI."
-          closeButtonOnClick={() => {
-            localStorage.setItem("peoply-maps-modal-closed", "true");
-            setShowPeoplyMapsModal(false);
-          }}
-        >
-          <>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                marginTop: "-2rem",
-
-                marginBottom: "1rem",
-              }}
-            >
-              <p className={modalStyles.description}>
-                Vi i MAPS har vært så heldig å få overta eierskap og drift av
-                Peoply fra Decidable.
-              </p>
-
-              <p className={modalStyles.description}>
-                Ta gjerne kontakt med oss på mail om det skulle være noe. Vi
-                gleder oss til å komme i gang!
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <Image
-                  src="/maps.jpg"
-                  className={modalStyles.description}
-                  width="300px"
-                  alt="Nature"
-                />
-              </div>
-
-              <p className={modalStyles.description}>
-                PS: Kom på Will Code For Drinks 27/09 🥳
-              </p>
-            </div>
-            <ModalButton
-              text="kult🔥"
-              onClick={() => {
-                localStorage.setItem("peoply-maps-modal-closed", "true");
-                setShowPeoplyMapsModal(false);
-              }}
-            />
-            <ModalButton
-              text="Ta kontakt! 🚀"
-              type={ButtonType.HIGHLIGHTEDEVENTCARD}
-              onClick={() => {
-                window.open(
-                  "mailto:maps-kontakt@studorg.uio.no?subject=Peoply",
-                );
-                localStorage.setItem("peoply-maps-modal-closed", "true");
-                setShowPeoplyMapsModal(false);
-              }}
-            />
-          </>
-        </Modal>
-      )}
     </>
   );
 };
