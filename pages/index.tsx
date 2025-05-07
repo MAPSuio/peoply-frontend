@@ -3,7 +3,6 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useSWR from "swr";
-import Image from "next/image";
 
 // React.
 import { useEffect, useState } from "react";
@@ -37,12 +36,7 @@ import { queryToString } from "../utils/functions";
 
 // Types.
 import { UrlObject } from "url";
-import {
-  ArrangerFollower,
-  ButtonType,
-  Event,
-  Organization,
-} from "../types/types";
+import { ArrangerFollower, Event, Organization } from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
@@ -80,6 +74,7 @@ const Home: NextPage = ({
   };
 
   // temporary list before we get a solution for the API
+  // temporary list before we get a solution for the API
   const ifiOrgs = [
     "990110352", // CYB
     "990995303", // navet
@@ -102,14 +97,20 @@ const Home: NextPage = ({
     "934136306", // Ifi Rastløs
     "913439511", // Fadderstyret
     "932075024", // RealitIFI
-    "815417712", // >Output 
+    "815417712", // >Output
   ];
 
+  // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
   const eventsFromFollowedArrangersQuery = {
     ...eventsQuery,
     arrangerIds: followedArrangers?.map((a) => a.arrangerId),
   };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
+
+  // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
+  //   `/events?${queryToString(eventsOnIfiQuery)}`,
+  //   fetchFromPeoplyApiJson,
+  // );
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
@@ -166,6 +167,15 @@ const Home: NextPage = ({
             error={eventsFromFollowedArrangersError}
           />
         )}
+        {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
+          <EventSwiper
+            header={"Hva skjer på IFI?"}
+            seeAllUrl={{ pathname: `/events`, query: eventsOnIfiQuery }}
+            events={eventsOnIFI}
+            error={eventsOnIFIError}
+          />
+        ) : undefined}
+ */}
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
             header={"Hva skjer fremover?"}
@@ -254,7 +264,7 @@ const OrganizationSwiper = ({
         slidesPerView={"auto"}
         freeMode={{ enabled: true }}
       >
-        {organizations?.reverse().map((organization: Organization) => (
+        {organizations?.map((organization: Organization) => (
           <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>
             <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
               <a>
