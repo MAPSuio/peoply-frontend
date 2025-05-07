@@ -13,7 +13,7 @@ const HeadComponent = ({
   description,
   imageUrl,
   url,
-  noIndex = true,
+  noIndex = false,
 }: HeadComponentProps) => {
   return (
     <Head>

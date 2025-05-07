@@ -42,6 +42,7 @@ const User = ({ user, baseUrl }: UserProps) => {
         description={`${userData.description}`}
         url={`${baseUrl}/users/${user.id}`}
         imageUrl={userData.image}
+        noIndex = {true}
       />
       <div className={styles.container}>
         <BackButton onClick={goBack} />
