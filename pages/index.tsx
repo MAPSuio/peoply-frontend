@@ -98,6 +98,7 @@ const Home: NextPage = ({
     "913439511", // Fadderstyret
     "932075024", // RealitIFI
     "815417712", // >Output
+    "923423834", // VIFI
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
