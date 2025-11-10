@@ -99,6 +99,7 @@ const Home: NextPage = ({
     "932075024", // RealitIFI
     "815417712", // >Output
     "923423834", // VIFI
+    "929168097", // SIFI
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
