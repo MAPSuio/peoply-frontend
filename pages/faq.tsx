@@ -207,7 +207,6 @@ const FAQ = ({ baseUrl }: FAQProps) => {
               <p className={styles.infoText}>
                 Adresse: Postboks 1080 Blindern, 0316 Oslo
               </p>
-              <p className={styles.infoText}>Tlfnummer: 904 76 675</p>
               <p className={styles.infoText}>
                 Email: maps-kontakt@studorg.uio.no
               </p>
