@@ -101,6 +101,7 @@ const Home: NextPage = ({
     "923423834", // VIFI
     "929168097", // SIFI
     "919793678", // PiTCH
+    "934357124", //PGA IFI
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
