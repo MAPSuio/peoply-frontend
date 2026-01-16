@@ -86,12 +86,8 @@ const Home: NextPage = ({
     "991739815", // mikro
     "995251884", // MAPS
     "920547230", // Toastjærn
-    "928941027", // IF1
-    "930732273", // ifi FOKUS
-    "930289264", // IFI-Logen
     "928728854", // readLine
     "996784991", // FUI
-    "931559265", // BrewFI
     "998088062", // FIFI
     "934263286", // Quizifi
     "934136306", // Ifi Rastløs
