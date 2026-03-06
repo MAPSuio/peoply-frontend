@@ -4,7 +4,7 @@
 /* Hooks. */
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
-import useTheme from "next-theme";
+import { useTheme } from "next-themes";
 
 /* Components. */
 import BackButton from "../../components/BackButton";

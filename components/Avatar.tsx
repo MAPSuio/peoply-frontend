@@ -1,7 +1,7 @@
 import { Organization, User, Event } from "../types/types";
 import styles from "../styles/Avatar.module.scss";
 import EditCircle from "./EditCircle";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import eventPlaceholderImage from "../assets/images/undraw_partying.png";
 
 interface AvatarProps {

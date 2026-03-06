@@ -16,20 +16,16 @@ export default function ResultItem({
   children,
 }: ResultItemProps) {
   return (
-    <Link href={link} passHref>
-      <a>
-        <div className={styles.container}>
-          <div className={styles.info}>
-            {children}
-            <div className={styles.name}>
-              <p>{title}</p>
-              {description && (
-                <p className={styles.description}>{description}</p>
-              )}
-            </div>
+    <Link href={link}>
+      <div className={styles.container}>
+        <div className={styles.info}>
+          {children}
+          <div className={styles.name}>
+            <p>{title}</p>
+            {description && <p className={styles.description}>{description}</p>}
           </div>
         </div>
-      </a>
+      </div>
     </Link>
   );
 }

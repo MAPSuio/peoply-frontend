@@ -1,6 +1,6 @@
 // Next.js.
 import useSWR from "swr";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 // React.
@@ -156,98 +156,94 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
             : `/users/${arranger?.user?.id}`
         }
       >
-        <a>
-          <div className={styles.headingAndAvatarContainer}>
-            {arranger?.markup}
-          </div>
-        </a>
+        <div className={styles.headingAndAvatarContainer}>
+          {arranger?.markup}
+        </div>
       </Link>
       <Link href={`/events/${event.urlId}`}>
-        <a>
-          <div className={styles.card}>
-            <button
-              className={styles.button}
-              disabled={!favoriteFetched}
-              onClick={(ev) => {
-                ev.preventDefault();
-                addFavoriteFunc();
-              }}
-            >
-              <HeartIcon
-                className={`${styles.favoriteIcon} ${
-                  favorited && styles.favorited
-                }`}
-              />
-            </button>
-            <HeartIconGlass
-              className={styles.favoriteIconGlass}
-              onClick={(ev) => {
-                ev.preventDefault();
-                addFavoriteFunc();
-              }}
-              favorited={favorited}
-              loading={!favoriteFetched}
+        <div className={styles.card}>
+          <button
+            className={styles.button}
+            disabled={!favoriteFetched}
+            onClick={(ev) => {
+              ev.preventDefault();
+              addFavoriteFunc();
+            }}
+          >
+            <HeartIcon
+              className={`${styles.favoriteIcon} ${
+                favorited && styles.favorited
+              }`}
             />
-            <div className={styles.imageContainer}>
-              <Image
-                src={event.image ? event.image : CatImg}
-                alt="Bildet til arrangementet"
-                objectFit="cover"
-                layout="fill"
-                objectPosition="center"
-              />
-            </div>
-            <div className={styles.dataContainer}>
-              <div className={styles.row}>
-                <h2 className={styles.eventTitle}>{event.title}</h2>
-                <p className={styles.eventDescription}>{event.description}</p>
-                <div className={styles.divider}></div>
-                <div className={styles.iconWrapper}>
-                  <div className={styles.iconContainer}>
-                    <CalendarIconCard className={styles.icon} />
-                    <p
-                      className={styles.data}
-                    >{`${dateString}, ${timeString}`}</p>
-                  </div>
-                  <div className={styles.iconContainer}>
-                    <PlaceIconCard className={styles.icon} />
-                    <p className={`${styles.data} ${styles.hideOverflow}`}>
-                      {event.locationName}
-                    </p>
-                  </div>
-                  <div className={styles.iconContainer}>
-                    <UsersIconCard className={styles.icon} />
-                    <p className={styles.data}>
-                      <span className={styles.emphasis}>
-                        {registrationsError
-                          ? "?"
-                          : registrations
-                          ? registrations
-                          : "0"}
-                      </span>
-                      {event.capacity && `\u200A/\u200A${event.capacity}`}
-                    </p>
-                  </div>
+          </button>
+          <HeartIconGlass
+            className={styles.favoriteIconGlass}
+            onClick={(ev) => {
+              ev.preventDefault();
+              addFavoriteFunc();
+            }}
+            favorited={favorited}
+            loading={!favoriteFetched}
+          />
+          <div className={styles.imageContainer}>
+            <Image
+              src={event.image ? event.image : CatImg}
+              alt="Bildet til arrangementet"
+              objectFit="cover"
+              layout="fill"
+              objectPosition="center"
+            />
+          </div>
+          <div className={styles.dataContainer}>
+            <div className={styles.row}>
+              <h2 className={styles.eventTitle}>{event.title}</h2>
+              <p className={styles.eventDescription}>{event.description}</p>
+              <div className={styles.divider}></div>
+              <div className={styles.iconWrapper}>
+                <div className={styles.iconContainer}>
+                  <CalendarIconCard className={styles.icon} />
+                  <p
+                    className={styles.data}
+                  >{`${dateString}, ${timeString}`}</p>
+                </div>
+                <div className={styles.iconContainer}>
+                  <PlaceIconCard className={styles.icon} />
+                  <p className={`${styles.data} ${styles.hideOverflow}`}>
+                    {event.locationName}
+                  </p>
+                </div>
+                <div className={styles.iconContainer}>
+                  <UsersIconCard className={styles.icon} />
+                  <p className={styles.data}>
+                    <span className={styles.emphasis}>
+                      {registrationsError
+                        ? "?"
+                        : registrations
+                        ? registrations
+                        : "0"}
+                    </span>
+                    {event.capacity && `\u200A/\u200A${event.capacity}`}
+                  </p>
                 </div>
               </div>
-              <JoinButton
-                event={event}
-                countdownText="Åpner om"
-                updateOnChange={[updateRegistrations]}
-                joinText="Meld deg på"
-                joinedText="Du er påmeldt"
-                joinWaitlistText="Stell deg i kø"
-                joinedWaitlistText="Du står i kø"
-                eventFinishedText="Arrangementet er ferdig"
-                regClosedText="Påmelding er stengt"
-                useUnregisterModal
-                small
-                noShadow
-                className={styles.primaryButton}
-              />
             </div>
+            <JoinButton
+              event={event}
+              countdownText="Åpner om"
+              updateOnChange={[updateRegistrations]}
+              joinText="Meld deg på"
+              joinedText="Du er påmeldt"
+              joinWaitlistText="Stell deg i kø"
+              joinedWaitlistText="Du står i kø"
+              eventFinishedText="Arrangementet er ferdig"
+              regClosedText="Påmelding er stengt"
+              useUnregisterModal
+              small
+              noShadow
+              className={styles.primaryButton}
+            />
           </div>
-        </a>
+        </div>
       </Link>
     </div>
   );

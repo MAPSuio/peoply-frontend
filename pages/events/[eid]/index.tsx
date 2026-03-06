@@ -1,5 +1,5 @@
 // Next.js.
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import router from "next/router";
@@ -33,7 +33,6 @@ import useSWR from "swr";
 import {
   addFavorite,
   getEventData,
-  getTopXEvents,
   getUserFavorite,
   removeFavorite,
 } from "../../../services/events";
@@ -237,7 +236,6 @@ const Event = ({ event, baseUrl }: EventProps) => {
           eventData.visibility === Visibility.PRIVATE
         }
       />
-
       <div className={styles.eventWrapper}>
         <div className={styles.imageWrapper}>
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
@@ -313,16 +311,13 @@ const Event = ({ event, baseUrl }: EventProps) => {
                             a.arranger.organization.urlId ??
                             a.arranger.organization.id
                           }`}
-                          passHref
                         >
-                          <a>
-                            <div className={styles.orgLink}>
-                              {a.arranger.organization?.name}
-                              {a.arranger.organization?.orgNr && (
-                                <SmallCheckCircle purple verySmall />
-                              )}
-                            </div>
-                          </a>
+                          <div className={styles.orgLink}>
+                            {a.arranger.organization?.name}
+                            {a.arranger.organization?.orgNr && (
+                              <SmallCheckCircle purple verySmall />
+                            )}
+                          </div>
                         </Link>
                       );
                     }
@@ -418,26 +413,24 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 </div>
               )}
               {registrations && (
-                <Link href={`/events/${eventData.urlId}/participants`} passHref>
-                  <a>
-                    <div className={`${styles.infoTextContainer}`}>
-                      <div className={styles.iconContainer}>
-                        <SmallCheckCircle
-                          className={`${styles.icon} ${styles.checkIcon}`}
-                        />
-                      </div>
-                      <p className={styles.infoText}>
-                        <span className={styles.emphasis}>{`${
-                          eventData.registrations?.filter(
-                            (r) => r.regStatus === RegStatus.GOING,
-                          ).length
-                        }${
-                          eventData.capacity ? `/${eventData.capacity}` : ""
-                        }`}</span>{" "}
-                        påmeldte
-                      </p>
+                <Link href={`/events/${eventData.urlId}/participants`}>
+                  <div className={`${styles.infoTextContainer}`}>
+                    <div className={styles.iconContainer}>
+                      <SmallCheckCircle
+                        className={`${styles.icon} ${styles.checkIcon}`}
+                      />
                     </div>
-                  </a>
+                    <p className={styles.infoText}>
+                      <span className={styles.emphasis}>{`${
+                        eventData.registrations?.filter(
+                          (r) => r.regStatus === RegStatus.GOING,
+                        ).length
+                      }${
+                        eventData.capacity ? `/${eventData.capacity}` : ""
+                      }`}</span>{" "}
+                      påmeldte
+                    </p>
+                  </div>
                 </Link>
               )}
               {(registrationsError || !registrations) && (
@@ -534,35 +527,37 @@ interface IParams extends ParsedUrlQuery {
   eid: string;
 }
 
-/* Build the 10000 most popular events at build time. */
+/* Pages are generated on-demand with fallback: 'blocking' and cached via revalidate. */
 export const getStaticProps: GetStaticProps = async (context) => {
   const { eid } = context.params as IParams;
-
-  const event = await getEventData(eid.toUpperCase());
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!event) {
+  try {
+    const event = await getEventData(eid.toUpperCase());
+
+    if (!event) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        baseUrl,
+        event,
+      },
+      revalidate: 60 * 30, // 30 minutes
+    };
+  } catch (error) {
+    console.error(`Failed to fetch event ${eid}:`, error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      baseUrl,
-      event,
-    },
-    revalidate: 60 * 30, // 30 minutes
-  };
 };
 
 export async function getStaticPaths() {
-  const top10000Events = await getTopXEvents(10000);
-  const paths = top10000Events.map((event: Event) => ({
-    params: { eid: `${event.urlId}` },
-  }));
-
-  return { paths, fallback: "blocking" };
+  return { paths: [], fallback: "blocking" };
 }
 
 export default Event;

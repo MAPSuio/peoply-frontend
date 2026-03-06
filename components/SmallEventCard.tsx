@@ -3,7 +3,7 @@ import { formatDateRange } from "../utils/functions";
 
 import styles from "../styles/SmallEventCard.module.scss";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 import CatImg from "../assets/images/cat.jpg";
 
@@ -19,24 +19,22 @@ const SmallEventCard = ({ event }: SmallEventCardProps) => {
 
   return (
     <Link href={`/events/${event.urlId}`}>
-      <a>
-        <div className={styles.card}>
-          <div className={styles.imageContainer}>
-            <Image
-              src={event.image ? event.image : CatImg}
-              alt="Bildet til arrangementet"
-              objectFit="cover"
-              layout="fill"
-              objectPosition="center"
-            />
-          </div>
-          <div className={styles.dataContainer}>
-            <p className={styles.date}>{dateString}</p>
-            <h2 className={styles.eventTitle}>{event.title}</h2>
-            <p className={styles.eventDescription}>{event.description}</p>
-          </div>
+      <div className={styles.card}>
+        <div className={styles.imageContainer}>
+          <Image
+            src={event.image ? event.image : CatImg}
+            alt="Bildet til arrangementet"
+            objectFit="cover"
+            layout="fill"
+            objectPosition="center"
+          />
         </div>
-      </a>
+        <div className={styles.dataContainer}>
+          <p className={styles.date}>{dateString}</p>
+          <h2 className={styles.eventTitle}>{event.title}</h2>
+          <p className={styles.eventDescription}>{event.description}</p>
+        </div>
+      </div>
     </Link>
   );
 };

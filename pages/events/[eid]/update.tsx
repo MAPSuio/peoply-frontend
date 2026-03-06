@@ -19,7 +19,7 @@ import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
-import useTheme from "next-theme";
+import { useTheme } from "next-themes";
 import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,

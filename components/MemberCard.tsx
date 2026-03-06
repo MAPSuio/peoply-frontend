@@ -21,20 +21,18 @@ export default function MemberCard({
   return (
     <div className={styles.container}>
       <div className={styles.user}>
-        <Link href={`/users/${user.id}`} passHref>
-          <a>
-            <div className={styles.info}>
-              <Avatar size="medium" user={user} />
-              <div className={styles.nameAndDescription}>
-                <div className={styles.name}>
-                  <p>{`${user.firstName} ${user.lastName}`}</p>
-                </div>
-                {description && (
-                  <p className={styles.description}>{description}</p>
-                )}
+        <Link href={`/users/${user.id}`}>
+          <div className={styles.info}>
+            <Avatar size="medium" user={user} />
+            <div className={styles.nameAndDescription}>
+              <div className={styles.name}>
+                <p>{`${user.firstName} ${user.lastName}`}</p>
               </div>
+              {description && (
+                <p className={styles.description}>{description}</p>
+              )}
             </div>
-          </a>
+          </div>
         </Link>
         {icon && (
           <button className={styles.icon} onClick={onClick}>

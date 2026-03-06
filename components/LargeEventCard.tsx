@@ -1,6 +1,6 @@
 // Next.js.
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import useSWR from "swr";
 
 // React.
@@ -27,7 +27,7 @@ import {
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 
 // Types.
-import { Event, Registration, RegStatus, SnackTypes } from "../types/types";
+import { Event, RegStatus, SnackTypes } from "../types/types";
 
 // Assets.
 import placeholderImage from "../assets/images/undraw_partying.png";
@@ -59,9 +59,7 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);
 
-  const { data: registrations, error: registrationsError } = useSWR<
-    Registration[]
-  >(
+  const { data: registrations } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
     fetchFromPeoplyApiJson,
   );
@@ -163,93 +161,91 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
         pathname: "/events/[eventId]",
         query: { eventId: event.urlId },
       }}
-      passHref
+      className={styles.cardWrapper}
     >
-      <a className={styles.cardWrapper}>
-        <div className={styles.cardContainer}>
-          <div className={styles.imageContainer}>
-            <Image
-              src={event.image ?? placeholderImage}
-              alt="A very cute cat"
-              objectFit="cover"
-              layout="fill"
-              objectPosition="center"
-              priority={true}
-            />
-            <HeartIconGlass
-              className={styles.favoriteIcon}
-              onClick={addFavoriteFunc}
-              favorited={favorited}
-              loading={!favoriteFetched}
-            />
+      <div className={styles.cardContainer}>
+        <div className={styles.imageContainer}>
+          <Image
+            src={event.image ?? placeholderImage}
+            alt="A very cute cat"
+            objectFit="cover"
+            layout="fill"
+            objectPosition="center"
+            priority={true}
+          />
+          <HeartIconGlass
+            className={styles.favoriteIcon}
+            onClick={addFavoriteFunc}
+            favorited={favorited}
+            loading={!favoriteFetched}
+          />
+        </div>
+        <div className={styles.contentContainer}>
+          <div className={styles.titleContainer}>
+            <h3 className={styles.title}>{event.title}</h3>
+            <div className={styles.capacityContainer}>
+              <UsersIcon
+                className={`${styles.icon} ${styles.marginRightVerySmall}`}
+              />
+              <p className={styles.data}>
+                <span className={styles.emphasis}>{registrations}</span>
+                {event.capacity && `\u200A/\u200A${event.capacity}`}
+              </p>
+            </div>
           </div>
-          <div className={styles.contentContainer}>
-            <div className={styles.titleContainer}>
-              <h3 className={styles.title}>{event.title}</h3>
-              <div className={styles.capacityContainer}>
-                <UsersIcon
+          <span className={styles.divider} />
+          <div className={styles.dataContainer}>
+            {showArranger && (
+              <div className={styles.dataItemContainer}>
+                {getArrangerImageOrIcon()}
+                <div>
+                  {event.eventArrangers?.map((a) => (
+                    <span className={styles.data} key={a.arranger.id}>
+                      {a.arranger.user
+                        ? `${a.arranger.user.firstName}`
+                        : a.arranger.organization?.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className={styles.dataItemContainer}>
+              {showArranger ? (
+                <div className={styles.iconContainer}>
+                  <TimeIcon className={styles.icon} />
+                </div>
+              ) : (
+                <TimeIcon
                   className={`${styles.icon} ${styles.marginRightVerySmall}`}
                 />
-                <p className={styles.data}>
-                  <span className={styles.emphasis}>{registrations}</span>
-                  {event.capacity && `\u200A/\u200A${event.capacity}`}
-                </p>
-              </div>
-            </div>
-            <span className={styles.divider} />
-            <div className={styles.dataContainer}>
-              {showArranger && (
-                <div className={styles.dataItemContainer}>
-                  {getArrangerImageOrIcon()}
-                  <div>
-                    {event.eventArrangers?.map((a) => (
-                      <span className={styles.data} key={a.arranger.id}>
-                        {a.arranger.user
-                          ? `${a.arranger.user.firstName}`
-                          : a.arranger.organization?.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               )}
-              <div className={styles.dataItemContainer}>
-                {showArranger ? (
-                  <div className={styles.iconContainer}>
-                    <TimeIcon className={styles.icon} />
-                  </div>
-                ) : (
-                  <TimeIcon
-                    className={`${styles.icon} ${styles.marginRightVerySmall}`}
-                  />
-                )}
-                <p className={styles.data}>
-                  {dateString}, {timeString}
-                </p>
-              </div>
-              <div className={styles.dataItemContainer}>
-                {showArranger ? (
-                  <div className={styles.iconContainer}>
-                    <PlaceIcon className={styles.icon} />
-                  </div>
-                ) : (
-                  <PlaceIcon
-                    className={`${styles.icon} ${styles.marginRightVerySmall}`}
-                  />
-                )}
-                <p className={styles.data}>{event.locationName}</p>
-              </div>
+              <p className={styles.data}>
+                {dateString}, {timeString}
+              </p>
             </div>
-            {!isEventFinished(event) && (
-              <ShareButton
-                width="100%"
-                buttonText="Del arrangement"
-                shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
-                shareTitle={event.title}
-              />
-            )}
+            <div className={styles.dataItemContainer}>
+              {showArranger ? (
+                <div className={styles.iconContainer}>
+                  <PlaceIcon className={styles.icon} />
+                </div>
+              ) : (
+                <PlaceIcon
+                  className={`${styles.icon} ${styles.marginRightVerySmall}`}
+                />
+              )}
+              <p className={styles.data}>{event.locationName}</p>
+            </div>
           </div>
+          {!isEventFinished(event) && (
+            <ShareButton
+              width="100%"
+              buttonText="Del arrangement"
+              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
+              shareTitle={event.title}
+            />
+          )}
         </div>
-      </a>
+      </div>
     </Link>
   );
 };

@@ -1,5 +1,5 @@
 /* Next. */
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -309,22 +309,16 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
           />
         </div>
         {eventType === SectionTypes.MY_EVENTS ? (
-          <Link href="/events/create">
-            <a className={styles.button}>
-              <Button text="Opprett et nytt arrangement" />
-            </a>
+          <Link href="/events/create" className={styles.button}>
+            <Button text="Opprett et nytt arrangement" />
           </Link>
         ) : eventType === SectionTypes.REGISTERED ? (
-          <Link href="/">
-            <a className={styles.button}>
-              <Button text="Sjekk ut arrangementer" />
-            </a>
+          <Link href="/" className={styles.button}>
+            <Button text="Sjekk ut arrangementer" />
           </Link>
         ) : (
-          <Link href="/">
-            <a className={styles.button}>
-              <Button text="Sjekk ut arrangementer" />
-            </a>
+          <Link href="/" className={styles.button}>
+            <Button text="Sjekk ut arrangementer" />
           </Link>
         )}
       </div>

@@ -64,36 +64,34 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { uid } = context.params as IParams;
-  const user = await fetchFromPeoplyApiJson(`/users/${uid}`);
-
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!user) {
+  try {
+    const user = await fetchFromPeoplyApiJson(`/users/${uid}`);
+
+    if (!user) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        baseUrl,
+        user,
+      },
+      revalidate: 60 * 30, // 30 minutes
+    };
+  } catch (error) {
+    console.error(`Failed to fetch user ${uid}:`, error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      baseUrl,
-      user,
-    },
-    revalidate: 60 * 30, // 30 minutes
-  };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const users: User[] = await fetchFromPeoplyApiJson("/users");
-
-  return {
-    paths: users.map((user) => ({
-      params: {
-        uid: user.id,
-      },
-    })),
-    fallback: "blocking",
-  };
+  return { paths: [], fallback: "blocking" };
 };
 
 export default User;

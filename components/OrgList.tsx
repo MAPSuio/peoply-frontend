@@ -15,16 +15,17 @@ export default function OrgList({ orgs }: OrgListProps) {
   return (
     <div className={styles.container}>
       {orgs.map((org, index) => (
-        <Link href={`/orgs/${org.urlId ?? org.id}`} key={index} passHref>
-          <a className={styles.item}>
-            <div>
-              <p>{org.name}</p>
-            </div>
-            <ChevronRightIcon />
-          </a>
+        <Link
+          href={`/orgs/${org.urlId ?? org.id}`}
+          key={index}
+          className={styles.item}
+        >
+          <div>
+            <p>{org.name}</p>
+          </div>
+          <ChevronRightIcon />
         </Link>
       ))}
-
       <button
         className={styles.item}
         tabIndex={0}

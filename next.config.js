@@ -1,18 +1,10 @@
-const withPWA = require('next-pwa');
+const withPWA = require('@ducanh2912/next-pwa').default;
 
-module.exports = withPWA({
-  /** @type {import('next').NextConfig} */
-
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   i18n: {
     locales: ["nb"],
     defaultLocale: "nb",
-    // localeDetector: {
-    //   type: "cookie",
-    //   options: {
-    //     cookieKey: "i18n_redirected",
-    //   },
-    // },
-    // redirect: true,
   },
 
   reactStrictMode: true,
@@ -21,16 +13,19 @@ module.exports = withPWA({
   },
 
   images: {
-    domains: [process.env.BLOB_DOMAIN],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: process.env.BLOB_DOMAIN || '',
+      },
+    ],
     deviceSizes: [480, 640, 750, 828, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // formats: ["webp", "png", "jpg", "jpeg", "gif"],
   },
+};
 
-  // generate manifest using https://www.simicart.com/
-  pwa: {
-    dest: 'public',
-    disable: process.env.NODE_ENV === 'development',
-    register: true,
-  }
-});
+module.exports = withPWA({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+})(nextConfig);

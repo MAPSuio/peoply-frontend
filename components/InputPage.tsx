@@ -85,10 +85,8 @@ const InputPage = ({
     <div className={`${styles.container} ${padding && styles.padding}`}>
       <div className={styles.actionContainer}>
         <BackButton onClick={goBack} />
-        <Link href="/" passHref>
-          <a className={styles.close}>
-            <CloseIcon />
-          </a>
+        <Link href="/" className={styles.close}>
+          <CloseIcon />
         </Link>
       </div>
       <div className={styles.headerContainer}>

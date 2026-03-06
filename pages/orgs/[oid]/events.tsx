@@ -11,10 +11,7 @@ import HeadComponent from "../../../components/HeadComponent";
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import {
-  getOrganization,
-  getXOrganizations,
-} from "../../../services/organizations";
+import { getOrganization } from "../../../services/organizations";
 
 // Types.
 import { Event, Organization } from "../../../types/types";
@@ -145,32 +142,34 @@ interface IParams extends ParsedUrlQuery {
 // Get the data for the organization in question.
 export const getStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as IParams;
-  const organization = await getOrganization(oid);
-
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!organization) {
+  try {
+    const organization = await getOrganization(oid);
+
+    if (!organization) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        baseUrl,
+        organization,
+      },
+      revalidate: 60 * 30, // 30 minutes
+    };
+  } catch (error) {
+    console.error(`Failed to fetch organization ${oid}:`, error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      baseUrl,
-      organization,
-    },
-    revalidate: 60 * 30, // 30 minutes
-  };
 };
 
 export async function getStaticPaths() {
-  const organizations = await getXOrganizations(10000);
-  const paths = organizations.map((o: Organization) => ({
-    params: { oid: o.urlId ?? o.id },
-  }));
-
-  return { paths, fallback: "blocking" };
+  return { paths: [], fallback: "blocking" };
 }
 
 export default Events;

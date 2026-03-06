@@ -7,7 +7,6 @@ import useBack from "../../../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../../../services/fetchers";
 import styles from "../../../../styles/OrgMembers.module.scss";
 import {
-  Organization,
   OrganizationRole,
   SnackTypes,
   UserOrganizationRoles,
@@ -87,7 +86,6 @@ export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
         url={`${baseUrl}/organizations/${oid}/members`}
         imageUrl={organization?.image}
       />
-
       <div className={styles.container}>
         <BackButton onClick={goBack} />
         <div className={styles.header}>
@@ -118,10 +116,8 @@ export default function Members({ fallbackUsers, baseUrl }: MembersProps) {
           </div>
         </div>
         {isAdminOrOwner && (
-          <Link href={`/orgs/${oid}/invite`} passHref>
-            <a className={styles.primaryButton}>
-              <Button text="Legg til flere" />
-            </a>
+          <Link href={`/orgs/${oid}/invite`} className={styles.primaryButton}>
+            <Button text="Legg til flere" />
           </Link>
         )}
       </div>
@@ -135,35 +131,35 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as IParams;
-  const organization = await getOrganization(oid);
-  const users = await fetchFromPeoplyApiJson(
-    `/organizations/${organization.id}/members`,
-  );
-
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!users) {
+  try {
+    const organization = await getOrganization(oid);
+    const users = await fetchFromPeoplyApiJson(
+      `/organizations/${organization.id}/members`,
+    );
+
+    if (!users) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        fallbackUsers: users,
+        baseUrl,
+      },
+      revalidate: 60 * 60,
+    };
+  } catch (error) {
+    console.error(`Failed to fetch org members for ${oid}:`, error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      fallbackUsers: users,
-      baseUrl,
-    },
-    revalidate: 60 * 60,
-  };
 };
 
 export async function getStaticPaths() {
-  const orgs: Organization[] = await fetchFromPeoplyApiJson(
-    "/organizations?take=1000",
-  );
-  const paths = orgs.map((org: Organization) => ({
-    params: { oid: org.urlId ?? org.id },
-  }));
-
-  return { paths, fallback: "blocking" };
+  return { paths: [], fallback: "blocking" };
 }

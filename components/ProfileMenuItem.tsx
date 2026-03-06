@@ -18,14 +18,15 @@ export default function ProfileMenuItem({
 }: ProfileMenuItemProps) {
   if (typeof linkOrOnClick === "string") {
     return (
-      <Link href={linkOrOnClick} passHref>
-        <a className={`${styles.container} ${danger && styles.danger}`}>
-          <div className={styles.left}>
-            <Icon />
-            <p>{text}</p>
-          </div>
-          <ActionIcon />
-        </a>
+      <Link
+        href={linkOrOnClick}
+        className={`${styles.container} ${danger && styles.danger}`}
+      >
+        <div className={styles.left}>
+          <Icon />
+          <p>{text}</p>
+        </div>
+        <ActionIcon />
       </Link>
     );
   }

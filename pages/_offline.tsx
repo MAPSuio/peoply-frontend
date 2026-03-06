@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 import Button from "../components/Button";
 import styles from "../styles/Offline.module.scss";
@@ -27,13 +27,8 @@ const Offline: NextPage = () => {
               alt="En alien som blir tatt av et romskip"
             />
           </div>
-          <Link href="/">
-            <a className={styles.a}>
-              <Button
-                text="Gå til hjemskjermen"
-                className={styles.homeButton}
-              />
-            </a>
+          <Link href="/" className={styles.a}>
+            <Button text="Gå til hjemskjermen" className={styles.homeButton} />
           </Link>
         </div>
       </div>

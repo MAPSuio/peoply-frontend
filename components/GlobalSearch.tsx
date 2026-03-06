@@ -8,7 +8,7 @@ import { Event, Organization } from "../types/types";
 import Avatar from "./Avatar";
 import { calculateEditDistance } from "../utils/functions";
 import TagSwiperSelection from "./TagSwiperSelection";
-import useTheme from "next-theme";
+import { useTheme } from "next-themes";
 
 enum FilterOption {
   ALL = "ALL",

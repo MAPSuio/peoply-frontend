@@ -19,8 +19,8 @@ export default function Header() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <Link href="/">
-          <a className={styles.logo}>Peoply</a>
+        <Link href="/" className={styles.logo}>
+          Peoply
         </Link>
         {user ? (
           <div className={styles.loggedIn}>
@@ -28,10 +28,8 @@ export default function Header() {
               hasUnreadNotifications={hasUnreadNotifications}
             />
 
-            <Link href="/me" passHref>
-              <a>
-                <Avatar user={user} />
-              </a>
+            <Link href="/me">
+              <Avatar user={user} />
             </Link>
           </div>
         ) : (
