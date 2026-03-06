@@ -10,11 +10,9 @@ export default function NotificationIndicator({
   hasUnreadNotifications,
 }: NotificationIndicatorProps) {
   return (
-    <Link href="/me/notifications" passHref>
-      <a className={styles.container}>
-        {hasUnreadNotifications && <div className={styles.counter} />}
-        <BellIcon className={styles.icon} />
-      </a>
+    <Link href="/me/notifications" className={styles.container}>
+      {hasUnreadNotifications && <div className={styles.counter} />}
+      <BellIcon className={styles.icon} />
     </Link>
   );
 }

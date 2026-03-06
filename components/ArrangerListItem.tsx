@@ -122,29 +122,27 @@ const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
 
   return (
     <li className={styles.listItem}>
-      <Link href={arrangerHref}>
-        <a className={styles.container}>
-          <div className={styles.info}>
-            {renderAvatar}
-            <div className={styles.nameContainer}>
-              <p className={styles.name}>{arrangerName}</p>
-              <p className={styles.description}>
-                Fulgt siden <span className={styles.data}>{dateString}</span>
-              </p>
-            </div>
+      <Link href={arrangerHref} className={styles.container}>
+        <div className={styles.info}>
+          {renderAvatar}
+          <div className={styles.nameContainer}>
+            <p className={styles.name}>{arrangerName}</p>
+            <p className={styles.description}>
+              Fulgt siden <span className={styles.data}>{dateString}</span>
+            </p>
           </div>
-          <Button
-            text={followButtonText}
-            size={ButtonSize.TINYWITHTEXT}
-            type={followButtonType}
-            noShadow
-            className={styles.button}
-            onClick={(e) => {
-              e.preventDefault();
-              followButtonFunction();
-            }}
-          />
-        </a>
+        </div>
+        <Button
+          text={followButtonText}
+          size={ButtonSize.TINYWITHTEXT}
+          type={followButtonType}
+          noShadow
+          className={styles.button}
+          onClick={(e) => {
+            e.preventDefault();
+            followButtonFunction();
+          }}
+        />
       </Link>
     </li>
   );

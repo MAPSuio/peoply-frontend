@@ -28,10 +28,7 @@ import useUser from "../../../hooks/useUser";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 
 // Services.
-import {
-  getOrganization,
-  getXOrganizations,
-} from "../../../services/organizations";
+import { getOrganization } from "../../../services/organizations";
 import {
   ArrangerFollower,
   ButtonSize,
@@ -178,15 +175,15 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         url={`${baseUrl}/orgs/${org.urlId ?? org.id}`}
         imageUrl={org.image}
       />
-
       <Layout>
         <div className={styles.heading}>
           <BackButton onClick={goBack} className={styles.marginBottomMedium} />
           {isAdminOrOwner && (
-            <Link href={`/orgs/${org.urlId ?? org.id}/settings`} passHref>
-              <a aria-label="innstillinger">
-                <SettingsIcon className={styles.settingsIcon} />
-              </a>
+            <Link
+              href={`/orgs/${org.urlId ?? org.id}/settings`}
+              aria-label="innstillinger"
+            >
+              <SettingsIcon className={styles.settingsIcon} />
             </Link>
           )}
         </div>
@@ -216,33 +213,39 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           />
         </div>
         <div className={styles.dataContainer}>
-          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}>
-            <a className={styles.iconContainer}>
-              <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
-              <p className={styles.data}>{orgMembers?.length}</p>
-              <p className={styles.dataDescription}>Medlemmer</p>
-            </a>
+          <Link
+            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}
+            className={styles.iconContainer}
+          >
+            <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
+            <p className={styles.data}>{orgMembers?.length}</p>
+            <p className={styles.dataDescription}>Medlemmer</p>
           </Link>
-          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}>
-            <a className={styles.iconContainer}>
-              <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
-              <p className={styles.data}>{followers?.length}</p>
-              <p className={styles.dataDescription}>Følgere</p>
-            </a>
+          <Link
+            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}
+            className={styles.iconContainer}
+          >
+            <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
+            <p className={styles.data}>{followers?.length}</p>
+            <p className={styles.dataDescription}>Følgere</p>
           </Link>
-          <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>
-            <a className={styles.iconContainer}>
-              <CalendarIconCard className={styles.icon} />
-              <p className={styles.data}>{orgEvents?.length}</p>
-              <p className={styles.dataDescription}>Arrangementer</p>
-            </a>
+          <Link
+            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}
+            className={styles.iconContainer}
+          >
+            <CalendarIconCard className={styles.icon} />
+            <p className={styles.data}>{orgEvents?.length}</p>
+            <p className={styles.dataDescription}>Arrangementer</p>
           </Link>
         </div>
         <div className={styles.eventWrapper}>
           <div className={styles.eventHeaderContainer}>
             <h2 className={styles.eventHeader}>Kommende arrangementer</h2>
-            <Link href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}>
-              <a className={styles.link}>Se alle</a>
+            <Link
+              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}
+              className={styles.link}
+            >
+              Se alle
             </Link>
           </div>
           <div className={styles.eventContainer}>
@@ -298,14 +301,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export async function getStaticPaths() {
-  const organizations = await getXOrganizations(10000);
-  const paths = organizations.map((o: Organization) => ({
-    params: {
-      oid: o.urlId ?? o.id,
-    },
-  }));
-
-  return { paths, fallback: "blocking" };
+  return { paths: [], fallback: "blocking" };
 }
 
 export default Organization;

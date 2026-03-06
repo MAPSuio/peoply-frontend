@@ -67,14 +67,13 @@ export default function LinkButton({
   };
 
   return (
-    <Link href={href} passHref>
-      <a
-        className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
-        style={{ width }}
-      >
-        {icon}
-        {text}
-      </a>
+    <Link
+      href={href}
+      className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
+      style={{ width }}
+    >
+      {icon}
+      {text}
     </Link>
   );
 }

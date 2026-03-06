@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 import Button from "../components/Button";
@@ -22,10 +22,8 @@ const Custom404: NextPage = () => {
             placeholder="blur"
           />
         </div>
-        <Link href="/">
-          <a className={styles.a}>
-            <Button text="Gå til hjemskjermen" className={styles.homeButton} />
-          </a>
+        <Link href="/" className={styles.a}>
+          <Button text="Gå til hjemskjermen" className={styles.homeButton} />
         </Link>
       </div>
     </div>

@@ -12,10 +12,7 @@ import useBack from "../../../hooks/useBack";
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import {
-  getOrganization,
-  getXOrganizations,
-} from "../../../services/organizations";
+import { getOrganization } from "../../../services/organizations";
 
 // Types.
 import {
@@ -83,36 +80,38 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as IParams;
-
-  const org = await getOrganization(oid);
-  const followers = await fetchFromPeoplyApiJson(
-    `/organizations/${oid}/followers`,
-  );
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (!org) {
+  try {
+    const org = await getOrganization(oid);
+    const followers = await fetchFromPeoplyApiJson(
+      `/organizations/${oid}/followers`,
+    );
+
+    if (!org) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        baseUrl,
+        org,
+        followers,
+      },
+      revalidate: 60 * 30, // 30 minutes
+    };
+  } catch (error) {
+    console.error(`Failed to fetch org followers for ${oid}:`, error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      baseUrl,
-      org,
-      followers,
-    },
-    revalidate: 60 * 30, // 30 minutes
-  };
 };
 
 export async function getStaticPaths() {
-  const orgs = await getXOrganizations(1000);
-  const paths = orgs.map((org) => ({
-    params: { oid: org.urlId ?? org.id },
-  }));
-
-  return { paths, fallback: "blocking" };
+  return { paths: [], fallback: "blocking" };
 }
 
 export default OrgFollowers;

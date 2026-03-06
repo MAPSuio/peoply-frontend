@@ -1,6 +1,6 @@
 // Next.js.
 import useSWR from "swr";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 // Hooks.
 import useUser from "../../hooks/useUser";

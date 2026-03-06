@@ -207,8 +207,8 @@ const EventSwiper = ({
     <div className={styles.swiperContainer}>
       <div className={styles.swiperHeader}>
         <h1>{header}</h1>
-        <Link href={seeAllUrl}>
-          <a className={styles.link}>Se alle</a>
+        <Link href={seeAllUrl} className={styles.link}>
+          Se alle
         </Link>
       </div>
       <Swiper
@@ -226,9 +226,7 @@ const EventSwiper = ({
                 query: { eventId: event.urlId },
               }}
             >
-              <a>
-                <EventCard event={event} />
-              </a>
+              <EventCard event={event} />
             </Link>
           </SwiperSlide>
         ))}
@@ -253,8 +251,8 @@ const OrganizationSwiper = ({
     <div className={styles.swiperContainer}>
       <div className={styles.swiperHeader}>
         <h1>{header}</h1>
-        <Link href={seeAllUrl}>
-          <a className={styles.link}>Se alle</a>
+        <Link href={seeAllUrl} className={styles.link}>
+          Se alle
         </Link>
       </div>
       <Swiper
@@ -267,9 +265,7 @@ const OrganizationSwiper = ({
         {organizations?.map((organization: Organization) => (
           <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>
             <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
-              <a>
-                <OrganizationAvatar organization={organization} />
-              </a>
+              <OrganizationAvatar organization={organization} />
             </Link>
           </SwiperSlide>
         ))}

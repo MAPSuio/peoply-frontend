@@ -22,7 +22,7 @@ import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
 import useSnack from "../../hooks/useSnack";
 import SleepImage from "../../assets/images/undraw_sleeping.png";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import useNotifications from "../../hooks/useNotifications";
 import useSWR from "swr";
 import Link from "next/link";

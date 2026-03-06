@@ -5,7 +5,7 @@ import { UserProvider } from "../hooks/useUser";
 import { SnackbarProvider } from "../hooks/useSnack";
 import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
-import { ThemeProvider } from "next-theme";
+import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 
 function MyApp({ Component, pageProps }: AppProps) {

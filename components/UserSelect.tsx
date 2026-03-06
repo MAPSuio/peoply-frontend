@@ -8,7 +8,7 @@ import Avatar from "./Avatar";
 import LoadingWheel from "./LoadingWheel";
 import CheckIcon from "./svgs/CheckIcon";
 import SearchIcon from "./svgs/SearchIcon";
-import useTheme from "next-theme";
+import { useTheme } from "next-themes";
 
 interface UserSearchProps {
   onUserSelect: (user: User) => void;
@@ -97,11 +97,9 @@ export default function UserSelect({
           <>
             <span className={styles.divider} />
             <div key={user.id} className={styles.item}>
-              <Link href={`/users/${user.id}`} passHref>
-                <a className={styles.user}>
-                  <Avatar user={user} />
-                  <div>{`${user.firstName} ${user.lastName}`}</div>
-                </a>
+              <Link href={`/users/${user.id}`} className={styles.user}>
+                <Avatar user={user} />
+                <div>{`${user.firstName} ${user.lastName}`}</div>
               </Link>
               {isUserSelected(user) ? (
                 <button

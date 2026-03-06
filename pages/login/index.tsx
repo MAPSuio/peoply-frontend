@@ -84,12 +84,10 @@ const Login: NextPage = ({
               </div>
             </div>
             <Link href={redirectURL}>
-              <a>
-                <Button
-                  text="Fortsett til appen"
-                  className={styles.primaryButton}
-                />
-              </a>
+              <Button
+                text="Fortsett til appen"
+                className={styles.primaryButton}
+              />
             </Link>
           </div>
         </div>

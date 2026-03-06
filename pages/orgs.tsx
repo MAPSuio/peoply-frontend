@@ -99,9 +99,7 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
         <div className={styles.orgList}>
           {uniqueOrganizations.map((org) => (
             <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
-              <a>
-                <OrganizationCard organizationID={org.id} />
-              </a>
+              <OrganizationCard organizationID={org.id} />
             </Link>
           ))}
         </div>

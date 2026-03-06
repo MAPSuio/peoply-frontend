@@ -143,7 +143,6 @@ const EditOrgProfile: NextPage = () => {
         setValid={setValidUrlId}
         validate
       />
-
       <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
         <Button
           disabled={!validEdit}

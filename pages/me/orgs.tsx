@@ -4,7 +4,7 @@ import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
 import OrgImage from "../../assets/images/undraw_apartment.png";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import router from "next/router";
 import Button from "../../components/Button";
 

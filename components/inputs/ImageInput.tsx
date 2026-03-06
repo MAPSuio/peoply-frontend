@@ -1,5 +1,5 @@
 // Next.js.
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 // React.
 import { useRef, ChangeEvent } from "react";
