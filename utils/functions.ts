@@ -8,6 +8,12 @@ import {
 
 import React from "react";
 
+const DISPLAY_LOCALE = "no-NO";
+
+function formatDisplayDate(date: Date, options: Intl.DateTimeFormatOptions) {
+  return date.toLocaleString(DISPLAY_LOCALE, options);
+}
+
 function formatDateRange(startDate: Date, endDate?: Date | null): string {
   let dateString: string;
   // if start date, month and year is today
@@ -18,40 +24,31 @@ function formatDateRange(startDate: Date, endDate?: Date | null): string {
   ) {
     dateString = `I dag`;
   } else if (endDate && startDate.getFullYear() !== endDate.getFullYear()) {
-    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
-      "default",
-      {
-        month: "short",
-      },
-    )} ${startDate.getFullYear()}-${endDate.getDate()}. ${endDate.toLocaleString(
-      "default",
+    dateString = `${startDate.getDate()}. ${formatDisplayDate(startDate, {
+      month: "short",
+    })} ${startDate.getFullYear()}-${endDate.getDate()}. ${formatDisplayDate(
+      endDate,
       {
         month: "short",
       },
     )} ${endDate.getFullYear()}`;
   } else if (endDate && startDate.getMonth() !== endDate.getMonth()) {
-    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
-      "default",
-      {
-        month: "short",
-      },
-    )}–${endDate.getDate()}. ${endDate.toLocaleString("default", {
+    dateString = `${startDate.getDate()}. ${formatDisplayDate(startDate, {
+      month: "short",
+    })}–${endDate.getDate()}. ${formatDisplayDate(endDate, {
       month: "short",
     })} ${endDate.getFullYear()}`;
   } else if (endDate && startDate.getDate() !== endDate.getDate()) {
-    dateString = `${startDate.getDate()}–${endDate.getDate()}. ${endDate.toLocaleString(
-      "default",
+    dateString = `${startDate.getDate()}–${endDate.getDate()}. ${formatDisplayDate(
+      endDate,
       {
         month: "short",
       },
     )} ${endDate.getFullYear()}`;
   } else {
-    dateString = `${startDate.getDate()}. ${startDate.toLocaleString(
-      "default",
-      {
-        month: "short",
-      },
-    )} ${startDate.getFullYear()}`;
+    dateString = `${startDate.getDate()}. ${formatDisplayDate(startDate, {
+      month: "short",
+    })} ${startDate.getFullYear()}`;
   }
   return dateString;
 }
@@ -64,31 +61,36 @@ function formatTimeRange(startDate: Date, endDate: Date | null): string {
     startDate.getHours() === endDate?.getHours() &&
     startDate.getMinutes() === endDate?.getMinutes()
   ) {
-    return `${startDate.toLocaleString("default", {
+    return `${formatDisplayDate(startDate, {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     })}`;
   } else if (
     startDate.getDate() === endDate?.getDate() &&
     startDate.getMonth() === endDate?.getMonth() &&
     startDate.getFullYear() === endDate?.getFullYear()
   ) {
-    return `${startDate.toLocaleString("default", {
+    return `${formatDisplayDate(startDate, {
       hour: "2-digit",
       minute: "2-digit",
-    })}–${endDate.toLocaleString("default", {
+      hour12: false,
+    })}–${formatDisplayDate(endDate, {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     })}`;
   }
-  const timeString = `${startDate.toLocaleString("default", {
+  const timeString = `${formatDisplayDate(startDate, {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
   })}${
     endDate
-      ? `–${endDate.toLocaleString("default", {
+      ? `–${formatDisplayDate(endDate, {
           hour: "2-digit",
           minute: "2-digit",
+          hour12: false,
         })}`
       : ""
   }`;
@@ -215,7 +217,12 @@ function getISODate(date: Date): string {
 
 /* Formats a date(time) into hh:mm:ss. */
 function getISOTime(date: Date): string {
-  const isoString = date.toLocaleTimeString().slice(0, -3);
+  const isoString = date.toLocaleTimeString(DISPLAY_LOCALE, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 
   return isoString;
 }
