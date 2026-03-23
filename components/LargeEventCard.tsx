@@ -4,9 +4,10 @@ import Image from "next/legacy/image";
 import useSWR from "swr";
 
 // React.
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 
 // Components.
+import AddToCalendarButton from "./AddToCalendarButton";
 import { ShareButton } from "./ShareButton";
 import HeartIconGlass from "./HeartIconGlass";
 
@@ -237,12 +238,15 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
             </div>
           </div>
           {!isEventFinished(event) && (
-            <ShareButton
-              width="100%"
-              buttonText="Del arrangement"
-              shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
-              shareTitle={event.title}
-            />
+            <div className={styles.actionContainer}>
+              <AddToCalendarButton event={event} width="100%" />
+              <ShareButton
+                width="100%"
+                buttonText="Del arrangement"
+                shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
+                shareTitle={event.title}
+              />
+            </div>
           )}
         </div>
       </div>

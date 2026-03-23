@@ -1,3 +1,5 @@
+import { MouseEvent } from "react";
+
 import useSnack from "../hooks/useSnack";
 import { ButtonSize, SnackTypes } from "../types/types";
 import Button, { IconPlacement } from "./Button";
@@ -66,7 +68,7 @@ export function ShareButton({
       text={buttonText}
       size={ButtonSize.SMALL}
       width={width}
-      onClick={(e: MouseEvent) => buttonOnClick(e)}
+      onClick={buttonOnClick}
       noShadow
       icon={<ShareIcon className={styles.icon} />}
       iconPlacement={iconPlacement}

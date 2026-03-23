@@ -1,3 +1,4 @@
+import AddToCalendarButton from "./AddToCalendarButton";
 import { Event } from "../types/types";
 import { formatDateRange } from "../utils/functions";
 
@@ -33,6 +34,9 @@ const SmallEventCard = ({ event }: SmallEventCardProps) => {
           <p className={styles.date}>{dateString}</p>
           <h2 className={styles.eventTitle}>{event.title}</h2>
           <p className={styles.eventDescription}>{event.description}</p>
+          <div className={styles.actionContainer}>
+            <AddToCalendarButton event={event} />
+          </div>
         </div>
       </div>
     </Link>

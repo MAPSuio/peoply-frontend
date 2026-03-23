@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 import useSWR from "swr";
 
 // Components.
+import AddToCalendarButton from "./AddToCalendarButton";
 import UserIconCard from "./svgs/UserIconCard";
 import PlaceIconCard from "./svgs/PlaceIconCard";
 import UsersIconCard from "./svgs/UsersIconCard";
@@ -150,6 +151,9 @@ const EventCard = ({ event }: EventCardProps) => {
               </div>
               <p className={styles.data}>{event.locationName}</p>
             </div>
+          </div>
+          <div className={styles.actionContainer}>
+            <AddToCalendarButton event={event} width="100%" />
           </div>
         </div>
       </div>

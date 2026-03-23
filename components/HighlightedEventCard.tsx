@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Components.
+import AddToCalendarButton from "./AddToCalendarButton";
 import Avatar from "./Avatar";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import HeartIconGlass from "./HeartIconGlass";
@@ -227,21 +228,24 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
                 </div>
               </div>
             </div>
-            <JoinButton
-              event={event}
-              countdownText="Åpner om"
-              updateOnChange={[updateRegistrations]}
-              joinText="Meld deg på"
-              joinedText="Du er påmeldt"
-              joinWaitlistText="Stell deg i kø"
-              joinedWaitlistText="Du står i kø"
-              eventFinishedText="Arrangementet er ferdig"
-              regClosedText="Påmelding er stengt"
-              useUnregisterModal
-              small
-              noShadow
-              className={styles.primaryButton}
-            />
+            <div className={styles.actionContainer}>
+              <JoinButton
+                event={event}
+                countdownText="Åpner om"
+                updateOnChange={[updateRegistrations]}
+                joinText="Meld deg på"
+                joinedText="Du er påmeldt"
+                joinWaitlistText="Stell deg i kø"
+                joinedWaitlistText="Du står i kø"
+                eventFinishedText="Arrangementet er ferdig"
+                regClosedText="Påmelding er stengt"
+                useUnregisterModal
+                small
+                noShadow
+                className={styles.primaryButton}
+              />
+              <AddToCalendarButton event={event} width="100%" />
+            </div>
           </div>
         </div>
       </Link>

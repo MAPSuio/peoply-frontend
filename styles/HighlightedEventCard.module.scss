@@ -4,7 +4,7 @@
   margin: 0 $spacer-small;
   margin-bottom: $spacer-medium-plus;
 
-  @include desktop(){
+  @include desktop() {
     align-self: stretch;
     width: initial;
   }
@@ -30,7 +30,11 @@
 
 .tag {
   @include uppercase();
-  background: linear-gradient(90deg, var(--primary-color-logo, $primary-color-logo), var(--secondary-color-logo, $secondary-color-logo));
+  background: linear-gradient(
+    90deg,
+    var(--primary-color-logo, $primary-color-logo),
+    var(--secondary-color-logo, $secondary-color-logo)
+  );
   background-clip: text;
   margin-bottom: $spacer-very-small;
   -webkit-text-fill-color: transparent;
@@ -49,7 +53,10 @@
 .card {
   background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;
-  box-shadow: var(--shadow-highlighted-event-card, $shadow-highlighted-event-card);
+  box-shadow: var(
+    --shadow-highlighted-event-card,
+    $shadow-highlighted-event-card
+  );
   display: flex;
   flex-flow: column nowrap;
   position: relative;
@@ -67,7 +74,7 @@
   position: relative;
   width: 100%;
 
-  @include desktop(){
+  @include desktop() {
     border-radius: $border-radius-regular 0 0 $border-radius-regular;
     flex: 3 0 0;
     height: 380px;
@@ -244,6 +251,26 @@
   }
 }
 
+.actionContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+}
+
+.actionContainer > * {
+  width: 100%;
+}
+
+@include desktop() {
+  .actionContainer {
+    align-items: flex-start;
+  }
+
+  .actionContainer > * {
+    width: fit-content;
+  }
+}
+
 .hideOverflow {
   -webkit-box-orient: vertical;
   display: -webkit-box;
@@ -270,6 +297,6 @@
   }
 
   100% {
-    transform: scale(1.0);
+    transform: scale(1);
   }
 }
