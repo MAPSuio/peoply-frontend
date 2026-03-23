@@ -22,6 +22,10 @@ export default function Header() {
         <Link href="/" className={styles.logo}>
           Peoply
         </Link>
+        <div className={styles.navLinks}>
+          <Link href="/integrasjoner">Integrasjoner</Link>
+          <Link href="/faq">FAQ</Link>
+        </div>
         {user ? (
           <div className={styles.loggedIn}>
             <NotificationIndicator
@@ -35,7 +39,6 @@ export default function Header() {
         ) : (
           <div className={styles.avatarContainer}>
             <Link href="/login">Log in</Link>
-            <Link href="/faq">FAQ</Link>
           </div>
         )}
       </div>

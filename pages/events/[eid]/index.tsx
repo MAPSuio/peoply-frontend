@@ -246,7 +246,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
             favorited={favorited}
             loading={!favoriteFetched}
           />
-          {isArranger && (
+          {isArranger && !eventData.readOnly && (
             <EditIconGlass
               className={styles.editIcon}
               onClick={editEventFunc}

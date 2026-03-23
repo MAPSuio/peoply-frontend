@@ -188,6 +188,33 @@ export interface Organization {
   organizationRoles: UserOrganizationRoles[];
 }
 
+export enum IcsFeedSyncStatus {
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+  DISABLED = "DISABLED",
+}
+
+export interface OrganizationIcsFeed {
+  id: string;
+  organizationId: string;
+  url: string;
+  enabled: boolean;
+  syncIntervalMinutes: number;
+  lastSyncedAt?: string | null;
+  lastSuccessfulSyncAt?: string | null;
+  lastSyncStatus: IcsFeedSyncStatus;
+  lastSyncError?: string | null;
+  consecutiveFailures: number;
+  disabledAt?: string | null;
+}
+
+export enum EventSource {
+  MANUAL = "MANUAL",
+  ICS = "ICS",
+}
+
 export interface Arranger {
   id: string;
   isBusiness: boolean;
@@ -261,6 +288,12 @@ export interface Event {
   latitude?: number;
   longitude?: number;
   formQuestion?: string;
+  source?: EventSource;
+  externalId?: string;
+  externalUrl?: string;
+  externalUpdatedAt?: string | null;
+  archivedAt?: string | null;
+  readOnly?: boolean;
 
   eventArrangers?: EventArranger[];
   registrations?: Registration[];

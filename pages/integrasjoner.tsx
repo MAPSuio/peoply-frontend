@@ -81,6 +81,10 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
             <div className={styles.noteCard}>
               <ul className={styles.noteList}>
                 <li>Respekter at noen endepunkter krever autentisering.</li>
+                <li>
+                  Organisasjoner kan også importere arrangementer via én
+                  offentlig <code>.ics</code>-URL fra org-innstillingene sine.
+                </li>
                 <li>Cache read-only data der det gir mening.</li>
                 <li>Bygg mot stabile id-er og ikke kun visningstekst.</li>
                 <li>
@@ -99,6 +103,11 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
               <p>
                 For produktspørsmål eller tilgangsbehov kan du også lese mer på{" "}
                 <Link href="/faq">FAQ-siden</Link>.
+              </p>
+              <p>
+                Hvis du administrerer en forening, kan du sette opp ICS-import
+                på <code>/orgs/&lt;org&gt;/settings</code>. Peoply poller feeden
+                og importerte arrangementer holdes låst som read-only.
               </p>
             </div>
           </section>
