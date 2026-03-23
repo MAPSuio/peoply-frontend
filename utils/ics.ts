@@ -7,8 +7,6 @@ interface CalendarLink {
   external: boolean;
 }
 
-const MAX_OUTLOOK_DEEPLINK_LENGTH = 1800;
-
 function escapeIcsText(value?: string | null) {
   if (!value) return "";
 
@@ -102,19 +100,7 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
     details: description,
     location,
   });
-  const outlookQuery = new URLSearchParams({
-    path: "/calendar/action/compose",
-    rru: "addevent",
-    subject: title,
-    startdt: startDate.toISOString(),
-    enddt: endDate.toISOString(),
-    body: description,
-    location,
-  });
   const calendarFileHref = `/api/calendar/${eventSlug}`;
-  const outlookDeeplinkHref = `https://outlook.live.com/calendar/0/deeplink/compose?${outlookQuery.toString()}`;
-  const useOutlookFileFallback =
-    outlookDeeplinkHref.length > MAX_OUTLOOK_DEEPLINK_LENGTH;
 
   return [
     {
@@ -122,14 +108,6 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
       description: "Apner i Google Calendar",
       href: `https://calendar.google.com/calendar/render?action=TEMPLATE&${query.toString()}`,
       external: true,
-    },
-    {
-      label: "Outlook",
-      description: useOutlookFileFallback
-        ? "Laster ned kalenderfil for Outlook"
-        : "Apner i Outlook Calendar",
-      href: useOutlookFileFallback ? calendarFileHref : outlookDeeplinkHref,
-      external: !useOutlookFileFallback,
     },
     {
       label: "Apple Calendar",
