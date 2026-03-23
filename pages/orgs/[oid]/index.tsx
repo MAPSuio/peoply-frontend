@@ -231,9 +231,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
                 className={styles.calendarSecondaryLink}
                 target="_blank"
                 rel="noreferrer"
-              >
-                Last ned .ics
-              </a>
+              ></a>
             </div>
           )}
         </div>
