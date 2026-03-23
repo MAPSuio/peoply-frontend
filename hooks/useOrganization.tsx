@@ -37,16 +37,25 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
       try {
         /* fetch organization data */
         const organization = await getOrganization(oid);
-        /* fetch organization users */
-        const organizationUsers = getOrganizationUsers(organization.id);
-
         setOrganization(organization);
-        setOrganizationUsers(await organizationUsers);
 
-        if (!organization || !organizationUsers) {
+        if (!organization) {
           throw new Error(
-            "Either the organization does not exist, or we could not fetch the members",
+            "Either the organization does not exist, or we could not fetch it",
           );
+        }
+
+        if (user) {
+          try {
+            const organizationUsers = await getOrganizationUsers(
+              organization.id,
+            );
+            setOrganizationUsers(organizationUsers);
+          } catch (error) {
+            setOrganizationUsers(undefined);
+          }
+        } else {
+          setOrganizationUsers(undefined);
         }
       } catch (error) {
         setError("Something went wrong when fetching organization data");
@@ -56,7 +65,7 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
     if (oid) {
       fetchOrganizationUsers();
     }
-  }, [oid]);
+  }, [oid, user]);
 
   /* find the authenticated user in the organization */
   const organizationUser = organizationUsers?.find(

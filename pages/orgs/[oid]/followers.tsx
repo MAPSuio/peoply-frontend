@@ -1,67 +1,92 @@
-// Next.js.
-import { GetStaticProps } from "next";
+import useSWR from "swr";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-// Components.
 import BackButton from "../../../components/BackButton";
 import Layout from "../../../components/Layout";
 import MemberCard from "../../../components/MemberCard";
 import HeadComponent from "../../../components/HeadComponent";
-
-// Hooks.
 import useBack from "../../../hooks/useBack";
-
-// Services.
+import useOrganization from "../../../hooks/useOrganization";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import useSnack from "../../../hooks/useSnack";
+import useUser from "../../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import { getOrganization } from "../../../services/organizations";
-
-// Types.
-import {
-  Alignment,
-  ArrangerFollower,
-  Organization,
-} from "../../../types/types";
-
-// Assets.
-import { ParsedUrlQuery } from "querystring";
-
-// Styles.
+import { Alignment, ArrangerFollower, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/OrgFollowers.module.scss";
-import useSWR from "swr";
 
-interface OrgFollowersProps {
-  org: Organization;
-  followers: ArrangerFollower[];
-  baseUrl: string;
-}
-
-const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
+const OrgFollowers = () => {
   const goBack = useBack();
+  const router = useRouter();
+  const redirectToLogin = useRedirectToLogin();
+  const { addSnack } = useSnack();
+  const { user, loading: userLoading } = useUser();
+  const { oid } = router.query;
+  const {
+    organization,
+    isAdminOrOwner,
+    loading: organizationLoading,
+  } = useOrganization(oid as string);
 
   const { data: followersData, error: followersError } = useSWR<
     ArrangerFollower[]
-  >(`/organizations/${org.id}/followers`, fetchFromPeoplyApiJson, {
-    fallbackData: followers,
-  });
+  >(
+    user && isAdminOrOwner && organization
+      ? `/organizations/${organization.id}/followers`
+      : null,
+    fetchFromPeoplyApiJson,
+  );
 
-  if (!followersData) {
+  useEffect(() => {
+    if (!userLoading && !user) {
+      redirectToLogin();
+    }
+  }, [redirectToLogin, user, userLoading]);
+
+  useEffect(() => {
+    if (
+      !organizationLoading &&
+      user &&
+      isAdminOrOwner === false &&
+      organization
+    ) {
+      addSnack("Du har ikke tilgang til følgerlisten", SnackTypes.ERROR);
+      router.push(`/orgs/${oid}`);
+    }
+  }, [
+    addSnack,
+    isAdminOrOwner,
+    oid,
+    organization,
+    organizationLoading,
+    router,
+    user,
+  ]);
+
+  if (userLoading || organizationLoading || !organization || !followersData) {
+    return <></>;
+  }
+
+  if (followersError) {
+    addSnack("Kunne ikke hente følgerne", SnackTypes.ERROR);
     return <></>;
   }
 
   return (
     <>
       <HeadComponent
-        title={`${org.name} | Følgere`}
-        description={`Følgere for ${org.name}`}
+        title={`${organization.name} | Følgere`}
+        description={`Følgere for ${organization.name}`}
       />
       <Layout align={Alignment.CENTER}>
         <BackButton onClick={goBack} />
         <div className={styles.headingContainer}>
           <h1>Følgere</h1>
-          <p>Her kan du se alle følgerne til {org.name}</p>
+          <p>Her kan du se alle følgerne til {organization.name}</p>
         </div>
         <ul className={styles.followersList}>
           {followersData.map((follower) => (
-            <li className={styles.listItem} key={follower.arrangerId}>
+            <li className={styles.listItem} key={follower.userId}>
               <MemberCard
                 user={follower.user}
                 description={follower.user.description}
@@ -73,45 +98,5 @@ const OrgFollowers = ({ org, followers, baseUrl }: OrgFollowersProps) => {
     </>
   );
 };
-
-interface IParams extends ParsedUrlQuery {
-  oid: string;
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { oid } = context.params as IParams;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  try {
-    const org = await getOrganization(oid);
-    const followers = await fetchFromPeoplyApiJson(
-      `/organizations/${oid}/followers`,
-    );
-
-    if (!org) {
-      return {
-        notFound: true,
-      };
-    }
-
-    return {
-      props: {
-        baseUrl,
-        org,
-        followers,
-      },
-      revalidate: 60 * 30, // 30 minutes
-    };
-  } catch (error) {
-    console.error(`Failed to fetch org followers for ${oid}:`, error);
-    return {
-      notFound: true,
-    };
-  }
-};
-
-export async function getStaticPaths() {
-  return { paths: [], fallback: "blocking" };
-}
 
 export default OrgFollowers;
