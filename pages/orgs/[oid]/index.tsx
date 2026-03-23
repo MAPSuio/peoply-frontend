@@ -96,7 +96,9 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     error: followersError,
     mutate: mutateFollowers,
   } = useSWR<ArrangerFollower[]>(
-    orgData ? `/organizations/${orgData.id}/followers` : null,
+    user && isAdminOrOwner && orgData
+      ? `/organizations/${orgData.id}/followers`
+      : null,
     fetchFromPeoplyApiJson,
   );
 
@@ -213,22 +215,26 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           />
         </div>
         <div className={styles.dataContainer}>
-          <Link
-            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}
-            className={styles.iconContainer}
-          >
-            <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
-            <p className={styles.data}>{orgMembers?.length}</p>
-            <p className={styles.dataDescription}>Medlemmer</p>
-          </Link>
-          <Link
-            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}
-            className={styles.iconContainer}
-          >
-            <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
-            <p className={styles.data}>{followers?.length}</p>
-            <p className={styles.dataDescription}>Følgere</p>
-          </Link>
+          {orgMembers && (
+            <Link
+              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}
+              className={styles.iconContainer}
+            >
+              <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
+              <p className={styles.data}>{orgMembers.length}</p>
+              <p className={styles.dataDescription}>Medlemmer</p>
+            </Link>
+          )}
+          {isAdminOrOwner && followers && (
+            <Link
+              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}
+              className={styles.iconContainer}
+            >
+              <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
+              <p className={styles.data}>{followers.length}</p>
+              <p className={styles.dataDescription}>Følgere</p>
+            </Link>
+          )}
           <Link
             href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}
             className={styles.iconContainer}
