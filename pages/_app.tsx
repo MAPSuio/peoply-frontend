@@ -7,6 +7,7 @@ import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
+import AnnouncementBanner from "../components/AnnouncementBanner";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -24,6 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   content="width=device-width, initial-scale=1"
                 />
               </Head>
+              <AnnouncementBanner />
               <div className={styles.wrapper}>
                 <div className={styles.container}>
                   <Component {...pageProps} />
