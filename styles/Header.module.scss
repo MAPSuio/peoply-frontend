@@ -53,6 +53,19 @@
   }
 }
 
+.navLinks {
+  align-items: center;
+  display: flex;
+  gap: $spacer-small;
+  margin-left: auto;
+  margin-right: $spacer-small;
+
+  a {
+    color: var(--text-color-primary, $text-color-primary);
+    font-weight: $font-weight-medium;
+  }
+}
+
 .avatarContainer {
   align-items: center;
   display: flex;

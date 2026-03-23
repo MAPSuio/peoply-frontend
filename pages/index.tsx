@@ -13,7 +13,6 @@ import Navbar from "../components/Navbar";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
 import OrganizationAvatar from "../components/OrganizationAvatar";
-import HighlightedEventCard from "../components/HighlightedEventCard";
 
 // Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -36,24 +35,18 @@ import { queryToString } from "../utils/functions";
 
 // Types.
 import { UrlObject } from "url";
-import { ArrangerFollower, Event, Organization } from "../types/types";
+import { Event, Organization } from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
-import useUser from "../hooks/useUser";
 
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  const { user } = useUser();
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
   );
-
-  const { data: followedArrangers, error: followedArrangersError } = useSWR<
-    ArrangerFollower[]
-  >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
   useEffect(() => {
     const today = new Date();
@@ -61,12 +54,6 @@ const Home: NextPage = ({
     const s = today.toISOString();
     setTodayString(s);
   }, []);
-
-  const featuredEventsQuery = {
-    featured: true,
-    afterDate: todayString,
-    orderBy: "startDate",
-  };
 
   const eventsQuery = {
     afterDate: todayString,
@@ -101,10 +88,6 @@ const Home: NextPage = ({
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
-  const eventsFromFollowedArrangersQuery = {
-    ...eventsQuery,
-    arrangerIds: followedArrangers?.map((a) => a.arrangerId),
-  };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
 
   // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
@@ -121,21 +104,6 @@ const Home: NextPage = ({
     Organization[]
   >(`/organizations?${queryToString(ifiOrgsQuery)}`, fetchFromPeoplyApiJson);
 
-  const { data: featuredEvents, error: featuredEventsError } = useSWR<Event[]>(
-    `/events?${queryToString(featuredEventsQuery)}`,
-    fetchFromPeoplyApiJson,
-  );
-
-  const {
-    data: eventsFromFollowedArrangers,
-    error: eventsFromFollowedArrangersError,
-  } = useSWR<Event[]>(
-    followedArrangers && followedArrangers.length > 0
-      ? `/events?${queryToString(eventsFromFollowedArrangersQuery)}`
-      : null,
-    fetchFromPeoplyApiJson,
-  );
-
   return (
     <>
       <HeadComponent
@@ -145,26 +113,12 @@ const Home: NextPage = ({
       />
       <Header />
       <div className={styles.container}>
-        {featuredEvents && featuredEvents.length > 0 && (
-          <HighlightedEventCard event={featuredEvents[0]} />
-        )}
         {organizations && organizations.length > 0 && (
           <OrganizationSwiper
             header="Foreninger på IFI"
             seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
             organizations={organizations}
             error={organizationsError}
-          />
-        )}
-        {eventsFromFollowedArrangers && eventsFromFollowedArrangers.length > 0 && (
-          <EventSwiper
-            header="Fra arrangører du følger"
-            seeAllUrl={{
-              pathname: "/events",
-              query: eventsFromFollowedArrangersQuery,
-            }}
-            events={eventsFromFollowedArrangers}
-            error={eventsFromFollowedArrangersError}
           />
         )}
         {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
