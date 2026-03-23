@@ -31,7 +31,7 @@ export function UserProvider({
 
   useEffect(() => {
     fetchIpInfo().then((ip) => {
-      setIpInfo(ip);
+      if (ip) setIpInfo(ip);
     });
   }, []);
 
