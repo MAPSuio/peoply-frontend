@@ -1,0 +1,86 @@
+.overlay {
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: $spacer-small;
+  position: fixed;
+  z-index: 1000;
+
+  @include desktop() {
+    align-items: center;
+  }
+}
+
+.modal {
+  background: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  max-width: 420px;
+  padding: $spacer-small;
+  width: min(100%, 420px);
+}
+
+.header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: $spacer-small;
+  margin-bottom: $spacer-small;
+}
+
+.eyebrow {
+  @include uppercase();
+  color: var(--text-color-primary, $text-color-primary);
+  margin-bottom: $spacer-mini;
+}
+
+.title {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+.closeButton {
+  @include resetButton();
+  color: var(--text-color-link, $text-color-link);
+  font-weight: $font-weight-bold;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small-plus;
+}
+
+.linkCard {
+  background: var(
+    --background-color-button-secondary,
+    $background-color-button-secondary
+  );
+  border-radius: $border-radius-inside-card;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+  outline: 1px solid
+    var(--border-color-secondary-button, $border-color-secondary-button);
+  padding: $spacer-small;
+  text-decoration: none;
+}
+
+.linkLabel {
+  font-weight: $font-weight-bold;
+}
+
+.linkDescription {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+}
+
+.addToCalendarButton {
+  border-radius: $border-radius-inside-card;
+}
+
+.icon {
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
+}

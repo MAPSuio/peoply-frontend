@@ -18,6 +18,7 @@ import BackButtonGlass from "../../../components/BackButtonGlass";
 import HeartIconGlass from "../../../components/HeartIconGlass";
 import HeadComponent from "../../../components/HeadComponent";
 import EditIconGlass from "../../../components/EditIconGlass";
+import AddToCalendarButton from "../../../components/AddToCalendarButton";
 import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
@@ -459,6 +460,11 @@ const Event = ({ event, baseUrl }: EventProps) => {
           <div className={styles.descWrapper}>
             <div className={styles.descHeaderWrapper}>
               <div className={styles.shareButtons}>
+                <AddToCalendarButton
+                  event={eventData}
+                  buttonText="Legg i kalender"
+                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+                />
                 <ShareButton
                   buttonText="Del arrangement"
                   shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${eventData.urlId}`}

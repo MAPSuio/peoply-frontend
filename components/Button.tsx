@@ -1,5 +1,5 @@
 // React.
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 
 // Components.
 import LoadingWheel from "./LoadingWheel";

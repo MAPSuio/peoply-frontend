@@ -69,7 +69,7 @@
   flex: 1 0 30%;
   flex-flow: row nowrap;
   justify-content: flex-end;
-  white-space: nowrap
+  white-space: nowrap;
 }
 
 .icon {
@@ -155,4 +155,20 @@
 
 .marginRightVerySmall {
   margin-right: $spacer-very-small;
+}
+
+.actionContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+}
+
+.actionContainer > * {
+  width: 100%;
+}
+
+@include desktop() {
+  .actionContainer {
+    flex-flow: row nowrap;
+  }
 }
