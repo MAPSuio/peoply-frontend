@@ -100,15 +100,7 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
     details: description,
     location,
   });
-  const outlookQuery = new URLSearchParams({
-    path: "/calendar/action/compose",
-    rru: "addevent",
-    subject: title,
-    startdt: startDate.toISOString(),
-    enddt: endDate.toISOString(),
-    body: description,
-    location,
-  });
+  const calendarFileHref = `/api/calendar/${eventSlug}`;
 
   return [
     {
@@ -118,15 +110,9 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
       external: true,
     },
     {
-      label: "Outlook",
-      description: "Apner i Outlook Calendar",
-      href: `https://outlook.live.com/calendar/0/deeplink/compose?${outlookQuery.toString()}`,
-      external: true,
-    },
-    {
       label: "Apple Calendar",
       description: "Apner standard kalenderfil for Apple",
-      href: `/api/calendar/${eventSlug}`,
+      href: calendarFileHref,
       external: false,
     },
   ];
