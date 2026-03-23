@@ -5,6 +5,7 @@ export function useIP() {
   const [ipInfo, setIpInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+
   useEffect(() => {
     fetchIpInfo().then((data) => {
       if (data) setIpInfo(data);
