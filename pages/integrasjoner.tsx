@@ -85,6 +85,11 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
                   Organisasjoner kan også importere arrangementer via én
                   offentlig <code>.ics</code>-URL fra org-innstillingene sine.
                 </li>
+                <li>
+                  Alle organisasjonssider eksponerer også en egen{" "}
+                  <code>.ics</code>
+                  -feed du kan abonnere på fra kalenderappen din.
+                </li>
                 <li>Cache read-only data der det gir mening.</li>
                 <li>Bygg mot stabile id-er og ikke kun visningstekst.</li>
                 <li>
@@ -108,6 +113,10 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
                 Hvis du administrerer en forening, kan du sette opp ICS-import
                 på <code>/orgs/&lt;org&gt;/settings</code>. Peoply poller feeden
                 og importerte arrangementer holdes låst som read-only.
+              </p>
+              <p>
+                Hvis du vil abonnere på Peoply-arrangementer fra en forening,
+                finner du kalenderfeed direkte på organisasjonssiden.
               </p>
             </div>
           </section>

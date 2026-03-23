@@ -210,6 +210,12 @@ const FAQ = ({ baseUrl }: FAQProps) => {
               <p className={styles.infoText}>
                 Email: maps-kontakt@studorg.uio.no
               </p>
+              <p className={styles.infoText}>
+                Discord:{" "}
+                <a href="https://discord.gg/Aj8eGf9nM6">
+                  discord.gg/Aj8eGf9nM6
+                </a>
+              </p>
             </div>
           </div>
         </div>

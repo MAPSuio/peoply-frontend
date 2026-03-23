@@ -1,10 +1,15 @@
-import { Event } from "../types/types";
+import { Event, Organization } from "../types/types";
 
 interface CalendarLink {
   label: string;
   description: string;
   href: string;
   external: boolean;
+}
+
+interface OrganizationCalendarLink {
+  subscribeHref: string;
+  downloadHref: string;
 }
 
 function escapeIcsText(value?: string | null) {
@@ -116,4 +121,27 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
       external: false,
     },
   ];
+}
+
+export function getOrganizationCalendarLinks(
+  organization: Pick<Organization, "id" | "urlId">,
+): OrganizationCalendarLink {
+  const organizationSlug = organization.urlId || organization.id;
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
+
+  if (!apiBaseUrl) {
+    return {
+      subscribeHref: "",
+      downloadHref: "",
+    };
+  }
+
+  const downloadHref = `${apiBaseUrl}/organizations/${organizationSlug}/calendar.ics`;
+
+  return {
+    subscribeHref: /^https?:\/\//.test(downloadHref)
+      ? downloadHref.replace(/^https?:\/\//, "webcal://")
+      : "",
+    downloadHref,
+  };
 }

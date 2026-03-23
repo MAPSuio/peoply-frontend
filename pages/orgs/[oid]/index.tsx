@@ -48,6 +48,7 @@ import { ParsedUrlQuery } from "querystring";
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
 import { injectLink } from "../../../utils/functions";
+import { getOrganizationCalendarLinks } from "../../../utils/ics";
 
 interface OrganizationProps {
   organization: Organization;
@@ -165,6 +166,8 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     return following ? ButtonType.CONFIRMED : ButtonType.PRIMARY;
   })();
 
+  const organizationCalendarLinks = getOrganizationCalendarLinks(org);
+
   return (
     <>
       <HeadComponent
@@ -213,6 +216,26 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             onClick={followButtonFunction}
             loading={user && !followedArrangers}
           />
+          {organizationCalendarLinks.downloadHref && (
+            <div className={styles.calendarActions}>
+              {organizationCalendarLinks.subscribeHref && (
+                <a
+                  href={organizationCalendarLinks.subscribeHref}
+                  className={styles.calendarLink}
+                >
+                  Abonner på kalender
+                </a>
+              )}
+              <a
+                href={organizationCalendarLinks.downloadHref}
+                className={styles.calendarSecondaryLink}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Last ned .ics
+              </a>
+            </div>
+          )}
         </div>
         <div className={styles.dataContainer}>
           {orgMembers && (
