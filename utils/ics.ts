@@ -1,5 +1,12 @@
 import { Event } from "../types/types";
 
+interface CalendarLink {
+  label: string;
+  description: string;
+  href: string;
+  external: boolean;
+}
+
 function escapeIcsText(value?: string | null) {
   if (!value) return "";
 
@@ -15,6 +22,26 @@ function formatIcsDate(date: Date) {
     .toISOString()
     .replace(/[-:]/g, "")
     .replace(/\.\d{3}/, "");
+}
+
+function getCalendarDateRange(event: Event) {
+  const startDate = new Date(event.startDate);
+  const endDate = event.endDate
+    ? new Date(event.endDate)
+    : new Date(startDate.getTime() + 60 * 60 * 1000);
+
+  return { startDate, endDate };
+}
+
+function formatGoogleDate(date: Date) {
+  return formatIcsDate(date);
+}
+
+function slugifyFileName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function getEventUrl(event: Event) {
@@ -36,8 +63,7 @@ function getEventDescription(event: Event) {
 }
 
 export function createEventIcs(event: Event) {
-  const startDate = new Date(event.startDate);
-  const endDate = event.endDate ? new Date(event.endDate) : null;
+  const { startDate, endDate } = getCalendarDateRange(event);
   const now = new Date();
   const lines = [
     "BEGIN:VCALENDAR",
@@ -55,31 +81,53 @@ export function createEventIcs(event: Event) {
     `URL:${escapeIcsText(getEventUrl(event))}`,
   ];
 
-  if (endDate) {
-    lines.push(`DTEND:${formatIcsDate(endDate)}`);
-  }
+  lines.push(`DTEND:${formatIcsDate(endDate)}`);
 
   lines.push("END:VEVENT", "END:VCALENDAR");
 
   return `${lines.join("\r\n")}\r\n`;
 }
 
-export function downloadEventIcs(event: Event) {
-  const fileContents = createEventIcs(event);
-  const blob = new Blob([fileContents], {
-    type: "text/calendar;charset=utf-8",
+export function getCalendarLinks(event: Event): CalendarLink[] {
+  const { startDate, endDate } = getCalendarDateRange(event);
+  const title = event.title;
+  const description = getEventDescription(event);
+  const location = getEventLocation(event);
+  const eventSlug = event.urlId || event.id || slugifyFileName(title);
+  const query = new URLSearchParams({
+    text: title,
+    dates: `${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}`,
+    details: description,
+    location,
   });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const fileName = `${(event.urlId || event.id).toLowerCase()}.ics`;
+  const outlookQuery = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: title,
+    startdt: startDate.toISOString(),
+    enddt: endDate.toISOString(),
+    body: description,
+    location,
+  });
 
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  window.setTimeout(() => {
-    window.URL.revokeObjectURL(url);
-  }, 0);
+  return [
+    {
+      label: "Google Calendar",
+      description: "Apner i Google Calendar",
+      href: `https://calendar.google.com/calendar/render?action=TEMPLATE&${query.toString()}`,
+      external: true,
+    },
+    {
+      label: "Outlook",
+      description: "Apner i Outlook Calendar",
+      href: `https://outlook.live.com/calendar/0/deeplink/compose?${outlookQuery.toString()}`,
+      external: true,
+    },
+    {
+      label: "Apple Calendar",
+      description: "Apner standard kalenderfil for Apple",
+      href: `/api/calendar/${eventSlug}`,
+      external: false,
+    },
+  ];
 }
