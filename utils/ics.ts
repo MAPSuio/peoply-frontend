@@ -7,6 +7,8 @@ interface CalendarLink {
   external: boolean;
 }
 
+const MAX_OUTLOOK_DEEPLINK_LENGTH = 1800;
+
 function escapeIcsText(value?: string | null) {
   if (!value) return "";
 
@@ -109,6 +111,10 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
     body: description,
     location,
   });
+  const calendarFileHref = `/api/calendar/${eventSlug}`;
+  const outlookDeeplinkHref = `https://outlook.live.com/calendar/0/deeplink/compose?${outlookQuery.toString()}`;
+  const useOutlookFileFallback =
+    outlookDeeplinkHref.length > MAX_OUTLOOK_DEEPLINK_LENGTH;
 
   return [
     {
@@ -119,14 +125,16 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
     },
     {
       label: "Outlook",
-      description: "Apner i Outlook Calendar",
-      href: `https://outlook.live.com/calendar/0/deeplink/compose?${outlookQuery.toString()}`,
-      external: true,
+      description: useOutlookFileFallback
+        ? "Laster ned kalenderfil for Outlook"
+        : "Apner i Outlook Calendar",
+      href: useOutlookFileFallback ? calendarFileHref : outlookDeeplinkHref,
+      external: !useOutlookFileFallback,
     },
     {
       label: "Apple Calendar",
       description: "Apner standard kalenderfil for Apple",
-      href: `/api/calendar/${eventSlug}`,
+      href: calendarFileHref,
       external: false,
     },
   ];
