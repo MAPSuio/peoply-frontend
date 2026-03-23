@@ -1,0 +1,139 @@
+.wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  padding-bottom: 6rem;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium-plus;
+  padding-bottom: $spacer-large;
+  width: $page-width-mobile;
+
+  @include desktop() {
+    width: min(90%, 900px);
+  }
+}
+
+.backButton {
+  margin-top: $spacer-small;
+}
+
+.hero,
+.card,
+.noteCard {
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+}
+
+.hero {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
+  padding: $spacer-medium;
+}
+
+.eyebrow {
+  @include uppercase();
+  color: var(--text-color-primary, $text-color-primary);
+}
+
+.title {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-title;
+
+  @include desktop() {
+    font-size: $font-size-title-desktop;
+  }
+}
+
+.lead,
+.apiBase,
+.card p,
+.noteCard p {
+  color: var(--text-color-primary, $text-color-primary);
+  line-height: $line-height-text;
+}
+
+.ctaRow {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+
+  @include desktop() {
+    align-items: center;
+    flex-flow: row wrap;
+  }
+}
+
+.primaryLink {
+  align-self: flex-start;
+  background-color: var(--text-color-emphasis, $text-color-emphasis);
+  border-radius: $border-radius-round;
+  color: var(--background-color-primary, $background-color-primary);
+  padding: $spacer-very-small-plus $spacer-medium;
+  text-decoration: none;
+}
+
+.apiBase {
+  font-family: monospace;
+}
+
+.section {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
+}
+
+.sectionTitle {
+  @include uppercase();
+  color: var(--text-color-primary, $text-color-primary);
+}
+
+.cardGrid {
+  display: grid;
+  gap: $spacer-small;
+
+  @include desktop() {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.authCardGrid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.card,
+.endpointCard,
+.exampleCard,
+.noteCard {
+  padding: $spacer-medium;
+}
+
+.card {
+  overflow-wrap: anywhere;
+
+  code {
+    display: inline-block;
+    font-family: monospace;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+.cardTitle {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  margin-bottom: $spacer-very-small-plus;
+}
+
+.noteList {
+  padding-left: $spacer-small-plus;
+
+  li:not(:last-child) {
+    margin-bottom: $spacer-mini;
+  }
+}
