@@ -48,9 +48,26 @@
   }
 }
 
+.calendarActions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  margin-top: $spacer-small;
+}
+
+.calendarLink,
+.calendarSecondaryLink {
+  @include link();
+  font-weight: $font-weight-medium;
+}
+
+.calendarSecondaryLink {
+  font-size: $font-size-tertiary;
+}
+
 .avatarContainer {
   margin-bottom: $spacer-small;
-  @include desktop () {
+  @include desktop() {
     margin-bottom: $spacer-small-plus;
   }
 }
