@@ -1,0 +1,91 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding: $spacer-small $spacer-small 0;
+  width: 100%;
+}
+
+.banner {
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    var(--background-color-card, $background-color-card),
+    var(--background-color-card-hover, $background-color-card-hover)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  max-width: $max-width;
+  padding: $spacer-small;
+  width: 100%;
+
+  @include desktop() {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: $spacer-small-plus $spacer-medium;
+  }
+}
+
+.copy {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-secondary;
+  line-height: $line-height-text;
+
+  @include desktop() {
+    font-size: $font-size-primary;
+  }
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer-very-small-plus;
+}
+
+.link,
+.button {
+  align-items: center;
+  border-radius: $border-radius-round;
+  display: inline-flex;
+  font-weight: $font-weight-medium;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 $spacer-medium;
+  text-decoration: none;
+}
+
+.link {
+  background-color: transparent;
+  border: 1px solid var(--border-color, $border-color);
+  color: var(--text-color-emphasis, $text-color-emphasis);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--text-color-link, $text-color-link);
+    color: var(--text-color-link, $text-color-link);
+    outline: none;
+  }
+}
+
+.button {
+  background-color: var(
+    --background-color-button-confirmed,
+    $background-color-button-confirmed
+  );
+  border: none;
+  color: var(--text-color-button, $text-color-button);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(
+      --background-color-button-confirmed-hover,
+      $background-color-button-confirmed-hover
+    );
+    outline: none;
+  }
+}
