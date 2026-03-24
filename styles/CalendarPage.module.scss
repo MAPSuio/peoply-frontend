@@ -2,18 +2,12 @@
   align-items: flex-start;
   display: flex;
   flex-direction: column;
-  gap: $spacer-small;
+  gap: $spacer-very-small-plus;
   margin: 0 auto $spacer-medium;
   width: min(100%, 72rem);
 
   h1 {
     color: var(--text-color-emphasis, $text-color-emphasis);
-    margin-bottom: $spacer-very-small;
-  }
-
-  p {
-    color: var(--text-color-primary, $text-color-primary);
-    line-height: $line-height-text;
   }
 
   @include desktop() {
@@ -21,14 +15,6 @@
     flex-direction: row;
     justify-content: space-between;
   }
-}
-
-.eyebrow {
-  color: var(--text-color-link, $text-color-link);
-  font-size: $font-size-tertiary;
-  font-weight: $font-weight-medium;
-  margin-bottom: $spacer-mini;
-  text-transform: uppercase;
 }
 
 .secondaryLink {
@@ -165,6 +151,15 @@
   gap: $spacer-very-small;
 }
 
+.eventGroup {
+  display: grid;
+  gap: $spacer-very-small;
+}
+
+.eventGroupCollision {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .eventChip {
   background-color: var(--background-color-input, $background-color-input);
   border-radius: $border-radius-regular;
@@ -175,6 +170,8 @@
   gap: 0.15rem;
   padding: $spacer-very-small-plus;
   text-decoration: none;
+
+  min-width: 0;
 
   &:focus-visible {
     outline: 2px solid var(--text-color-link, $text-color-link);
@@ -264,6 +261,10 @@
   .weekdayRow,
   .weekGrid {
     min-width: 48rem;
+  }
+
+  .eventGroupCollision {
+    grid-template-columns: 1fr;
   }
 
   .dayCell {

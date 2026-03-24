@@ -137,14 +137,7 @@ const Home: NextPage = ({
       <Header />
       <div className={styles.container}>
         <div className={styles.calendarEntryCard}>
-          <div>
-            <p className={styles.calendarEntryEyebrow}>Ny visning</p>
-            <h2>Se alle arrangementer i kalender</h2>
-            <p>
-              Bytt mellom uke- og månedsvisning og få oversikt over alt som
-              skjer.
-            </p>
-          </div>
+          <h2>Kalender</h2>
           <Link href="/kalender" className={styles.calendarEntryLink}>
             Åpne kalender
           </Link>

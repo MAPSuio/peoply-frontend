@@ -19,6 +19,11 @@ interface CalendarDay {
   events: Event[];
 }
 
+interface EventCollisionGroup {
+  id: string;
+  events: NormalizedEvent[];
+}
+
 type NormalizedEvent = Omit<Event, "startDate"> & {
   startDate: Date;
 };
@@ -109,6 +114,42 @@ function getArrangerName(event: Event) {
   return "Peoply";
 }
 
+function getEventEndDate(event: NormalizedEvent) {
+  return event.endDate ? new Date(event.endDate) : new Date(event.startDate);
+}
+
+function groupCollidingEvents(events: NormalizedEvent[]) {
+  const sortedEvents = [...events].sort(
+    (left, right) => left.startDate.getTime() - right.startDate.getTime(),
+  );
+  const groups: EventCollisionGroup[] = [];
+
+  for (const event of sortedEvents) {
+    const eventStart = event.startDate.getTime();
+    const lastGroup = groups.at(-1);
+
+    if (!lastGroup) {
+      groups.push({ id: event.id, events: [event] });
+      continue;
+    }
+
+    const latestEnd = Math.max(
+      ...lastGroup.events.map((groupEvent) =>
+        getEventEndDate(groupEvent).getTime(),
+      ),
+    );
+
+    if (eventStart < latestEnd) {
+      lastGroup.events.push(event);
+      continue;
+    }
+
+    groups.push({ id: event.id, events: [event] });
+  }
+
+  return groups;
+}
+
 export default function CalendarPage() {
   const [view, setView] = useState<CalendarView>("month");
   const [focusedDate, setFocusedDate] = useState(startOfDay(new Date()));
@@ -185,6 +226,15 @@ export default function CalendarPage() {
     });
   }, [focusedDate, normalizedEvents]);
 
+  const weekEventGroups = useMemo(
+    () =>
+      weekDays.map((day) => ({
+        ...day,
+        eventGroups: groupCollidingEvents(day.events as NormalizedEvent[]),
+      })),
+    [weekDays],
+  );
+
   const canGoPrevious =
     view === "month"
       ? startOfMonth(focusedDate) > startOfMonth(rangeStart)
@@ -243,20 +293,13 @@ export default function CalendarPage() {
     <>
       <HeadComponent
         title="Kalender"
-        description="Se alle kommende arrangementer uke for uke eller måned for måned."
+        description="Kalenderoversikt over kommende arrangementer."
         url={`${process.env.NEXT_PUBLIC_BASE_URL}/kalender`}
       />
       <Header />
       <Layout align={Alignment.CENTER}>
         <div className={styles.pageHeader}>
-          <div>
-            <p className={styles.eyebrow}>Kalender</p>
-            <h1>Alle arrangementer i én kalender</h1>
-            <p>
-              Få oversikt over kommende arrangementer opptil ett år frem i tid,
-              med uke- og månedsvisning.
-            </p>
-          </div>
+          <h1>Kalender</h1>
           <Link href="/events" className={styles.secondaryLink}>
             Gå til listevisning
           </Link>
@@ -360,7 +403,7 @@ export default function CalendarPage() {
           <section className={styles.calendarCard}>
             <div className={styles.weekGridWrapper}>
               <div className={styles.weekGrid}>
-                {weekDays.map((day) => (
+                {weekEventGroups.map((day) => (
                   <div
                     key={day.date.toISOString()}
                     className={`${styles.weekColumn} ${
@@ -380,9 +423,20 @@ export default function CalendarPage() {
                         })}
                       </span>
                     </div>
-                    {day.events.length > 0 ? (
+                    {day.eventGroups.length > 0 ? (
                       <div className={styles.weekDayEvents}>
-                        {day.events.map(renderEvent)}
+                        {day.eventGroups.map((group) => (
+                          <div
+                            key={group.id}
+                            className={`${styles.eventGroup} ${
+                              group.events.length > 1
+                                ? styles.eventGroupCollision
+                                : ""
+                            }`}
+                          >
+                            {group.events.map(renderEvent)}
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <p className={styles.noEventsText}>
