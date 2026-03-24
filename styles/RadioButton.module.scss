@@ -1,5 +1,6 @@
 .buttonWrapper {
   align-items: center;
+  color: var(--text-color-emphasis, $text-color-emphasis);
   flex: 0 1 calc(50% - $spacer-small);
   flex-flow: column nowrap;
   text-align: center;
