@@ -185,7 +185,7 @@ const Events: NextPage = () => {
           <div className={styles.filterCard}>
             <div className={styles.filterCopy}>
               <h2>Filtrer på forening</h2>
-              <p>Velg en eller flere foreninger for å snevre inn listen.</p>
+              <p>Velg en eller flere foreninger.</p>
             </div>
             <div className={styles.filterPanel}>
               <div className={styles.filterTopRow}>
@@ -244,7 +244,6 @@ const Events: NextPage = () => {
                       onClick={() => toggleOrganization(organization.value)}
                     >
                       <span>{organization.label}</span>
-                      <span>{isSelected ? "Valgt" : "Velg"}</span>
                     </button>
                   );
                 })}
