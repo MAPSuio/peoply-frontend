@@ -176,6 +176,9 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [validDescription, setValidDescription] = useState(true);
   const [validCategories, setValidCategories] = useState(true);
   const [validCapacity, setValidCapacity] = useState(true);
+  const [capacityFieldVisible, setCapacityFieldVisible] = useState(
+    event.capacity !== null,
+  );
 
   const [editOpen, setEditOpen] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
@@ -371,6 +374,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   function addCapacityField() {
+    setCapacityFieldVisible(true);
     setTempEventObject({
       ...tempEventObject,
       capacity: tempEventObject.capacity ?? 1,
@@ -379,6 +383,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   function removeCapacityField() {
+    setCapacityFieldVisible(false);
     setTempEventObject({
       ...tempEventObject,
       capacity: null,
@@ -406,11 +411,13 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   function acceptChange() {
     setChangesMade(true);
     setEventObject({ ...tempEventObject });
+    setCapacityFieldVisible(tempEventObject.capacity !== null);
     setEditOpen(false);
   }
 
   function rejectChange() {
     setTempEventObject({ ...eventObject });
+    setCapacityFieldVisible(eventObject.capacity !== null);
     setEditOpen(false);
   }
 
@@ -1052,7 +1059,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 label="Privat eller ikke oppført arrangement?"
                 card
               />
-              {!tempEventObject.capacity && (
+              {!capacityFieldVisible && (
                 <button
                   className={styles.addDateContainer}
                   onClick={addCapacityField}
@@ -1061,7 +1068,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   <p className={styles.addDateText}>Legg til antall plasser</p>
                 </button>
               )}
-              {tempEventObject.capacity !== null && (
+              {capacityFieldVisible && (
                 <>
                   <button
                     className={styles.addDateContainer}
