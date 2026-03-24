@@ -1,0 +1,103 @@
+.headerContainer {
+  @include headingContainer();
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  text-align: center;
+}
+
+.filterCard {
+  align-items: flex-end;
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  margin-bottom: $spacer-medium;
+  padding: $spacer-medium;
+  width: min(95%, 56rem);
+
+  @include desktop() {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.filterCopy {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+  }
+}
+
+.filterDropdown {
+  min-width: min(100%, 18rem);
+  width: 100%;
+
+  @include desktop() {
+    width: 18rem;
+  }
+}
+
+.monthSections {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-large;
+  width: 95%;
+}
+
+.monthSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+}
+
+.monthHeader {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer-very-small-plus;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-secondary;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+  }
+}
+
+.eventGrid {
+  display: flex;
+  flex-flow: row wrap;
+  gap: $spacer-small;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include desktop() {
+    gap: $spacer-small-plus;
+  }
+}
+
+.emptyState {
+  align-items: center;
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small-plus;
+  margin-top: $spacer-small;
+  padding: $spacer-large $spacer-medium;
+  text-align: center;
+  width: min(95%, 40rem);
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+  }
+}
