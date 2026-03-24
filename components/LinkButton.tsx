@@ -17,6 +17,8 @@ interface LinkButtonProps {
   noShadow?: boolean;
   icon?: React.ReactNode;
   iconPlacement: IconPlacement;
+  target?: string;
+  rel?: string;
 }
 
 export default function LinkButton({
@@ -29,6 +31,8 @@ export default function LinkButton({
   noShadow,
   icon,
   iconPlacement = IconPlacement.LEFT,
+  target,
+  rel,
 }: LinkButtonProps) {
   const buttonStyles = (() => {
     switch (type) {
@@ -65,6 +69,21 @@ export default function LinkButton({
         return styles.iconAboveOnMobile;
     }
   };
+
+  if (target || rel) {
+    return (
+      <a
+        href={href}
+        className={`${buttonStyles} ${className} ${getIconPlacementStyles()}`}
+        style={{ width }}
+        target={target}
+        rel={rel}
+      >
+        {icon}
+        {text}
+      </a>
+    );
+  }
 
   return (
     <Link

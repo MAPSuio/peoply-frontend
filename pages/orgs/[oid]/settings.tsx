@@ -4,10 +4,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import Navbar from "../../../components/Navbar";
 import OrgMenu from "../../../components/OrgMenu";
+import RadioInput from "../../../components/inputs/RadioInput";
 import useSnack from "../../../hooks/useSnack";
 import {
   ButtonSize,
   ButtonType,
+  EventRegistrationMode,
   IcsFeedSyncStatus,
   OrganizationIcsFeed,
   SnackTypes,
@@ -19,6 +21,9 @@ import useOrganization from "../../../hooks/useOrganization";
 import TextInput from "../../../components/inputs/TextInput";
 import Button from "../../../components/Button";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
+import PublicIcon from "../../../components/svgs/PublicIcon";
+import LinkIcon from "../../../components/svgs/LinkIcon";
+import CloseIcon from "../../../components/svgs/CloseIcon";
 
 const OrganizationSettings: NextPage = () => {
   const router = useRouter();
@@ -33,6 +38,8 @@ const OrganizationSettings: NextPage = () => {
   } = useOrganization(oid as string);
   const [icsUrl, setIcsUrl] = useState("");
   const [validIcsUrl, setValidIcsUrl] = useState(true);
+  const [registrationMode, setRegistrationMode] =
+    useState<EventRegistrationMode>(EventRegistrationMode.EXTERNAL);
 
   const { data: icsFeed, mutate: mutateIcsFeed } =
     useSWR<OrganizationIcsFeed | null>(
@@ -43,8 +50,12 @@ const OrganizationSettings: NextPage = () => {
   useEffect(() => {
     if (icsFeed?.url) {
       setIcsUrl(icsFeed.url);
+      setRegistrationMode(
+        icsFeed.registrationMode ?? EventRegistrationMode.EXTERNAL,
+      );
     } else {
       setIcsUrl("");
+      setRegistrationMode(EventRegistrationMode.EXTERNAL);
     }
   }, [icsFeed]);
 
@@ -77,7 +88,10 @@ const OrganizationSettings: NextPage = () => {
     setIcsUrl(event.target.value.trim());
   };
 
-  const hasChanges = (icsFeed?.url ?? "") !== icsUrl;
+  const hasChanges =
+    (icsFeed?.url ?? "") !== icsUrl ||
+    (icsFeed?.registrationMode ?? EventRegistrationMode.EXTERNAL) !==
+      registrationMode;
 
   const getStatusLabel = () => {
     switch (icsFeed?.lastSyncStatus) {
@@ -102,11 +116,23 @@ const OrganizationSettings: NextPage = () => {
     return new Date(value).toLocaleString("nb-NO");
   };
 
+  const getRegistrationModeLabel = (mode?: EventRegistrationMode) => {
+    switch (mode) {
+      case EventRegistrationMode.PEOPLY:
+        return "Påmelding i Peoply";
+      case EventRegistrationMode.NONE:
+        return "Ingen påmelding i Peoply";
+      case EventRegistrationMode.EXTERNAL:
+      default:
+        return "Ekstern påmelding";
+    }
+  };
+
   const handleSave = async () => {
     try {
       await fetchFromPeoplyApiJson(`/organizations/${org.id}/ics-feed`, {
         method: "PUT",
-        body: JSON.stringify({ url: icsUrl }),
+        body: JSON.stringify({ url: icsUrl, registrationMode }),
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       await mutateIcsFeed();
@@ -184,6 +210,36 @@ const OrganizationSettings: NextPage = () => {
           setValid={setValidIcsUrl}
           validate
         />
+        <RadioInput
+          label="Hvordan skal påmelding håndteres for importerte arrangementer?"
+          optionsAndIcons={[
+            {
+              id: EventRegistrationMode.PEOPLY,
+              text: "Påmelding i Peoply",
+              hintText:
+                "Bruk Peoplys vanlige påmeldingsknapp for importerte arrangementer.",
+              icon: PublicIcon,
+              active: registrationMode === EventRegistrationMode.PEOPLY,
+            },
+            {
+              id: EventRegistrationMode.EXTERNAL,
+              text: "Ekstern påmelding",
+              hintText:
+                "Skjul intern påmelding og send brukeren til arrangørens egen løsning.",
+              icon: LinkIcon,
+              active: registrationMode === EventRegistrationMode.EXTERNAL,
+            },
+            {
+              id: EventRegistrationMode.NONE,
+              text: "Ingen påmelding",
+              hintText: "Vis arrangementet uten påmeldingsknapp i Peoply.",
+              icon: CloseIcon,
+              active: registrationMode === EventRegistrationMode.NONE,
+            },
+          ]}
+          onClick={setRegistrationMode}
+          card
+        />
         <div className={styles.buttonRow}>
           <Button
             text={icsFeed ? "Oppdater URL" : "Lagre URL"}
@@ -222,6 +278,12 @@ const OrganizationSettings: NextPage = () => {
           <p>
             <strong>Synkintervall:</strong> {icsFeed?.syncIntervalMinutes ?? 60}{" "}
             min
+          </p>
+          <p>
+            <strong>Påmelding:</strong>{" "}
+            {getRegistrationModeLabel(
+              icsFeed?.registrationMode ?? registrationMode,
+            )}
           </p>
           {icsFeed?.lastSyncError && (
             <p className={styles.errorText}>

@@ -200,6 +200,7 @@ export interface OrganizationIcsFeed {
   id: string;
   organizationId: string;
   url: string;
+  registrationMode: EventRegistrationMode;
   enabled: boolean;
   syncIntervalMinutes: number;
   lastSyncedAt?: string | null;
@@ -213,6 +214,12 @@ export interface OrganizationIcsFeed {
 export enum EventSource {
   MANUAL = "MANUAL",
   ICS = "ICS",
+}
+
+export enum EventRegistrationMode {
+  PEOPLY = "PEOPLY",
+  EXTERNAL = "EXTERNAL",
+  NONE = "NONE",
 }
 
 export interface Arranger {
@@ -289,6 +296,7 @@ export interface Event {
   longitude?: number;
   formQuestion?: string;
   source?: EventSource;
+  registrationMode?: EventRegistrationMode;
   externalId?: string;
   externalUrl?: string;
   externalUpdatedAt?: string | null;

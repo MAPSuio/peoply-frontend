@@ -22,6 +22,7 @@ import AddToCalendarButton from "../../../components/AddToCalendarButton";
 import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
+import LinkIcon from "../../../components/svgs/LinkIcon";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -51,6 +52,7 @@ import {
 import {
   ButtonType,
   Event,
+  EventRegistrationMode,
   EventUpdate,
   OrganizationRole,
   Registration,
@@ -518,11 +520,29 @@ const Event = ({ event, baseUrl }: EventProps) => {
               </div>
             </div>
           )}
-          <JoinButton
-            event={eventData}
-            updateOnChange={[updateEvent, mutateUpdates]}
-            className={styles.primaryButton}
-          />
+          {eventData.registrationMode === EventRegistrationMode.EXTERNAL &&
+          eventData.externalUrl ? (
+            <LinkButton
+              text="Gå til ekstern påmelding"
+              href={eventData.externalUrl}
+              className={styles.primaryButton}
+              type={ButtonType.PRIMARY}
+              icon={<LinkIcon />}
+              iconPlacement={IconPlacement.LEFT}
+              target="_blank"
+              rel="noopener noreferrer"
+            />
+          ) : eventData.registrationMode === EventRegistrationMode.NONE ? (
+            <p className={styles.noRegistrationText}>
+              Påmelding håndteres ikke i Peoply for dette arrangementet.
+            </p>
+          ) : (
+            <JoinButton
+              event={eventData}
+              updateOnChange={[updateEvent, mutateUpdates]}
+              className={styles.primaryButton}
+            />
+          )}
         </div>
       </div>
     </>
