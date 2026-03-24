@@ -38,6 +38,7 @@ import ImageInput from "./inputs/ImageInput";
 import TimeView from "./TimeView";
 import Modal from "./Modal";
 import TextInputLong from "./inputs/TextInputLong";
+import NumberInput from "./inputs/NumberInput";
 
 // Styles
 import styles from "../styles/SummaryPage.module.scss";
@@ -173,6 +174,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [validLocationName, setValidLocationName] = useState(true);
   const [validDescription, setValidDescription] = useState(true);
   const [validCategories, setValidCategories] = useState(true);
+  const [validCapacity, setValidCapacity] = useState(true);
 
   const [editOpen, setEditOpen] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
@@ -367,6 +369,32 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     event.image = undefined;
   }
 
+  function addCapacityField() {
+    setTempEventObject({
+      ...tempEventObject,
+      capacity: tempEventObject.capacity ?? 1,
+    });
+    setValidCapacity(true);
+  }
+
+  function removeCapacityField() {
+    setTempEventObject({
+      ...tempEventObject,
+      capacity: null,
+    });
+    setValidCapacity(true);
+  }
+
+  function updateCapacity(e: ChangeEvent<HTMLInputElement>) {
+    const nextValue = e.target.value;
+
+    setTempEventObject({
+      ...tempEventObject,
+      capacity: nextValue === "" ? null : parseInt(nextValue, 10),
+    });
+    setValidCapacity(nextValue === "" || parseInt(nextValue, 10) > 0);
+  }
+
   function acceptChange() {
     setChangesMade(true);
     setEventObject({ ...tempEventObject });
@@ -460,7 +488,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     validRegEnd &&
     validLocationName &&
     validDescription &&
-    validCategories;
+    validCategories &&
+    validCapacity;
   return (
     <>
       <div className={styles.summaryContainer}>
@@ -1011,6 +1040,39 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 label="Privat eller ikke oppført arrangement?"
                 card
               />
+              {!tempEventObject.capacity && (
+                <button
+                  className={styles.addDateContainer}
+                  onClick={addCapacityField}
+                >
+                  <PlusIcon className={styles.addDateIcon} />
+                  <p className={styles.addDateText}>Legg til antall plasser</p>
+                </button>
+              )}
+              {tempEventObject.capacity !== null && (
+                <>
+                  <button
+                    className={styles.addDateContainer}
+                    onClick={removeCapacityField}
+                  >
+                    <MinusIcon
+                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
+                    />
+                    <p className={styles.addDateText}>Fjern antall plasser</p>
+                  </button>
+                  <NumberInput
+                    value={`${tempEventObject.capacity ?? ""}`}
+                    inputId="capacity"
+                    inputName="eventCapacity"
+                    label="Antall plasser"
+                    placeholder="F.eks. 120"
+                    min="1"
+                    errorMessage="Antall plasser må være større enn 0"
+                    required={false}
+                    handleChange={updateCapacity}
+                  />
+                </>
+              )}
             </>
           }
         >
@@ -1027,6 +1089,17 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
               </div>
             ) : (
               <>{/* TODO: implement Private */}</>
+            )}
+            {eventObject.capacity !== null ? (
+              <div className={styles.dataItemContainer}>
+                <p
+                  className={styles.dataLabel}
+                >{`${eventObject.capacity} plasser`}</p>
+              </div>
+            ) : (
+              <div className={styles.dataItemContainer}>
+                <p className={styles.dataLabel}>Ubegrenset antall plasser</p>
+              </div>
             )}
           </div>
         </SummaryCard>
