@@ -34,24 +34,29 @@
 .controlsCard {
   display: flex;
   flex-direction: column;
-  gap: $spacer-small;
+  gap: $spacer-very-small-plus;
   margin-bottom: $spacer-medium;
-  padding: $spacer-small-plus;
+  padding: $spacer-very-small-plus;
   width: min(100%, 72rem);
 }
 
-.viewSwitcher {
-  display: inline-flex;
-  gap: $spacer-very-small;
+.controlBar {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+
+  @include desktop() {
+    max-width: 24rem;
+  }
 }
 
 .viewButton,
-.navButton,
-.todayButton {
+.navButton {
   @include resetButton();
   align-items: center;
   background-color: var(--background-color-input, $background-color-input);
-  border-radius: $border-radius-round;
+  border-radius: 0;
   color: var(--text-color-emphasis, $text-color-emphasis);
   cursor: pointer;
   display: inline-flex;
@@ -71,7 +76,7 @@
 }
 
 .viewButtonActive,
-.todayButton {
+.navButtonActive {
   background-color: var(
     --background-color-button-confirmed,
     $background-color-button-confirmed
@@ -79,17 +84,12 @@
   color: var(--text-color-button, $text-color-button);
 }
 
-.navigationControls {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacer-very-small-plus;
-}
-
 .activeRange {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-weight: $font-weight-medium;
-  min-width: 12rem;
+  margin: 0 auto $spacer-small;
+  text-transform: capitalize;
+  width: min(100%, 72rem);
 }
 
 .calendarCard {
