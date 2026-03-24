@@ -6,6 +6,7 @@ import {
   ButtonType,
   Event,
   EventCategory,
+  RegStatus,
   SnackTypes,
   Visibility,
 } from "../types/types";
@@ -387,12 +388,19 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
 
   function updateCapacity(e: ChangeEvent<HTMLInputElement>) {
     const nextValue = e.target.value;
+    const nextCapacity = nextValue === "" ? null : parseInt(nextValue, 10);
+    const minimumCapacity = goingCount ?? 0;
 
     setTempEventObject({
       ...tempEventObject,
-      capacity: nextValue === "" ? null : parseInt(nextValue, 10),
+      capacity: nextCapacity,
     });
-    setValidCapacity(nextValue === "" || parseInt(nextValue, 10) > 0);
+    setValidCapacity(
+      nextCapacity !== null &&
+        Number.isFinite(nextCapacity) &&
+        nextCapacity > 0 &&
+        nextCapacity >= minimumCapacity,
+    );
   }
 
   function acceptChange() {
@@ -459,6 +467,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const router = useRouter();
   /* Get all the possible event categories. */
   const { data: allCategories } = useSWR("/categories", fetchFromPeoplyApiJson);
+  const { data: goingCount } = useSWR<number>(
+    `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
+    fetchFromPeoplyApiJson,
+  );
 
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = tempEventObject.eventImage
@@ -1066,11 +1078,16 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                     inputName="eventCapacity"
                     label="Antall plasser"
                     placeholder="F.eks. 120"
-                    min="1"
+                    min={`${Math.max(goingCount ?? 1, 1)}`}
                     errorMessage="Antall plasser må være større enn 0"
                     required={false}
                     handleChange={updateCapacity}
                   />
+                  {typeof goingCount === "number" && (
+                    <p
+                      className={styles.dateText}
+                    >{`Du kan ikke sette færre enn ${goingCount} plasser fordi ${goingCount} er påmeldt.`}</p>
+                  )}
                 </>
               )}
             </>
