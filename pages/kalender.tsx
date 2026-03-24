@@ -6,9 +6,10 @@ import Header from "../components/Header";
 import HeadComponent from "../components/HeadComponent";
 import Layout from "../components/Layout";
 import Navbar from "../components/Navbar";
+import Avatar from "../components/Avatar";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
-import { Alignment, Event } from "../types/types";
+import { Alignment, Event, Organization } from "../types/types";
 import { queryToString } from "../utils/functions";
 
 type CalendarView = "month" | "week";
@@ -112,6 +113,12 @@ function getArrangerName(event: Event) {
   }
 
   return "Peoply";
+}
+
+function getArrangerOrganization(event: Event): Organization | undefined {
+  return event.eventArrangers?.find(
+    (eventArranger) => eventArranger.arranger.organization,
+  )?.arranger.organization;
 }
 
 function getEventEndDate(event: NormalizedEvent) {
@@ -277,17 +284,28 @@ export default function CalendarPage() {
     setFocusedDate(startOfDay(new Date()));
   };
 
-  const renderEvent = (event: Event) => (
-    <Link
-      key={event.id}
-      href={`/events/${event.urlId}`}
-      className={styles.eventChip}
-    >
-      <span className={styles.eventOrg}>{getArrangerName(event)}</span>
-      <strong>{event.title}</strong>
-      <span>{formatEventTime(event)}</span>
-    </Link>
-  );
+  const renderEvent = (event: Event) => {
+    const organization = getArrangerOrganization(event);
+
+    return (
+      <Link
+        key={event.id}
+        href={`/events/${event.urlId}`}
+        className={styles.eventChip}
+      >
+        <div className={styles.eventMetaRow}>
+          {organization ? (
+            <div className={styles.eventAvatar}>
+              <Avatar org={organization} size="small" />
+            </div>
+          ) : undefined}
+          <span className={styles.eventOrg}>{getArrangerName(event)}</span>
+        </div>
+        <strong>{event.title}</strong>
+        <span>{formatEventTime(event)}</span>
+      </Link>
+    );
+  };
 
   return (
     <>

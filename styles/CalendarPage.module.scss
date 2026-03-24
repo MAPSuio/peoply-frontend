@@ -199,8 +199,25 @@
   }
 }
 
+.eventMetaRow {
+  align-items: center;
+  display: flex;
+  gap: $spacer-very-small;
+  min-width: 0;
+}
+
+.eventAvatar {
+  flex: 0 0 auto;
+
+  > div {
+    align-items: center;
+    display: flex;
+  }
+}
+
 .eventOrg {
   color: var(--text-color-link, $text-color-link);
+  min-width: 0;
 }
 
 .moreEvents,
