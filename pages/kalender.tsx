@@ -218,7 +218,10 @@ export default function CalendarPage() {
   const monthDays = useMemo(() => {
     const monthStart = startOfMonth(focusedDate);
     const monthEnd = endOfMonth(focusedDate);
-    const gridStart = startOfWeek(monthStart);
+    const monthGridStart = startOfWeek(monthStart);
+    const currentWeekStart = startOfWeek(rangeStart);
+    const gridStart =
+      monthGridStart < currentWeekStart ? currentWeekStart : monthGridStart;
     const gridEnd = endOfWeek(monthEnd);
     const days: CalendarDay[] = [];
 
@@ -237,7 +240,7 @@ export default function CalendarPage() {
     }
 
     return days;
-  }, [focusedDate, normalizedEvents]);
+  }, [focusedDate, normalizedEvents, rangeStart]);
 
   const weekDays = useMemo(() => {
     const weekStart = startOfWeek(focusedDate);
