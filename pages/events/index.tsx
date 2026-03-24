@@ -10,7 +10,7 @@ import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import { Alignment, Event } from "../../types/types";
+import { Alignment, Event, Organization } from "../../types/types";
 import { queryToString } from "../../utils/functions";
 
 import styles from "../../styles/EventsPage.module.scss";
@@ -70,39 +70,34 @@ const Events: NextPage = () => {
     () => `/events?${queryToString(eventsQuery)}`,
     [eventsQuery],
   );
+  const organizationsQueryUrl = useMemo(
+    () =>
+      `/organizations?${queryToString({ take: MAX_EVENTS, orderBy: "name" })}`,
+    [],
+  );
 
   const { data: events, error } = useSWR<Event[]>(
     queryUrl,
     fetchFromPeoplyApiJson,
   );
+  const { data: organizations } = useSWR<Organization[]>(
+    organizationsQueryUrl,
+    fetchFromPeoplyApiJson,
+  );
 
   const organizationOptions = useMemo(() => {
-    const mappedOrganizations = (events ?? [])
-      .flatMap((event) => event.eventArrangers ?? [])
-      .map((eventArranger) => eventArranger.arranger.organization)
-      .filter(
-        (organization): organization is NonNullable<typeof organization> =>
-          Boolean(organization),
-      );
-
-    const uniqueOrganizations = mappedOrganizations.reduce<
+    const uniqueOrganizations = (organizations ?? []).reduce<
       { value: string; label: string }[]
     >((allOrganizations, organization) => {
       if (
-        allOrganizations.some(
-          (existingOrganization) =>
-            existingOrganization.value === organization.id,
-        )
+        allOrganizations.some((existing) => existing.value === organization.id)
       ) {
         return allOrganizations;
       }
 
       return [
         ...allOrganizations,
-        {
-          value: organization.id,
-          label: organization.name,
-        },
+        { value: organization.id, label: organization.name },
       ];
     }, []);
 
@@ -112,7 +107,7 @@ const Events: NextPage = () => {
         a.label.localeCompare(b.label, "nb-NO"),
       ),
     ];
-  }, [events]);
+  }, [organizations]);
 
   const filteredEvents = useMemo(() => {
     return (events ?? []).filter((event) => {
