@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BackButton from "../../components/BackButton";
-import Dropdown from "../../components/Dropdown";
 import HeadComponent from "../../components/HeadComponent";
 import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
+import Tag from "../../components/Tag";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import { Alignment, Event, Organization } from "../../types/types";
@@ -34,7 +34,10 @@ function capitalize(value: string) {
 const Events: NextPage = () => {
   const router = useRouter();
   const goBack = useBack();
-  const [selectedOrganizationId, setSelectedOrganizationId] = useState("all");
+  const [selectedOrganizationIds, setSelectedOrganizationIds] = useState<
+    string[]
+  >([]);
+  const [organizationSearch, setOrganizationSearch] = useState("");
 
   const eventsQuery = useMemo(() => {
     const now = new Date();
@@ -101,26 +104,44 @@ const Events: NextPage = () => {
       ];
     }, []);
 
-    return [
-      { value: "all", label: "Alle foreninger" },
-      ...uniqueOrganizations.sort((a, b) =>
-        a.label.localeCompare(b.label, "nb-NO"),
-      ),
-    ];
+    return uniqueOrganizations.sort((a, b) =>
+      a.label.localeCompare(b.label, "nb-NO"),
+    );
   }, [organizations]);
+
+  const visibleOrganizationOptions = useMemo(() => {
+    const normalizedSearch = organizationSearch.trim().toLowerCase();
+
+    if (!normalizedSearch) {
+      return organizationOptions;
+    }
+
+    return organizationOptions.filter((organization) =>
+      organization.label.toLowerCase().includes(normalizedSearch),
+    );
+  }, [organizationOptions, organizationSearch]);
 
   const filteredEvents = useMemo(() => {
     return (events ?? []).filter((event) => {
-      if (selectedOrganizationId === "all") {
+      if (selectedOrganizationIds.length === 0) {
         return true;
       }
 
-      return (event.eventArrangers ?? []).some(
-        (eventArranger) =>
-          eventArranger.arranger.organization?.id === selectedOrganizationId,
+      return (event.eventArrangers ?? []).some((eventArranger) =>
+        selectedOrganizationIds.includes(
+          eventArranger.arranger.organization?.id ?? "",
+        ),
       );
     });
-  }, [events, selectedOrganizationId]);
+  }, [events, selectedOrganizationIds]);
+
+  const toggleOrganization = (organizationId: string) => {
+    setSelectedOrganizationIds((currentOrganizationIds) =>
+      currentOrganizationIds.includes(organizationId)
+        ? currentOrganizationIds.filter((id) => id !== organizationId)
+        : [...currentOrganizationIds, organizationId],
+    );
+  };
 
   const eventsByMonth = useMemo(() => {
     return filteredEvents.reduce<EventMonthGroup[]>((groupedEvents, event) => {
@@ -160,21 +181,80 @@ const Events: NextPage = () => {
           </p>
         </div>
 
-        {organizationOptions.length > 1 && (
+        {organizationOptions.length > 0 && (
           <div className={styles.filterCard}>
             <div className={styles.filterCopy}>
               <h2>Filtrer på forening</h2>
-              <p>Velg en forening for å se bare arrangementene deres.</p>
+              <p>Velg en eller flere foreninger for å snevre inn listen.</p>
             </div>
-            <Dropdown
-              inputId="organizationFilter"
-              label="Forening"
-              options={organizationOptions}
-              value={selectedOrganizationId}
-              setValue={setSelectedOrganizationId}
-              className={styles.filterDropdown}
-              card
-            />
+            <div className={styles.filterPanel}>
+              <div className={styles.filterTopRow}>
+                <label
+                  className={styles.filterLabel}
+                  htmlFor="organizationFilter"
+                >
+                  Foreninger
+                </label>
+                {selectedOrganizationIds.length > 0 && (
+                  <button
+                    className={styles.clearButton}
+                    onClick={() => setSelectedOrganizationIds([])}
+                  >
+                    Nullstill
+                  </button>
+                )}
+              </div>
+              <input
+                id="organizationFilter"
+                className={styles.searchInput}
+                type="text"
+                value={organizationSearch}
+                onChange={(event) => setOrganizationSearch(event.target.value)}
+                placeholder="Søk etter forening"
+              />
+              {selectedOrganizationIds.length > 0 && (
+                <div className={styles.selectedTags}>
+                  {organizationOptions
+                    .filter((organization) =>
+                      selectedOrganizationIds.includes(organization.value),
+                    )
+                    .map((organization) => (
+                      <Tag
+                        key={organization.value}
+                        text={organization.label}
+                        active
+                        noShadow
+                        onClick={() => toggleOrganization(organization.value)}
+                      />
+                    ))}
+                </div>
+              )}
+              <div className={styles.optionList}>
+                {visibleOrganizationOptions.map((organization) => {
+                  const isSelected = selectedOrganizationIds.includes(
+                    organization.value,
+                  );
+
+                  return (
+                    <button
+                      key={organization.value}
+                      className={`${styles.optionButton} ${
+                        isSelected ? styles.optionButtonSelected : ""
+                      }`}
+                      onClick={() => toggleOrganization(organization.value)}
+                    >
+                      <span>{organization.label}</span>
+                      <span>{isSelected ? "Valgt" : "Velg"}</span>
+                    </button>
+                  );
+                })}
+                {visibleOrganizationOptions.length === 0 && (
+                  <p className={styles.noOptionsText}>
+                    Ingen foreninger matcher søket.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
