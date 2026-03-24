@@ -12,6 +12,7 @@ import {
   ButtonSize,
   ButtonType,
   Event,
+  EventRegistrationMode,
   FoodPreference,
   InvitationStatus,
   Registration,
@@ -261,6 +262,14 @@ export default function JoinButton({
     }
     return ButtonType.PRIMARY;
   })();
+
+  const shouldHideButton =
+    event.registrationMode === EventRegistrationMode.EXTERNAL ||
+    event.registrationMode === EventRegistrationMode.NONE;
+
+  if (shouldHideButton) {
+    return null;
+  }
 
   async function createNewRegistration() {
     if (!user) {
