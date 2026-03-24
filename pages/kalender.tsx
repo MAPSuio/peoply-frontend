@@ -302,10 +302,6 @@ export default function CalendarPage() {
     );
   };
 
-  const goToToday = () => {
-    setFocusedDate(startOfDay(new Date()));
-  };
-
   const renderEvent = (event: Event) => {
     const organization = getArrangerOrganization(event);
 
@@ -346,7 +342,7 @@ export default function CalendarPage() {
         </div>
 
         <section className={styles.controlsCard}>
-          <div className={styles.viewSwitcher}>
+          <div className={styles.controlBar}>
             <button
               className={`${styles.viewButton} ${
                 view === "month" ? styles.viewButtonActive : ""
@@ -365,7 +361,7 @@ export default function CalendarPage() {
             </button>
           </div>
 
-          <div className={styles.navigationControls}>
+          <div className={styles.controlBar}>
             <button
               className={styles.navButton}
               onClick={() => navigate(-1)}
@@ -373,9 +369,6 @@ export default function CalendarPage() {
             >
               Forrige
             </button>
-            <div className={styles.activeRange}>
-              {view === "month" ? activeMonthLabel : activeWeekLabel}
-            </div>
             <button
               className={styles.navButton}
               onClick={() => navigate(1)}
@@ -383,11 +376,12 @@ export default function CalendarPage() {
             >
               Neste
             </button>
-            <button className={styles.todayButton} onClick={goToToday}>
-              I dag
-            </button>
           </div>
         </section>
+
+        <div className={styles.activeRange}>
+          {view === "month" ? activeMonthLabel : activeWeekLabel}
+        </div>
 
         {!events && !error && (
           <div className={styles.emptyState}>
