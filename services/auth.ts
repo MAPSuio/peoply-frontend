@@ -1,5 +1,7 @@
 import { fetchFromPeoplyApi } from "./fetchers";
 
+let refreshPromise: Promise<Response> | null = null;
+
 /* will request the backend to remove auth cookies from clienty */
 export async function logout() {
   const url = `/auth/logout`;
@@ -8,8 +10,16 @@ export async function logout() {
 
 /* will refresh access token by using a refresh token */
 export async function refreshAccessToken() {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`;
-  return fetch(url, { method: "POST", credentials: "include" });
+  if (!refreshPromise) {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`;
+    refreshPromise = fetch(url, { method: "POST", credentials: "include" })
+      .then((response) => response)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
 }
 
 export async function deleteMe() {
