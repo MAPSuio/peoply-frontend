@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { CSSProperties, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import Header from "../components/Header";
@@ -155,6 +155,28 @@ function groupCollidingEvents(events: NormalizedEvent[]) {
   }
 
   return groups;
+}
+
+function getGroupTimeLabel(events: NormalizedEvent[]) {
+  if (events.length === 0) {
+    return "";
+  }
+
+  const sortedEvents = [...events].sort(
+    (left, right) => left.startDate.getTime() - right.startDate.getTime(),
+  );
+  const firstEvent = sortedEvents[0];
+  const latestEnd = new Date(
+    Math.max(...sortedEvents.map((event) => getEventEndDate(event).getTime())),
+  );
+
+  return `${firstEvent.startDate.toLocaleTimeString("nb-NO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}-${latestEnd.toLocaleTimeString("nb-NO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
 }
 
 export default function CalendarPage() {
@@ -444,15 +466,27 @@ export default function CalendarPage() {
                     {day.eventGroups.length > 0 ? (
                       <div className={styles.weekDayEvents}>
                         {day.eventGroups.map((group) => (
-                          <div
-                            key={group.id}
-                            className={`${styles.eventGroup} ${
-                              group.events.length > 1
-                                ? styles.eventGroupCollision
-                                : ""
-                            }`}
-                          >
-                            {group.events.map(renderEvent)}
+                          <div key={group.id} className={styles.eventGroupRow}>
+                            <div className={styles.eventGroupTime}>
+                              {getGroupTimeLabel(group.events)}
+                            </div>
+                            <div
+                              className={`${styles.eventGroup} ${
+                                group.events.length > 1
+                                  ? styles.eventGroupCollision
+                                  : ""
+                              }`}
+                              style={
+                                {
+                                  "--event-columns": `${Math.min(
+                                    Math.max(group.events.length, 1),
+                                    3,
+                                  )}`,
+                                } as CSSProperties
+                              }
+                            >
+                              {group.events.map(renderEvent)}
+                            </div>
                           </div>
                         ))}
                       </div>

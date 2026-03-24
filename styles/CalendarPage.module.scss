@@ -157,7 +157,19 @@
 }
 
 .eventGroupCollision {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--event-columns, 2), minmax(0, 1fr));
+}
+
+.eventGroupRow {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+}
+
+.eventGroupTime {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: 0.72rem;
+  font-weight: $font-weight-medium;
 }
 
 .eventChip {
