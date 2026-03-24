@@ -136,20 +136,6 @@ const Home: NextPage = ({
       />
       <Header />
       <div className={styles.container}>
-        <div className={styles.calendarEntryCard}>
-          <h2>Kalender</h2>
-          <Link href="/kalender" className={styles.calendarEntryLink}>
-            Åpne kalender
-          </Link>
-        </div>
-        {organizations && organizations.length > 0 && (
-          <OrganizationSwiper
-            header="Foreninger på IFI"
-            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
-            organizations={organizations}
-            error={organizationsError}
-          />
-        )}
         {eventsFromFollowedOrganizations &&
         eventsFromFollowedOrganizations.length > 0 ? (
           <EventSwiper
@@ -161,6 +147,12 @@ const Home: NextPage = ({
             }
           />
         ) : undefined}
+        <div className={styles.calendarEntryCard}>
+          <h2>Kalender</h2>
+          <Link href="/kalender" className={styles.calendarEntryLink}>
+            Åpne kalender
+          </Link>
+        </div>
         {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper
             header={"Hva skjer på IFI?"}
@@ -178,6 +170,14 @@ const Home: NextPage = ({
             error={futureEventsError}
           />
         ) : undefined}
+        {organizations && organizations.length > 0 && (
+          <OrganizationSwiper
+            header="Foreninger på IFI"
+            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
+            organizations={organizations}
+            error={organizationsError}
+          />
+        )}
       </div>
       <Navbar />
     </>
