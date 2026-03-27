@@ -16,18 +16,16 @@
 }
 
 .hero {
-  background:
-    radial-gradient(circle at top right, rgb(11 124 109 / 18%), transparent 40%),
-    linear-gradient(180deg, rgb(11 124 109 / 7%), transparent),
-    var(--background-color-card, $background-color-card);
-  border: 1px solid rgb(11 124 109 / 12%);
+  background: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
   padding: $spacer-medium;
 }
 
 .eyebrow {
   @include uppercase();
-  color: #0B7C6D;
+  color: var(--text-color-link, $text-color-link);
   margin: 0 0 $spacer-mini;
 }
 
