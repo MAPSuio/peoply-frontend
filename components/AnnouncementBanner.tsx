@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import styles from "../styles/AnnouncementBanner.module.scss";
 
-const ANNOUNCEMENT_ID = "calendar-tools-2026-03-23";
+const ANNOUNCEMENT_ID = "auth-upgrade-2026-03-27";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
 const ANNOUNCEMENT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -56,6 +55,24 @@ export default function AnnouncementBanner() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!visible || typeof window === "undefined") {
+      return;
+    }
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        acknowledgeAnnouncement();
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [visible]);
+
   const acknowledgeAnnouncement = () => {
     if (typeof window !== "undefined") {
       const storedValue = window.localStorage.getItem(ANNOUNCEMENT_KEY);
@@ -88,18 +105,34 @@ export default function AnnouncementBanner() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.banner}>
+    <div
+      className={styles.overlay}
+      onClick={acknowledgeAnnouncement}
+      role="presentation"
+    >
+      <div
+        className={styles.modal}
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="announcement-title"
+      >
+        <p className={styles.eyebrow}>Viktig informasjon</p>
+        <h2 className={styles.title} id="announcement-title">
+          Peoply oppgraderer autentiseringsløsningene
+        </h2>
         <p className={styles.copy}>
-          Nytt i Peoply: Du kan nå legge arrangementer i kalenderen din og
-          abonnere på foreningers arrangementer fra organisasjonssiden deres.
+          Vi oppgraderer autentiseringsløsningene våre som følge av store
+          mengder angrep mot siden.
+        </p>
+        <p className={styles.copy}>
+          I perioden kan autentiseringstjenester tidvis være utilgjengelige på
+          siden. Prøv gjerne igjen litt senere dersom innlogging eller
+          registrering ikke fungerer som forventet.
         </p>
         <div className={styles.actions}>
-          <Link href="/integrasjoner" className={styles.link}>
-            Les mer
-          </Link>
           <button className={styles.button} onClick={acknowledgeAnnouncement}>
-            OK
+            Skjønner
           </button>
         </div>
       </div>
