@@ -1,6 +1,9 @@
 .overlay {
   align-items: flex-end;
-  background: rgba(0, 0, 0, 0.28);
+  background-color: var(
+    --background-color-card-transparent,
+    $background-color-card-transparent
+  );
   display: flex;
   inset: 0;
   justify-content: center;
@@ -14,14 +17,8 @@
 }
 
 .modal {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 176, 0, 0.14),
-    transparent 32%,
-    var(--background-color-card, $background-color-card) 32%,
-    var(--background-color-card-hover, $background-color-card-hover)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-regular;
   box-shadow: var(--shadow-event-card, $shadow-event-card-light);
   display: flex;
