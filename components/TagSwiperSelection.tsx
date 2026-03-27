@@ -2,11 +2,10 @@ import React from "react";
 
 // Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/free-mode";
-import SwiperCore, { Mousewheel, FreeMode, Navigation } from "swiper";
-SwiperCore.use([Mousewheel, FreeMode, Navigation]); // Install swiper modules.
 
 import styles from "../styles/TagSwiperSelection.module.scss";
 import Tag from "./Tag";
@@ -29,6 +28,7 @@ const TagSwiperSelection = ({
     <div className={styles.container}>
       <Swiper
         className={styles.mySwiper}
+        modules={[Mousewheel, FreeMode, Navigation]}
         mousewheel={{ forceToAxis: true }}
         slidesPerView={"auto"}
         spaceBetween={12}
