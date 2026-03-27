@@ -16,16 +16,10 @@ import OrganizationAvatar from "../components/OrganizationAvatar";
 
 // Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/free-mode";
-import SwiperCore, {
-  Scrollbar,
-  Mousewheel,
-  FreeMode,
-  Navigation,
-} from "swiper";
-SwiperCore.use([Scrollbar, Mousewheel, FreeMode, Navigation]); // Install swiper modules.
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
@@ -207,6 +201,7 @@ const EventSwiper = ({
       </div>
       <Swiper
         className={styles.mySwiper}
+        modules={[Mousewheel, FreeMode, Navigation]}
         mousewheel={{ forceToAxis: true }}
         spaceBetween={16}
         slidesPerView={"auto"}
@@ -251,6 +246,7 @@ const OrganizationSwiper = ({
       </div>
       <Swiper
         className={styles.mySwiper}
+        modules={[Mousewheel, FreeMode, Navigation]}
         mousewheel={{ forceToAxis: true }}
         spaceBetween={16}
         slidesPerView={"auto"}
