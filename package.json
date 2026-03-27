@@ -2,13 +2,13 @@
   "name": "peoply-frontend",
   "private": true,
   "engines": {
-    "node": ">=18.17.0",
+    "node": ">=20.9.0",
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "npx next dev -p 3001",
-    "build": "npx next build",
-    "start": "npx next start",
+    "dev": "next dev --webpack -p 3001",
+    "build": "next build --webpack",
+    "start": "next start",
     "lint": "npm run lint:eslint && npm run lint:stylelint",
     "lint:eslint": "npx next lint",
     "lint:stylelint": "npx stylelint '**/*.{css,scss}'"
