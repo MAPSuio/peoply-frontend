@@ -1,6 +1,7 @@
 import "../styles/globals.scss";
 import styles from "../styles/App.module.scss";
 import type { AppProps } from "next/app";
+import Script from "next/script";
 import { UserProvider } from "../hooks/useUser";
 import { SnackbarProvider } from "../hooks/useSnack";
 import Head from "next/head";
@@ -12,6 +13,11 @@ import AnnouncementBanner from "../components/AnnouncementBanner";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Script
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id="7ec1d359-0bab-4bee-b214-d6f116701233"
+      />
       <UserProvider>
         <SnackbarProvider>
           <NotificationsProvider>
