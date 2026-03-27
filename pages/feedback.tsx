@@ -89,7 +89,6 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
         <div className={styles.container}>
           <BackButton onClick={goBack} className={styles.backButton} />
           <div className={styles.hero}>
-            <p className={styles.eyebrow}>Anonym feedback</p>
             <h1 className={styles.title}>Hva synes du om Peoply?</h1>
             <p className={styles.lead}>
               Vi bruker tilbakemeldingene dine for å forbedre Peoply og
