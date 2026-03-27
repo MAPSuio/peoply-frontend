@@ -71,8 +71,8 @@
     align-items: center;
     background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.95),
-          rgba(255, 255, 255, 0.82)
+          rgba(255, 255, 255, 0.98),
+          rgba(255, 255, 255, 0.88)
         )
         padding-box,
       linear-gradient(
@@ -86,36 +86,42 @@
           #ff4d6d
         )
         border-box;
+    animation: feedback-attention-bob 1.6s ease-in-out infinite;
     border: 2px solid transparent;
     border-radius: $border-radius-round;
-    box-shadow: 0 0 0 rgba(255, 77, 109, 0.2), 0 0 18px rgba(124, 58, 237, 0.18),
-      0 0 34px rgba(56, 189, 248, 0.14);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75),
+      0 0 20px rgba(255, 77, 109, 0.28), 0 0 34px rgba(124, 58, 237, 0.26),
+      0 0 54px rgba(56, 189, 248, 0.24);
     color: var(--text-color-emphasis, $text-color-emphasis);
     display: inline-flex;
     font-size: $font-size-secondary;
-    font-weight: $font-weight-regular;
+    font-weight: $font-weight-medium;
     isolation: isolate;
     min-height: 2.5rem;
     overflow: hidden;
-    padding: 0 $spacer-small;
+    padding: 0 calc($spacer-small + 2px);
     position: relative;
-    text-shadow: 0 0 14px rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
     transform: translateZ(0);
     transition: box-shadow $animation-duration ease,
       transform $animation-duration ease;
     white-space: nowrap;
 
+    &::marker {
+      display: none;
+    }
+
     &::before,
-    &::after {
+    &::after,
+    span::before {
       border-radius: inherit;
       content: "";
-      inset: -2px;
       pointer-events: none;
       position: absolute;
     }
 
     &::before {
-      animation: feedback-rainbow-spin 3.6s linear infinite;
+      animation: feedback-rainbow-spin 2.4s linear infinite;
       background: conic-gradient(
         from 0deg,
         #ff4d6d,
@@ -126,26 +132,44 @@
         #7c3aed,
         #ff4d6d
       );
-      filter: blur(16px);
-      opacity: 0.7;
+      filter: blur(18px);
+      inset: -7px;
+      opacity: 0.9;
       z-index: -2;
     }
 
     &::after {
-      animation: feedback-rainbow-pulse 1.8s ease-in-out infinite;
+      animation: feedback-rainbow-pulse 1.15s ease-in-out infinite;
       background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.65),
-        rgba(255, 255, 255, 0.12)
+        rgba(255, 255, 255, 0.76),
+        rgba(255, 255, 255, 0.18)
       );
+      inset: -2px;
+      z-index: -1;
+    }
+
+    span::before {
+      animation: feedback-sheen 2.6s linear infinite;
+      background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.18) 42%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0.18) 58%,
+        transparent 80%
+      );
+      inset: 0;
+      transform: translateX(-140%);
       z-index: -1;
     }
 
     @include desktop() {
       &:hover {
-        box-shadow: 0 0 24px rgba(255, 77, 109, 0.32),
-          0 0 36px rgba(124, 58, 237, 0.28), 0 0 48px rgba(56, 189, 248, 0.24);
-        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9),
+          0 0 28px rgba(255, 77, 109, 0.4), 0 0 44px rgba(124, 58, 237, 0.38),
+          0 0 64px rgba(56, 189, 248, 0.34);
+        transform: translateY(-2px) scale(1.05);
       }
     }
   }
@@ -178,10 +202,32 @@
 @keyframes feedback-rainbow-pulse {
   0%,
   100% {
-    opacity: 0.6;
+    opacity: 0.65;
   }
 
   50% {
-    opacity: 0.92;
+    opacity: 1;
+  }
+}
+
+@keyframes feedback-attention-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-1px) scale(1.035);
+  }
+}
+
+@keyframes feedback-sheen {
+  0% {
+    transform: translateX(-140%);
+  }
+
+  55%,
+  100% {
+    transform: translateX(140%);
   }
 }

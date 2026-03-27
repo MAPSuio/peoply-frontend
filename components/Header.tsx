@@ -24,7 +24,7 @@ export default function Header() {
         </Link>
         <div className={styles.navLinks}>
           <Link href="/feedback" className={styles.feedbackLink}>
-            Gi feedback
+            <span>Gi feedback</span>
           </Link>
           <Link href="/integrasjoner" className={styles.integrationsLink}>
             Integrasjoner
