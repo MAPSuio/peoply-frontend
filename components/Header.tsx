@@ -23,7 +23,12 @@ export default function Header() {
           Peoply
         </Link>
         <div className={styles.navLinks}>
-          <Link href="/integrasjoner">Integrasjoner</Link>
+          <Link href="/feedback" className={styles.feedbackLink}>
+            Gi feedback
+          </Link>
+          <Link href="/integrasjoner" className={styles.integrationsLink}>
+            Integrasjoner
+          </Link>
           <Link href="/faq">FAQ</Link>
         </div>
         {user ? (

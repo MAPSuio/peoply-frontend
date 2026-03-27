@@ -1,0 +1,100 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-medium;
+  width: $page-width-mobile;
+}
+
+.backButton {
+  margin-bottom: $spacer-very-small;
+}
+
+.hero {
+  background: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color, $border-color);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  padding: $spacer-medium;
+}
+
+.eyebrow {
+  @include uppercase();
+  color: var(--text-color-link, $text-color-link);
+  margin: 0 0 $spacer-mini;
+}
+
+.title {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-title;
+  line-height: 1.05;
+  margin: 0 0 $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-title-desktop;
+  }
+}
+
+.lead {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+  line-height: $line-height-text;
+  margin: 0;
+}
+
+.card {
+  display: grid;
+  gap: $spacer-medium;
+
+  @include desktop() {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+}
+
+.infoBlock,
+.formBlock {
+  background: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color, $border-color);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  padding: $spacer-medium;
+}
+
+.formBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+}
+
+.sectionTitle {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-small;
+  margin: 0 0 $spacer-small;
+}
+
+.copy {
+  color: var(--text-color-primary, $text-color-primary);
+  line-height: $line-height-text;
+  margin: 0 0 $spacer-small;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.metaText {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+  line-height: $line-height-text;
+  margin: 0;
+}
+
+.submitButton {
+  width: 100%;
+}

@@ -56,13 +56,46 @@
 .navLinks {
   align-items: center;
   display: flex;
-  gap: $spacer-small;
+  gap: $spacer-very-small-plus;
   margin-left: auto;
   margin-right: $spacer-small;
 
   a {
     color: var(--text-color-primary, $text-color-primary);
     font-weight: $font-weight-medium;
+  }
+
+  .feedbackLink {
+    align-items: center;
+    background-color: var(
+      --background-color-button-secondary,
+      $background-color-button-secondary
+    );
+    border-radius: $border-radius-round;
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    display: inline-flex;
+    font-size: $font-size-secondary;
+    font-weight: $font-weight-regular;
+    min-height: 2.5rem;
+    padding: 0 $spacer-small;
+    white-space: nowrap;
+
+    @include desktop() {
+      &:hover {
+        background-color: var(
+          --background-color-button-secondary-hover,
+          $background-color-button-secondary-hover
+        );
+      }
+    }
+  }
+
+  .integrationsLink {
+    display: none;
+
+    @include desktop() {
+      display: inline-flex;
+    }
   }
 }
 
