@@ -45,9 +45,14 @@ import { isEventFinished } from "../utils/event";
 interface LargeEventCardProps {
   event: Event;
   showArranger?: boolean;
+  stackActionsOnDesktop?: boolean;
 }
 
-const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
+const LargeEventCard = ({
+  event,
+  showArranger,
+  stackActionsOnDesktop = false,
+}: LargeEventCardProps) => {
   const { user, loading: loadingUser } = useUser();
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
@@ -239,8 +244,16 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
             </div>
           </div>
           {!isEventFinished(event) && (
-            <div className={styles.actionContainer}>
-              <div className={styles.primaryActions}>
+            <div
+              className={`${styles.actionContainer} ${
+                stackActionsOnDesktop ? styles.stackedActions : ""
+              }`}
+            >
+              <div
+                className={`${styles.primaryActions} ${
+                  stackActionsOnDesktop ? styles.stackedPrimaryActions : ""
+                }`}
+              >
                 <JoinButton
                   event={event}
                   countdownText="Åpner om"
@@ -262,7 +275,11 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
                   className={styles.secondaryActionButton}
                 />
               </div>
-              <div className={styles.shareButton}>
+              <div
+                className={`${styles.shareButton} ${
+                  stackActionsOnDesktop ? styles.stackedShareButton : ""
+                }`}
+              >
                 <ShareButton
                   width="100%"
                   buttonText="Del arrangement"

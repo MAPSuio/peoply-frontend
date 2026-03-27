@@ -218,6 +218,7 @@ const MyEvents = () => {
                             key={event.id}
                             event={event}
                             showArranger
+                            stackActionsOnDesktop
                           /> // TODO: The returned card should be different based on which event type it is.
                         ))}
                       </div>
@@ -264,6 +265,7 @@ const MyEvents = () => {
                                   key={event.id}
                                   event={event}
                                   showArranger
+                                  stackActionsOnDesktop
                                 /> // TODO: The returned card should be different based on which event type it is.
                               ))}
                             </div>

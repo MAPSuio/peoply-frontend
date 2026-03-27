@@ -183,6 +183,12 @@
   }
 }
 
+.stackedActions,
+.stackedPrimaryActions,
+.stackedShareButton {
+  width: 100%;
+}
+
 .actionContainer > * {
   width: 100%;
 }
@@ -208,5 +214,18 @@
   .shareButton {
     flex: 0 0 auto;
     width: fit-content;
+  }
+
+  .stackedActions {
+    flex-flow: column nowrap;
+  }
+
+  .stackedPrimaryActions {
+    flex-flow: column nowrap;
+  }
+
+  .stackedShareButton {
+    flex: 1 1 auto;
+    width: 100%;
   }
 }
