@@ -163,6 +163,26 @@
   gap: $spacer-very-small-plus;
 }
 
+.primaryActions {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+}
+
+.primaryActionButton,
+.secondaryActionButton,
+.shareButton {
+  font-size: $font-size-tertiary;
+  padding-bottom: $spacer-mini;
+  padding-top: $spacer-mini;
+  width: 100%;
+
+  svg {
+    height: 18px;
+    width: 18px;
+  }
+}
+
 .actionContainer > * {
   width: 100%;
 }
@@ -170,5 +190,23 @@
 @include desktop() {
   .actionContainer {
     flex-flow: row nowrap;
+  }
+
+  .primaryActions {
+    flex: 1 1 auto;
+    flex-flow: row nowrap;
+  }
+
+  .primaryActionButton,
+  .secondaryActionButton,
+  .shareButton {
+    font-size: $font-size-tertiary-desktop;
+    padding-bottom: $spacer-mini;
+    padding-top: $spacer-mini;
+  }
+
+  .shareButton {
+    flex: 0 0 auto;
+    width: fit-content;
   }
 }

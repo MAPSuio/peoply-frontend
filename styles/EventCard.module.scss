@@ -188,5 +188,32 @@
 }
 
 .actionContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
   margin-top: $spacer-small;
+}
+
+.actionButton {
+  font-size: $font-size-tertiary;
+  padding-bottom: $spacer-mini;
+  padding-top: $spacer-mini;
+  width: 100%;
+
+  svg {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+@include desktop() {
+  .actionContainer {
+    flex-flow: row nowrap;
+  }
+
+  .actionButton {
+    font-size: $font-size-tertiary-desktop;
+    padding-bottom: $spacer-mini;
+    padding-top: $spacer-mini;
+  }
 }

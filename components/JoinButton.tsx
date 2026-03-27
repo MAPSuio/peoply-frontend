@@ -633,6 +633,7 @@ export default function JoinButton({
         className={className}
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           if (buttonFunction) buttonFunction();
         }}
         loading={notLoggedIn ? false : loading}

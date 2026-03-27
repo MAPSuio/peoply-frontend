@@ -1,10 +1,12 @@
 import AddToCalendarButton from "./AddToCalendarButton";
+import JoinButton from "./JoinButton";
 import { Event } from "../types/types";
 import { formatDateRange } from "../utils/functions";
 
 import styles from "../styles/SmallEventCard.module.scss";
 import Link from "next/link";
 import Image from "next/legacy/image";
+import { isEventFinished } from "../utils/event";
 
 import CatImg from "../assets/images/cat.jpg";
 
@@ -34,9 +36,28 @@ const SmallEventCard = ({ event }: SmallEventCardProps) => {
           <p className={styles.date}>{dateString}</p>
           <h2 className={styles.eventTitle}>{event.title}</h2>
           <p className={styles.eventDescription}>{event.description}</p>
-          <div className={styles.actionContainer}>
-            <AddToCalendarButton event={event} />
-          </div>
+          {!isEventFinished(event) && (
+            <div className={styles.actionContainer}>
+              <JoinButton
+                event={event}
+                countdownText="Åpner om"
+                joinText="Meld på"
+                joinedText="Påmeldt"
+                joinWaitlistText="Venteliste"
+                joinedWaitlistText="Du står i kø"
+                eventFinishedText="Arrangementet er ferdig"
+                regClosedText="Påmelding er stengt"
+                useUnregisterModal
+                small
+                noShadow
+                className={styles.actionButton}
+              />
+              <AddToCalendarButton
+                event={event}
+                className={styles.actionButton}
+              />
+            </div>
+          )}
         </div>
       </div>
     </Link>
