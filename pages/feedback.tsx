@@ -127,12 +127,6 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
                     card
                   />
 
-                  <div className={styles.metaRow}>
-                    <p className={styles.metaText}>
-                      Du kan sende én anonym tilbakemelding per time.
-                    </p>
-                  </div>
-
                   <Button
                     text="Send feedback"
                     onClick={handleSubmit}
