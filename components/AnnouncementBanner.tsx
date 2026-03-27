@@ -130,12 +130,11 @@ export default function AnnouncementBanner() {
         </h2>
         <p className={styles.copy}>
           Vi oppgraderer autentiseringsløsningene våre som følge av store
-          mengder angrep mot siden.
+          mengder angrep mot Peoply.
         </p>
         <p className={styles.copy}>
           I perioden kan autentiseringstjenester tidvis være utilgjengelige på
-          siden. Prøv gjerne igjen litt senere dersom innlogging eller
-          registrering ikke fungerer som forventet.
+          siden. :)
         </p>
         <div className={styles.actions}>
           <button className={styles.button} onClick={acknowledgeAnnouncement}>
