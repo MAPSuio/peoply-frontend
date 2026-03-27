@@ -47,7 +47,6 @@ const SmallEventCard = ({ event }: SmallEventCardProps) => {
                 joinedWaitlistText="Du står i kø"
                 eventFinishedText="Arrangementet er ferdig"
                 regClosedText="Påmelding er stengt"
-                useUnregisterModal
                 small
                 noShadow
                 className={styles.actionButton}
