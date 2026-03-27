@@ -92,8 +92,8 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
             <p className={styles.eyebrow}>Anonym feedback</p>
             <h1 className={styles.title}>Hva synes du om Peoply?</h1>
             <p className={styles.lead}>
-              Vi bruker tilbakemeldingene dine for å forbedre produktet, rydde
-              opp i friksjon og prioritere smartere.
+              Vi bruker tilbakemeldingene dine for å forbedre Peoply og
+              prioritere nye fixes og features.
             </p>
           </div>
 
@@ -103,13 +103,9 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
                 Slik behandler vi feedbacken
               </h2>
               <p className={styles.copy}>
-                Tilbakemeldingen din behandles anonymt i vårt forbedringsarbeid
-                og deles ikke med navn eller profil i vanlig oppfolging.
-              </p>
-              <p className={styles.copy}>
-                Av sikkerhetsgrunner oppbevarer vi en intern teknisk kobling til
-                brukeren din dersom vi må etterforske spam, trusler eller andre
-                sikkerhetsrisikoer.
+                Alle tilbakemeldinger er anonyme og brukes kun til å forbedre
+                Peoply.app. Grunnet spam har vi lagt tilbakemeldingene bak
+                autentisering.
               </p>
             </div>
 
