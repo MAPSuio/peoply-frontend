@@ -8,6 +8,7 @@ import { MouseEvent, useEffect, useState } from "react";
 
 // Components.
 import AddToCalendarButton from "./AddToCalendarButton";
+import JoinButton from "./JoinButton";
 import { ShareButton } from "./ShareButton";
 import HeartIconGlass from "./HeartIconGlass";
 
@@ -60,7 +61,7 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);
 
-  const { data: registrations } = useSWR<number>(
+  const { data: registrations, mutate: updateRegistrations } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
     fetchFromPeoplyApiJson,
   );
@@ -239,13 +240,36 @@ const LargeEventCard = ({ event, showArranger }: LargeEventCardProps) => {
           </div>
           {!isEventFinished(event) && (
             <div className={styles.actionContainer}>
-              <AddToCalendarButton event={event} width="100%" />
-              <ShareButton
-                width="100%"
-                buttonText="Del arrangement"
-                shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
-                shareTitle={event.title}
-              />
+              <div className={styles.primaryActions}>
+                <JoinButton
+                  event={event}
+                  countdownText="Åpner om"
+                  updateOnChange={[updateRegistrations]}
+                  joinText="Meld på"
+                  joinedText="Påmeldt"
+                  joinWaitlistText="Venteliste"
+                  joinedWaitlistText="Du står i kø"
+                  eventFinishedText="Arrangementet er ferdig"
+                  regClosedText="Påmelding er stengt"
+                  useUnregisterModal
+                  small
+                  noShadow
+                  className={styles.primaryActionButton}
+                />
+                <AddToCalendarButton
+                  event={event}
+                  width="100%"
+                  className={styles.secondaryActionButton}
+                />
+              </div>
+              <div className={styles.shareButton}>
+                <ShareButton
+                  width="100%"
+                  buttonText="Del arrangement"
+                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
+                  shareTitle={event.title}
+                />
+              </div>
             </div>
           )}
         </div>

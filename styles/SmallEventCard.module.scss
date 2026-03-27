@@ -13,7 +13,10 @@
 
 .imageContainer {
   border-radius: $border-radius-inside-card;
-  box-shadow: var(--shadow-highlighted-event-card, $shadow-highlighted-event-card);
+  box-shadow: var(
+    --shadow-highlighted-event-card,
+    $shadow-highlighted-event-card
+  );
   flex-shrink: 0;
   height: 120px;
   overflow: hidden;
@@ -78,5 +81,18 @@
 }
 
 .actionContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
   margin-top: $spacer-very-small-plus;
+}
+
+.actionButton {
+  width: 100%;
+}
+
+@include desktop() {
+  .actionContainer {
+    flex-flow: row nowrap;
+  }
 }

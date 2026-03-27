@@ -4,6 +4,7 @@ import useSWR from "swr";
 
 // Components.
 import AddToCalendarButton from "./AddToCalendarButton";
+import JoinButton from "./JoinButton";
 import UserIconCard from "./svgs/UserIconCard";
 import PlaceIconCard from "./svgs/PlaceIconCard";
 import UsersIconCard from "./svgs/UsersIconCard";
@@ -23,6 +24,7 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 // Styles.
 import styles from "../styles/EventCard.module.scss";
 import SmallCheckCircle from "./SmallCheckCircle";
+import { isEventFinished } from "../utils/event";
 
 interface EventCardProps {
   event: Event;
@@ -34,7 +36,11 @@ const EventCard = ({ event }: EventCardProps) => {
 
   const dateString = formatEventDate(startDate, endDate, EventDateFormat.SHORT);
 
-  const { data: registrations, error: registrationsError } = useSWR<number>(
+  const {
+    data: registrations,
+    error: registrationsError,
+    mutate: updateRegistrations,
+  } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
     fetchFromPeoplyApiJson,
   );
@@ -152,9 +158,30 @@ const EventCard = ({ event }: EventCardProps) => {
               <p className={styles.data}>{event.locationName}</p>
             </div>
           </div>
-          <div className={styles.actionContainer}>
-            <AddToCalendarButton event={event} width="100%" />
-          </div>
+          {!isEventFinished(event) && (
+            <div className={styles.actionContainer}>
+              <JoinButton
+                event={event}
+                countdownText="Åpner om"
+                updateOnChange={[updateRegistrations]}
+                joinText="Meld på"
+                joinedText="Påmeldt"
+                joinWaitlistText="Venteliste"
+                joinedWaitlistText="Du står i kø"
+                eventFinishedText="Arrangementet er ferdig"
+                regClosedText="Påmelding er stengt"
+                useUnregisterModal
+                small
+                noShadow
+                className={styles.actionButton}
+              />
+              <AddToCalendarButton
+                event={event}
+                width="100%"
+                className={styles.actionButton}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

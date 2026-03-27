@@ -163,6 +163,18 @@
   gap: $spacer-very-small-plus;
 }
 
+.primaryActions {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+}
+
+.primaryActionButton,
+.secondaryActionButton,
+.shareButton {
+  width: 100%;
+}
+
 .actionContainer > * {
   width: 100%;
 }
@@ -170,5 +182,15 @@
 @include desktop() {
   .actionContainer {
     flex-flow: row nowrap;
+  }
+
+  .primaryActions {
+    flex: 1 1 auto;
+    flex-flow: row nowrap;
+  }
+
+  .shareButton {
+    flex: 0 0 auto;
+    width: fit-content;
   }
 }
