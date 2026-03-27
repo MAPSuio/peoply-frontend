@@ -93,6 +93,17 @@ const FAQ = ({ baseUrl }: FAQProps) => {
                     </li>
                   </ul>
                 </ExpandableCard>
+                <ExpandableCard title="Hva samler Peoply av data?">
+                  <p>
+                    Peoply samler inn anonym bruksdata for evaluering og testing
+                    av siden.
+                  </p>
+                  <p>
+                    Dette brukes for å forstå hvordan tjenesten brukes, oppdage
+                    problemer og forbedre opplevelsen over tid, uten å knytte
+                    dataene til deg som person.
+                  </p>
+                </ExpandableCard>
                 <ExpandableCard title="Hvilke sikkerhetstiltak har Peoply?">
                   <p>
                     Peoply er en veldig sikker plattform. Du kan være trygg på
