@@ -172,9 +172,15 @@
 .primaryActionButton,
 .secondaryActionButton,
 .shareButton {
-  padding-bottom: $spacer-very-small-plus;
-  padding-top: $spacer-very-small-plus;
+  font-size: $font-size-tertiary;
+  padding-bottom: $spacer-mini;
+  padding-top: $spacer-mini;
   width: 100%;
+
+  svg {
+    height: 18px;
+    width: 18px;
+  }
 }
 
 .actionContainer > * {
@@ -194,8 +200,9 @@
   .primaryActionButton,
   .secondaryActionButton,
   .shareButton {
-    padding-bottom: $spacer-very-small-plus;
-    padding-top: $spacer-very-small-plus;
+    font-size: $font-size-tertiary-desktop;
+    padding-bottom: $spacer-mini;
+    padding-top: $spacer-mini;
   }
 
   .shareButton {
