@@ -172,6 +172,8 @@
 .primaryActionButton,
 .secondaryActionButton,
 .shareButton {
+  padding-bottom: $spacer-very-small-plus;
+  padding-top: $spacer-very-small-plus;
   width: 100%;
 }
 
@@ -187,6 +189,13 @@
   .primaryActions {
     flex: 1 1 auto;
     flex-flow: row nowrap;
+  }
+
+  .primaryActionButton,
+  .secondaryActionButton,
+  .shareButton {
+    padding-bottom: $spacer-very-small-plus;
+    padding-top: $spacer-very-small-plus;
   }
 
   .shareButton {
