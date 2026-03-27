@@ -19,8 +19,9 @@ const nextConfig = {
         hostname: process.env.BLOB_DOMAIN || '',
       },
     ],
-    deviceSizes: [480, 640, 750, 828, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    deviceSizes: [480, 750, 1080, 1920],
+    imageSizes: [16, 48, 96, 256],
+    minimumCacheTTL: 3600,
   },
 };
 

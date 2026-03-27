@@ -36,14 +36,17 @@ import { queryToString } from "../utils/functions";
 // Types.
 import { UrlObject } from "url";
 import { Event, Organization } from "../types/types";
+import { ArrangerFollower } from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
+import useUser from "../hooks/useUser";
 
 const Home: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
+  const { user } = useUser();
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
   );
@@ -59,6 +62,10 @@ const Home: NextPage = ({
     afterDate: todayString,
     orderBy: "startDate",
   };
+
+  const { data: followedArrangers, error: followedArrangersError } = useSWR<
+    ArrangerFollower[]
+  >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
   // temporary list before we get a solution for the API
   // temporary list before we get a solution for the API
@@ -88,6 +95,12 @@ const Home: NextPage = ({
   ];
 
   // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
+  const followedEventsQuery = {
+    ...eventsQuery,
+    arrangerIds: followedArrangers
+      ?.map((arranger) => arranger.arrangerId)
+      .join(","),
+  };
   const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
 
   // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
@@ -97,6 +110,16 @@ const Home: NextPage = ({
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
+    fetchFromPeoplyApiJson,
+  );
+
+  const {
+    data: eventsFromFollowedOrganizations,
+    error: eventsFromFollowedOrganizationsError,
+  } = useSWR<Event[]>(
+    followedArrangers && followedArrangers.length > 0
+      ? `/events?${queryToString(followedEventsQuery)}`
+      : null,
     fetchFromPeoplyApiJson,
   );
 
@@ -113,14 +136,23 @@ const Home: NextPage = ({
       />
       <Header />
       <div className={styles.container}>
-        {organizations && organizations.length > 0 && (
-          <OrganizationSwiper
-            header="Foreninger på IFI"
-            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
-            organizations={organizations}
-            error={organizationsError}
+        {eventsFromFollowedOrganizations &&
+        eventsFromFollowedOrganizations.length > 0 ? (
+          <EventSwiper
+            header="Arrangementer fra foreninger du følger"
+            seeAllUrl={{ pathname: `/events`, query: followedEventsQuery }}
+            events={eventsFromFollowedOrganizations}
+            error={
+              eventsFromFollowedOrganizationsError || followedArrangersError
+            }
           />
-        )}
+        ) : undefined}
+        <div className={styles.calendarEntryCard}>
+          <h2>Kalender</h2>
+          <Link href="/kalender" className={styles.calendarEntryLink}>
+            Åpne kalender
+          </Link>
+        </div>
         {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper
             header={"Hva skjer på IFI?"}
@@ -138,6 +170,14 @@ const Home: NextPage = ({
             error={futureEventsError}
           />
         ) : undefined}
+        {organizations && organizations.length > 0 && (
+          <OrganizationSwiper
+            header="Foreninger på IFI"
+            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
+            organizations={organizations}
+            error={organizationsError}
+          />
+        )}
       </div>
       <Navbar />
     </>

@@ -7,7 +7,6 @@
   }
 
   .swiperContainer {
-
     .swiperHeader {
       align-items: center;
       display: flex;
@@ -64,4 +63,33 @@
 
 .link {
   @include link();
+}
+
+.calendarEntryCard {
+  align-items: center;
+  background: linear-gradient(
+    135deg,
+    var(--background-color-card, $background-color-card),
+    var(--background-color-input, $background-color-input)
+  );
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  justify-content: space-between;
+  margin: $spacer-small;
+  padding: $spacer-small-plus $spacer-medium;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+  }
+
+  @include desktop() {
+    margin: $spacer-small $spacer-small $spacer-medium;
+  }
+}
+
+.calendarEntryLink {
+  @include link();
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
 }
