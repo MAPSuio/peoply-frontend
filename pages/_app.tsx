@@ -8,7 +8,6 @@ import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
-import FeedbackEntryPoints from "../components/FeedbackEntryPoints";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -27,7 +26,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                 />
               </Head>
               <AnnouncementBanner />
-              <FeedbackEntryPoints />
               <div className={styles.wrapper}>
                 <div className={styles.container}>
                   <Component {...pageProps} />
