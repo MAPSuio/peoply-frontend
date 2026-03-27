@@ -25,7 +25,7 @@
   @include resetButton();
   background-color: var(--background-color-switch, $background-color-switch);
   border-radius: $border-radius-round;
-  box-shadow: $shadow-slider;
+  box-shadow: var(--shadow-slider, $shadow-slider);
   height: 32px;
   position: relative;
   transition: all $animation-duration ease;
@@ -36,7 +36,7 @@
   background-color: #FFFFFF;
   border-radius: $border-radius-round;
   bottom: 1px;
-  box-shadow: $shadow-switch;
+  box-shadow: var(--shadow-switch, $shadow-switch);
   height: 30px;
   left: 1px;
   position: absolute;

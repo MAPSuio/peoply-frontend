@@ -18,7 +18,7 @@
     padding: 0 $spacer-small;
 
     &.focused {
-      outline: 2px solid #FFFFFF;
+      outline: 2px solid var(--text-color-emphasis, $text-color-emphasis);
     }
 
     &.show {

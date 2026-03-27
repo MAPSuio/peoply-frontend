@@ -13,7 +13,7 @@
 
 .imageContainer {
   border-radius: $border-radius-inside-card;
-  box-shadow: $shadow-highlighted-event-card;
+  box-shadow: var(--shadow-highlighted-event-card, $shadow-highlighted-event-card);
   flex-shrink: 0;
   height: 120px;
   overflow: hidden;

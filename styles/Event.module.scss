@@ -31,7 +31,7 @@
 
   @include desktop() {
     border-radius: $border-radius-regular;
-    box-shadow: $shadow-event-image;
+    box-shadow: var(--shadow-event-image, $shadow-event-image);
     height: $event-image-height-desktop;
     margin-top: $spacer-small;
     width: $event-image-width-desktop;
@@ -99,7 +99,7 @@
     $background-color-calendar-tag
   );
   border-radius: $border-radius-regular;
-  box-shadow: $shadow-calendar-tag;
+  box-shadow: var(--shadow-calendar-tag, $shadow-calendar-tag);
   padding: $spacer-small $spacer-small $spacer-very-small;
   position: relative;
 

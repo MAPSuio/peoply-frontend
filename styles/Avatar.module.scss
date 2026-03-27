@@ -1,7 +1,7 @@
 .avatar {
   align-items: center;
   border-radius: $border-radius-rounded;
-  box-shadow: $shadow-avatar;
+  box-shadow: var(--shadow-avatar, $shadow-avatar);
   display: flex;
   justify-content: center;
   position: relative;
@@ -33,7 +33,7 @@
 }
 
 .large {
-  box-shadow: $shadow-avatar-large;
+  box-shadow: var(--shadow-avatar-large, $shadow-avatar-large);
   font-size: $font-size-avatar-large;
   height: $avatar-size-large;
   width: $avatar-size-large;
@@ -57,5 +57,5 @@
 }
 
 .name {
-  color: $text-color-emphasis;
+  color: var(--text-color-emphasis, $text-color-emphasis);
 }

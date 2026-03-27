@@ -30,7 +30,7 @@
 }
 
 .shadow {
-  box-shadow: $shadow-snack;
+  box-shadow: var(--shadow-snack, $shadow-snack);
 }
 
 .animation {
@@ -54,7 +54,7 @@
 }
 
 .successShadow {
-  box-shadow: $shadow-snack-success;
+  box-shadow: var(--shadow-snack-success, $shadow-snack-success);
 }
 
 .warning {
@@ -67,7 +67,7 @@
 }
 
 .warningShadow {
-  box-shadow: $shadow-snack-warning;
+  box-shadow: var(--shadow-snack-warning, $shadow-snack-warning);
 }
 
 .error {
@@ -80,7 +80,7 @@
 }
 
 .errorShadow {
-  box-shadow: $shadow-snack-error;
+  box-shadow: var(--shadow-snack-error, $shadow-snack-error);
 }
 
 .icon {

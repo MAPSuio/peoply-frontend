@@ -77,7 +77,7 @@ html.dark {
   --text-color-primary: #{$text-color-primary};
   --text-color-emphasis: #{$text-color-emphasis};
   --text-color-button: #{$text-color-button};
-  --text-color-button-disabled: #{text-color-primary};
+  --text-color-button-disabled: #{$text-color-primary};
   --text-color-link: #{$text-color-link};
   --text-color-input: #{$text-color-input};
   --text-color-black: #{$text-color-black};
@@ -212,7 +212,7 @@ html.night {
   --text-color-primary: #{$text-color-primary-night};
   --text-color-emphasis: #{$text-color-emphasis-night};
   --text-color-button: #{$text-color-button-night};
-  --text-color-button-disabled: #{text-color-primary-night};
+  --text-color-button-disabled: #{$text-color-primary-night};
   --text-color-link: #{$text-color-link-night};
   --text-color-input: #{$text-color-input-night};
   --text-color-black: #{$text-color-black-night};
