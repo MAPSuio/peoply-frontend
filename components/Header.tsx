@@ -38,7 +38,7 @@ export default function Header() {
           </div>
         ) : (
           <div className={styles.avatarContainer}>
-            <Link href="/login">Log in</Link>
+            <Link href="/login">Logg in</Link>
           </div>
         )}
       </div>

@@ -43,9 +43,17 @@ export function UserProvider({
         const user = await fetchFromPeoplyApiJson("/users/me", {
           headers: { "Cache-Control": "no-cache" },
         });
+        setError(undefined);
         setUser(user);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error: unknown) {
+        const response = error as Response;
+
+        if (response?.status === 401) {
+          setUser(undefined);
+          setError("Unauthorized");
+        } else {
+          setError("Could not verify auth state");
+        }
       }
       setLoading(false);
     };

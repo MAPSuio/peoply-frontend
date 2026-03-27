@@ -28,6 +28,10 @@
   flex-direction: column;
   gap: $spacer-very-small-plus;
 
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+  }
+
   p {
     color: var(--text-color-primary, $text-color-primary);
     line-height: $line-height-text;
@@ -49,7 +53,12 @@
   padding: $spacer-small;
 
   p {
+    color: var(--text-color-primary, $text-color-primary);
     overflow-wrap: anywhere;
+  }
+
+  strong {
+    color: var(--text-color-emphasis, $text-color-emphasis);
   }
 }
 
