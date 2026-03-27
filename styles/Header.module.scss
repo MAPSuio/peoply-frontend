@@ -71,27 +71,49 @@
     align-items: center;
     background: linear-gradient(
           135deg,
-          rgba(255, 252, 244, 0.98),
-          rgba(255, 244, 211, 0.92)
+          rgba(255, 255, 255, 0.98),
+          rgba(255, 255, 255, 0.9)
         )
         padding-box,
       linear-gradient(
           120deg,
-          #fff7cc,
-          #ffe082,
-          #ffcb45,
-          #ffb400,
-          #f59e0b,
-          #fff2a8,
-          #fff7cc
+          var(--primary-color-logo, $primary-color-logo),
+          color-mix(
+            in srgb,
+            var(--primary-color-logo, $primary-color-logo) 55%,
+            white
+          ),
+          var(--secondary-color-logo, $secondary-color-logo),
+          color-mix(
+            in srgb,
+            var(--secondary-color-logo, $secondary-color-logo) 60%,
+            white
+          ),
+          var(--primary-color-logo, $primary-color-logo)
         )
         border-box;
     animation: feedback-attention-bob 1.6s ease-in-out infinite;
     border: 2px solid transparent;
     border-radius: $border-radius-round;
-    box-shadow: 0 0 0 1px rgba(255, 250, 229, 0.92),
-      0 0 20px rgba(255, 196, 61, 0.42), 0 0 36px rgba(245, 158, 11, 0.34),
-      0 0 58px rgba(255, 234, 138, 0.28);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.92),
+      0 0 18px
+        color-mix(
+          in srgb,
+          var(--primary-color-logo, $primary-color-logo) 42%,
+          transparent
+        ),
+      0 0 34px
+        color-mix(
+          in srgb,
+          var(--secondary-color-logo, $secondary-color-logo) 34%,
+          transparent
+        ),
+      0 0 58px
+        color-mix(
+          in srgb,
+          var(--primary-color-logo, $primary-color-logo) 24%,
+          white
+        );
     color: var(--text-color-emphasis, $text-color-emphasis);
     display: inline-flex;
     font-size: $font-size-secondary;
@@ -101,7 +123,7 @@
     overflow: hidden;
     padding: 0 calc($spacer-small + 2px);
     position: relative;
-    text-shadow: 0 0 16px rgba(255, 248, 220, 0.98);
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.96);
     transform: translateZ(0);
     transition: box-shadow $animation-duration ease,
       transform $animation-duration ease;
@@ -121,16 +143,22 @@
     }
 
     &::before {
-      animation: feedback-golden-spin 2.4s linear infinite;
+      animation: feedback-logo-spin 2.4s linear infinite;
       background: conic-gradient(
         from 0deg,
-        #fff7cc,
-        #ffe082,
-        #ffcb45,
-        #ffb400,
-        #f59e0b,
-        #fff2a8,
-        #fff7cc
+        var(--primary-color-logo, $primary-color-logo),
+        color-mix(
+          in srgb,
+          var(--primary-color-logo, $primary-color-logo) 55%,
+          white
+        ),
+        var(--secondary-color-logo, $secondary-color-logo),
+        color-mix(
+          in srgb,
+          var(--secondary-color-logo, $secondary-color-logo) 60%,
+          white
+        ),
+        var(--primary-color-logo, $primary-color-logo)
       );
       filter: blur(18px);
       inset: -7px;
@@ -139,11 +167,15 @@
     }
 
     &::after {
-      animation: feedback-golden-pulse 1.15s ease-in-out infinite;
+      animation: feedback-logo-pulse 1.15s ease-in-out infinite;
       background: linear-gradient(
         135deg,
-        rgba(255, 249, 230, 0.84),
-        rgba(255, 214, 102, 0.22)
+        rgba(255, 255, 255, 0.84),
+        color-mix(
+          in srgb,
+          var(--secondary-color-logo, $secondary-color-logo) 20%,
+          white
+        )
       );
       inset: -2px;
       z-index: -1;
@@ -154,9 +186,19 @@
       background: linear-gradient(
         105deg,
         transparent 20%,
-        rgba(255, 241, 194, 0.16) 42%,
+        color-mix(
+            in srgb,
+            var(--primary-color-logo, $primary-color-logo) 18%,
+            white
+          )
+          42%,
         rgba(255, 252, 232, 0.92) 50%,
-        rgba(255, 241, 194, 0.16) 58%,
+        color-mix(
+            in srgb,
+            var(--secondary-color-logo, $secondary-color-logo) 18%,
+            white
+          )
+          58%,
         transparent 80%
       );
       inset: 0;
@@ -166,9 +208,25 @@
 
     @include desktop() {
       &:hover {
-        box-shadow: 0 0 0 1px rgba(255, 252, 232, 0.96),
-          0 0 28px rgba(255, 196, 61, 0.52), 0 0 46px rgba(245, 158, 11, 0.44),
-          0 0 72px rgba(255, 234, 138, 0.38);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.96),
+          0 0 28px
+            color-mix(
+              in srgb,
+              var(--primary-color-logo, $primary-color-logo) 52%,
+              transparent
+            ),
+          0 0 46px
+            color-mix(
+              in srgb,
+              var(--secondary-color-logo, $secondary-color-logo) 44%,
+              transparent
+            ),
+          0 0 72px
+            color-mix(
+              in srgb,
+              var(--primary-color-logo, $primary-color-logo) 36%,
+              white
+            );
         transform: translateY(-2px) scale(1.05);
       }
     }
@@ -189,7 +247,7 @@
   gap: $spacer-small;
 }
 
-@keyframes feedback-golden-spin {
+@keyframes feedback-logo-spin {
   from {
     transform: rotate(0deg) scale(1);
   }
@@ -199,7 +257,7 @@
   }
 }
 
-@keyframes feedback-golden-pulse {
+@keyframes feedback-logo-pulse {
   0%,
   100% {
     opacity: 0.65;
