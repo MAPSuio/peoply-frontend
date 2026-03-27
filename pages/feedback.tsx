@@ -146,14 +146,6 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
                   <h2 className={styles.sectionTitle}>
                     Logg inn for å gi feedback
                   </h2>
-                  <p className={styles.copy}>
-                    For å unngå spam og misbruk må du være logget inn før du kan
-                    skrive og sende tilbakemelding.
-                  </p>
-                  <p className={styles.metaText}>
-                    Når du er logget inn kan du sende én anonym tilbakemelding
-                    per time.
-                  </p>
                   <Button
                     text="Logg inn for å starte"
                     onClick={handleLoginRedirect}
