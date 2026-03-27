@@ -71,6 +71,12 @@
   gap: $spacer-small;
 }
 
+.loginGate {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+}
+
 .sectionTitle {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-heading-small;

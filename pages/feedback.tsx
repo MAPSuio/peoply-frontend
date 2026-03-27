@@ -109,45 +109,50 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
             </div>
 
             <div className={styles.formBlock}>
-              <TextInputLong
-                value={message}
-                inputId="feedback-message"
-                inputName="feedback-message"
-                rows={8}
-                label="Din tilbakemelding"
-                placeholder="Hva fungerer bra, hva fungerer ikke, og hva burde vi bygge videre?"
-                maxLength={2000}
-                errorMessage="Skriv minst 10 tegn"
-                handleChange={(event) => setMessage(event.target.value)}
-                validate
-                valid={validMessage}
-                required
-                card
-              />
-
-              <div className={styles.metaRow}>
-                <p className={styles.metaText}>
-                  {user
-                    ? "Du kan sende én anonym tilbakemelding per time."
-                    : "Du må være logget inn for å kunne sende feedback."}
-                </p>
-              </div>
-
               {loading ? null : user ? (
-                <Button
-                  text="Send feedback"
-                  onClick={handleSubmit}
-                  disabled={!validMessage || submitting}
-                  loading={submitting}
-                  className={styles.submitButton}
-                />
+                <>
+                  <TextInputLong
+                    value={message}
+                    inputId="feedback-message"
+                    inputName="feedback-message"
+                    rows={8}
+                    label="Din tilbakemelding"
+                    placeholder="Hva fungerer bra, hva fungerer ikke, og hva burde vi bygge videre?"
+                    maxLength={2000}
+                    errorMessage="Skriv minst 10 tegn"
+                    handleChange={(event) => setMessage(event.target.value)}
+                    validate
+                    valid={validMessage}
+                    required
+                    card
+                  />
+
+                  <div className={styles.metaRow}>
+                    <p className={styles.metaText}>
+                      Du kan sende én anonym tilbakemelding per time.
+                    </p>
+                  </div>
+
+                  <Button
+                    text="Send feedback"
+                    onClick={handleSubmit}
+                    disabled={!validMessage || submitting}
+                    loading={submitting}
+                    className={styles.submitButton}
+                  />
+                </>
               ) : (
-                <Button
-                  text="Logg inn for å sende"
-                  onClick={handleLoginRedirect}
-                  type={ButtonType.SECONDARY}
-                  className={styles.submitButton}
-                />
+                <div className={styles.loginGate}>
+                  <h2 className={styles.sectionTitle}>
+                    Logg inn for å gi feedback
+                  </h2>
+                  <Button
+                    text="Logg inn for å starte"
+                    onClick={handleLoginRedirect}
+                    type={ButtonType.SECONDARY}
+                    className={styles.submitButton}
+                  />
+                </div>
               )}
             </div>
           </div>
