@@ -8,7 +8,7 @@
 .placeBottomCenter {
   background-color: var(--success-color, $success-color);
   bottom: 0;
-  box-shadow: $shadow-check;
+  box-shadow: var(--shadow-check, $shadow-check);
   left: 50%;
   position: absolute;
   stroke: $black-color;

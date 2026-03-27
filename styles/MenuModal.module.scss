@@ -70,53 +70,53 @@
 .button {
   background-color: var(--primary-color-200, $primary-color-200);
   border-radius: $border-radius-inside-card;
-  box-shadow: $shadow-button-light;
+  box-shadow: var(--shadow-button-light, $shadow-button-light);
   color: var(--text-color-black, $text-color-black);
   margin-top: $spacer-medium;
 
   @include desktop() {
     &:hover {
       background-color: var(--primary-color-200-hover, $primary-color-200-hover);
-      box-shadow: $shadow-button-light-hover;
+      box-shadow: var(--shadow-button-light-hover, $shadow-button-light-hover);
     }
   }
 }
 
 .warning {
   background-color: var(--warning-color, $warning-color);
-  box-shadow: $shadow-button-warning;
+  box-shadow: var(--shadow-button-warning, $shadow-button-warning);
   color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
       background-color: var(--warning-color-hover, $warning-color-hover);
-      box-shadow: $shadow-button-warning-hover;
+      box-shadow: var(--shadow-button-warning-hover, $shadow-button-warning-hover);
     }
   }
 }
 
 .success {
   background-color: var(--success-color, $success-color);
-  box-shadow: $shadow-button-success;
+  box-shadow: var(--shadow-button-success, $shadow-button-success);
   color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
       background-color: var(--success-color-hover, $success-color-hover);
-      box-shadow: $shadow-button-success-hover;
+      box-shadow: var(--shadow-button-success-hover, $shadow-button-success-hover);
     }
   }
 }
 
 .danger {
   background-color: var(--danger-color-button, $danger-color-button);
-  box-shadow: $shadow-button-danger;
+  box-shadow: var(--shadow-button-danger, $shadow-button-danger);
   color: var(--text-color-black, $text-color-black);
 
   @include desktop() {
     &:hover {
       background-color: var(--danger-color-button-hover, $danger-color-button-hover);
-      box-shadow: $shadow-button-danger-hover;
+      box-shadow: var(--shadow-button-danger-hover, $shadow-button-danger-hover);
     }
   }
 }

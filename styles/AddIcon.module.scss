@@ -10,7 +10,7 @@
     height: 68px;
     width: 68px;
     &:hover {
-      box-shadow: $shadow-add;
+      box-shadow: var(--shadow-add, $shadow-add);
       transform: scale(1.1);
     }
   }
