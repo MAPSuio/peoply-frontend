@@ -180,10 +180,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  min-width: 0;
   overflow: hidden;
   padding: $spacer-very-small-plus;
   text-decoration: none;
+
+  min-width: 0;
 
   &:focus-visible {
     outline: 2px solid var(--text-color-link, $text-color-link);

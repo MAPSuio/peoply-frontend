@@ -4,7 +4,7 @@ import styles from "../styles/AnnouncementBanner.module.scss";
 
 const ANNOUNCEMENT_ID = "auth-upgrade-2026-03-27";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
-const ANNOUNCEMENT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const ANNOUNCEMENT_END_AT = new Date("2026-04-03T23:59:59.999+01:00");
 
 interface AnnouncementState {
   firstSeenAt: string;
@@ -21,6 +21,13 @@ export default function AnnouncementBanner() {
 
     try {
       const now = new Date();
+
+      if (now.getTime() > ANNOUNCEMENT_END_AT.getTime()) {
+        window.localStorage.removeItem(ANNOUNCEMENT_KEY);
+        setVisible(false);
+        return;
+      }
+
       const storedValue = window.localStorage.getItem(ANNOUNCEMENT_KEY);
 
       if (!storedValue) {
@@ -49,7 +56,7 @@ export default function AnnouncementBanner() {
         return;
       }
 
-      setVisible(now.getTime() - firstSeenAt.getTime() < ANNOUNCEMENT_TTL_MS);
+      setVisible(true);
     } catch {
       setVisible(true);
     }
