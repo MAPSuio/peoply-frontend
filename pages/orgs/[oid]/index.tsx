@@ -318,11 +318,6 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
               disabled={reporting || remainingReportSeconds > 0}
             >
               <FlagIcon className={styles.settingsIcon} />
-              {reportCountdown && (
-                <span className={styles.reportCountdown}>
-                  {reportCountdown}
-                </span>
-              )}
             </button>
             {isAdminOrOwner && (
               <Link
