@@ -3,6 +3,7 @@ import ProfileMenuItem from "./ProfileMenuItem";
 
 // Hooks.
 import useUser from "../hooks/useUser";
+import { MAPS_ORG_ID } from "../constants/organizations";
 
 // Assets.
 import UserIcon from "./svgs/UserIcon";
@@ -18,7 +19,9 @@ import UsersIcon from "./svgs/UsersIcon";
 import styles from "../styles/ProfileMenu.module.scss";
 
 export default function ProfileMenu() {
-  const { logout } = useUser();
+  const { logout, orgs } = useUser();
+  const isMapsMember = orgs?.some((org) => org.id === MAPS_ORG_ID);
+
   return (
     <div className={styles.container}>
       <ProfileMenuItem
@@ -45,6 +48,14 @@ export default function ProfileMenu() {
         ActionIcon={ChevronRightIcon}
         linkOrOnClick={"/me/following"}
       />
+      {isMapsMember && (
+        <ProfileMenuItem
+          text="Admin: foreninger"
+          Icon={BriefcaseIcon}
+          ActionIcon={ChevronRightIcon}
+          linkOrOnClick="/me/admin/orgs"
+        />
+      )}
       <ProfileMenuItem
         text="Innstillinger"
         Icon={SettingsIcon}

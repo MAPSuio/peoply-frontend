@@ -181,6 +181,7 @@ export interface Organization {
   urlId?: string;
   arranger: Arranger;
   arrangerId: string;
+  approved: boolean;
   description?: string;
   name: string;
   orgNr: string;

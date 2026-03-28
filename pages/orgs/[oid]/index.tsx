@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
@@ -17,6 +17,7 @@ import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import SettingsIcon from "../../../components/svgs/SettingsIcon";
 import UsersIconCard from "../../../components/svgs/UsersIconCard";
 import FollowIcon from "../../../components/svgs/FollowIcon";
+import FlagIcon from "../../../components/svgs/FlagIcon";
 import Avatar from "../../../components/Avatar";
 import Button from "../../../components/Button";
 
@@ -63,6 +64,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   const today = useRef(new Date().toISOString());
   const { user } = useUser();
   const redirectToLogin = useRedirectToLogin();
+  const [reporting, setReporting] = useState(false);
 
   const {
     organization: orgData,
@@ -168,6 +170,29 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
 
   const organizationCalendarLinks = getOrganizationCalendarLinks(org);
 
+  const reportOrganization = async () => {
+    if (!user) {
+      redirectToLogin();
+      return;
+    }
+
+    if (reporting) {
+      return;
+    }
+
+    try {
+      setReporting(true);
+      await fetchFromPeoplyApi(`/organizations/${org.id}/report`, {
+        method: "POST",
+      });
+      addSnack("Foreningen er rapportert", SnackTypes.SUCCESS);
+    } catch (e) {
+      addSnack("Kunne ikke rapportere foreningen", SnackTypes.ERROR);
+    } finally {
+      setReporting(false);
+    }
+  };
+
   return (
     <>
       <HeadComponent
@@ -183,14 +208,27 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
       <Layout>
         <div className={styles.heading}>
           <BackButton onClick={goBack} className={styles.marginBottomMedium} />
-          {isAdminOrOwner && (
-            <Link
-              href={`/orgs/${org.urlId ?? org.id}/settings`}
-              aria-label="innstillinger"
+          <div className={styles.headingActions}>
+            <button
+              type="button"
+              className={styles.headingActionButton}
+              aria-label="rapporter forening"
+              title="Rapporter forening"
+              onClick={reportOrganization}
+              disabled={reporting}
             >
-              <SettingsIcon className={styles.settingsIcon} />
-            </Link>
-          )}
+              <FlagIcon className={styles.settingsIcon} />
+            </button>
+            {isAdminOrOwner && (
+              <Link
+                href={`/orgs/${org.urlId ?? org.id}/settings`}
+                aria-label="innstillinger"
+                className={styles.headingActionButton}
+              >
+                <SettingsIcon className={styles.settingsIcon} />
+              </Link>
+            )}
+          </div>
         </div>
         <div className={styles.headerContainer}>
           <div className={styles.avatarContainer}>
