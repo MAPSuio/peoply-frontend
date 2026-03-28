@@ -106,6 +106,8 @@ export interface EventObjectProps {
   eventHasCapacity: boolean;
   eventCapacity: string;
   eventHasFood: boolean;
+  eventHasExternalRegistration: boolean;
+  eventExternalUrl: string;
   eventHasFormQuestion: boolean;
   eventFormQuestion?: string;
   eventExtraInfoValid: boolean;
@@ -148,6 +150,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     eventVisibility: Visibility.PUBLIC,
     eventHasCapacity: false,
     eventHasFood: false,
+    eventHasExternalRegistration: false,
+    eventExternalUrl: "",
     eventHasFormQuestion: false,
     eventFormQuestion: "",
     eventImage: undefined,
@@ -493,6 +497,30 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     });
   };
 
+  const setEventHasExternalRegistration = (value: boolean) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventHasExternalRegistration: value,
+      eventExternalUrl: value ? prevEventObject.eventExternalUrl : "",
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventHasExternalRegistration: value,
+      eventExternalUrl: value ? eventObject.eventExternalUrl : "",
+    });
+  };
+
+  const updateEventExternalUrl = (e: ChangeEvent<HTMLInputElement>) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventExternalUrl: e.target.value,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventExternalUrl: e.target.value,
+    });
+  };
+
   const setEventHasFormQuestion = (value: boolean) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
@@ -674,6 +702,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       )
     : true;
 
+  const externalRegistrationUrlValid =
+    !eventObject.eventHasExternalRegistration ||
+    /^https?:\/\/\S+$/i.test(eventObject.eventExternalUrl.trim());
+
   const lastStep = eventObject.currentStep === 6;
 
   const validEvent = allEventInputsValid([
@@ -688,6 +720,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     regStartTimeValid,
     regEndDateValid,
     regEndTimeValid,
+    externalRegistrationUrlValid,
     eventActiveCategoriesValid,
     eventCapacityValid,
     eventImageValid,
@@ -713,7 +746,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       regStartDateValid &&
       regStartTimeValid &&
       regEndDateValid &&
-      regEndTimeValid;
+      regEndTimeValid &&
+      externalRegistrationUrlValid;
     const addressInputPageValid = eventAddressValid;
     const descriptionInputPageValid =
       eventDescriptionValid && eventActiveCategoriesValid;
@@ -820,6 +854,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
               eventObject.eventHasDateEnd,
               eventObject.eventHasRegStart,
               eventObject.eventHasRegEnd,
+              eventObject.eventHasExternalRegistration,
             ].some((cond) => cond)}
           >
             <div className={styles.dateContainer}>
@@ -979,6 +1014,34 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                       />
                     </div>
                   </div>
+                )}
+              </div>
+              <div className={styles.participantQuestion}>
+                <CheckboxInput
+                  onChange={() =>
+                    setEventHasExternalRegistration(
+                      !eventObject.eventHasExternalRegistration,
+                    )
+                  }
+                  checked={eventObject.eventHasExternalRegistration}
+                  label="Ekstern påmelding"
+                  checkboxId="ExternalRegistration"
+                  checkboxName="ExternalRegistration"
+                />
+                {eventObject.eventHasExternalRegistration && (
+                  <TextInput
+                    value={eventObject.eventExternalUrl}
+                    inputId="eventExternalUrl"
+                    inputName="eventExternalUrl"
+                    label="Påmelding URL"
+                    placeholder="https://example.com/pamelding"
+                    maxLength={500}
+                    errorMessage="Legg inn en gyldig URL som starter med http:// eller https://"
+                    required
+                    handleChange={updateEventExternalUrl}
+                    valid={externalRegistrationUrlValid}
+                    validate
+                  />
                 )}
               </div>
             </div>
@@ -1319,6 +1382,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       //in case of parsing error, start new event creation
       startNewEventCreation();
     }
+    oldEventObject.eventHasExternalRegistration ??= false;
+    oldEventObject.eventExternalUrl ??= "";
     setEventExtraInfoValid(oldEventObject.eventExtraInfoValid);
 
     /* arrangerId will be undefined if user was not logged in */

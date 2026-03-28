@@ -18,6 +18,7 @@ import PrivateIconSmall from "./svgs/PrivateIconSmall";
 import PublicIconSmall from "./svgs/PublicIconSmall";
 import NoLimitIconSmall from "./svgs/NoLimitIconSmall";
 import LimitIconSmall from "./svgs/LimitIconSmall";
+import LinkIcon from "./svgs/LinkIcon";
 
 /* Assets */
 import PlaceholderImage from "../assets/images/cat.jpg";
@@ -27,7 +28,7 @@ import { formatDateAndTime, getDateString } from "../utils/functions";
 
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
-import { Visibility } from "../types/types";
+import { EventRegistrationMode, Visibility } from "../types/types";
 import { EventObjectProps } from "../pages/events/create";
 import UserCircle from "./UserCircle";
 import useUser from "../hooks/useUser";
@@ -128,6 +129,15 @@ const SummaryPage = ({
     }
     formData.set("visibility", `${eventObject.eventVisibility}`);
     formData.set("hasFood", `${eventObject.eventHasFood}`);
+    formData.set(
+      "registrationMode",
+      eventObject.eventHasExternalRegistration
+        ? EventRegistrationMode.EXTERNAL
+        : EventRegistrationMode.PEOPLY,
+    );
+    if (eventObject.eventHasExternalRegistration) {
+      formData.set("externalUrl", eventObject.eventExternalUrl.trim());
+    }
 
     /* Append participant question. */
     if (eventObject.eventHasFormQuestion && eventObject.eventFormQuestion) {
@@ -439,6 +449,17 @@ const SummaryPage = ({
                   {eventObject.eventFormQuestion.length > 30
                     ? eventObject.eventFormQuestion.slice(0, 29) + "...?"
                     : eventObject.eventFormQuestion}
+                </p>
+              </div>
+            )}
+            {eventObject.eventHasExternalRegistration && (
+              <div className={styles.dataItemContainer}>
+                <LinkIcon className={styles.dataIcon} />
+                <p
+                  className={styles.dataLabel}
+                  style={{ overflowWrap: "anywhere" }}
+                >
+                  Ekstern påmelding: {eventObject.eventExternalUrl}
                 </p>
               </div>
             )}
