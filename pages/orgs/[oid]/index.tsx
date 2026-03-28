@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
@@ -190,7 +190,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
 
   const organizationCalendarLinks = getOrganizationCalendarLinks(org);
 
-  const remainingReportSeconds = useMemo(() => {
+  const remainingReportSeconds = (() => {
     if (!reportStatus?.nextReportAt || reportStatus.canReport) {
       return 0;
     }
@@ -199,9 +199,9 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
       0,
       Math.ceil((new Date(reportStatus.nextReportAt).getTime() - now) / 1000),
     );
-  }, [now, reportStatus]);
+  })();
 
-  const reportCountdown = useMemo(() => {
+  const reportCountdown = (() => {
     if (!remainingReportSeconds) {
       return null;
     }
@@ -217,7 +217,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     }
 
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  }, [remainingReportSeconds]);
+  })();
 
   const reportOrganization = async () => {
     if (!user) {
@@ -318,11 +318,6 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
               disabled={reporting || remainingReportSeconds > 0}
             >
               <FlagIcon className={styles.settingsIcon} />
-              {reportCountdown && (
-                <span className={styles.reportCountdown}>
-                  {reportCountdown}
-                </span>
-              )}
             </button>
             {isAdminOrOwner && (
               <Link
