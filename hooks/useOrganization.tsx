@@ -22,9 +22,17 @@ interface useOrganizationUsersType {
   error?: string;
 }
 
+interface UseOrganizationOptions {
+  fetchMembers?: boolean;
+}
+
 /* Hook to fetch the members along with their roles for a given organization */
-export default function useOrganization(oid: string): useOrganizationUsersType {
+export default function useOrganization(
+  oid: string,
+  options: UseOrganizationOptions = {},
+): useOrganizationUsersType {
   const { user } = useUser();
+  const { fetchMembers = true } = options;
   const [organizationUsers, setOrganizationUsers] =
     useState<UserOrganizationRoles[]>();
   const [organization, setOrganization] = useState<Organization>();
@@ -45,7 +53,7 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
           );
         }
 
-        if (user) {
+        if (user && fetchMembers) {
           try {
             const organizationUsers = await getOrganizationUsers(
               organization.id,
@@ -65,7 +73,7 @@ export default function useOrganization(oid: string): useOrganizationUsersType {
     if (oid) {
       fetchOrganizationUsers();
     }
-  }, [oid, user]);
+  }, [fetchMembers, oid, user]);
 
   /* find the authenticated user in the organization */
   const organizationUser = organizationUsers?.find(

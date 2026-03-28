@@ -31,7 +31,7 @@ const OrganizationCard = ({ organizationID }: OrganizationCardProps) => {
     organizationUsers: orgUsers,
     loading,
     error,
-  } = useOrganization(organizationID);
+  } = useOrganization(organizationID, { fetchMembers: false });
 
   const { data: orgEvents, error: orgEventsError } = useSWR<Event[]>(
     () =>
