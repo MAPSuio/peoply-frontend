@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 import BackButton from "../../../components/BackButton";
+import Avatar from "../../../components/Avatar";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
 import useBack from "../../../hooks/useBack";
@@ -93,7 +94,10 @@ const OrganizationApprovalAdmin: NextPage = () => {
           {organizations?.map((organization) => (
             <div key={organization.id} className={styles.item}>
               <div className={styles.info}>
-                <p className={styles.name}>{organization.name}</p>
+                <div className={styles.nameRow}>
+                  <p className={styles.name}>{organization.name}</p>
+                  <Avatar org={organization} size="small" />
+                </div>
                 <p className={styles.meta}>
                   {organization.orgNr || organization.id}
                 </p>
