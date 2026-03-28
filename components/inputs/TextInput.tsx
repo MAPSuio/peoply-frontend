@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import ErrorIcon from "../svgs/ErrorIcon";
 
@@ -48,7 +48,11 @@ const TextInput = ({
 }: TextInputProps) => {
   const [focused, setFocused] = useState(false);
 
-  if (setValid) {
+  useEffect(() => {
+    if (!setValid) {
+      return;
+    }
+
     const validLength =
       minLength && maxLength
         ? value.length >= minLength && value.length <= maxLength
@@ -60,8 +64,9 @@ const TextInput = ({
     const validEmail = isEmail ? isValidEmail(value) : true;
     const validRegExp = regExp ? regExp.test(value) : true;
     const inWhiteList = whiteList ? whiteList.includes(value) : false;
+
     setValid((validLength && validEmail && validRegExp) || inWhiteList);
-  }
+  }, [isEmail, maxLength, minLength, regExp, setValid, value, whiteList]);
 
   const getInputContainerStyles = () => {
     if (validate && (valid || !focused)) {

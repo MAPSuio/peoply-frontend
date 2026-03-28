@@ -94,9 +94,9 @@ export default function UserSelect({
       </div>
       <div className={`${styles.results} ${users.length ? styles.show : ""}`}>
         {users.map((user) => (
-          <>
+          <div key={user.id}>
             <span className={styles.divider} />
-            <div key={user.id} className={styles.item}>
+            <div className={styles.item}>
               <Link href={`/users/${user.id}`} className={styles.user}>
                 <Avatar user={user} />
                 <div>{`${user.firstName} ${user.lastName}`}</div>
@@ -117,7 +117,7 @@ export default function UserSelect({
                 </button>
               )}
             </div>
-          </>
+          </div>
         ))}
       </div>
     </div>
