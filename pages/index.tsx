@@ -24,9 +24,6 @@ import "swiper/css/free-mode";
 // Services.
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
-// Utils.
-import { queryToString } from "../utils/functions";
-
 // Types.
 import { UrlObject } from "url";
 import { Event, Organization } from "../types/types";
@@ -61,41 +58,13 @@ const Home: NextPage = ({
     ArrangerFollower[]
   >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
 
-  // temporary list before we get a solution for the API
-  // temporary list before we get a solution for the API
-  const ifiOrgs = [
-    "990110352", // CYB
-    "990995303", // navet
-    "987042583", // dagen
-    "911594242", // Ifi-Progsys
-    "915439721", // Defi
-    "919650354", // Digitus
-    "997875400", // Språktek
-    "991739815", // mikro
-    "995251884", // MAPS
-    "920547230", // Toastjærn
-    "928728854", // readLine
-    "996784991", // FUI
-    "998088062", // FIFI
-    "934263286", // Quizifi
-    "934136306", // Ifi Rastløs
-    "913439511", // Fadderstyret
-    "932075024", // RealitIFI
-    "815417712", // >Output
-    "923423834", // VIFI
-    "929168097", // SIFI
-    "919793678", // PiTCH
-    "934357124", //PGA IFI
-  ];
-
-  // const eventsOnIfiQuery = { ...eventsQuery, categoryIds: "3" }; // IFI category id
   const followedEventsQuery = {
-    ...eventsQuery,
+    afterDate: todayString,
+    orderBy: "startDate",
     arrangerIds: followedArrangers
       ?.map((arranger) => arranger.arrangerId)
       .join(","),
   };
-  const ifiOrgsQuery = { orgNrs: ifiOrgs.join(","), take: 20 };
 
   // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
   //   `/events?${queryToString(eventsOnIfiQuery)}`,
@@ -103,7 +72,7 @@ const Home: NextPage = ({
   // );
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
-    `/events?${queryToString(eventsQuery)}`,
+    `/events?afterDate=${todayString}&orderBy=startDate`,
     fetchFromPeoplyApiJson,
   );
 
@@ -112,14 +81,14 @@ const Home: NextPage = ({
     error: eventsFromFollowedOrganizationsError,
   } = useSWR<Event[]>(
     followedArrangers && followedArrangers.length > 0
-      ? `/events?${queryToString(followedEventsQuery)}`
+      ? `/events?afterDate=${todayString}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
       : null,
     fetchFromPeoplyApiJson,
   );
 
   const { data: organizations, error: organizationsError } = useSWR<
     Organization[]
-  >(`/organizations?${queryToString(ifiOrgsQuery)}`, fetchFromPeoplyApiJson);
+  >(`/organizations?take=20`, fetchFromPeoplyApiJson);
 
   return (
     <>
@@ -167,7 +136,7 @@ const Home: NextPage = ({
         {organizations && organizations.length > 0 && (
           <OrganizationSwiper
             header="Foreninger på IFI"
-            seeAllUrl={{ pathname: "/orgs", query: ifiOrgsQuery }}
+            seeAllUrl="/orgs"
             organizations={organizations}
             error={organizationsError}
           />
