@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
@@ -36,6 +36,7 @@ import {
   ButtonType,
   Event,
   Organization,
+  OrganizationReportStatus,
   SnackTypes,
 } from "../../../types/types";
 import {
@@ -65,6 +66,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   const { user } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [reporting, setReporting] = useState(false);
+  const [now, setNow] = useState(Date.now());
 
   const {
     organization: orgData,
@@ -104,6 +106,24 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
       : null,
     fetchFromPeoplyApiJson,
   );
+
+  const { data: reportStatus, mutate: mutateReportStatus } =
+    useSWR<OrganizationReportStatus>(
+      user && orgData ? `/organizations/${orgData.id}/report-status` : null,
+      fetchFromPeoplyApiJson,
+    );
+
+  useEffect(() => {
+    if (!reportStatus?.nextReportAt) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [reportStatus?.nextReportAt]);
 
   if (orgLoading) {
     return <></>;
@@ -170,23 +190,103 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
 
   const organizationCalendarLinks = getOrganizationCalendarLinks(org);
 
+  const remainingReportSeconds = useMemo(() => {
+    if (!reportStatus?.nextReportAt || reportStatus.canReport) {
+      return 0;
+    }
+
+    return Math.max(
+      0,
+      Math.ceil((new Date(reportStatus.nextReportAt).getTime() - now) / 1000),
+    );
+  }, [now, reportStatus]);
+
+  const reportCountdown = useMemo(() => {
+    if (!remainingReportSeconds) {
+      return null;
+    }
+
+    const hours = Math.floor(remainingReportSeconds / 3600);
+    const minutes = Math.floor((remainingReportSeconds % 3600) / 60);
+    const seconds = remainingReportSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
+    }
+
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }, [remainingReportSeconds]);
+
   const reportOrganization = async () => {
     if (!user) {
       redirectToLogin();
       return;
     }
 
-    if (reporting) {
+    if (reporting || (reportStatus && !reportStatus.canReport)) {
+      if (reportCountdown) {
+        addSnack(
+          `Du kan rapportere igjen om ${reportCountdown}`,
+          SnackTypes.ERROR,
+        );
+      }
       return;
     }
 
     try {
       setReporting(true);
-      await fetchFromPeoplyApi(`/organizations/${org.id}/report`, {
-        method: "POST",
-      });
+      const response = await fetchFromPeoplyApi(
+        `/organizations/${org.id}/report`,
+        {
+          method: "POST",
+        },
+      );
+      const nextStatus = await response.json();
+      mutateReportStatus(
+        {
+          canReport: false,
+          nextReportAt: nextStatus.nextReportAt,
+          remainingSeconds: nextStatus.remainingSeconds ?? 0,
+        },
+        false,
+      );
       addSnack("Foreningen er rapportert", SnackTypes.SUCCESS);
     } catch (e) {
+      if (e instanceof Response && e.status === 429) {
+        const nextStatus = await e.json();
+        const retryInSeconds = nextStatus.remainingSeconds ?? 0;
+        const retryCountdown = (() => {
+          const hours = Math.floor(retryInSeconds / 3600);
+          const minutes = Math.floor((retryInSeconds % 3600) / 60);
+          const seconds = retryInSeconds % 60;
+
+          if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+              .toString()
+              .padStart(2, "0")}`;
+          }
+
+          return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        })();
+
+        mutateReportStatus(
+          {
+            canReport: false,
+            nextReportAt: nextStatus.nextReportAt,
+            remainingSeconds: retryInSeconds,
+          },
+          false,
+        );
+        addSnack(
+          retryInSeconds > 0
+            ? `Du kan rapportere igjen om ${retryCountdown}`
+            : "Du kan bare rapportere en gang i timen",
+          SnackTypes.ERROR,
+        );
+        return;
+      }
       addSnack("Kunne ikke rapportere foreningen", SnackTypes.ERROR);
     } finally {
       setReporting(false);
@@ -215,9 +315,14 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
               aria-label="rapporter forening"
               title="Rapporter forening"
               onClick={reportOrganization}
-              disabled={reporting}
+              disabled={reporting || remainingReportSeconds > 0}
             >
               <FlagIcon className={styles.settingsIcon} />
+              {reportCountdown && (
+                <span className={styles.reportCountdown}>
+                  {reportCountdown}
+                </span>
+              )}
             </button>
             {isAdminOrOwner && (
               <Link

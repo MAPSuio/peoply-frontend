@@ -189,6 +189,12 @@ export interface Organization {
   organizationRoles: UserOrganizationRoles[];
 }
 
+export interface OrganizationReportStatus {
+  canReport: boolean;
+  nextReportAt: string | null;
+  remainingSeconds: number;
+}
+
 export enum IcsFeedSyncStatus {
   PENDING = "PENDING",
   RUNNING = "RUNNING",

@@ -28,11 +28,18 @@
   align-items: center;
   color: var(--text-color-primary, $text-color-primary);
   display: inline-flex;
+  gap: $spacer-very-small;
   justify-content: center;
 
   &:disabled {
     opacity: 0.6;
   }
+}
+
+.reportCountdown {
+  @include monoFont();
+
+  font-size: $font-size-tertiary;
 }
 
 .headerContainer {
