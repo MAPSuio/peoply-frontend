@@ -35,10 +35,18 @@
   min-width: 0;
 }
 
+.nameRow {
+  align-items: center;
+  display: flex;
+  gap: $spacer-very-small-plus;
+  justify-content: space-between;
+}
+
 .name {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-secondary;
   font-weight: $font-weight-bold;
+  min-width: 0;
 }
 
 .meta {
