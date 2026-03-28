@@ -9,7 +9,6 @@ import { MouseEvent, useEffect, useState } from "react";
 // Components.
 import AddToCalendarButton from "./AddToCalendarButton";
 import JoinButton from "./JoinButton";
-import { ShareButton } from "./ShareButton";
 import HeartIconGlass from "./HeartIconGlass";
 
 // Hooks.
@@ -273,18 +272,6 @@ const LargeEventCard = ({
                   event={event}
                   width="100%"
                   className={styles.secondaryActionButton}
-                />
-              </div>
-              <div
-                className={`${styles.shareButton} ${
-                  stackActionsOnDesktop ? styles.stackedShareButton : ""
-                }`}
-              >
-                <ShareButton
-                  width="100%"
-                  buttonText="Del arrangement"
-                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${event.urlId}`}
-                  shareTitle={event.title}
                 />
               </div>
             </div>
