@@ -1,22 +1,13 @@
-.overlay {
-  align-items: flex-end;
-  background-color: var(
-    --background-color-card-transparent,
-    $background-color-card-transparent
-  );
+.banner {
   display: flex;
-  inset: 0;
   justify-content: center;
   padding: $spacer-small;
-  position: fixed;
+  position: sticky;
+  top: 0;
   z-index: 1100;
-
-  @include desktop() {
-    align-items: center;
-  }
 }
 
-.modal {
+.content {
   background-color: var(--background-color-card, $background-color-card);
   border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-regular;
@@ -26,7 +17,7 @@
   gap: $spacer-small;
   max-width: 32rem;
   padding: $spacer-medium;
-  width: min(100%, 32rem);
+  width: 100%;
 
   @include desktop() {
     padding: $spacer-medium-plus;
@@ -46,15 +37,15 @@
   margin: 0;
 }
 
-.copy {
+.list {
   color: var(--text-color-primary, $text-color-primary);
-  font-size: $font-size-primary;
+  display: flex;
+  flex-direction: column;
+  font-size: $font-size-secondary;
+  gap: $spacer-mini;
   line-height: $line-height-text;
   margin: 0;
-
-  @include desktop() {
-    font-size: $font-size-secondary;
-  }
+  padding-left: $spacer-medium;
 }
 
 .actions {
