@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 const Login: NextPage = ({
   baseUrl,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const router = useRouter();
   const [redirectURL, setRedirectURL] = useState<string>("/");
 
@@ -51,7 +51,7 @@ const Login: NextPage = ({
         description="Logg inn på Peoply"
         url={`${baseUrl}/login`}
       />
-      {user ? (
+      {loading ? null : user ? (
         <div className={styles.loginWrapper}>
           <div className={styles.loginContainer}>
             <div className={styles.loginHeaderContainer}>
