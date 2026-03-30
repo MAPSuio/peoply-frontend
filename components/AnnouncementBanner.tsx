@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import styles from "../styles/AnnouncementBanner.module.scss";
 
-const ANNOUNCEMENT_ID = "auth-upgrade-2026-03-27";
+const ANNOUNCEMENT_ID = "whats-new-2026-03";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
-const ANNOUNCEMENT_END_AT = new Date("2026-04-03T23:59:59.999+01:00");
+const ANNOUNCEMENT_END_AT = new Date("2026-04-13T23:59:59.999+02:00");
 
 interface AnnouncementState {
   firstSeenAt: string;
@@ -113,32 +113,30 @@ export default function AnnouncementBanner() {
 
   return (
     <div
-      className={styles.overlay}
-      onClick={acknowledgeAnnouncement}
-      role="presentation"
+      className={styles.banner}
+      role="status"
+      aria-labelledby="announcement-title"
     >
-      <div
-        className={styles.modal}
-        onClick={(event) => event.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="announcement-title"
-      >
-        <p className={styles.eyebrow}>Viktig informasjon</p>
-        <h2 className={styles.title} id="announcement-title">
-          Peoply oppgraderer autentiseringsløsningene
-        </h2>
-        <p className={styles.copy}>
-          Vi oppgraderer autentiseringsløsningene våre som følge av store
-          mengder angrep mot Peoply.
-        </p>
-        <p className={styles.copy}>
-          I perioden kan autentiseringstjenester tidvis være utilgjengelige på
-          siden. :)
-        </p>
+      <div className={styles.content}>
+        <p className={styles.eyebrow}>Nytt på Peoply</p>
+        <ul className={styles.list}>
+          <li>Delt kalender, se alle arrangementer samlet</li>
+          <li>
+            Kalenderabonnement (automatisk .ics fetch) for foreninger (se
+            admin-siden på din forening)
+          </li>
+          <li>Redigere kapasitet på arrangementer</li>
+          <li>
+            Ekstern påmelding for arrangementer (funker også med automatisk
+            .ics)
+          </li>
+          <li>Meld deg på/av direkte fra arrangementskort</li>
+          <li>Filtrér arrangementer etter forening</li>
+          <li>Gi oss tilbakemelding rett i Peoply!</li>
+        </ul>
         <div className={styles.actions}>
           <button className={styles.button} onClick={acknowledgeAnnouncement}>
-            Skjønner
+            Kult!
           </button>
         </div>
       </div>
