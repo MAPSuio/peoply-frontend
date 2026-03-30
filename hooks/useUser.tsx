@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { deleteMe, logout } from "../services/auth";
@@ -28,6 +29,7 @@ export function UserProvider({
   );
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [ipInfo, setIpInfo] = useState<IpInfo>();
+  const authRetryAttempted = useRef(false);
 
   useEffect(() => {
     fetchIpInfo().then((ip) => {
@@ -43,15 +45,23 @@ export function UserProvider({
         const user = await fetchFromPeoplyApiJson("/users/me", {
           headers: { "Cache-Control": "no-cache" },
         });
+        authRetryAttempted.current = false;
         setError(undefined);
         setUser(user);
       } catch (error: unknown) {
         const response = error as Response;
 
         if (response?.status === 401) {
+          authRetryAttempted.current = false;
           setUser(undefined);
           setError("Unauthorized");
         } else {
+          if (!authRetryAttempted.current) {
+            authRetryAttempted.current = true;
+            setTimeout(() => setReload((prev) => !prev), 1500);
+            return;
+          }
+
           setError("Could not verify auth state");
         }
       }
@@ -92,13 +102,15 @@ export function UserProvider({
 
   /* will clear user state and request to remove the cookies */
   const logoutHandler = async () => {
+    const response = await logout();
     setUser(undefined);
-    return logout();
+    return response;
   };
 
   const deleteMeHandler = async () => {
+    const response = await deleteMe();
     setUser(undefined);
-    return deleteMe();
+    return response;
   };
 
   /* will switch context to org if provided, otherwise switch to user */
