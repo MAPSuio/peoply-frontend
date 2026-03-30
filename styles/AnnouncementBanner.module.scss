@@ -5,7 +5,7 @@
   );
   display: flex;
   justify-content: center;
-  padding: $spacer-very-small $spacer-small;
+  padding: $spacer-very-small-plus $spacer-small;
   width: 100%;
 }
 
@@ -45,17 +45,19 @@
   display: flex;
   flex-direction: column;
   font-size: $font-size-tertiary;
-  gap: $spacer-mini;
-  line-height: $line-height-text;
+  gap: 2px;
+  line-height: 1.4;
   margin: 0;
   padding-left: $spacer-small;
 }
 
 .actions {
+  align-self: stretch;
   display: flex;
   margin-top: $spacer-mini;
 
   @include desktop() {
+    align-self: auto;
     margin-left: auto;
     margin-top: 0;
   }
@@ -69,13 +71,20 @@
   color: var(--text-color-button, $text-color-button);
   cursor: pointer;
   display: inline-flex;
-  font-size: $font-size-tertiary;
+  font-size: $font-size-secondary;
   font-weight: $font-weight-medium;
   justify-content: center;
-  min-height: 1.75rem;
+  min-height: 2.25rem;
   padding: 0 $spacer-small;
   text-decoration: none;
   white-space: nowrap;
+  width: 100%;
+
+  @include desktop() {
+    font-size: $font-size-tertiary;
+    min-height: 1.75rem;
+    width: auto;
+  }
 
   &:hover,
   &:focus-visible {
