@@ -112,20 +112,30 @@ export default function AnnouncementBanner() {
   }
 
   return (
-    <div className={styles.banner} role="status" aria-labelledby="announcement-title">
+    <div
+      className={styles.banner}
+      role="status"
+      aria-labelledby="announcement-title"
+    >
       <div className={styles.content}>
         <p className={styles.eyebrow}>Nytt på Peoply</p>
         <h2 className={styles.title} id="announcement-title">
           Her er det som er nytt!
         </h2>
         <ul className={styles.list}>
-          <li>Delt kalender — se alle arrangementer samlet</li>
-          <li>Kalenderabonnement (ICS) for organisasjoner</li>
-          <li>Rediger kapasitet på arrangementer</li>
-          <li>Ekstern påmelding for arrangementer</li>
-          <li>Meld deg av direkte fra arrangementskort</li>
-          <li>Filtrér arrangementer etter organisasjon</li>
-          <li>Gi oss tilbakemelding rett i appen</li>
+          <li>Delt kalender, se alle arrangementer samlet</li>
+          <li>
+            Kalenderabonnement (automatisk .ics fetch) for foreninger (se
+            admin-siden på din forening)
+          </li>
+          <li>Redigere kapasitet på arrangementer</li>
+          <li>
+            Ekstern påmelding for arrangementer (funker også med automatisk
+            .ics)
+          </li>
+          <li>Meld deg på/av direkte fra arrangementskort</li>
+          <li>Filtrér arrangementer etter forening</li>
+          <li>Gi oss tilbakemelding rett i Peoply!</li>
         </ul>
         <div className={styles.actions}>
           <button className={styles.button} onClick={acknowledgeAnnouncement}>
