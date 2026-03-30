@@ -119,9 +119,6 @@ export default function AnnouncementBanner() {
     >
       <div className={styles.content}>
         <p className={styles.eyebrow}>Nytt på Peoply</p>
-        <h2 className={styles.title} id="announcement-title">
-          Her er det som er nytt!
-        </h2>
         <ul className={styles.list}>
           <li>Delt kalender, se alle arrangementer samlet</li>
           <li>
