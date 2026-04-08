@@ -6,6 +6,7 @@ import {
   ButtonType,
   Event,
   EventCategory,
+  EventRegistrationMode,
   RegStatus,
   SnackTypes,
   Visibility,
@@ -40,6 +41,7 @@ import TimeView from "./TimeView";
 import Modal from "./Modal";
 import TextInputLong from "./inputs/TextInputLong";
 import NumberInput from "./inputs/NumberInput";
+import CheckboxInput from "./inputs/CheckboxInput";
 
 // Styles
 import styles from "../styles/SummaryPage.module.scss";
@@ -80,6 +82,7 @@ interface EditSummaryPageProps {
 
 interface EventObjectProps {
   visibility: Visibility;
+  registrationMode: EventRegistrationMode;
   title: string;
   description: string;
   startDate: string;
@@ -88,6 +91,7 @@ interface EventObjectProps {
   regEnd?: string;
   categoryIds: number[];
   capacity?: number | null;
+  externalUrl?: string;
   eventImage?: File;
   deleteImage: boolean;
   locationName: string;
@@ -108,6 +112,9 @@ interface EventObjectProps {
 
 const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const { ipInfo } = useUser();
+  const initialExternalRegistrationEnabled =
+    event.registrationMode === EventRegistrationMode.EXTERNAL;
+  const initialExternalUrl = event.externalUrl ?? "";
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     title: event.title,
@@ -122,7 +129,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     regEnd: event.regEnd ? removeTimezone(event.regEnd.toString()) : undefined,
     categoryIds: getCategories(event.eventCategories),
     visibility: event.visibility,
+    registrationMode:
+      event.registrationMode ?? EventRegistrationMode.PEOPLY,
     capacity: event.capacity,
+    externalUrl: initialExternalUrl,
     eventImage: undefined,
     deleteImage: false,
     locationName: event.locationName,
@@ -176,6 +186,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [validDescription, setValidDescription] = useState(true);
   const [validCategories, setValidCategories] = useState(true);
   const [validCapacity, setValidCapacity] = useState(true);
+  const [validExternalUrl, setValidExternalUrl] = useState(
+    !initialExternalRegistrationEnabled ||
+      /^https?:\/\/\S+$/i.test(initialExternalUrl.trim()),
+  );
   const [capacityFieldVisible, setCapacityFieldVisible] = useState(
     event.capacity !== null,
   );
@@ -408,6 +422,28 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     );
   }
 
+  function setExternalRegistration(enabled: boolean) {
+    const nextExternalUrl = enabled ? tempEventObject.externalUrl ?? "" : "";
+
+    setTempEventObject({
+      ...tempEventObject,
+      registrationMode: enabled
+        ? EventRegistrationMode.EXTERNAL
+        : EventRegistrationMode.PEOPLY,
+      externalUrl: nextExternalUrl,
+    });
+    setValidExternalUrl(
+      !enabled || /^https?:\/\/\S+$/i.test(nextExternalUrl.trim()),
+    );
+  }
+
+  function updateExternalUrl(e: ChangeEvent<HTMLInputElement>) {
+    setTempEventObject({
+      ...tempEventObject,
+      externalUrl: e.target.value,
+    });
+  }
+
   function acceptChange() {
     setChangesMade(true);
     setEventObject({ ...tempEventObject });
@@ -418,6 +454,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   function rejectChange() {
     setTempEventObject({ ...eventObject });
     setCapacityFieldVisible(eventObject.capacity !== null);
+    setValidExternalUrl(
+      eventObject.registrationMode !== EventRegistrationMode.EXTERNAL ||
+        /^https?:\/\/\S+$/i.test((eventObject.externalUrl ?? "").trim()),
+    );
     setEditOpen(false);
   }
 
@@ -508,7 +548,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     validLocationName &&
     validDescription &&
     validCategories &&
-    validCapacity;
+    validCapacity &&
+    validExternalUrl;
+  const externalRegistrationEnabled =
+    tempEventObject.registrationMode === EventRegistrationMode.EXTERNAL;
   return (
     <>
       <div className={styles.summaryContainer}>
@@ -1097,6 +1140,33 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                   )}
                 </>
               )}
+              <CheckboxInput
+                onChange={() =>
+                  setExternalRegistration(!externalRegistrationEnabled)
+                }
+                checked={externalRegistrationEnabled}
+                label="Ekstern påmelding"
+                checkboxId="externalRegistration"
+                checkboxName="externalRegistration"
+              />
+              {externalRegistrationEnabled && (
+                <TextInput
+                  value={tempEventObject.externalUrl ?? ""}
+                  inputId="externalUrl"
+                  inputName="externalUrl"
+                  label="Påmelding URL"
+                  placeholder="https://example.com/pamelding"
+                  maxLength={500}
+                  errorMessage="Legg inn en gyldig URL som starter med http:// eller https://"
+                  required
+                  handleChange={updateExternalUrl}
+                  setValid={setValidExternalUrl}
+                  valid={validExternalUrl}
+                  validate
+                  noExtraInfo
+                  card
+                />
+              )}
             </>
           }
         >
@@ -1125,6 +1195,27 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 <p className={styles.dataLabel}>Ubegrenset antall plasser</p>
               </div>
             )}
+            <div className={styles.dataItemContainer}>
+              <p className={styles.dataLabel}>
+                {eventObject.registrationMode ===
+                EventRegistrationMode.EXTERNAL
+                  ? "Ekstern påmelding"
+                  : eventObject.registrationMode === EventRegistrationMode.NONE
+                    ? "Ingen påmelding"
+                    : "Påmelding i Peoply"}
+              </p>
+            </div>
+            {eventObject.registrationMode === EventRegistrationMode.EXTERNAL &&
+              eventObject.externalUrl && (
+                <a
+                  className={styles.placeText}
+                  href={eventObject.externalUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {eventObject.externalUrl}
+                </a>
+              )}
           </div>
         </SummaryCard>
         <Button
