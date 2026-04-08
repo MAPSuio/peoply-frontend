@@ -1016,34 +1016,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   </div>
                 )}
               </div>
-              <div className={styles.participantQuestion}>
-                <CheckboxInput
-                  onChange={() =>
-                    setEventHasExternalRegistration(
-                      !eventObject.eventHasExternalRegistration,
-                    )
-                  }
-                  checked={eventObject.eventHasExternalRegistration}
-                  label="Ekstern påmelding"
-                  checkboxId="ExternalRegistration"
-                  checkboxName="ExternalRegistration"
-                />
-                {eventObject.eventHasExternalRegistration && (
-                  <TextInput
-                    value={eventObject.eventExternalUrl}
-                    inputId="eventExternalUrl"
-                    inputName="eventExternalUrl"
-                    label="Påmelding URL"
-                    placeholder="https://example.com/pamelding"
-                    maxLength={500}
-                    errorMessage="Legg inn en gyldig URL som starter med http:// eller https://"
-                    required
-                    handleChange={updateEventExternalUrl}
-                    valid={externalRegistrationUrlValid}
-                    validate
-                  />
-                )}
-              </div>
             </div>
           </InputPage>
         );
@@ -1270,6 +1242,34 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   onClick={updateHasFood}
                   label="Skal det serveres mat på arrangementet?"
                 />
+              </div>
+              <div className={styles.participantQuestion}>
+                <CheckboxInput
+                  onChange={() =>
+                    setEventHasExternalRegistration(
+                      !eventObject.eventHasExternalRegistration,
+                    )
+                  }
+                  checked={eventObject.eventHasExternalRegistration}
+                  label="Ekstern påmelding"
+                  checkboxId="ExternalRegistration"
+                  checkboxName="ExternalRegistration"
+                />
+                {eventObject.eventHasExternalRegistration && (
+                  <TextInput
+                    value={eventObject.eventExternalUrl}
+                    inputId="eventExternalUrl"
+                    inputName="eventExternalUrl"
+                    label="Påmelding URL"
+                    placeholder="https://example.com/pamelding"
+                    maxLength={500}
+                    errorMessage="Legg inn en gyldig URL som starter med http:// eller https://"
+                    required
+                    handleChange={updateEventExternalUrl}
+                    valid={externalRegistrationUrlValid}
+                    validate
+                  />
+                )}
               </div>
               <div className={styles.FormQuestion}>
                 <CheckboxInput
