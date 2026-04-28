@@ -44,6 +44,16 @@
   gap: $spacer-very-small-plus;
 }
 
+.inputGrid {
+  display: grid;
+  gap: $spacer-very-small-plus;
+
+  @include desktop() {
+    column-gap: $spacer-small;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .statusCard {
   background-color: rgba(0, 0, 0, 0.03);
   border-radius: $border-radius-regular;

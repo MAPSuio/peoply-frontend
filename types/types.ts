@@ -186,6 +186,12 @@ export interface Organization {
   name: string;
   orgNr: string;
   image?: string;
+  websiteUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  tiktokUrl?: string;
+  linkedinUrl?: string;
+  youtubeUrl?: string;
   organizationRoles: UserOrganizationRoles[];
 }
 
