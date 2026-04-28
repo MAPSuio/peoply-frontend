@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
 
+import useUser from "../hooks/useUser";
+import { ButtonType, OrganizationRole } from "../types/types";
+import Modal from "./Modal";
+import ModalButton from "./ModalButton";
 import styles from "../styles/AnnouncementBanner.module.scss";
 
-const ANNOUNCEMENT_ID = "whats-new-2026-03";
+const ANNOUNCEMENT_ID = "whats-new-2026-04-social-links";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
-const ANNOUNCEMENT_END_AT = new Date("2026-04-13T23:59:59.999+02:00");
+const ANNOUNCEMENT_END_AT = new Date("2026-06-01T00:00:00.000+02:00");
 
 interface AnnouncementState {
   firstSeenAt: string;
@@ -12,7 +17,41 @@ interface AnnouncementState {
 }
 
 export default function AnnouncementBanner() {
+  const router = useRouter();
+  const { user, orgs, currentOrg } = useUser();
   const [visible, setVisible] = useState(false);
+
+  const manageableOrganizations = useMemo(() => {
+    if (!user || !orgs) {
+      return [];
+    }
+
+    return orgs.filter((organization) =>
+      organization.organizationRoles.some(
+        (organizationRole) =>
+          organizationRole.userId === user.id &&
+          organizationRole.role !== OrganizationRole.MEMBER,
+      ),
+    );
+  }, [orgs, user]);
+
+  const targetOrganization = useMemo(() => {
+    if (!manageableOrganizations.length) {
+      return undefined;
+    }
+
+    if (currentOrg) {
+      const activeOrganization = manageableOrganizations.find(
+        (organization) => organization.id === currentOrg.id,
+      );
+
+      if (activeOrganization) {
+        return activeOrganization;
+      }
+    }
+
+    return manageableOrganizations[0];
+  }, [currentOrg, manageableOrganizations]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -107,39 +146,48 @@ export default function AnnouncementBanner() {
     setVisible(false);
   };
 
+  const openSocialLinksSettings = async () => {
+    if (!targetOrganization) {
+      acknowledgeAnnouncement();
+      return;
+    }
+
+    acknowledgeAnnouncement();
+    await router.push(
+      `/orgs/${targetOrganization.urlId ?? targetOrganization.id}/settings`,
+    );
+  };
+
   if (!visible) {
     return null;
   }
 
   return (
-    <div
-      className={styles.banner}
-      role="status"
-      aria-labelledby="announcement-title"
+    <Modal
+      label="Foreninger kan nå legge inn sosiale medier"
+      description="Du kan nå legge til nettside, Instagram, Facebook, TikTok, LinkedIn og YouTube på foreningssiden.
+Hvis du kan redigere en forening, kan du legge det inn med en gang fra innstillingene."
+      closeButtonOnClick={acknowledgeAnnouncement}
     >
       <div className={styles.content}>
         <p className={styles.eyebrow}>Nytt på Peoply</p>
-        <ul className={styles.list}>
-          <li>Delt kalender, se alle arrangementer samlet</li>
-          <li>
-            Kalenderabonnement (automatisk .ics fetch) for foreninger (se
-            admin-siden på din forening)
-          </li>
-          <li>Redigere kapasitet på arrangementer</li>
-          <li>
-            Ekstern påmelding for arrangementer (funker også med automatisk
-            .ics)
-          </li>
-          <li>Meld deg på/av direkte fra arrangementskort</li>
-          <li>Filtrér arrangementer etter forening</li>
-          <li>Gi oss tilbakemelding rett i Peoply!</li>
-        </ul>
+        {targetOrganization && (
+          <p className={styles.hint}>
+            Knappen under tar deg rett til innstillingene for{" "}
+            {targetOrganization.name}.
+          </p>
+        )}
         <div className={styles.actions}>
-          <button className={styles.button} onClick={acknowledgeAnnouncement}>
-            Kult!
-          </button>
+          {targetOrganization && (
+            <ModalButton text="Gjør det nå" onClick={openSocialLinksSettings} />
+          )}
+          <ModalButton
+            text={targetOrganization ? "Senere" : "Skjønner"}
+            onClick={acknowledgeAnnouncement}
+            type={ButtonType.SECONDARY}
+          />
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
