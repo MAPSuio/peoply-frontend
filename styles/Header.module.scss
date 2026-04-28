@@ -67,63 +67,122 @@
     font-weight: $font-weight-medium;
   }
 
+  /* stylelint-disable indentation, color-named, order/properties-alphabetical-order */
   .feedbackLink {
     align-items: center;
-    background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.98),
-          rgba(255, 255, 255, 0.9)
+    background: radial-gradient(
+          circle at 50% 45%,
+          color-mix(
+              in srgb,
+              var(
+                  --background-color-button-warning,
+                  $background-color-button-warning
+                )
+                50%,
+              rgb(255 255 255)
+            )
+            0%,
+          var(
+              --background-color-button-warning,
+              $background-color-button-warning
+            )
+            48%,
+          color-mix(
+              in srgb,
+              var(
+                  --background-color-button-warning-hover,
+                  $background-color-button-warning-hover
+                )
+                80%,
+              var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+            )
+            100%
         )
         padding-box,
       linear-gradient(
-          120deg,
-          var(--primary-color-logo, $primary-color-logo),
+          140deg,
           color-mix(
             in srgb,
-            var(--primary-color-logo, $primary-color-logo) 55%,
-            white
+            var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+              65%,
+            rgb(255 255 255)
           ),
-          var(--secondary-color-logo, $secondary-color-logo),
-          color-mix(
-            in srgb,
-            var(--secondary-color-logo, $secondary-color-logo) 60%,
-            white
+          var(
+            --background-color-button-warning,
+            $background-color-button-warning
           ),
-          var(--primary-color-logo, $primary-color-logo)
+          var(
+            --background-color-button-warning-hover,
+            $background-color-button-warning-hover
+          )
         )
         border-box;
     animation: feedback-attention-bob 1.6s ease-in-out infinite;
     border: 2px solid transparent;
     border-radius: $border-radius-round;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.92),
+    box-shadow: 0 0 0 1px
+        color-mix(
+          in srgb,
+          var(
+              --background-color-button-warning,
+              $background-color-button-warning
+            )
+            44%,
+          rgb(255 255 255)
+        ),
       0 0 18px
         color-mix(
           in srgb,
-          var(--primary-color-logo, $primary-color-logo) 42%,
+          var(
+              --background-color-button-warning,
+              $background-color-button-warning
+            )
+            52%,
           transparent
         ),
-      0 0 34px
+      0 0 36px
         color-mix(
           in srgb,
-          var(--secondary-color-logo, $secondary-color-logo) 34%,
+          var(
+              --background-color-button-warning-hover,
+              $background-color-button-warning-hover
+            )
+            42%,
           transparent
         ),
-      0 0 58px
+      0 0 64px
         color-mix(
           in srgb,
-          var(--primary-color-logo, $primary-color-logo) 24%,
-          white
+          var(
+              --background-color-button-warning,
+              $background-color-button-warning
+            )
+            24%,
+          rgb(255 255 255)
         );
-    color: var(--text-color-emphasis, $text-color-emphasis);
+    color: var(--text-color-black, $text-color-black);
     display: inline-flex;
     font-size: $font-size-secondary;
     font-weight: $font-weight-medium;
+    gap: $spacer-very-small;
     isolation: isolate;
     min-height: 2.5rem;
     overflow: hidden;
     padding: 0 calc($spacer-small + 2px);
     position: relative;
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.96);
+    text-shadow: 0 1px 0
+      color-mix(
+        in srgb,
+        var(--background-color-button-warning, $background-color-button-warning)
+          35%,
+        rgb(255 255 255)
+      );
     transform: translateZ(0);
     transition: box-shadow $animation-duration ease,
       transform $animation-duration ease;
@@ -135,7 +194,8 @@
 
     &::before,
     &::after,
-    span::before {
+    span::before,
+    span::after {
       border-radius: inherit;
       content: "";
       pointer-events: none;
@@ -144,40 +204,60 @@
 
     &::before {
       animation: feedback-logo-spin 2.4s linear infinite;
-      background: conic-gradient(
+      background: repeating-conic-gradient(
         from 0deg,
-        var(--primary-color-logo, $primary-color-logo),
         color-mix(
-          in srgb,
-          var(--primary-color-logo, $primary-color-logo) 55%,
-          white
-        ),
-        var(--secondary-color-logo, $secondary-color-logo),
-        color-mix(
-          in srgb,
-          var(--secondary-color-logo, $secondary-color-logo) 60%,
-          white
-        ),
-        var(--primary-color-logo, $primary-color-logo)
+            in srgb,
+            var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+              88%,
+            rgb(255 255 255)
+          )
+          0deg 10deg,
+        transparent 10deg 28deg
       );
-      filter: blur(18px);
-      inset: -7px;
-      opacity: 0.9;
+      filter: blur(0.5px);
+      inset: -12px;
+      mask: radial-gradient(
+        circle,
+        transparent 56%,
+        rgb(0 0 0) 57% 76%,
+        transparent 77%
+      );
+      opacity: 0.95;
       z-index: -2;
     }
 
     &::after {
       animation: feedback-logo-pulse 1.15s ease-in-out infinite;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.84),
+      background: radial-gradient(
+        circle,
         color-mix(
-          in srgb,
-          var(--secondary-color-logo, $secondary-color-logo) 20%,
-          white
-        )
+            in srgb,
+            var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+              32%,
+            rgb(255 255 255)
+          )
+          0%,
+        color-mix(
+            in srgb,
+            var(
+                --background-color-button-warning-hover,
+                $background-color-button-warning-hover
+              )
+              72%,
+            transparent
+          )
+          58%,
+        transparent 100%
       );
-      inset: -2px;
+      inset: -20px;
+      opacity: 0.7;
       z-index: -1;
     }
 
@@ -188,15 +268,32 @@
         transparent 20%,
         color-mix(
             in srgb,
-            var(--primary-color-logo, $primary-color-logo) 18%,
-            white
+            var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+              32%,
+            rgb(255 255 255)
           )
           42%,
-        rgba(255, 252, 232, 0.92) 50%,
         color-mix(
             in srgb,
-            var(--secondary-color-logo, $secondary-color-logo) 18%,
-            white
+            var(
+                --background-color-button-warning,
+                $background-color-button-warning
+              )
+              68%,
+            rgb(255 255 255)
+          )
+          50%,
+        color-mix(
+            in srgb,
+            var(
+                --background-color-button-warning-hover,
+                $background-color-button-warning-hover
+              )
+              26%,
+            rgb(255 255 255)
           )
           58%,
         transparent 80%
@@ -206,31 +303,97 @@
       z-index: -1;
     }
 
+    span::after {
+      background: radial-gradient(
+        circle,
+        color-mix(
+            in srgb,
+            var(
+                --background-color-button-warning-hover,
+                $background-color-button-warning-hover
+              )
+              72%,
+            white
+          )
+          0%,
+        transparent 72%
+      );
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px
+          color-mix(
+            in srgb,
+            var(
+                --background-color-button-warning-hover,
+                $background-color-button-warning-hover
+              )
+              45%,
+            transparent
+          ),
+        0 0 16px
+          color-mix(
+            in srgb,
+            var(
+                --background-color-button-warning-hover,
+                $background-color-button-warning-hover
+              )
+              36%,
+            transparent
+          );
+      height: 0.7rem;
+      left: $spacer-small;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0.7rem;
+      z-index: 1;
+    }
+
     @include desktop() {
       &:hover {
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.96),
-          0 0 28px
+        box-shadow: 0 0 0 1px
             color-mix(
               in srgb,
-              var(--primary-color-logo, $primary-color-logo) 52%,
+              var(
+                  --background-color-button-warning,
+                  $background-color-button-warning
+                )
+                48%,
+              rgb(255 255 255)
+            ),
+          0 0 26px
+            color-mix(
+              in srgb,
+              var(
+                  --background-color-button-warning,
+                  $background-color-button-warning
+                )
+                60%,
               transparent
             ),
-          0 0 46px
+          0 0 48px
             color-mix(
               in srgb,
-              var(--secondary-color-logo, $secondary-color-logo) 44%,
+              var(
+                  --background-color-button-warning-hover,
+                  $background-color-button-warning-hover
+                )
+                50%,
               transparent
             ),
-          0 0 72px
+          0 0 80px
             color-mix(
               in srgb,
-              var(--primary-color-logo, $primary-color-logo) 36%,
-              white
+              var(
+                  --background-color-button-warning,
+                  $background-color-button-warning
+                )
+                32%,
+              rgb(255 255 255)
             );
         transform: translateY(-2px) scale(1.05);
       }
     }
   }
+  /* stylelint-enable indentation, color-named, order/properties-alphabetical-order */
 
   .integrationsLink {
     display: none;
