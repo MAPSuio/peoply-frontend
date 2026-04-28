@@ -18,6 +18,7 @@ import SettingsIcon from "../../../components/svgs/SettingsIcon";
 import UsersIconCard from "../../../components/svgs/UsersIconCard";
 import FollowIcon from "../../../components/svgs/FollowIcon";
 import FlagIcon from "../../../components/svgs/FlagIcon";
+import LinkIcon from "../../../components/svgs/LinkIcon";
 import Avatar from "../../../components/Avatar";
 import Button from "../../../components/Button";
 
@@ -51,6 +52,7 @@ import { ParsedUrlQuery } from "querystring";
 import styles from "../../../styles/Organization.module.scss";
 import { injectLink } from "../../../utils/functions";
 import { getOrganizationCalendarLinks } from "../../../utils/ics";
+import { getOrganizationSocialLinks } from "../../../utils/socialLinks";
 
 interface OrganizationProps {
   organization: Organization;
@@ -189,6 +191,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   })();
 
   const organizationCalendarLinks = getOrganizationCalendarLinks(org);
+  const socialLinks = getOrganizationSocialLinks(org);
 
   const remainingReportSeconds = (() => {
     if (!reportStatus?.nextReportAt || reportStatus.canReport) {
@@ -370,6 +373,22 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
                 target="_blank"
                 rel="noreferrer"
               ></a>
+            </div>
+          )}
+          {socialLinks.length > 0 && (
+            <div className={styles.socialLinks}>
+              {socialLinks.map((socialLink) => (
+                <a
+                  key={socialLink.key}
+                  href={socialLink.url}
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <LinkIcon className={styles.socialLinkIcon} />
+                  <span>{socialLink.label}</span>
+                </a>
+              ))}
             </div>
           )}
         </div>

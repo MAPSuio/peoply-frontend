@@ -74,6 +74,31 @@
   margin-top: $spacer-small;
 }
 
+.socialLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer-very-small-plus;
+  justify-content: center;
+  margin-top: $spacer-small;
+}
+
+.socialLink {
+  @include link();
+
+  align-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: var(--text-color-link, $text-color-link);
+  display: inline-flex;
+  gap: $spacer-very-small;
+  padding: $spacer-very-small $spacer-small;
+  text-decoration: none;
+}
+
+.socialLinkIcon {
+  flex-shrink: 0;
+}
+
 .calendarLink,
 .calendarSecondaryLink {
   @include link();

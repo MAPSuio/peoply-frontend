@@ -24,6 +24,14 @@ import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 import PublicIcon from "../../../components/svgs/PublicIcon";
 import LinkIcon from "../../../components/svgs/LinkIcon";
 import CloseIcon from "../../../components/svgs/CloseIcon";
+import {
+  buildOrganizationSocialLinkPayload,
+  emptyOrganizationSocialLinkValues,
+  getOrganizationSocialLinkFormValues,
+  isValidOrganizationSocialLink,
+  OrganizationSocialLinkKey,
+  organizationSocialPlatforms,
+} from "../../../utils/socialLinks";
 
 const OrganizationSettings: NextPage = () => {
   const router = useRouter();
@@ -40,12 +48,24 @@ const OrganizationSettings: NextPage = () => {
   const [validIcsUrl, setValidIcsUrl] = useState(true);
   const [registrationMode, setRegistrationMode] =
     useState<EventRegistrationMode>(EventRegistrationMode.EXTERNAL);
+  const [socialLinks, setSocialLinks] = useState(
+    emptyOrganizationSocialLinkValues,
+  );
+  const [savedSocialLinks, setSavedSocialLinks] = useState(
+    emptyOrganizationSocialLinkValues,
+  );
 
   const { data: icsFeed, mutate: mutateIcsFeed } =
     useSWR<OrganizationIcsFeed | null>(
       () => (org?.id ? `/organizations/${org.id}/ics-feed` : false),
       fetchFromPeoplyApiJson,
     );
+
+  useEffect(() => {
+    const nextSocialLinks = getOrganizationSocialLinkFormValues(org);
+    setSocialLinks(nextSocialLinks);
+    setSavedSocialLinks(nextSocialLinks);
+  }, [org]);
 
   useEffect(() => {
     if (icsFeed?.url) {
@@ -92,6 +112,18 @@ const OrganizationSettings: NextPage = () => {
     (icsFeed?.url ?? "") !== icsUrl ||
     (icsFeed?.registrationMode ?? EventRegistrationMode.EXTERNAL) !==
       registrationMode;
+
+  const normalizedSocialLinks = buildOrganizationSocialLinkPayload(socialLinks);
+  const normalizedSavedSocialLinks =
+    buildOrganizationSocialLinkPayload(savedSocialLinks);
+
+  const socialLinksHaveChanges = organizationSocialPlatforms.some(
+    ({ key }) => normalizedSocialLinks[key] !== normalizedSavedSocialLinks[key],
+  );
+
+  const hasInvalidSocialLinks = organizationSocialPlatforms.some(
+    ({ key }) => !isValidOrganizationSocialLink(socialLinks[key]),
+  );
 
   const getStatusLabel = () => {
     switch (icsFeed?.lastSyncStatus) {
@@ -153,6 +185,45 @@ const OrganizationSettings: NextPage = () => {
     }
   };
 
+  const updateSocialLink =
+    (key: OrganizationSocialLinkKey) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSocialLinks((currentSocialLinks) => ({
+        ...currentSocialLinks,
+        [key]: event.target.value,
+      }));
+    };
+
+  const handleSocialLinksSave = async () => {
+    const payload = normalizedSocialLinks;
+
+    try {
+      await fetchFromPeoplyApiJson(`/organizations/${org.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+
+      const nextSocialLinks = getOrganizationSocialLinkFormValues(payload);
+      setSocialLinks(nextSocialLinks);
+      setSavedSocialLinks(nextSocialLinks);
+      addSnack("Sosiale lenker er oppdatert", SnackTypes.SUCCESS);
+    } catch (error: unknown) {
+      const status =
+        error instanceof Response
+          ? error.status
+          : (error as { status?: number; statusCode?: number })?.status ??
+            (error as { status?: number; statusCode?: number })?.statusCode;
+
+      addSnack(
+        status === 400
+          ? "Lenkene må være gyldige URL-er"
+          : "Klarte ikke å lagre sosiale lenker",
+        SnackTypes.ERROR,
+      );
+    }
+  };
+
   const handleSync = async () => {
     try {
       await fetchFromPeoplyApiJson(`/organizations/${org.id}/ics-feed/sync`, {
@@ -186,6 +257,40 @@ const OrganizationSettings: NextPage = () => {
         <p>Organisasjonsbehandling for {org.name}</p>
       </div>
       <OrgMenu org={org} />
+      <section className={styles.integrationCard}>
+        <div className={styles.integrationHeader}>
+          <h2>Sosiale lenker</h2>
+          <p>Vis hvor folk kan finne og følge organisasjonen videre.</p>
+        </div>
+        <div className={styles.inputGrid}>
+          {organizationSocialPlatforms.map((platform) => (
+            <TextInput
+              key={platform.key}
+              value={socialLinks[platform.key]}
+              handleChange={updateSocialLink(platform.key)}
+              inputName={platform.key}
+              inputId={platform.key}
+              label={platform.label}
+              placeholder={platform.placeholder}
+              maxLength={300}
+              errorMessage=""
+            />
+          ))}
+        </div>
+        {hasInvalidSocialLinks && (
+          <p className={styles.errorText}>
+            Lenkene må være gyldige URL-er med http:// eller https://.
+          </p>
+        )}
+        <div className={styles.buttonRow}>
+          <Button
+            text="Lagre lenker"
+            onClick={handleSocialLinksSave}
+            disabled={!socialLinksHaveChanges || hasInvalidSocialLinks}
+            size={ButtonSize.SMALL}
+          />
+        </div>
+      </section>
       <section className={styles.integrationCard}>
         <div className={styles.integrationHeader}>
           <h2>Kalenderintegrasjon (.ics)</h2>
