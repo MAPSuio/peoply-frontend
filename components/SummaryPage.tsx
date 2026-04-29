@@ -123,10 +123,12 @@ const SummaryPage = ({
     /* Append title and description. */
     formData.set("title", eventObject.eventTitle);
     formData.set("arrangerId", eventObject.eventArrangerId);
-    formData.set(
-      "coOrganizerOrganizationIds",
-      JSON.stringify(eventObject.eventCoOrganizerOrganizationIds),
-    );
+    if (eventObject.eventCoOrganizerOrganizationIds.length > 0) {
+      formData.set(
+        "coOrganizerOrganizationIds",
+        JSON.stringify(eventObject.eventCoOrganizerOrganizationIds),
+      );
+    }
     formData.set("description", eventObject.eventDescription);
 
     /* Append capacity and private. */
