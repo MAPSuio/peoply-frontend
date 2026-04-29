@@ -281,6 +281,29 @@
   gap: $spacer-small;
 }
 
+.coOrganizerEditor {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small-plus;
+  width: 100%;
+}
+
+.coOrganizerHeader {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-secondary;
+  }
+
+  p {
+    color: var(--text-color-primary, $text-color-primary);
+    font-size: $font-size-tertiary;
+  }
+}
+
 .diagonalContainer {
   display: flex;
   flex-direction: column;
