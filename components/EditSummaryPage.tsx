@@ -6,6 +6,7 @@ import {
   ButtonType,
   Event,
   EventCategory,
+  Organization,
   EventRegistrationMode,
   RegStatus,
   SnackTypes,
@@ -45,6 +46,7 @@ import CheckboxInput from "./inputs/CheckboxInput";
 
 // Styles
 import styles from "../styles/SummaryPage.module.scss";
+import createStyles from "../styles/CreateEvent.module.scss";
 
 // Hooks
 import { useRouter } from "next/router";
@@ -84,6 +86,7 @@ interface EventObjectProps {
   visibility: Visibility;
   registrationMode: EventRegistrationMode;
   title: string;
+  coOrganizerOrganizationIds: string[];
   description: string;
   startDate: string;
   endDate?: string;
@@ -112,12 +115,23 @@ interface EventObjectProps {
 
 const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const { ipInfo } = useUser();
+  const [coOrganizerSearch, setCoOrganizerSearch] = useState("");
   const initialExternalRegistrationEnabled =
     event.registrationMode === EventRegistrationMode.EXTERNAL;
   const initialExternalUrl = event.externalUrl ?? "";
+  const initialCoOrganizerOrganizationIds = (
+    event.eventArrangers ?? []
+  ).flatMap((eventArranger) => {
+    const organizationId = eventArranger.arranger.organization?.id;
+
+    return eventArranger.role === "COLLABORATOR" && organizationId
+      ? [organizationId]
+      : [];
+  });
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     title: event.title,
+    coOrganizerOrganizationIds: initialCoOrganizerOrganizationIds,
     description: event.description,
     startDate: removeTimezone(event.startDate.toString()),
     endDate: event.endDate
@@ -129,8 +143,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     regEnd: event.regEnd ? removeTimezone(event.regEnd.toString()) : undefined,
     categoryIds: getCategories(event.eventCategories),
     visibility: event.visibility,
-    registrationMode:
-      event.registrationMode ?? EventRegistrationMode.PEOPLY,
+    registrationMode: event.registrationMode ?? EventRegistrationMode.PEOPLY,
     capacity: event.capacity,
     externalUrl: initialExternalUrl,
     eventImage: undefined,
@@ -255,6 +268,20 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     setTempEventObject({
       ...tempEventObject,
       categoryIds: newCategories,
+    });
+  }
+
+  function toggleCoOrganizerOrganization(organizationId: string) {
+    const nextCoOrganizerOrganizationIds =
+      tempEventObject.coOrganizerOrganizationIds.includes(organizationId)
+        ? tempEventObject.coOrganizerOrganizationIds.filter(
+            (id) => id !== organizationId,
+          )
+        : [...tempEventObject.coOrganizerOrganizationIds, organizationId];
+
+    setTempEventObject({
+      ...tempEventObject,
+      coOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
     });
   }
 
@@ -466,6 +493,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       if (value !== null && value !== undefined && value !== "null") {
         if (["startDate", "endDate", "regStart", "regEnd"].includes(key)) {
           formData.set(key, addTimezone(value));
+        } else if (key === "coOrganizerOrganizationIds") {
+          formData.set(key, JSON.stringify(value));
         } else {
           formData.set(key, value);
         }
@@ -514,6 +543,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const router = useRouter();
   /* Get all the possible event categories. */
   const { data: allCategories } = useSWR("/categories", fetchFromPeoplyApiJson);
+  const { data: organizations } = useSWR<Organization[]>(
+    "/organizations?take=500&orderBy=name",
+    fetchFromPeoplyApiJson,
+  );
   const { data: goingCount } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
     fetchFromPeoplyApiJson,
@@ -552,6 +585,26 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     validExternalUrl;
   const externalRegistrationEnabled =
     tempEventObject.registrationMode === EventRegistrationMode.EXTERNAL;
+  const primaryOrganizationId = event.eventArrangers?.find(
+    (eventArranger) => eventArranger.role !== "COLLABORATOR",
+  )?.arranger.organization?.id;
+  const coOrganizerOptions = (organizations ?? [])
+    .filter((organization) => organization.id !== primaryOrganizationId)
+    .map((organization) => ({
+      id: organization.id,
+      label: organization.name,
+    }))
+    .sort((left, right) => left.label.localeCompare(right.label, "nb-NO"));
+  const visibleCoOrganizerOptions = coOrganizerOptions.filter((organization) =>
+    organization.label
+      .toLowerCase()
+      .includes(coOrganizerSearch.trim().toLowerCase()),
+  );
+  const selectedCoOrganizerNames = coOrganizerOptions
+    .filter((organization) =>
+      eventObject.coOrganizerOrganizationIds.includes(organization.id),
+    )
+    .map((organization) => organization.label);
   return (
     <>
       <div className={styles.summaryContainer}>
@@ -591,6 +644,87 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCheck={acceptChange}
           onCross={rejectChange}
           inputId={1}
+          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
+          editButtonVisible
+          editButtonDisabled={editOpen}
+          editButtonOnClick={() => setEditOpen(true)}
+          inputComponent={
+            <div className={styles.coOrganizerEditor}>
+              <div className={styles.coOrganizerHeader}>
+                <h2>Medarrangører</h2>
+                <p>
+                  Legg til eller fjern foreninger som samarbeider om
+                  arrangementet.
+                </p>
+              </div>
+              <input
+                id="coOrganizerSearch"
+                className={createStyles.coOrganizerSearchInput}
+                type="text"
+                value={coOrganizerSearch}
+                onChange={(event) => setCoOrganizerSearch(event.target.value)}
+                placeholder="Søk etter forening"
+              />
+              {tempEventObject.coOrganizerOrganizationIds.length > 0 && (
+                <div className={createStyles.coOrganizerTags}>
+                  {coOrganizerOptions
+                    .filter((organization) =>
+                      tempEventObject.coOrganizerOrganizationIds.includes(
+                        organization.id,
+                      ),
+                    )
+                    .map((organization) => (
+                      <span
+                        key={organization.id}
+                        className={createStyles.coOrganizerTag}
+                      >
+                        {organization.label}
+                      </span>
+                    ))}
+                </div>
+              )}
+              <div className={createStyles.coOrganizerOptionList}>
+                {visibleCoOrganizerOptions.map((organization) => (
+                  <button
+                    key={organization.id}
+                    type="button"
+                    className={`${createStyles.coOrganizerOptionButton} ${
+                      tempEventObject.coOrganizerOrganizationIds.includes(
+                        organization.id,
+                      )
+                        ? createStyles.coOrganizerOptionButtonSelected
+                        : ""
+                    }`}
+                    onClick={() =>
+                      toggleCoOrganizerOrganization(organization.id)
+                    }
+                  >
+                    <span>{organization.label}</span>
+                  </button>
+                ))}
+                {visibleCoOrganizerOptions.length === 0 && (
+                  <p className={createStyles.coOrganizerEmptyText}>
+                    Ingen foreninger matcher søket.
+                  </p>
+                )}
+              </div>
+            </div>
+          }
+        >
+          <div className={styles.dataContainer}>
+            <p className={styles.categoryLabel}>Medarrangører</p>
+            <p className={styles.titleText}>
+              {selectedCoOrganizerNames.length > 0
+                ? selectedCoOrganizerNames.join(" · ")
+                : "Ingen medarrangører"}
+            </p>
+          </div>
+        </SummaryCard>
+
+        <SummaryCard
+          onCheck={acceptChange}
+          onCross={rejectChange}
+          inputId={2}
           Icon={<CalendarCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           editButtonDisabled={editOpen}
@@ -896,7 +1030,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCross={rejectChange}
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
-          inputId={2}
+          inputId={3}
           Icon={<PlaceCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validLocationName}
@@ -956,7 +1090,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCross={rejectChange}
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
-          inputId={3}
+          inputId={4}
           Icon={<InfoCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validDescription}
@@ -991,7 +1125,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCross={rejectChange}
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
-          inputId={4}
+          inputId={5}
           Icon={<InfoCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           valid={validCategories}
@@ -1035,7 +1169,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCross={rejectChange}
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
-          inputId={5}
+          inputId={6}
           Icon={<ImageCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           inputComponent={
@@ -1074,7 +1208,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCross={rejectChange}
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
-          inputId={6}
+          inputId={7}
           Icon={<DataCircleSummary className={styles.summaryIcon} />}
           editButtonVisible
           inputComponent={
@@ -1197,12 +1331,11 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
             )}
             <div className={styles.dataItemContainer}>
               <p className={styles.dataLabel}>
-                {eventObject.registrationMode ===
-                EventRegistrationMode.EXTERNAL
+                {eventObject.registrationMode === EventRegistrationMode.EXTERNAL
                   ? "Ekstern påmelding"
                   : eventObject.registrationMode === EventRegistrationMode.NONE
-                    ? "Ingen påmelding"
-                    : "Påmelding i Peoply"}
+                  ? "Ingen påmelding"
+                  : "Påmelding i Peoply"}
               </p>
             </div>
             {eventObject.registrationMode === EventRegistrationMode.EXTERNAL &&

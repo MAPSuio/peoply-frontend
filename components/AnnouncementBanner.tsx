@@ -7,7 +7,7 @@ import Modal from "./Modal";
 import ModalButton from "./ModalButton";
 import styles from "../styles/AnnouncementBanner.module.scss";
 
-const ANNOUNCEMENT_ID = "whats-new-2026-04-social-links";
+const ANNOUNCEMENT_ID = "whats-new-2026-04-social-links-and-coorganizers";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
 const ANNOUNCEMENT_END_AT = new Date("2026-06-01T00:00:00.000+02:00");
 
@@ -164,9 +164,9 @@ export default function AnnouncementBanner() {
 
   return (
     <Modal
-      label="Foreninger kan nå legge inn sosiale medier"
+      label="Foreninger kan nå gjøre mer på Peoply"
       description="Du kan nå legge til nettside, Instagram, Facebook, TikTok, LinkedIn og YouTube på foreningssiden.
-Hvis du kan redigere en forening, kan du legge det inn med en gang fra innstillingene."
+Du kan også samarbeide med flere foreninger om arrangementer direkte på Peoply."
       closeButtonOnClick={acknowledgeAnnouncement}
     >
       <div className={styles.content}>
@@ -177,6 +177,9 @@ Hvis du kan redigere en forening, kan du legge det inn med en gang fra innstilli
             {targetOrganization.name}.
           </p>
         )}
+        <p className={styles.hint}>
+          Medarrangører kan legges til og fjernes fra Rediger arrangement.
+        </p>
         <div className={styles.actions}>
           {targetOrganization && (
             <ModalButton text="Gjør det nå" onClick={openSocialLinksSettings} />
