@@ -73,6 +73,7 @@ import {
 import {
   Event,
   InputPages,
+  Organization,
   Visibility,
   ImageCaching,
   SnackTypes,
@@ -87,6 +88,7 @@ import styles from "../../styles/CreateEvent.module.scss";
 export interface EventObjectProps {
   eventTitle: string;
   eventArrangerId: string;
+  eventCoOrganizerOrganizationIds: string[];
   eventDescription: string;
   eventLocationName: string;
   eventLocation?: Models.SearchFuzzyResult;
@@ -127,12 +129,14 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const { user, ipInfo, error: userError, orgs } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
+  const [coOrganizerSearch, setCoOrganizerSearch] = useState("");
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
   const [eventImageValid, setEventImageValid] = useState(false);
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     eventTitle: "",
     eventArrangerId: user?.arrangerId ?? "",
+    eventCoOrganizerOrganizationIds: [],
     eventDescription: "",
     eventLocationName: "",
     eventRegStartDate: "",
@@ -174,6 +178,10 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     "/categories",
     fetchFromPeoplyApiJson,
   );
+  const { data: organizations } = useSWR<Organization[]>(
+    "/organizations?take=500&orderBy=name",
+    fetchFromPeoplyApiJson,
+  );
 
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setEventObject((prevEventObject) => ({
@@ -187,13 +195,43 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   };
 
   const updateEventArrangerId = (arrangerId: string) => {
+    const primaryOrganizationId = orgs?.find(
+      (organization) => organization.arrangerId === arrangerId,
+    )?.id;
+    const nextCoOrganizerOrganizationIds = primaryOrganizationId
+      ? eventObject.eventCoOrganizerOrganizationIds.filter(
+          (organizationId) => organizationId !== primaryOrganizationId,
+        )
+      : eventObject.eventCoOrganizerOrganizationIds;
+
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventArrangerId: arrangerId,
+      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
     }));
     updateLocalStorage({
       ...eventObject,
       eventArrangerId: arrangerId,
+      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
+    });
+  };
+
+  const toggleCoOrganizerOrganization = (organizationId: string) => {
+    const nextCoOrganizerOrganizationIds =
+      eventObject.eventCoOrganizerOrganizationIds.includes(organizationId)
+        ? eventObject.eventCoOrganizerOrganizationIds.filter(
+            (id) => id !== organizationId,
+          )
+        : [...eventObject.eventCoOrganizerOrganizationIds, organizationId];
+
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
+    }));
+
+    updateLocalStorage({
+      ...eventObject,
+      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
     });
   };
 
@@ -734,6 +772,30 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     };
   });
 
+  const selectedPrimaryOrganizationId = orgs?.find(
+    (organization) => organization.arrangerId === eventObject.eventArrangerId,
+  )?.id;
+
+  const coOrganizerOptions = (organizations ?? [])
+    .filter((organization) => organization.id !== selectedPrimaryOrganizationId)
+    .map((organization) => ({
+      id: organization.id,
+      label: organization.name,
+    }))
+    .sort((left, right) => left.label.localeCompare(right.label, "nb-NO"));
+
+  const visibleCoOrganizerOptions = coOrganizerOptions.filter((organization) =>
+    organization.label
+      .toLowerCase()
+      .includes(coOrganizerSearch.trim().toLowerCase()),
+  );
+
+  const selectedCoOrganizerNames = coOrganizerOptions
+    .filter((organization) =>
+      eventObject.eventCoOrganizerOrganizationIds.includes(organization.id),
+    )
+    .map((organization) => organization.label);
+
   /* TODO: Perhaps move the returned components into their own wrapper components. */
   const getCurrentInputPage = (step: number) => {
     const { title, subTitle, buttonText } = getInputPageData(step);
@@ -833,6 +895,61 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                   className={styles.arrangerInput}
                   setValue={updateEventArrangerId}
                 />
+              )}
+              {coOrganizerOptions.length > 0 && (
+                <div className={styles.coOrganizerCard}>
+                  <div className={styles.coOrganizerHeader}>
+                    <h2>Medarrangører</h2>
+                    <p>Legg til en eller flere foreninger.</p>
+                  </div>
+                  <input
+                    id="coOrganizerSearch"
+                    className={styles.coOrganizerSearchInput}
+                    type="text"
+                    value={coOrganizerSearch}
+                    onChange={(event) =>
+                      setCoOrganizerSearch(event.target.value)
+                    }
+                    placeholder="Søk etter forening"
+                  />
+                  {selectedCoOrganizerNames.length > 0 && (
+                    <div className={styles.coOrganizerTags}>
+                      {selectedCoOrganizerNames.map((organizationName) => (
+                        <span
+                          key={organizationName}
+                          className={styles.coOrganizerTag}
+                        >
+                          {organizationName}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className={styles.coOrganizerOptionList}>
+                    {visibleCoOrganizerOptions.map((organization) => (
+                      <button
+                        key={organization.id}
+                        type="button"
+                        className={`${styles.coOrganizerOptionButton} ${
+                          eventObject.eventCoOrganizerOrganizationIds.includes(
+                            organization.id,
+                          )
+                            ? styles.coOrganizerOptionButtonSelected
+                            : ""
+                        }`}
+                        onClick={() =>
+                          toggleCoOrganizerOrganization(organization.id)
+                        }
+                      >
+                        <span>{organization.label}</span>
+                      </button>
+                    ))}
+                    {visibleCoOrganizerOptions.length === 0 && (
+                      <p className={styles.coOrganizerEmptyText}>
+                        Ingen foreninger matcher søket.
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </InputPage>
@@ -1316,6 +1433,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
             changeStep={inputPageOnClick}
             summaryCategories={summaryCategories}
             eventObject={eventObject}
+            selectedCoOrganizerNames={selectedCoOrganizerNames}
           />
         );
     }
@@ -1384,6 +1502,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     }
     oldEventObject.eventHasExternalRegistration ??= false;
     oldEventObject.eventExternalUrl ??= "";
+    oldEventObject.eventCoOrganizerOrganizationIds ??= [];
     setEventExtraInfoValid(oldEventObject.eventExtraInfoValid);
 
     /* arrangerId will be undefined if user was not logged in */

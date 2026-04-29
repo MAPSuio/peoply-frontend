@@ -27,6 +27,89 @@
   margin-top: $spacer-small;
 }
 
+.coOrganizerCard {
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small-plus;
+  margin-top: $spacer-small;
+  padding: $spacer-small;
+}
+
+.coOrganizerHeader {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-secondary;
+  }
+
+  p {
+    color: var(--text-color-primary, $text-color-primary);
+    font-size: $font-size-tertiary;
+  }
+}
+
+.coOrganizerSearchInput {
+  background-color: var(--background-color-input, $background-color-input);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  min-height: 2.5rem;
+  padding: 0 $spacer-small;
+}
+
+.coOrganizerTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer-very-small;
+}
+
+.coOrganizerTag {
+  background-color: var(--background-color-input, $background-color-input);
+  border-radius: 999px;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-family: $mono-font;
+  font-size: $font-size-tertiary;
+  padding: $spacer-mini $spacer-very-small-plus;
+}
+
+.coOrganizerOptionList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.coOrganizerOptionButton {
+  @include resetButton();
+
+  background-color: var(--background-color-input, $background-color-input);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-primary, $text-color-primary);
+  min-height: 2.5rem;
+  padding: 0 $spacer-small;
+  text-align: left;
+}
+
+.coOrganizerOptionButtonSelected {
+  background-color: var(
+    --background-color-button-confirmed,
+    $background-color-button-confirmed
+  );
+  color: var(--text-color-button, $text-color-button);
+}
+
+.coOrganizerEmptyText {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+}
+
 .column {
   display: flex;
   flex-flow: column nowrap;

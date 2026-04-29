@@ -11,6 +11,10 @@ import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, Event, Organization } from "../types/types";
 import { queryToString } from "../utils/functions";
+import {
+  getCompactEventArrangerLabel,
+  getPrimaryEventArrangerOrganization,
+} from "../utils/eventArrangers";
 
 type CalendarView = "month" | "week";
 
@@ -99,26 +103,11 @@ function formatEventTime(event: Event) {
 }
 
 function getArrangerName(event: Event) {
-  const organizationName = event.eventArrangers?.find(
-    (eventArranger) => eventArranger.arranger.organization?.name,
-  )?.arranger.organization?.name;
-
-  if (organizationName) {
-    return organizationName;
-  }
-
-  const arrangerUser = event.eventArrangers?.[0]?.arranger.user;
-  if (arrangerUser) {
-    return `${arrangerUser.firstName} ${arrangerUser.lastName}`.trim();
-  }
-
-  return "Peoply";
+  return getCompactEventArrangerLabel(event, 1);
 }
 
 function getArrangerOrganization(event: Event): Organization | undefined {
-  return event.eventArrangers?.find(
-    (eventArranger) => eventArranger.arranger.organization,
-  )?.arranger.organization;
+  return getPrimaryEventArrangerOrganization(event);
 }
 
 function getEventEndDate(event: NormalizedEvent) {

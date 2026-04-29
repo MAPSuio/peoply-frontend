@@ -54,6 +54,7 @@ interface SummaryPageProps {
     name: string;
   }[];
   eventObject: EventObjectProps;
+  selectedCoOrganizerNames: string[];
 }
 
 const SummaryPage = ({
@@ -71,6 +72,7 @@ const SummaryPage = ({
   changeStep,
   summaryCategories,
   eventObject,
+  selectedCoOrganizerNames,
 }: SummaryPageProps) => {
   const { user, orgs } = useUser();
   const getButtonStyles = () => {
@@ -121,6 +123,10 @@ const SummaryPage = ({
     /* Append title and description. */
     formData.set("title", eventObject.eventTitle);
     formData.set("arrangerId", eventObject.eventArrangerId);
+    formData.set(
+      "coOrganizerOrganizationIds",
+      JSON.stringify(eventObject.eventCoOrganizerOrganizationIds),
+    );
     formData.set("description", eventObject.eventDescription);
 
     /* Append capacity and private. */
@@ -290,6 +296,17 @@ const SummaryPage = ({
             onClick={buttonOnClick}
           >
             <p className={styles.titleText}>{arrangerName}</p>
+          </SummaryCard>
+        )}
+        {selectedCoOrganizerNames.length > 0 && (
+          <SummaryCard
+            inputId={0}
+            Icon={<UserCircle large className={styles.summaryIcon} />}
+            onClick={buttonOnClick}
+          >
+            <p className={styles.titleText}>
+              {selectedCoOrganizerNames.join(" · ")}
+            </p>
           </SummaryCard>
         )}
         <SummaryCard
