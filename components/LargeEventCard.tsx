@@ -26,6 +26,10 @@ import {
 
 // Utils.
 import { formatDateRange, formatTimeRange } from "../utils/functions";
+import {
+  getCompactEventArrangerLabel,
+  getPrimaryEventArranger,
+} from "../utils/eventArrangers";
 
 // Types.
 import { Event, RegStatus, SnackTypes } from "../types/types";
@@ -108,7 +112,14 @@ const LargeEventCard = ({
 
   const getArrangerImageOrIcon = () => {
     if (event.eventArrangers && event.eventArrangers.length > 0) {
-      const firstArranger = event.eventArrangers[0].arranger;
+      const firstArranger = getPrimaryEventArranger(event);
+      if (!firstArranger) {
+        return (
+          <div className={styles.iconContainer}>
+            <UserIconCard className={styles.icon} />
+          </div>
+        );
+      }
       if (firstArranger.user) {
         const imageSrc = firstArranger.user.image;
         if (imageSrc) {
@@ -205,13 +216,9 @@ const LargeEventCard = ({
               <div className={styles.dataItemContainer}>
                 {getArrangerImageOrIcon()}
                 <div>
-                  {event.eventArrangers?.map((a) => (
-                    <span className={styles.data} key={a.arranger.id}>
-                      {a.arranger.user
-                        ? `${a.arranger.user.firstName}`
-                        : a.arranger.organization?.name}
-                    </span>
-                  ))}
+                  <span className={styles.data}>
+                    {getCompactEventArrangerLabel(event, 2)}
+                  </span>
                 </div>
               </div>
             )}

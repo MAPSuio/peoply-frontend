@@ -47,6 +47,7 @@ import {
   formatTimeRange,
   injectLink,
 } from "../../../utils/functions";
+import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 
 // Types.
 import {
@@ -165,6 +166,8 @@ const Event = ({ event, baseUrl }: EventProps) => {
   const editEventFunc = () => {
     router.push(`/events/${eventData.urlId}/edit`);
   };
+
+  const eventArrangerDisplayItems = getEventArrangerDisplayItems(eventData);
 
   const getArrangerImageOrIcon = () => {
     if (eventData.eventArrangers && eventData.eventArrangers.length > 0) {
@@ -294,37 +297,24 @@ const Event = ({ event, baseUrl }: EventProps) => {
               >
                 {getArrangerImageOrIcon()}
                 <p className={`${styles.infoText} ${styles.emphasis}`}>
-                  {eventData.eventArrangers?.map((a) => {
-                    if (a.arranger.user) {
-                      return (
-                        <Link
-                          key={a.arranger.id}
-                          href={`/users/${a.arranger.user.id}`}
-                        >
-                          {a.arranger.user.firstName +
-                            " " +
-                            a.arranger.user.lastName}
-                        </Link>
-                      );
-                    } else if (a.arranger.organization) {
-                      return (
-                        <Link
-                          key={a.arranger.id}
-                          href={`/orgs/${
-                            a.arranger.organization.urlId ??
-                            a.arranger.organization.id
-                          }`}
-                        >
-                          <div className={styles.orgLink}>
-                            {a.arranger.organization?.name}
-                            {a.arranger.organization?.orgNr && (
-                              <SmallCheckCircle purple verySmall />
-                            )}
-                          </div>
-                        </Link>
-                      );
-                    }
-                  })}
+                  {eventArrangerDisplayItems.map((arranger, index) => (
+                    <span key={arranger.id} className={styles.arrangerLinkRow}>
+                      {index > 0 && (
+                        <span className={styles.arrangerSeparator}> · </span>
+                      )}
+                      <Link
+                        href={arranger.href}
+                        className={styles.arrangerLink}
+                      >
+                        <span className={styles.orgLink}>
+                          {arranger.label}
+                          {arranger.isVerifiedOrganization && (
+                            <SmallCheckCircle purple verySmall />
+                          )}
+                        </span>
+                      </Link>
+                    </span>
+                  ))}
                 </p>
               </div>
               <div

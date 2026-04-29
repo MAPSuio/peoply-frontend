@@ -11,6 +11,11 @@ import UsersIconCard from "./svgs/UsersIconCard";
 
 // Utils.
 import { formatEventDate } from "../utils/functions";
+import {
+  getCompactEventArrangerLabel,
+  getPrimaryEventArranger,
+  getPrimaryEventArrangerOrganization,
+} from "../utils/eventArrangers";
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
@@ -47,7 +52,14 @@ const EventCard = ({ event }: EventCardProps) => {
 
   const getArrangerImageOrIcon = () => {
     if (event.eventArrangers && event.eventArrangers.length > 0) {
-      const firstArranger = event.eventArrangers[0].arranger;
+      const firstArranger = getPrimaryEventArranger(event);
+      if (!firstArranger) {
+        return (
+          <div className={styles.iconContainer}>
+            <UserIconCard className={styles.icon} />
+          </div>
+        );
+      }
       if (firstArranger.user) {
         const imageSrc = firstArranger.user.image;
         if (imageSrc) {
@@ -136,20 +148,13 @@ const EventCard = ({ event }: EventCardProps) => {
             <div className={styles.eventCardInfoBodyItem}>
               {getArrangerImageOrIcon()}
               <div>
-                {event.eventArrangers?.map((a) => (
-                  <p className={styles.data} key={a.arranger.id}>
-                    {a.arranger.user
-                      ? `${a.arranger.user.firstName}`
-                      : a.arranger.organization?.name}
-                  </p>
-                ))}
+                <p className={styles.data}>
+                  {getCompactEventArrangerLabel(event, 2)}
+                </p>
               </div>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              {event.eventArrangers &&
-                event.eventArrangers[0].arranger.organization?.orgNr && (
-                  <SmallCheckCircle purple ultraSmall />
-                )}
+              {getPrimaryEventArrangerOrganization(event)?.orgNr && (
+                <SmallCheckCircle purple ultraSmall />
+              )}
             </div>
             <div className={styles.eventCardInfoBodyItem}>
               <div className={styles.iconContainer}>

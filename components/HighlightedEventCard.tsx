@@ -26,6 +26,10 @@ import {
   getUserFavorite,
   removeFavorite,
 } from "../services/events";
+import {
+  getCompactEventArrangerLabel,
+  getPrimaryEventArranger,
+} from "../utils/eventArrangers";
 
 // Types.
 import { Event, RegStatus, SnackTypes } from "../types/types";
@@ -62,10 +66,11 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
 
   const arranger = (() => {
     if (event.eventArrangers && event.eventArrangers.length > 0) {
-      const org = event.eventArrangers[0].arranger.organization;
-      const user = event.eventArrangers[0].arranger.user;
+      const primaryArranger = getPrimaryEventArranger(event);
+      const org = primaryArranger?.organization;
+      const user = primaryArranger?.user;
 
-      if (org !== null) {
+      if (org) {
         return {
           org: org,
           user: undefined,
@@ -74,12 +79,14 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
               <Avatar org={org} size="medium" />
               <div className={styles.headingContainer}>
                 <p className={styles.tag}>Uthevet arrangement fra</p>
-                <h1 className={styles.title}>{org?.name}</h1>
+                <h1 className={styles.title}>
+                  {getCompactEventArrangerLabel(event, 1)}
+                </h1>
               </div>
             </>
           ),
         };
-      } else if (user !== null) {
+      } else if (user) {
         return {
           org: undefined,
           user: user,
@@ -88,9 +95,9 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
               <Avatar user={user} size="medium" />
               <div className={styles.headingContainer}>
                 <p className={styles.tag}>Uthevet arrangement fra</p>
-                <h1
-                  className={styles.title}
-                >{`${user?.firstName} ${user?.lastName}`}</h1>
+                <h1 className={styles.title}>
+                  {getCompactEventArrangerLabel(event, 1)}
+                </h1>
               </div>
             </>
           ),
