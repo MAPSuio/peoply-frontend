@@ -362,18 +362,8 @@ const Events: NextPage = () => {
                   {selectedCategoryIds.length > 0 && (
                     <span> ({selectedCategoryIds.length})</span>
                   )}
-                  </button>
-                )}
-              <button
-                type="button"
-                className={`${styles.filterToggleButton} ${
-                  isCompactGrid ? styles.filterToggleButtonActive : ""
-                }`}
-                aria-pressed={isCompactGrid}
-                onClick={() => setIsCompactGrid((current) => !current)}
-              >
-                Kompakt
-              </button>
+                </button>
+              )}
               {hasActiveFilters && (
                 <button
                   type="button"
@@ -499,6 +489,31 @@ const Events: NextPage = () => {
               </div>
             </div>
           )}
+        </div>
+
+        <div className={styles.gridToggleBar}>
+          <div className={styles.gridToggleCopy}>
+            <span className={styles.gridToggleLabel}>Kompakt grid</span>
+            <span className={styles.gridToggleHint}>
+              {isCompactGrid
+                ? "2 på mobil / 4 på desktop"
+                : "1 på mobil / 2 på desktop"}
+            </span>
+          </div>
+          <button
+            type="button"
+            className={`${styles.gridToggleSwitch} ${
+              isCompactGrid ? styles.gridToggleSwitchOn : styles.gridToggleSwitchOff
+            }`}
+            aria-pressed={isCompactGrid}
+            aria-label="Slå kompakt grid av eller på"
+            onClick={() => setIsCompactGrid((current) => !current)}
+          >
+            <span className={styles.gridToggleState}>
+              {isCompactGrid ? "PÅ" : "AV"}
+            </span>
+            <span className={styles.gridToggleKnob} />
+          </button>
         </div>
 
         {!error && !events && (
