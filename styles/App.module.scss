@@ -16,7 +16,7 @@
 .backgroundPattern {
   color: color-mix(
     in srgb,
-    var(--text-color-emphasis, $text-color-emphasis) 11%,
+    var(--text-color-emphasis, $text-color-emphasis) 3%,
     var(--background-color-primary, $background-color-primary)
   );
   height: 100%;
