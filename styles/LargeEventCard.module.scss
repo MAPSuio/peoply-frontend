@@ -232,6 +232,7 @@
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-very-small-plus;
+  padding-bottom: $spacer-small;
 }
 
 .compactActionContainer {
