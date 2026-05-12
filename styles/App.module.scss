@@ -14,10 +14,13 @@
 }
 
 .backgroundPattern {
-  color: var(--text-color-primary, $text-color-primary);
+  color: color-mix(
+    in srgb,
+    var(--text-color-emphasis, $text-color-emphasis) 11%,
+    var(--background-color-primary, $background-color-primary)
+  );
   height: 100%;
   inset: 0;
-  opacity: 0.045;
   position: absolute;
   width: 100%;
 }
