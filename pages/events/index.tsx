@@ -492,14 +492,7 @@ const Events: NextPage = () => {
         </div>
 
         <div className={styles.gridToggleBar}>
-          <div className={styles.gridToggleCopy}>
-            <span className={styles.gridToggleLabel}>Kompakt grid</span>
-            <span className={styles.gridToggleHint}>
-              {isCompactGrid
-                ? "2 på mobil / 4 på desktop"
-                : "1 på mobil / 2 på desktop"}
-            </span>
-          </div>
+          <span className={styles.gridToggleLabel}>Kompakt visning</span>
           <button
             type="button"
             className={`${styles.gridToggleSwitch} ${
