@@ -1,6 +1,6 @@
 // Next.js.
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import useSWR from "swr";
 
 // React.
@@ -49,12 +49,16 @@ interface LargeEventCardProps {
   event: Event;
   showArranger?: boolean;
   stackActionsOnDesktop?: boolean;
+  compact?: boolean;
+  className?: string;
 }
 
 const LargeEventCard = ({
   event,
   showArranger,
   stackActionsOnDesktop = false,
+  compact = false,
+  className,
 }: LargeEventCardProps) => {
   const { user, loading: loadingUser } = useUser();
   const { addSnack } = useSnack();
@@ -127,10 +131,10 @@ const LargeEventCard = ({
             <div className={styles.arrangerImage}>
               <Image
                 src={imageSrc}
-                layout="fill"
                 alt="Arrangøren av arrangementet"
-                objectFit="cover"
+                fill
                 sizes="5vw"
+                style={{ objectFit: "cover" }}
               />
             </div>
           );
@@ -178,16 +182,21 @@ const LargeEventCard = ({
         pathname: "/events/[eventId]",
         query: { eventId: event.urlId },
       }}
-      className={styles.cardWrapper}
+      className={`${styles.cardWrapper} ${
+        compact ? styles.compactCardWrapper : ""
+      } ${className ?? ""}`}
     >
       <div className={styles.cardContainer}>
-        <div className={styles.imageContainer}>
+        <div
+          className={`${styles.imageContainer} ${
+            compact ? styles.compactImageContainer : ""
+          }`}
+        >
           <Image
             src={event.image ?? placeholderImage}
             alt="A very cute cat"
-            objectFit="cover"
-            layout="fill"
-            objectPosition="center"
+            fill
+            style={{ objectFit: "cover", objectPosition: "center" }}
             priority={true}
           />
           <HeartIconGlass
@@ -197,26 +206,46 @@ const LargeEventCard = ({
             loading={!favoriteFetched}
           />
         </div>
-        <div className={styles.contentContainer}>
-          <div className={styles.titleContainer}>
-            <h3 className={styles.title}>{event.title}</h3>
-            <div className={styles.capacityContainer}>
+        <div
+          className={`${styles.contentContainer} ${
+            compact ? styles.compactContentContainer : ""
+          }`}
+        >
+          <div
+            className={`${styles.titleContainer} ${
+              compact ? styles.compactTitleContainer : ""
+            }`}
+          >
+            <h3 className={`${styles.title} ${compact ? styles.compactTitle : ""}`}>
+              {event.title}
+            </h3>
+            <div
+              className={`${styles.capacityContainer} ${
+                compact ? styles.compactCapacityContainer : ""
+              }`}
+            >
               <UsersIcon
-                className={`${styles.icon} ${styles.marginRightVerySmall}`}
+                className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
               />
-              <p className={styles.data}>
+              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
                 <span className={styles.emphasis}>{registrations}</span>
                 {event.capacity && `\u200A/\u200A${event.capacity}`}
               </p>
             </div>
           </div>
           <span className={styles.divider} />
-          <div className={styles.dataContainer}>
+          <div
+            className={`${styles.dataContainer} ${
+              compact ? styles.compactDataContainer : ""
+            }`}
+          >
             {showArranger && (
               <div className={styles.dataItemContainer}>
                 {getArrangerImageOrIcon()}
                 <div>
-                  <span className={styles.data}>
+                  <span
+                    className={`${styles.data} ${compact ? styles.compactData : ""}`}
+                  >
                     {getCompactEventArrangerLabel(event, 2)}
                   </span>
                 </div>
@@ -224,39 +253,57 @@ const LargeEventCard = ({
             )}
             <div className={styles.dataItemContainer}>
               {showArranger ? (
-                <div className={styles.iconContainer}>
-                  <TimeIcon className={styles.icon} />
+                <div
+                  className={`${styles.iconContainer} ${
+                    compact ? styles.compactIconContainer : ""
+                  }`}
+                >
+                  <TimeIcon
+                    className={`${styles.icon} ${compact ? styles.compactIcon : ""}`}
+                  />
                 </div>
               ) : (
                 <TimeIcon
-                  className={`${styles.icon} ${styles.marginRightVerySmall}`}
+                  className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
                 />
               )}
-              <p className={styles.data}>
+              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
                 {dateString}, {timeString}
               </p>
             </div>
             <div className={styles.dataItemContainer}>
               {showArranger ? (
-                <div className={styles.iconContainer}>
-                  <PlaceIcon className={styles.icon} />
+                <div
+                  className={`${styles.iconContainer} ${
+                    compact ? styles.compactIconContainer : ""
+                  }`}
+                >
+                  <PlaceIcon
+                    className={`${styles.icon} ${compact ? styles.compactIcon : ""}`}
+                  />
                 </div>
               ) : (
                 <PlaceIcon
-                  className={`${styles.icon} ${styles.marginRightVerySmall}`}
+                  className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
                 />
               )}
-              <p className={styles.data}>{event.locationName}</p>
+              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
+                {event.locationName}
+              </p>
             </div>
           </div>
           {!isEventFinished(event) && (
             <div
               className={`${styles.actionContainer} ${
+                compact ? styles.compactActionContainer : ""
+              } ${
                 stackActionsOnDesktop ? styles.stackedActions : ""
               }`}
             >
               <div
                 className={`${styles.primaryActions} ${
+                  compact ? styles.compactPrimaryActions : ""
+                } ${
                   stackActionsOnDesktop ? styles.stackedPrimaryActions : ""
                 }`}
               >
@@ -273,12 +320,17 @@ const LargeEventCard = ({
                   useUnregisterModal
                   small
                   noShadow
-                  className={styles.primaryActionButton}
+                  className={`${styles.primaryActionButton} ${
+                    compact ? styles.compactActionButton : ""
+                  }`}
                 />
                 <AddToCalendarButton
                   event={event}
+                  buttonText={compact ? "Kalender" : undefined}
                   width="100%"
-                  className={styles.secondaryActionButton}
+                  className={`${styles.secondaryActionButton} ${
+                    compact ? styles.compactActionButton : ""
+                  }`}
                 />
               </div>
             </div>

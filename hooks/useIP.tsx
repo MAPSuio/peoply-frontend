@@ -7,11 +7,37 @@ export function useIP() {
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
-    fetchIpInfo().then((data) => {
-      if (data) setIpInfo(data);
-      else setError({ message: "Error fetching IP info" });
-      setLoading(false);
-    });
+    let active = true;
+
+    const loadIpInfo = async () => {
+      try {
+        const data = await fetchIpInfo();
+
+        if (!active) {
+          return;
+        }
+
+        if (data) {
+          setIpInfo(data);
+        } else {
+          setError({ message: "Error fetching IP info" });
+        }
+      } catch {
+        if (active) {
+          setError({ message: "Error fetching IP info" });
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadIpInfo();
+
+    return () => {
+      active = false;
+    };
   }, []);
   return { loading, ipInfo, error };
 }
