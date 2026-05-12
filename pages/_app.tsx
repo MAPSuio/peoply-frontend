@@ -10,6 +10,23 @@ import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
 
+const backgroundPatternRows = [
+  "oo o oo  ooo o  oo ooo",
+  "o  oo o  oo  ooo oo  o",
+  "ooo o  oo o oo  o  oo",
+  "oo  ooo oo  o  oo o oo",
+  "o oo  o  ooo oo  oo  o",
+  "oo  o oo  oo  ooo o  oo",
+  "o  ooo o oo  o  oo ooo",
+  "ooo  oo o  ooo  o oo  o",
+  "oo o  oo  o oo  ooo  oo",
+];
+
+const BACKGROUND_PATTERN_START_X = 2.5;
+const BACKGROUND_PATTERN_STEP_X = 4.2;
+const BACKGROUND_PATTERN_START_Y = 16;
+const BACKGROUND_PATTERN_STEP_Y = 13;
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -33,6 +50,37 @@ function MyApp({ Component, pageProps }: AppProps) {
               </Head>
               <AnnouncementBanner />
               <div className={styles.wrapper}>
+                <div className={styles.background} aria-hidden="true">
+                  <svg
+                    className={styles.backgroundPattern}
+                    viewBox="0 0 100 140"
+                    preserveAspectRatio="xMidYMid slice"
+                  >
+                    {backgroundPatternRows.flatMap((row, rowIndex) =>
+                      row.split("").flatMap((character, characterIndex) => {
+                        if (character !== "o") {
+                          return [];
+                        }
+
+                        return (
+                          <circle
+                            key={`${rowIndex}-${characterIndex}`}
+                            cx={
+                              BACKGROUND_PATTERN_START_X +
+                              characterIndex * BACKGROUND_PATTERN_STEP_X
+                            }
+                            cy={
+                              BACKGROUND_PATTERN_START_Y +
+                              rowIndex * BACKGROUND_PATTERN_STEP_Y
+                            }
+                            r="1.1"
+                            className={styles.circle}
+                          />
+                        );
+                      }),
+                    )}
+                  </svg>
+                </div>
                 <div className={styles.container}>
                   <Component {...pageProps} />
                 </div>

@@ -1,9 +1,35 @@
 .wrapper {
+  isolation: isolate;
+  min-height: 100vh;
+  position: relative;
   width: 100%;
+}
+
+.background {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 0;
+}
+
+.backgroundPattern {
+  color: var(--text-color-primary, $text-color-primary);
+  height: 100%;
+  inset: 0;
+  opacity: 0.045;
+  position: absolute;
+  width: 100%;
+}
+
+.circle {
+  fill: currentColor;
 }
 
 .container {
   margin: auto;
   max-width: $max-width;
   padding-bottom: 10rem;
+  position: relative;
+  z-index: 1;
 }
