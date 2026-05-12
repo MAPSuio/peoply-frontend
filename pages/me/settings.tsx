@@ -33,6 +33,10 @@ import Button from "../../components/Button";
 import CheckboxInput from "../../components/inputs/CheckboxInput";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
+import {
+  getBackgroundPatternEnabled,
+  setBackgroundPatternEnabled,
+} from "../../utils/backgroundPattern";
 
 interface SettingsProps {
   baseUrl: string;
@@ -46,6 +50,9 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
   const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
   const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
+  const [backgroundPatternEnabled, setBackgroundPatternPreference] = useState(
+    () => getBackgroundPatternEnabled(),
+  );
   const { theme, setTheme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -92,6 +99,13 @@ const Settings = ({ baseUrl }: SettingsProps) => {
     } else if (id === 3) {
       setTheme("light");
     }
+  };
+
+  const toggleBackgroundPattern = () => {
+    const nextValue = !backgroundPatternEnabled;
+
+    setBackgroundPatternPreference(nextValue);
+    setBackgroundPatternEnabled(nextValue);
   };
 
   const validAllowEmailFromArrangerEdit =
@@ -209,6 +223,11 @@ const Settings = ({ baseUrl }: SettingsProps) => {
                   },
                 ]}
                 onClick={updateTheme}
+              />
+              <SwitchInput
+                label="Vis bakgrunnsmønster"
+                checked={backgroundPatternEnabled}
+                onClick={toggleBackgroundPattern}
               />
             </div>
             <div className={styles.section}>
