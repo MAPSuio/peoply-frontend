@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BackButton from "../../components/BackButton";
@@ -28,6 +28,7 @@ interface FilterOption<T> {
 }
 
 const MAX_EVENTS = 500;
+const COMPACT_GRID_STORAGE_KEY = "eventsCompactGrid";
 
 type FilterPanel = "organizations" | "categories";
 
@@ -58,6 +59,7 @@ const Events: NextPage = () => {
   const [organizationSearch, setOrganizationSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
   const [isCompactGrid, setIsCompactGrid] = useState(false);
+  const [compactPreferenceLoaded, setCompactPreferenceLoaded] = useState(false);
   const [openFilterPanel, setOpenFilterPanel] =
     useState<FilterPanel | null>(null);
   const deferredEventSearch = useDeferredValue(eventSearch);
@@ -280,6 +282,29 @@ const Events: NextPage = () => {
     setSelectedCategoryIds([]);
     setOpenFilterPanel(null);
   };
+
+  useEffect(() => {
+    const storedPreference = window.localStorage.getItem(
+      COMPACT_GRID_STORAGE_KEY,
+    );
+
+    if (storedPreference === "true") {
+      setIsCompactGrid(true);
+    }
+
+    setCompactPreferenceLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!compactPreferenceLoaded) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      COMPACT_GRID_STORAGE_KEY,
+      String(isCompactGrid),
+    );
+  }, [compactPreferenceLoaded, isCompactGrid]);
 
   const eventsByMonth = useMemo(() => {
     return filteredEvents.reduce<EventMonthGroup[]>((groupedEvents, event) => {
