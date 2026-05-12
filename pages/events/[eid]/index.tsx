@@ -1,5 +1,5 @@
 // Next.js.
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import router from "next/router";
@@ -183,9 +183,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
             <Image
               src={imageSrc}
               alt="Arrangøren av arrangementet"
-              layout="fill"
-              objectFit="cover"
+              fill
               sizes="5vw"
+              style={{ objectFit: "cover" }}
             />
           </div>
         );
@@ -260,9 +260,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
           <div className={styles.imageContainer}>
             <Image
               src={eventData.image ?? placeholderImage}
-              layout="fill"
+              fill
               sizes="50vw"
-              objectFit="cover"
+              style={{ objectFit: "cover" }}
               alt="Et bilde som passer til arrangementet"
               placeholder={!eventData.image ? "blur" : "empty"}
             />

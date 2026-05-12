@@ -32,9 +32,25 @@ export function UserProvider({
   const authRetryAttempted = useRef(false);
 
   useEffect(() => {
-    fetchIpInfo().then((ip) => {
-      if (ip) setIpInfo(ip);
-    });
+    let active = true;
+
+    const loadIpInfo = async () => {
+      try {
+        const ip = await fetchIpInfo();
+
+        if (active && ip) {
+          setIpInfo(ip);
+        }
+      } catch {
+        // IP lookup is best-effort and should never affect auth bootstrap.
+      }
+    };
+
+    void loadIpInfo();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {

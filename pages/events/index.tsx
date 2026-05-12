@@ -1,16 +1,17 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BackButton from "../../components/BackButton";
 import HeadComponent from "../../components/HeadComponent";
 import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
-import Tag from "../../components/Tag";
+import SearchIcon from "../../components/svgs/SearchIcon";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import { Alignment, Event, Organization } from "../../types/types";
+import { Alignment, Category, Event, Organization } from "../../types/types";
+import { getEventArrangerDisplayItems } from "../../utils/eventArrangers";
 import { queryToString } from "../../utils/functions";
 
 import styles from "../../styles/EventsPage.module.scss";
@@ -21,7 +22,15 @@ interface EventMonthGroup {
   events: Event[];
 }
 
+interface FilterOption<T> {
+  value: T;
+  label: string;
+}
+
 const MAX_EVENTS = 500;
+const COMPACT_GRID_STORAGE_KEY = "eventsCompactGrid";
+
+type FilterPanel = "organizations" | "categories";
 
 function capitalize(value: string) {
   if (!value) {
@@ -31,13 +40,29 @@ function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function normalizeSearchValue(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 const Events: NextPage = () => {
   const router = useRouter();
   const goBack = useBack();
   const [selectedOrganizationIds, setSelectedOrganizationIds] = useState<
     string[]
   >([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
+  const [eventSearch, setEventSearch] = useState("");
   const [organizationSearch, setOrganizationSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
+  const [isCompactGrid, setIsCompactGrid] = useState(false);
+  const [compactPreferenceLoaded, setCompactPreferenceLoaded] = useState(false);
+  const [openFilterPanel, setOpenFilterPanel] =
+    useState<FilterPanel | null>(null);
+  const deferredEventSearch = useDeferredValue(eventSearch);
 
   const eventsQuery = useMemo(() => {
     const now = new Date();
@@ -87,10 +112,14 @@ const Events: NextPage = () => {
     organizationsQueryUrl,
     fetchFromPeoplyApiJson,
   );
+  const { data: categories } = useSWR<Category[]>(
+    "/categories",
+    fetchFromPeoplyApiJson,
+  );
 
   const organizationOptions = useMemo(() => {
     const uniqueOrganizations = (organizations ?? []).reduce<
-      { value: string; label: string }[]
+      FilterOption<string>[]
     >((allOrganizations, organization) => {
       if (
         allOrganizations.some((existing) => existing.value === organization.id)
@@ -109,31 +138,119 @@ const Events: NextPage = () => {
     );
   }, [organizations]);
 
+  const categoryOptions = useMemo(() => {
+    const uniqueCategories = (categories ?? []).reduce<FilterOption<number>[]>(
+      (allCategories, category) => {
+        if (
+          allCategories.some((existing) => existing.value === category.id)
+        ) {
+          return allCategories;
+        }
+
+        return [
+          ...allCategories,
+          { value: category.id, label: category.name },
+        ];
+      },
+      [],
+    );
+
+    return uniqueCategories.sort((a, b) =>
+      a.label.localeCompare(b.label, "nb-NO"),
+    );
+  }, [categories]);
+
   const visibleOrganizationOptions = useMemo(() => {
-    const normalizedSearch = organizationSearch.trim().toLowerCase();
+    const normalizedSearch = normalizeSearchValue(organizationSearch);
 
     if (!normalizedSearch) {
       return organizationOptions;
     }
 
     return organizationOptions.filter((organization) =>
-      organization.label.toLowerCase().includes(normalizedSearch),
+      normalizeSearchValue(organization.label).includes(normalizedSearch),
     );
   }, [organizationOptions, organizationSearch]);
 
+  const visibleCategoryOptions = useMemo(() => {
+    const normalizedSearch = normalizeSearchValue(categorySearch);
+
+    if (!normalizedSearch) {
+      return categoryOptions;
+    }
+
+    return categoryOptions.filter((category) =>
+      normalizeSearchValue(category.label).includes(normalizedSearch),
+    );
+  }, [categoryOptions, categorySearch]);
+
+  const selectedOrganizations = useMemo(
+    () =>
+      organizationOptions.filter((organization) =>
+        selectedOrganizationIds.includes(organization.value),
+      ),
+    [organizationOptions, selectedOrganizationIds],
+  );
+
+  const selectedCategories = useMemo(
+    () =>
+      categoryOptions.filter((category) =>
+        selectedCategoryIds.includes(category.value),
+      ),
+    [categoryOptions, selectedCategoryIds],
+  );
+
   const filteredEvents = useMemo(() => {
+    const searchTerms = normalizeSearchValue(deferredEventSearch)
+      .split(/\s+/)
+      .filter(Boolean);
+
     return (events ?? []).filter((event) => {
-      if (selectedOrganizationIds.length === 0) {
+      const matchesOrganization =
+        selectedOrganizationIds.length === 0 ||
+        (event.eventArrangers ?? []).some((eventArranger) =>
+          selectedOrganizationIds.includes(
+            eventArranger.arranger.organization?.id ?? "",
+          ),
+        );
+
+      const matchesCategory =
+        selectedCategoryIds.length === 0 ||
+        (event.eventCategories ?? []).some((eventCategory) =>
+          selectedCategoryIds.includes(eventCategory.categoryId),
+        );
+
+      if (!matchesOrganization || !matchesCategory) {
+        return false;
+      }
+
+      if (searchTerms.length === 0) {
         return true;
       }
 
-      return (event.eventArrangers ?? []).some((eventArranger) =>
-        selectedOrganizationIds.includes(
-          eventArranger.arranger.organization?.id ?? "",
-        ),
+      const searchableContent = normalizeSearchValue(
+        [
+          event.title,
+          ...getEventArrangerDisplayItems(event).map((item) => item.label),
+          ...(event.eventCategories ?? []).map(
+            (eventCategory) => eventCategory.category?.name ?? "",
+          ),
+        ].join(" "),
       );
+
+      return searchTerms.every((term) => searchableContent.includes(term));
     });
-  }, [events, selectedOrganizationIds]);
+  }, [
+    deferredEventSearch,
+    events,
+    selectedCategoryIds,
+    selectedOrganizationIds,
+  ]);
+
+  const hasActiveFilters =
+    eventSearch.trim().length > 0 ||
+    selectedOrganizationIds.length > 0 ||
+    selectedCategoryIds.length > 0;
 
   const toggleOrganization = (organizationId: string) => {
     setSelectedOrganizationIds((currentOrganizationIds) =>
@@ -142,6 +259,52 @@ const Events: NextPage = () => {
         : [...currentOrganizationIds, organizationId],
     );
   };
+
+  const toggleCategory = (categoryId: number) => {
+    setSelectedCategoryIds((currentCategoryIds) =>
+      currentCategoryIds.includes(categoryId)
+        ? currentCategoryIds.filter((id) => id !== categoryId)
+        : [...currentCategoryIds, categoryId],
+    );
+  };
+
+  const toggleFilterPanel = (panel: FilterPanel) => {
+    setOpenFilterPanel((currentPanel) =>
+      currentPanel === panel ? null : panel,
+    );
+  };
+
+  const clearFilters = () => {
+    setEventSearch("");
+    setOrganizationSearch("");
+    setCategorySearch("");
+    setSelectedOrganizationIds([]);
+    setSelectedCategoryIds([]);
+    setOpenFilterPanel(null);
+  };
+
+  useEffect(() => {
+    const storedPreference = window.localStorage.getItem(
+      COMPACT_GRID_STORAGE_KEY,
+    );
+
+    if (storedPreference === "true") {
+      setIsCompactGrid(true);
+    }
+
+    setCompactPreferenceLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!compactPreferenceLoaded) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      COMPACT_GRID_STORAGE_KEY,
+      String(isCompactGrid),
+    );
+  }, [compactPreferenceLoaded, isCompactGrid]);
 
   const eventsByMonth = useMemo(() => {
     return filteredEvents.reduce<EventMonthGroup[]>((groupedEvents, event) => {
@@ -175,34 +338,104 @@ const Events: NextPage = () => {
       <Layout align={Alignment.CENTER}>
         <div className={styles.headerContainer}>
           <h1>Arrangementer</h1>
-          <p>
-            Se kommende arrangementer organisert per måned, opptil ett år frem i
-            tid.
-          </p>
+          <p>Se kommende arrangementer opptil ett år frem i tid.</p>
         </div>
 
-        {organizationOptions.length > 0 && (
-          <div className={styles.filterCard}>
-            <div className={styles.filterCopy}>
-              <h2>Filtrer på forening</h2>
-              <p>Velg en eller flere foreninger.</p>
-            </div>
-            <div className={styles.filterPanel}>
-              <div className={styles.filterTopRow}>
-                <label
-                  className={styles.filterLabel}
-                  htmlFor="organizationFilter"
+        <div className={styles.filterCard}>
+          <div className={styles.searchField}>
+            <SearchIcon className={styles.searchIcon} />
+            <input
+              id="eventSearch"
+              type="text"
+              value={eventSearch}
+              onChange={(event) => setEventSearch(event.target.value)}
+              placeholder="Søk på navn, type eller arrangør"
+              aria-label="Søk i arrangementer"
+            />
+          </div>
+          <div className={styles.filterToolbar}>
+            <div className={styles.filterToggleRow}>
+              {organizationOptions.length > 0 && (
+                <button
+                  type="button"
+                  className={`${styles.filterToggleButton} ${
+                    openFilterPanel === "organizations"
+                      ? styles.filterToggleButtonActive
+                      : ""
+                  }`}
+                  onClick={() => toggleFilterPanel("organizations")}
+                  aria-expanded={openFilterPanel === "organizations"}
                 >
+                  Forening
+                  {selectedOrganizationIds.length > 0 && (
+                    <span> ({selectedOrganizationIds.length})</span>
+                  )}
+                </button>
+              )}
+              {categoryOptions.length > 0 && (
+                <button
+                  type="button"
+                  className={`${styles.filterToggleButton} ${
+                    openFilterPanel === "categories"
+                      ? styles.filterToggleButtonActive
+                      : ""
+                  }`}
+                  onClick={() => toggleFilterPanel("categories")}
+                  aria-expanded={openFilterPanel === "categories"}
+                >
+                  Type
+                  {selectedCategoryIds.length > 0 && (
+                    <span> ({selectedCategoryIds.length})</span>
+                  )}
+                </button>
+              )}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  className={styles.clearButton}
+                  onClick={clearFilters}
+                >
+                  Nullstill
+                </button>
+              )}
+            </div>
+            <p className={styles.resultsText}>{filteredEvents.length} treff</p>
+          </div>
+
+          {(selectedOrganizations.length > 0 || selectedCategories.length > 0) && (
+            <div className={styles.selectedFilters}>
+              {selectedOrganizations.map((organization) => (
+                <button
+                  key={`org-${organization.value}`}
+                  type="button"
+                  className={`${styles.optionButton} ${styles.optionButtonSelected}`}
+                  onClick={() => toggleOrganization(organization.value)}
+                >
+                  {organization.label}
+                </button>
+              ))}
+              {selectedCategories.map((category) => (
+                <button
+                  key={`cat-${category.value}`}
+                  type="button"
+                  className={`${styles.optionButton} ${styles.optionButtonSelected}`}
+                  onClick={() => toggleCategory(category.value)}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {openFilterPanel === "organizations" && (
+            <div className={styles.optionList}>
+              <div className={styles.filterPanelHeader}>
+                <label className={styles.filterLabel} htmlFor="organizationFilter">
                   Foreninger
                 </label>
-                {selectedOrganizationIds.length > 0 && (
-                  <button
-                    className={styles.clearButton}
-                    onClick={() => setSelectedOrganizationIds([])}
-                  >
-                    Nullstill
-                  </button>
-                )}
+                <span className={styles.panelMeta}>
+                  {selectedOrganizationIds.length} valgt
+                </span>
               </div>
               <input
                 id="organizationFilter"
@@ -212,24 +445,7 @@ const Events: NextPage = () => {
                 onChange={(event) => setOrganizationSearch(event.target.value)}
                 placeholder="Søk etter forening"
               />
-              {selectedOrganizationIds.length > 0 && (
-                <div className={styles.selectedTags}>
-                  {organizationOptions
-                    .filter((organization) =>
-                      selectedOrganizationIds.includes(organization.value),
-                    )
-                    .map((organization) => (
-                      <Tag
-                        key={organization.value}
-                        text={organization.label}
-                        active
-                        noShadow
-                        onClick={() => toggleOrganization(organization.value)}
-                      />
-                    ))}
-                </div>
-              )}
-              <div className={styles.optionList}>
+              <div className={styles.optionTags}>
                 {visibleOrganizationOptions.map((organization) => {
                   const isSelected = selectedOrganizationIds.includes(
                     organization.value,
@@ -238,12 +454,13 @@ const Events: NextPage = () => {
                   return (
                     <button
                       key={organization.value}
+                      type="button"
                       className={`${styles.optionButton} ${
                         isSelected ? styles.optionButtonSelected : ""
                       }`}
                       onClick={() => toggleOrganization(organization.value)}
                     >
-                      <span>{organization.label}</span>
+                      {organization.label}
                     </button>
                   );
                 })}
@@ -254,8 +471,68 @@ const Events: NextPage = () => {
                 )}
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {openFilterPanel === "categories" && (
+            <div className={styles.optionList}>
+              <div className={styles.filterPanelHeader}>
+                <label className={styles.filterLabel} htmlFor="categoryFilter">
+                  Arrangementstype
+                </label>
+                <span className={styles.panelMeta}>
+                  {selectedCategoryIds.length} valgt
+                </span>
+              </div>
+              <input
+                id="categoryFilter"
+                className={styles.searchInput}
+                type="text"
+                value={categorySearch}
+                onChange={(event) => setCategorySearch(event.target.value)}
+                placeholder="Søk etter type"
+              />
+              <div className={styles.optionTags}>
+                {visibleCategoryOptions.map((category) => {
+                  const isSelected = selectedCategoryIds.includes(category.value);
+
+                  return (
+                    <button
+                      key={category.value}
+                      type="button"
+                      className={`${styles.optionButton} ${
+                        isSelected ? styles.optionButtonSelected : ""
+                      }`}
+                      onClick={() => toggleCategory(category.value)}
+                    >
+                      {category.label}
+                    </button>
+                  );
+                })}
+                {visibleCategoryOptions.length === 0 && (
+                  <p className={styles.noOptionsText}>Ingen typer matcher søket.</p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.gridToggleBar}>
+          <span className={styles.gridToggleLabel}>Kompakt visning</span>
+          <button
+            type="button"
+            className={`${styles.gridToggleSwitch} ${
+              isCompactGrid ? styles.gridToggleSwitchOn : styles.gridToggleSwitchOff
+            }`}
+            aria-pressed={isCompactGrid}
+            aria-label="Slå kompakt grid av eller på"
+            onClick={() => setIsCompactGrid((current) => !current)}
+          >
+            <span className={styles.gridToggleState}>
+              {isCompactGrid ? "PÅ" : "AV"}
+            </span>
+            <span className={styles.gridToggleKnob} />
+          </button>
+        </div>
 
         {!error && !events && (
           <div className={styles.emptyState}>
@@ -274,7 +551,11 @@ const Events: NextPage = () => {
         {!error && events && eventsByMonth.length === 0 && (
           <div className={styles.emptyState}>
             <h2>Ingen arrangementer funnet</h2>
-            <p>Prøv en annen forening eller kom tilbake senere.</p>
+            <p>
+              {hasActiveFilters
+                ? "Prøv å justere filtrene eller søket."
+                : "Kom tilbake senere for flere arrangementer."}
+            </p>
           </div>
         )}
 
@@ -285,9 +566,20 @@ const Events: NextPage = () => {
                 <h2>{group.label}</h2>
                 <p>{group.events.length} arrangementer</p>
               </div>
-              <div className={styles.eventGrid}>
+              <div
+                className={`${styles.eventGrid} ${
+                  isCompactGrid ? styles.eventGridCompact : ""
+                }`}
+              >
                 {group.events.map((event) => (
-                  <LargeEventCard key={event.id} event={event} showArranger />
+                  <LargeEventCard
+                    key={event.id}
+                    event={event}
+                    showArranger
+                    compact={isCompactGrid}
+                    stackActionsOnDesktop={isCompactGrid}
+                    className={styles.eventCard}
+                  />
                 ))}
               </div>
             </section>

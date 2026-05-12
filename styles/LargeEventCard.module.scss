@@ -12,6 +12,11 @@
   width: 100%;
 }
 
+.compactCardWrapper {
+  max-width: none;
+  padding-bottom: $spacer-very-small-plus;
+}
+
 .cardContainer {
   align-items: center;
   display: flex;
@@ -25,13 +30,16 @@
 }
 
 .imageContainer {
+  aspect-ratio: 1.78 / 1;
   border-radius: $border-radius-regular $border-radius-regular 0 0;
-  height: calc(100vw / 1.78);
   margin-bottom: $spacer-small;
-  max-height: calc(500px / 1.78);
   overflow: hidden;
   position: relative;
   width: 100%;
+}
+
+.compactImageContainer {
+  margin-bottom: $spacer-very-small-plus;
 }
 
 .favoriteIcon {
@@ -45,6 +53,7 @@
   align-items: flex-end;
   display: flex;
   flex-flow: row nowrap;
+  gap: $spacer-very-small;
   justify-content: space-between;
   margin-bottom: $spacer-very-small-plus;
 
@@ -57,9 +66,28 @@
   flex: 1 0 70%;
   font-size: $font-size-heading-medium;
   font-weight: $font-weight-bold;
+  min-width: 0;
+  overflow-wrap: anywhere;
 
   @include desktop() {
     font-size: $font-size-heading-small-desktop;
+  }
+}
+
+.compactContentContainer {
+  padding: 0 $spacer-very-small-plus;
+}
+
+.compactTitleContainer {
+  align-items: flex-start;
+}
+
+.compactTitle {
+  flex: 1 1 auto;
+  font-size: $font-size-secondary;
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
   }
 }
 
@@ -72,6 +100,11 @@
   white-space: nowrap;
 }
 
+.compactCapacityContainer {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
 .icon {
   height: $font-size-secondary;
   stroke: var(--text-color-primary, $text-color-primary);
@@ -82,9 +115,19 @@
   font-family: $mono-font;
   font-size: $font-size-secondary;
   font-weight: $font-weight-regular;
+  min-width: 0;
+  overflow-wrap: anywhere;
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
+  }
+}
+
+.compactData {
+  font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
   }
 }
 
@@ -117,10 +160,20 @@
   }
 }
 
+.compactDataContainer {
+  gap: $spacer-very-small;
+  margin-bottom: $spacer-small;
+}
+
 .dataItemContainer {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
+  min-width: 0;
+}
+
+.dataItemContainer > *:last-child {
+  min-width: 0;
 }
 
 .iconContainer {
@@ -132,6 +185,14 @@
 
   @include desktop() {
     width: 24px;
+  }
+}
+
+.compactIconContainer {
+  width: 18px;
+
+  @include desktop() {
+    width: 20px;
   }
 }
 
@@ -153,6 +214,16 @@
   }
 }
 
+.compactIcon {
+  height: $font-size-tertiary;
+  width: $font-size-tertiary;
+
+  @include desktop() {
+    height: $font-size-tertiary-desktop;
+    width: $font-size-tertiary-desktop;
+  }
+}
+
 .marginRightVerySmall {
   margin-right: $spacer-very-small;
 }
@@ -163,10 +234,18 @@
   gap: $spacer-very-small-plus;
 }
 
+.compactActionContainer {
+  gap: $spacer-very-small;
+}
+
 .primaryActions {
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-very-small-plus;
+}
+
+.compactPrimaryActions {
+  gap: $spacer-very-small;
 }
 
 .primaryActionButton,
@@ -181,6 +260,11 @@
     height: 18px;
     width: 18px;
   }
+}
+
+.compactActionButton {
+  padding-bottom: $spacer-mini;
+  padding-top: $spacer-mini;
 }
 
 .stackedActions,
