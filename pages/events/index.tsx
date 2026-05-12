@@ -57,6 +57,7 @@ const Events: NextPage = () => {
   const [eventSearch, setEventSearch] = useState("");
   const [organizationSearch, setOrganizationSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
+  const [isCompactGrid, setIsCompactGrid] = useState(false);
   const [openFilterPanel, setOpenFilterPanel] =
     useState<FilterPanel | null>(null);
   const deferredEventSearch = useDeferredValue(eventSearch);
@@ -361,8 +362,18 @@ const Events: NextPage = () => {
                   {selectedCategoryIds.length > 0 && (
                     <span> ({selectedCategoryIds.length})</span>
                   )}
-                </button>
-              )}
+                  </button>
+                )}
+              <button
+                type="button"
+                className={`${styles.filterToggleButton} ${
+                  isCompactGrid ? styles.filterToggleButtonActive : ""
+                }`}
+                aria-pressed={isCompactGrid}
+                onClick={() => setIsCompactGrid((current) => !current)}
+              >
+                Kompakt
+              </button>
               {hasActiveFilters && (
                 <button
                   type="button"
@@ -522,14 +533,18 @@ const Events: NextPage = () => {
                 <h2>{group.label}</h2>
                 <p>{group.events.length} arrangementer</p>
               </div>
-              <div className={styles.eventGrid}>
+              <div
+                className={`${styles.eventGrid} ${
+                  isCompactGrid ? styles.eventGridCompact : ""
+                }`}
+              >
                 {group.events.map((event) => (
                   <LargeEventCard
                     key={event.id}
                     event={event}
                     showArranger
-                    compact
-                    stackActionsOnDesktop
+                    compact={isCompactGrid}
+                    stackActionsOnDesktop={isCompactGrid}
                     className={styles.eventCard}
                   />
                 ))}
