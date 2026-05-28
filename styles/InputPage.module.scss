@@ -88,6 +88,12 @@
   @include desktop() {
     font-size: $font-size-primary-desktop;
   }
+
+  @include createEventDesktop() {
+    margin-top: $spacer-large;
+    position: static;
+    width: 100%;
+  }
 }
 
 .placeStatic {

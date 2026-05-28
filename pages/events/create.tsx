@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
 
 // Components.
 import DateInput from "../../components/inputs/DateInput";
@@ -126,12 +126,14 @@ interface CreateEventProps {
 }
 
 const CreateEvent = ({ baseUrl }: CreateEventProps) => {
-  const { user, ipInfo, error: userError, orgs } = useUser();
+  const { user, ipInfo, orgs } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
+  const [coOrganizerOpen, setCoOrganizerOpen] = useState(false);
   const [coOrganizerSearch, setCoOrganizerSearch] = useState("");
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
   const [eventImageValid, setEventImageValid] = useState(false);
+  const coOrganizerCardRef = useRef<HTMLDivElement>(null);
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
     eventTitle: "",
@@ -174,10 +176,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const { addSnack } = useSnack();
 
   /* Get all the possible event categories. */
-  const { data: categories, error: categoriesError } = useSWR(
-    "/categories",
-    fetchFromPeoplyApiJson,
-  );
+  const { data: categories } = useSWR("/categories", fetchFromPeoplyApiJson);
   const { data: organizations } = useSWR<Organization[]>(
     "/organizations?take=500&orderBy=name",
     fetchFromPeoplyApiJson,
@@ -897,21 +896,69 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                 />
               )}
               {coOrganizerOptions.length > 0 && (
-                <div className={styles.coOrganizerCard}>
+                <div
+                  className={styles.coOrganizerCard}
+                  ref={coOrganizerCardRef}
+                >
                   <div className={styles.coOrganizerHeader}>
                     <h2>Medarrangører</h2>
                     <p>Legg til en eller flere foreninger.</p>
                   </div>
-                  <input
-                    id="coOrganizerSearch"
-                    className={styles.coOrganizerSearchInput}
-                    type="text"
-                    value={coOrganizerSearch}
-                    onChange={(event) =>
-                      setCoOrganizerSearch(event.target.value)
-                    }
-                    placeholder="Søk etter forening"
-                  />
+                  <div className={styles.coOrganizerField}>
+                    <input
+                      id="coOrganizerSearch"
+                      className={styles.coOrganizerSearchInput}
+                      type="text"
+                      role="combobox"
+                      value={coOrganizerSearch}
+                      onFocus={() => setCoOrganizerOpen(true)}
+                      onClick={() => setCoOrganizerOpen(true)}
+                      onChange={(event) => {
+                        setCoOrganizerOpen(true);
+                        setCoOrganizerSearch(event.target.value);
+                      }}
+                      placeholder="Søk etter forening"
+                      aria-autocomplete="list"
+                      aria-expanded={coOrganizerOpen}
+                      aria-haspopup="listbox"
+                      aria-controls="coOrganizerOptions"
+                    />
+                    {coOrganizerOpen && (
+                      <div
+                        id="coOrganizerOptions"
+                        className={styles.coOrganizerOptionList}
+                        role="listbox"
+                      >
+                        {visibleCoOrganizerOptions.map((organization) => (
+                          <button
+                            key={organization.id}
+                            type="button"
+                            role="option"
+                            aria-selected={eventObject.eventCoOrganizerOrganizationIds.includes(
+                              organization.id,
+                            )}
+                            className={`${styles.coOrganizerOptionButton} ${
+                              eventObject.eventCoOrganizerOrganizationIds.includes(
+                                organization.id,
+                              )
+                                ? styles.coOrganizerOptionButtonSelected
+                                : ""
+                            }`}
+                            onClick={() =>
+                              toggleCoOrganizerOrganization(organization.id)
+                            }
+                          >
+                            <span>{organization.label}</span>
+                          </button>
+                        ))}
+                        {visibleCoOrganizerOptions.length === 0 && (
+                          <p className={styles.coOrganizerEmptyText}>
+                            Ingen foreninger matcher søket.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   {selectedCoOrganizerNames.length > 0 && (
                     <div className={styles.coOrganizerTags}>
                       {selectedCoOrganizerNames.map((organizationName) => (
@@ -924,31 +971,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
                       ))}
                     </div>
                   )}
-                  <div className={styles.coOrganizerOptionList}>
-                    {visibleCoOrganizerOptions.map((organization) => (
-                      <button
-                        key={organization.id}
-                        type="button"
-                        className={`${styles.coOrganizerOptionButton} ${
-                          eventObject.eventCoOrganizerOrganizationIds.includes(
-                            organization.id,
-                          )
-                            ? styles.coOrganizerOptionButtonSelected
-                            : ""
-                        }`}
-                        onClick={() =>
-                          toggleCoOrganizerOrganization(organization.id)
-                        }
-                      >
-                        <span>{organization.label}</span>
-                      </button>
-                    ))}
-                    {visibleCoOrganizerOptions.length === 0 && (
-                      <p className={styles.coOrganizerEmptyText}>
-                        Ingen foreninger matcher søket.
-                      </p>
-                    )}
-                  </div>
                 </div>
               )}
             </div>
@@ -1530,6 +1552,39 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       setModalOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!coOrganizerOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (
+        coOrganizerCardRef.current &&
+        !coOrganizerCardRef.current.contains(event.target as Node)
+      ) {
+        setCoOrganizerOpen(false);
+        setCoOrganizerSearch("");
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setCoOrganizerOpen(false);
+        setCoOrganizerSearch("");
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [coOrganizerOpen]);
 
   return (
     <>
