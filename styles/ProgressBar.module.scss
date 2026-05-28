@@ -4,7 +4,13 @@
 
   @include createEventDesktop() {
     flex-flow: column nowrap;
-    position: static;
-    transform: none;
+    left: 64px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-30px, -50%);
+  }
+
+  @media screen and (min-width: 1300px) {
+    left: calc(((100vw - 1200px) / 2));
   }
 }
