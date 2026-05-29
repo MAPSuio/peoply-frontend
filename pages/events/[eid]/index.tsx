@@ -1,6 +1,6 @@
 // Next.js.
 import Image from "next/image";
-import { GetStaticProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import router from "next/router";
 
@@ -34,7 +34,6 @@ import useSWR from "swr";
 // Services.
 import {
   addFavorite,
-  getEventData,
   getUserFavorite,
   removeFavorite,
 } from "../../../services/events";
@@ -543,13 +542,146 @@ interface IParams extends ParsedUrlQuery {
   eid: string;
 }
 
-/* Pages are generated on-demand with fallback: 'blocking' and cached via revalidate. */
-export const getStaticProps: GetStaticProps = async (context) => {
+function readSetCookieHeaders(headers: Headers) {
+  const headersWithSetCookie = headers as Headers & {
+    getSetCookie?: () => string[];
+  };
+
+  if (typeof headersWithSetCookie.getSetCookie === "function") {
+    return headersWithSetCookie.getSetCookie();
+  }
+
+  // `headers.get("set-cookie")` may collapse multiple cookies into one string.
+  // Prefer `getSetCookie()` when the runtime provides it.
+  const setCookieHeader = headers.get("set-cookie");
+
+  if (setCookieHeader) {
+    console.warn(
+      "Falling back to headers.get('set-cookie'); multiple cookies may be combined:",
+      setCookieHeader,
+    );
+  }
+
+  return setCookieHeader ? [setCookieHeader] : [];
+}
+
+function applySetCookiesToHeader(cookieHeader: string, setCookieHeaders: string[]) {
+  const cookies = new Map<string, string>();
+
+  cookieHeader
+    .split(";")
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .forEach((entry) => {
+      const separatorIndex = entry.indexOf("=");
+
+      if (separatorIndex === -1) {
+        return;
+      }
+
+      cookies.set(
+        entry.slice(0, separatorIndex),
+        entry.slice(separatorIndex + 1),
+      );
+    });
+
+  setCookieHeaders.forEach((header) => {
+    const [cookiePair] = header.split(";");
+    const separatorIndex = cookiePair.indexOf("=");
+
+    if (separatorIndex === -1) {
+      return;
+    }
+
+    cookies.set(
+      cookiePair.slice(0, separatorIndex),
+      cookiePair.slice(separatorIndex + 1),
+    );
+  });
+
+  return Array.from(cookies.entries())
+    .map(([name, value]) => `${name}=${value}`)
+    .join("; ");
+}
+
+async function fetchEventForRequest(
+  eid: string,
+  cookieHeader: string | undefined,
+  baseApiUrl: string,
+  res: GetServerSidePropsContext["res"],
+) {
+  const eventUrl = `${baseApiUrl}/events/${eid.toUpperCase()}`;
+
+  const requestHeaders = cookieHeader ? { cookie: cookieHeader } : undefined;
+  let eventResponse = await fetch(eventUrl, {
+    headers: requestHeaders,
+  });
+
+  if (!cookieHeader || eventResponse.ok || eventResponse.status !== 404) {
+    return eventResponse;
+  }
+
+  const refreshResponse = await fetch(`${baseApiUrl}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      cookie: cookieHeader,
+    },
+  });
+
+  if (!refreshResponse.ok) {
+    return eventResponse;
+  }
+
+  const setCookieHeaders = readSetCookieHeaders(refreshResponse.headers);
+
+  if (setCookieHeaders.length === 0) {
+    return eventResponse;
+  }
+
+  res.setHeader("set-cookie", setCookieHeaders);
+
+  eventResponse = await fetch(eventUrl, {
+    headers: {
+      cookie: applySetCookiesToHeader(cookieHeader, setCookieHeaders),
+    },
+  });
+
+  return eventResponse;
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const { eid } = context.params as IParams;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseApiUrl =
+    process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL;
 
   try {
-    const event = await getEventData(eid.toUpperCase());
+    if (!baseApiUrl) {
+      throw new Error("Missing API base URL");
+    }
+
+    if (!baseUrl) {
+      throw new Error("Missing NEXT_PUBLIC_BASE_URL");
+    }
+
+    const eventResponse = await fetchEventForRequest(
+      eid,
+      context.req.headers.cookie,
+      baseApiUrl,
+      context.res,
+    );
+
+    if (eventResponse.status === 404) {
+      return {
+        notFound: true,
+      };
+    }
+
+    if (!eventResponse.ok) {
+      throw new Error(`Failed to fetch event ${eid}: ${eventResponse.status}`);
+    }
+
+    const event: Event = await eventResponse.json();
 
     if (!event) {
       return {
@@ -562,7 +694,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
         baseUrl,
         event,
       },
-      revalidate: 60 * 30, // 30 minutes
     };
   } catch (error) {
     console.error(`Failed to fetch event ${eid}:`, error);
@@ -571,9 +702,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   }
 };
-
-export async function getStaticPaths() {
-  return { paths: [], fallback: "blocking" };
-}
 
 export default Event;
