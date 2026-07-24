@@ -62,6 +62,12 @@
   flex-flow: column nowrap;
   max-width: $max-width-input;
   width: 100%;
+
+  @include createEventDesktop() {
+    box-sizing: border-box;
+    max-width: calc($max-width-input + 180px);
+    padding-left: 180px;
+  }
 }
 
 .progressBarContainer {
@@ -87,6 +93,12 @@
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
+  }
+
+  @include createEventDesktop() {
+    margin-top: $spacer-large;
+    position: static;
+    width: 100%;
   }
 }
 

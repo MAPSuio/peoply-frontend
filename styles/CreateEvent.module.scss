@@ -38,6 +38,10 @@
   padding: $spacer-small;
 }
 
+.coOrganizerField {
+  position: relative;
+}
+
 .coOrganizerHeader {
   display: flex;
   flex-direction: column;
@@ -61,6 +65,7 @@
   color: var(--text-color-emphasis, $text-color-emphasis);
   min-height: 2.5rem;
   padding: 0 $spacer-small;
+  width: 100%;
 }
 
 .coOrganizerTags {
@@ -79,11 +84,21 @@
 }
 
 .coOrganizerOptionList {
+  background-color: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
   display: flex;
   flex-direction: column;
   gap: $spacer-very-small;
+  left: 0;
   max-height: 12rem;
   overflow-y: auto;
+  padding: $spacer-very-small;
+  position: absolute;
+  right: 0;
+  top: calc(100% + $spacer-very-small);
+  z-index: 1;
 }
 
 .coOrganizerOptionButton {
