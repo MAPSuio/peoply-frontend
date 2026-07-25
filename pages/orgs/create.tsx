@@ -43,7 +43,7 @@ const Create = ({ baseUrl }: CreateProps) => {
       });
       reload();
       addSnack("Organisasjon opprettet", SnackTypes.SUCCESS);
-    } catch (error) {
+    } catch {
       addSnack("Klarte ikke å lage organisasjon", SnackTypes.ERROR);
     }
     goBack();

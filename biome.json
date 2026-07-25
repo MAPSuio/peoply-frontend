@@ -60,7 +60,10 @@
         "useBlockStatements": "off"
       },
       "suspicious": {
-        "noConsole": "warn",
+        "noConsole": {
+          "level": "warn",
+          "options": { "allow": ["error", "warn"] }
+        },
         "noDocumentImportInPage": "error",
         "noDoubleEquals": "warn",
         "noEmptyBlockStatements": "error",

@@ -28,12 +28,12 @@ interface FollowingProps {
 }
 
 const Following = ({ baseUrl }: FollowingProps) => {
-  const { user, loading } = useUser();
+  const { user } = useUser();
   const goBack = useBack();
 
-  const { data: followedArrangers, error: followedArrangersError } = useSWR<
-    ArrangerFollower[]
-  >(user ? `/users/${user.id}/following` : null);
+  const { data: followedArrangers } = useSWR<ArrangerFollower[]>(
+    user ? `/users/${user.id}/following` : null,
+  );
 
   const renderFollowingList = () => {
     if (followedArrangers && followedArrangers.length > 0) {

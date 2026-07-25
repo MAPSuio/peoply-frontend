@@ -34,7 +34,7 @@ export default function UpdateEvent() {
   const { user, loading } = useUser();
   const { addSnack } = useSnack();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const { eid } = router.query;
   const { data: event, error: eventError } = useSWR<Event>(() =>
     eid ? `/events/${eid}` : false,
@@ -75,7 +75,7 @@ export default function UpdateEvent() {
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
       addSnack("Oppdatering sendt", SnackTypes.SUCCESS);
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
     goBack();

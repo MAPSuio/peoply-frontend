@@ -93,11 +93,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
     event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
   );
 
-  const {
-    data: updates,
-    error: updatesError,
-    mutate: mutateUpdates,
-  } = useSWR<EventUpdate[]>(() =>
+  const { data: updates, mutate: mutateUpdates } = useSWR<EventUpdate[]>(() =>
     event?.id ? `/events/${event.id}/updates` : false,
   );
 

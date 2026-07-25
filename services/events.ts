@@ -39,7 +39,7 @@ async function addFavorite(userId: string, eventId: string) {
     });
 
     return res.status === 201;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -60,7 +60,7 @@ async function removeFavorite(userId: string, eventId: string) {
       body: JSON.stringify(requestBody),
     });
     return res.status === 200;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

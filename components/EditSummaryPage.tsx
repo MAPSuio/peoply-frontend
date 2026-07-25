@@ -519,7 +519,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
 
       addSnack("Oppdatert arrangement", SnackTypes.SUCCESS);
       router.back();
-    } catch (e) {
+    } catch {
       addSnack(
         "Det skjedde en feil under endring av arrangementet",
         SnackTypes.ERROR,
@@ -534,7 +534,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       });
       addSnack("Arrangement slettet", SnackTypes.SUCCESS);
       router.push("/");
-    } catch (e) {
+    } catch {
       addSnack(
         "Det skjedde en feil under sletting av arrangementet",
         SnackTypes.ERROR,

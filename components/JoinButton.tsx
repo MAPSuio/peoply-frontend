@@ -278,7 +278,7 @@ export default function JoinButton({
         RegStatus.GOING,
         formQuestionAnswer,
       );
-    } catch (e) {
+    } catch {
       newRegistration = undefined;
     }
 
@@ -348,7 +348,7 @@ export default function JoinButton({
           event.id,
           status,
         )) as Registration;
-      } catch (e) {
+      } catch {
         /* Falls through to the error snack below; `success` stays undefined. */
       }
       if (success) {
@@ -387,7 +387,7 @@ export default function JoinButton({
             RegStatus.GOING,
             formQuestionAnswer,
           )) as Registration;
-        } catch (e) {
+        } catch {
           /* Falls through to the error snack below. */
         }
         if (success) {
@@ -417,7 +417,7 @@ export default function JoinButton({
           updateRegistration();
           runUpdate();
           addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-        } catch (e) {
+        } catch {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
         }
         break;
@@ -451,7 +451,7 @@ export default function JoinButton({
       updateRegistration();
       runUpdate();
       addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   }
@@ -543,22 +543,23 @@ export default function JoinButton({
               label="Matpreferanse"
               inputId="food-preference"
             />
-            {!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS) && (
-              <CategoryInput
-                title="Allergen(er)"
-                activeCategories={activeAllergens}
-                onClick={(id: number) =>
-                  setActiveAllergens((prev) => {
-                    if (activeAllergens.includes(id)) {
-                      return prev.filter((allergen) => allergen !== id);
-                    }
-                    return [...prev, id];
-                  })
-                }
-                categories={allergens!}
-                errorMessage=""
-              />
-            )}
+            {!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS) &&
+              allergens && (
+                <CategoryInput
+                  title="Allergen(er)"
+                  activeCategories={activeAllergens}
+                  onClick={(id: number) =>
+                    setActiveAllergens((prev) => {
+                      if (activeAllergens.includes(id)) {
+                        return prev.filter((allergen) => allergen !== id);
+                      }
+                      return [...prev, id];
+                    })
+                  }
+                  categories={allergens}
+                  errorMessage=""
+                />
+              )}
             <ModalButton
               text="Lagre"
               onClick={async () => {

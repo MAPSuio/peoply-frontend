@@ -38,7 +38,7 @@ export default function EventUpdateCard({
       );
       addSnack("Oppdatering slettet");
       mutateUpdates && mutateUpdates();
-    } catch (e) {
+    } catch {
       addSnack("Kunne ikke slette oppdatering", SnackTypes.ERROR);
     }
     setDeleteModalOpen(false);

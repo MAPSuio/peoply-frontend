@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "../styles/EditIconGlass.module.scss";
 
 import EditIcon from "./svgs/EditIcon";
@@ -16,12 +15,10 @@ export default function EditIconGlass({
   onClick,
   disabled,
 }: EditIconGlassProps) {
-  const [loadingState, setLoadingState] = useState(false);
-
   return (
     <button
       onClick={onClick}
-      disabled={loading || loadingState || disabled}
+      disabled={loading || disabled}
       className={`${styles.container} ${className}`}
     >
       <EditIcon />

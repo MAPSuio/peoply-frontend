@@ -42,7 +42,7 @@ const FoodPreferences: NextPage = () => {
       });
       reload();
       addSnack("Matpreferanser oppdatert", SnackTypes.SUCCESS);
-    } catch (error) {
+    } catch {
       addSnack("Klarte ikke å oppdatere matpreferanser", SnackTypes.ERROR);
     }
   };

@@ -120,7 +120,7 @@ export default function Notifications() {
               SnackTypes.WARNING,
             );
           }
-        } catch (e) {
+        } catch {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
         }
         break;
@@ -159,7 +159,7 @@ export default function Notifications() {
               SnackTypes.WARNING,
             );
           }
-        } catch (e) {
+        } catch {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
         }
         break;

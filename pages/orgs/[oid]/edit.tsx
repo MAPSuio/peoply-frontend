@@ -29,11 +29,9 @@ const EditOrgProfile: NextPage = () => {
   const router = useRouter();
   const { oid } = router.query;
 
-  const {
-    data: org,
-    error: orgError,
-    mutate,
-  } = useSWR<Organization>(() => (oid ? `/organizations/${oid}` : false));
+  const { data: org, mutate } = useSWR<Organization>(() =>
+    oid ? `/organizations/${oid}` : false,
+  );
 
   const { addSnack } = useSnack();
   useEffect(() => {

@@ -70,9 +70,11 @@ const Participants = () => {
     fetchAllFromPeoplyApiJson,
   );
 
-  const { data: invitations, error: invitationsError } = useSWR<
-    EventInvitation[]
-  >(() => (event?.id ? `/events/${event.id}/invitations` : false));
+  /* The response body is unused - this call is kept only because a failure to
+     read the invitations is treated as "the event data did not load". */
+  const { error: invitationsError } = useSWR<EventInvitation[]>(() =>
+    event?.id ? `/events/${event.id}/invitations` : false,
+  );
 
   if (registrationsError || eventError || invitationsError) {
     addSnack("Kunne ikke laste inn data for arrangementet.", SnackTypes.ERROR);
@@ -176,7 +178,7 @@ const Participants = () => {
         addSnack("Brukeren ble utestengt", SnackTypes.SUCCESS);
         mutateRegistrations();
       }
-    } catch (e) {
+    } catch {
       addSnack(
         "Det skjedde en feil under utestenging av bruker",
         SnackTypes.ERROR,
@@ -195,7 +197,7 @@ const Participants = () => {
       );
       addSnack("Fjernet utestenging", SnackTypes.SUCCESS);
       mutateRegistrations();
-    } catch (e) {
+    } catch {
       addSnack(
         "Det skjedde en feil under fjerning av utestenging",
         SnackTypes.ERROR,
@@ -221,7 +223,7 @@ const Participants = () => {
         addSnack("Brukeren ble meldt av arrangementet", SnackTypes.SUCCESS);
         mutateRegistrations();
       }
-    } catch (e) {
+    } catch {
       addSnack(
         "Det skjedde en feil under avregistrering av bruker",
         SnackTypes.ERROR,

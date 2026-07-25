@@ -56,7 +56,6 @@ const Settings = ({ baseUrl }: SettingsProps) => {
   const { theme, setTheme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [emailValid, setEmailValid] = useState(false);
   const { addSnack } = useSnack();
 
   const { user, loading, deleteMe, reload } = useUser();
@@ -137,7 +136,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
       addSnack("Innstillinger oppdatert", SnackTypes.SUCCESS);
       reload();
       goBack();
-    } catch (error) {
+    } catch {
       addSnack("Kunne ikke oppdatere innstillinger", SnackTypes.ERROR);
     }
   };

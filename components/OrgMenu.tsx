@@ -39,7 +39,7 @@ export default function OrgMenu({ org }: OrgMenuProps) {
       } else {
         addSnack(`Kunne ikke slette ${org.name}`, SnackTypes.ERROR);
       }
-    } catch (error) {
+    } catch {
       addSnack(`Kunne ikke slette ${org.name}`, SnackTypes.ERROR);
     }
   };

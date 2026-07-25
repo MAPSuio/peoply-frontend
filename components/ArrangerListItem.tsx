@@ -85,7 +85,7 @@ const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
         },
       );
       setFollowing(true);
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };
@@ -99,7 +99,7 @@ const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
         },
       );
       setFollowing(false);
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };

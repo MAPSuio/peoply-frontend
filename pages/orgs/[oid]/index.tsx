@@ -89,17 +89,13 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     },
   );
 
-  const {
-    data: followedArrangers,
-    error: followedArrangersError,
-    mutate: mutateFollowedArrangers,
-  } = useSWR<ArrangerFollower[]>(user ? `/users/${user.id}/following` : false);
+  const { data: followedArrangers, mutate: mutateFollowedArrangers } = useSWR<
+    ArrangerFollower[]
+  >(user ? `/users/${user.id}/following` : false);
 
-  const {
-    data: followers,
-    error: followersError,
-    mutate: mutateFollowers,
-  } = useSWR<ArrangerFollower[]>(
+  const { data: followers, mutate: mutateFollowers } = useSWR<
+    ArrangerFollower[]
+  >(
     user && isAdminOrOwner && orgData
       ? `/organizations/${orgData.id}/followers`
       : null,
@@ -144,7 +140,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
       );
       mutateFollowedArrangers();
       mutateFollowers();
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };
@@ -159,7 +155,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
       );
       mutateFollowedArrangers();
       mutateFollowers();
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };
@@ -464,7 +460,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
       revalidate: 60 * 30, // 30 minutes
     };
-  } catch (error) {
+  } catch {
     return {
       props: {
         baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
