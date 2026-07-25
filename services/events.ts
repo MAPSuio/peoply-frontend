@@ -1,60 +1,5 @@
-import {
-  RegStatus,
-  FavoriteData,
-  RegistrationData,
-  Event,
-  Registration,
-} from "../types/types";
+import { RegStatus, FavoriteData, Registration } from "../types/types";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
-
-/* Fetches and returns the top X most popular events. */
-async function getTopXEvents(numEvents: number) {
-  const url = `/events?take=${numEvents}`;
-  const res = await fetchFromPeoplyApi(url, { method: "GET" });
-
-  if (res.ok) {
-    const topXEvents = await res.json();
-
-    return topXEvents;
-  } else {
-    throw new Error("Could not fetch the events.");
-  }
-}
-
-async function registerForEventTest(userId: string) {
-  const url = `/users/${userId}/registrations`;
-
-  const data = {
-    eventId: "3630e0aa-db9a-46b2-9efc-3138956a1a45",
-    regStatus: RegStatus.GOING,
-  };
-
-  const res = await fetchFromPeoplyApi(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (res.ok) {
-    const going = await res.json();
-
-    return going;
-  } else {
-    return false;
-  }
-}
-
-/* Fetch and format data for an event specified by an event ID. */
-async function getEventData(eid: string) {
-  const eventUrl = `/events/${eid}`;
-  const event: Event = await fetchFromPeoplyApiJson(eventUrl, {
-    method: "get",
-  });
-
-  return event;
-}
 
 async function getUserFavorite(userId: string, eventId: string) {
   const eventUrl = `/users/${userId}/favorites/${eventId}`;
@@ -118,29 +63,6 @@ async function removeFavorite(userId: string, eventId: string) {
   } catch (error) {
     return false;
   }
-}
-
-async function getUserRegistration(userId: string, eventId: string) {
-  const eventUrl = `/users/${userId}/registrations/${eventId}`;
-  const res = await fetchFromPeoplyApi(eventUrl, {
-    method: "GET",
-  });
-
-  /* no registration */
-  if (res.status === 204) {
-    return null;
-  }
-
-  const registrationData = await res.json();
-  const registration: RegistrationData = {
-    eventId: registrationData.eventId,
-    userId: registrationData.userId,
-    regDate: registrationData.regDate,
-    regStatus: registrationData.regStatus,
-    attendance: registrationData.attendance,
-  };
-
-  return registration;
 }
 
 /* add event as favorite. returns true/false if done succesfull */
@@ -208,13 +130,9 @@ async function updateRegistrationUser(
 }
 
 export {
-  getTopXEvents,
-  getEventData,
   getUserFavorite,
   addFavorite,
   removeFavorite,
-  registerForEventTest,
-  getUserRegistration,
   registerUser,
   unregisterUser,
   updateRegistrationUser,

@@ -50,7 +50,7 @@ export const emptyOrganizationSocialLinkValues: OrganizationSocialLinkValues = {
   youtubeUrl: "",
 };
 
-export const normalizeOrganizationSocialLinkValue = (
+const normalizeOrganizationSocialLinkValue = (
   value?: string | null,
 ): string | null => {
   const trimmedValue = value?.trim() ?? "";
