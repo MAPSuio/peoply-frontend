@@ -62,7 +62,10 @@ import {
   laterThan,
   latherThanNowISOString,
 } from "../utils/functions";
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
+import {
+  fetchAllFromPeoplyApiJson,
+  fetchFromPeoplyApiJson,
+} from "../services/fetchers";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
 import { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
@@ -544,7 +547,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   /* Get all the possible event categories. */
   const { data: allCategories } = useSWR("/categories");
   const { data: organizations } = useSWR<Organization[]>(
-    "/organizations?take=500&orderBy=name",
+    "/organizations?orderBy=name",
+    fetchAllFromPeoplyApiJson,
   );
   const { data: goingCount } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,

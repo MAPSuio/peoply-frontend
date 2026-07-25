@@ -16,7 +16,10 @@ import WaitlistIcon from "../../../components/svgs/WaitlistIcon";
 import TabSelection from "../../../components/TabSelection";
 import useBack from "../../../hooks/useBack";
 import useSnack from "../../../hooks/useSnack";
-import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
+import {
+  fetchAllFromPeoplyApiJson,
+  fetchFromPeoplyApiJson,
+} from "../../../services/fetchers";
 
 import styles from "../../../styles/Participants.module.scss";
 import {
@@ -61,10 +64,10 @@ const Participants = () => {
     data: registrations,
     error: registrationsError,
     mutate: mutateRegistrations,
-  } = useSWR<Registration[]>(() =>
-    event?.id
-      ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
-      : false,
+  } = useSWR<Registration[]>(
+    () =>
+      event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+    fetchAllFromPeoplyApiJson,
   );
 
   const { data: invitations, error: invitationsError } = useSWR<

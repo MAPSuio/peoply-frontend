@@ -9,6 +9,11 @@ import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
 import SearchIcon from "../../components/svgs/SearchIcon";
 import useBack from "../../hooks/useBack";
+import {
+  MAX_PAGE_SIZE,
+  fetchAllFromPeoplyApiJson,
+  fetchFromPeoplyApiJson,
+} from "../../services/fetchers";
 import { Alignment, Category, Event, Organization } from "../../types/types";
 import { getEventArrangerDisplayItems } from "../../utils/eventArrangers";
 import { queryToString } from "../../utils/functions";
@@ -26,7 +31,6 @@ interface FilterOption<T> {
   label: string;
 }
 
-const MAX_EVENTS = 500;
 const COMPACT_GRID_STORAGE_KEY = "eventsCompactGrid";
 
 type FilterPanel = "organizations" | "categories";
@@ -64,13 +68,22 @@ const Events: NextPage = () => {
   );
   const deferredEventSearch = useDeferredValue(eventSearch);
 
+  // A ?take= in the URL is a deliberate cap on the result; without one the page
+  // wants every event in the range, which means paging through the API.
+  const explicitTake =
+    typeof router.query.take === "string" ? router.query.take : undefined;
+
   const eventsQuery = useMemo(() => {
     const now = new Date();
     const oneYearAhead = new Date(now);
     oneYearAhead.setFullYear(oneYearAhead.getFullYear() + 1);
 
+    // take is re-added below (or supplied per page by the fetcher).
+    const query = { ...router.query };
+    delete query.take;
+
     return {
-      ...router.query,
+      ...query,
       afterDate:
         typeof router.query.afterDate === "string"
           ? router.query.afterDate
@@ -87,25 +100,33 @@ const Events: NextPage = () => {
         typeof router.query.orderDirection === "string"
           ? router.query.orderDirection
           : "asc",
-      take:
-        typeof router.query.take === "string"
-          ? router.query.take
-          : `${MAX_EVENTS}`,
+      // The API rejects anything above MAX_PAGE_SIZE outright, so clamp
+      // rather than letting a hand-written URL turn into a 400.
+      ...(explicitTake
+        ? {
+            take: `${Math.min(
+              Number(explicitTake) || MAX_PAGE_SIZE,
+              MAX_PAGE_SIZE,
+            )}`,
+          }
+        : {}),
     };
-  }, [router.query]);
+  }, [explicitTake, router.query]);
 
   const queryUrl = useMemo(
     () => `/events?${queryToString(eventsQuery)}`,
     [eventsQuery],
   );
-  const organizationsQueryUrl = useMemo(
-    () =>
-      `/organizations?${queryToString({ take: MAX_EVENTS, orderBy: "name" })}`,
-    [],
-  );
+  const organizationsQueryUrl = "/organizations?orderBy=name";
 
-  const { data: events, error } = useSWR<Event[]>(queryUrl);
-  const { data: organizations } = useSWR<Organization[]>(organizationsQueryUrl);
+  const { data: events, error } = useSWR<Event[]>(
+    queryUrl,
+    explicitTake ? fetchFromPeoplyApiJson : fetchAllFromPeoplyApiJson,
+  );
+  const { data: organizations } = useSWR<Organization[]>(
+    organizationsQueryUrl,
+    fetchAllFromPeoplyApiJson,
+  );
   const { data: categories } = useSWR<Category[]>("/categories");
 
   const organizationOptions = useMemo(() => {
