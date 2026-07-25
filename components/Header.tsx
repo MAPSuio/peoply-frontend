@@ -4,11 +4,17 @@ import Link from "next/link";
 // Components.
 import Avatar from "./Avatar";
 import NotificationIndicator from "./NotificationIndicator";
+import LinkButton from "./LinkButton";
 import GithubIcon from "./svgs/GithubIcon";
+import LinkIcon from "./svgs/LinkIcon";
+import { IconPlacement } from "./Button";
 
 // Hooks.
 import useUser from "../hooks/useUser";
 import useNotifications from "../hooks/useNotifications";
+
+// Types.
+import { ButtonType } from "../types/types";
 
 // Utils.
 import { sourceCodeUrl } from "../utils/constants";
@@ -48,12 +54,27 @@ export default function Header({
           </a>
         )}
         <div className={styles.navLinks}>
-          <Link href="/feedback" className={styles.feedbackLink}>
-            <span>Gi feedback</span>
-          </Link>
-          <Link href="/integrasjoner" className={styles.integrationsLink}>
-            Integrasjoner
-          </Link>
+          <LinkButton
+            text="Feedback"
+            href="/feedback"
+            type={ButtonType.SECONDARY}
+            className={styles.navButton}
+            iconPlacement={IconPlacement.LEFT}
+            width="fit-content"
+            small
+            noShadow
+          />
+          <LinkButton
+            text="API"
+            href="/integrasjoner"
+            type={ButtonType.SECONDARY}
+            className={`${styles.navButton} ${styles.apiButton}`}
+            icon={<LinkIcon />}
+            iconPlacement={IconPlacement.RIGHT}
+            width="fit-content"
+            small
+            noShadow
+          />
           <Link href="/faq">FAQ</Link>
         </div>
         {user ? (

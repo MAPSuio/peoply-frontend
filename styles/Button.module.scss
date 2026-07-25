@@ -19,6 +19,15 @@
     justify-content: center;
   }
 
+  /* The icon still renders before the text in the DOM - reversing the row here
+     rather than reordering the JSX keeps Button and LinkButton identical. */
+  &.iconRight {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: $spacer-very-small-plus;
+    justify-content: center;
+  }
+
   &.iconAbove {
     align-items: center;
     display: flex;
