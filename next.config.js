@@ -34,4 +34,18 @@ module.exports = withPWA({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
   register: true,
+  workboxOptions: {
+    // Setting `exclude` replaces next-pwa's default list rather than extending
+    // it, so the three defaults are repeated here verbatim.
+    exclude: [
+      /\/_next\/static\/.*(?<!\.p)\.woff2/,
+      /\.map$/,
+      /^manifest.*\.js$/,
+      // Next 16 writes .next/dynamic-css-manifest.json but never serves it at
+      // /_next/dynamic-css-manifest.json, so precaching it always 404s.
+      // Workbox treats precaching as all-or-nothing: that single 404 aborts
+      // the whole install, and the service worker never activates.
+      /dynamic-css-manifest\.json$/,
+    ],
+  },
 })(nextConfig);
