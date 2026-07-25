@@ -418,7 +418,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       writeImageToLocalStorage(e.target.files[0]);
       setEventObject((prevEventObject) => ({
         ...prevEventObject,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         eventImage: e.target.files[0],
         eventImageValid: true,
@@ -693,8 +692,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
           eventObject.eventDateEnd,
         )
       : !eventObject.eventTimeEnd && !eventObject.eventDateEnd // if both are not there
-      ? true
-      : false;
+        ? true
+        : false;
 
   const eventCapacityValid = radioInputValid(
     eventObject.eventHasCapacity,

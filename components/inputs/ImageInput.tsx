@@ -75,7 +75,7 @@ const ImageInput = ({
 
   const imageSource = value
     ? value && URL.createObjectURL(value)
-    : placeholder ?? PlaceholderImage;
+    : (placeholder ?? PlaceholderImage);
   const imageInputStyles = getImageInputStyles();
   const labelValidStyles = getLabelValidStyles();
 

@@ -400,7 +400,6 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     if (e.target.files && e.target.files[0]) {
       setTempEventObject((tempEventObject) => ({
         ...tempEventObject,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         eventImage: e.target.files[0],
         deleteImage: false,
@@ -453,7 +452,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   function setExternalRegistration(enabled: boolean) {
-    const nextExternalUrl = enabled ? tempEventObject.externalUrl ?? "" : "";
+    const nextExternalUrl = enabled ? (tempEventObject.externalUrl ?? "") : "";
 
     setTempEventObject({
       ...tempEventObject,
@@ -1338,8 +1337,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 {eventObject.registrationMode === EventRegistrationMode.EXTERNAL
                   ? "Ekstern påmelding"
                   : eventObject.registrationMode === EventRegistrationMode.NONE
-                  ? "Ingen påmelding"
-                  : "Påmelding i Peoply"}
+                    ? "Ingen påmelding"
+                    : "Påmelding i Peoply"}
               </p>
             </div>
             {eventObject.registrationMode === EventRegistrationMode.EXTERNAL &&

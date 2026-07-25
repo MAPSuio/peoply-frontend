@@ -172,8 +172,8 @@ const OrganizationSettings: NextPage = () => {
       const status =
         error instanceof Response
           ? error.status
-          : (error as { status?: number; statusCode?: number })?.status ??
-            (error as { status?: number; statusCode?: number })?.statusCode;
+          : ((error as { status?: number; statusCode?: number })?.status ??
+            (error as { status?: number; statusCode?: number })?.statusCode);
 
       addSnack(
         status === 400
@@ -211,8 +211,8 @@ const OrganizationSettings: NextPage = () => {
       const status =
         error instanceof Response
           ? error.status
-          : (error as { status?: number; statusCode?: number })?.status ??
-            (error as { status?: number; statusCode?: number })?.statusCode;
+          : ((error as { status?: number; statusCode?: number })?.status ??
+            (error as { status?: number; statusCode?: number })?.statusCode);
 
       addSnack(
         status === 400

@@ -615,16 +615,19 @@ function groupBy<T, K>(
   array: Array<T>,
   groupBy: (item: T) => K,
 ): Array<{ key: K; values: Array<T> }> {
-  return array.reduce((groups, item) => {
-    const key = groupBy(item);
-    const group = groups.find((g) => g.key === key);
-    if (group) {
-      group.values.push(item);
-    } else {
-      groups.push({ key, values: [item] });
-    }
-    return groups;
-  }, [] as Array<{ key: K; values: Array<T> }>);
+  return array.reduce(
+    (groups, item) => {
+      const key = groupBy(item);
+      const group = groups.find((g) => g.key === key);
+      if (group) {
+        group.values.push(item);
+      } else {
+        groups.push({ key, values: [item] });
+      }
+      return groups;
+    },
+    [] as Array<{ key: K; values: Array<T> }>,
+  );
 }
 
 /* function to calculate edit distance between two strings */
