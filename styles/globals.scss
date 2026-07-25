@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
+/* Theme custom properties. Imported here rather than via the global SCSS
+   prelude so the html.dark/.night/.light selectors are emitted exactly once,
+   from a non-module stylesheet where they stay unhashed and can match. */
+@import "themes";
+
 * {
   box-sizing: border-box;
 }
