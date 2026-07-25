@@ -60,8 +60,9 @@ const Events: NextPage = () => {
   const [categorySearch, setCategorySearch] = useState("");
   const [isCompactGrid, setIsCompactGrid] = useState(false);
   const [compactPreferenceLoaded, setCompactPreferenceLoaded] = useState(false);
-  const [openFilterPanel, setOpenFilterPanel] =
-    useState<FilterPanel | null>(null);
+  const [openFilterPanel, setOpenFilterPanel] = useState<FilterPanel | null>(
+    null,
+  );
   const deferredEventSearch = useDeferredValue(eventSearch);
 
   const eventsQuery = useMemo(() => {
@@ -141,16 +142,11 @@ const Events: NextPage = () => {
   const categoryOptions = useMemo(() => {
     const uniqueCategories = (categories ?? []).reduce<FilterOption<number>[]>(
       (allCategories, category) => {
-        if (
-          allCategories.some((existing) => existing.value === category.id)
-        ) {
+        if (allCategories.some((existing) => existing.value === category.id)) {
           return allCategories;
         }
 
-        return [
-          ...allCategories,
-          { value: category.id, label: category.name },
-        ];
+        return [...allCategories, { value: category.id, label: category.name }];
       },
       [],
     );
@@ -402,7 +398,8 @@ const Events: NextPage = () => {
             <p className={styles.resultsText}>{filteredEvents.length} treff</p>
           </div>
 
-          {(selectedOrganizations.length > 0 || selectedCategories.length > 0) && (
+          {(selectedOrganizations.length > 0 ||
+            selectedCategories.length > 0) && (
             <div className={styles.selectedFilters}>
               {selectedOrganizations.map((organization) => (
                 <button
@@ -430,7 +427,10 @@ const Events: NextPage = () => {
           {openFilterPanel === "organizations" && (
             <div className={styles.optionList}>
               <div className={styles.filterPanelHeader}>
-                <label className={styles.filterLabel} htmlFor="organizationFilter">
+                <label
+                  className={styles.filterLabel}
+                  htmlFor="organizationFilter"
+                >
                   Foreninger
                 </label>
                 <span className={styles.panelMeta}>
@@ -493,7 +493,9 @@ const Events: NextPage = () => {
               />
               <div className={styles.optionTags}>
                 {visibleCategoryOptions.map((category) => {
-                  const isSelected = selectedCategoryIds.includes(category.value);
+                  const isSelected = selectedCategoryIds.includes(
+                    category.value,
+                  );
 
                   return (
                     <button
@@ -509,7 +511,9 @@ const Events: NextPage = () => {
                   );
                 })}
                 {visibleCategoryOptions.length === 0 && (
-                  <p className={styles.noOptionsText}>Ingen typer matcher søket.</p>
+                  <p className={styles.noOptionsText}>
+                    Ingen typer matcher søket.
+                  </p>
                 )}
               </div>
             </div>
@@ -521,7 +525,9 @@ const Events: NextPage = () => {
           <button
             type="button"
             className={`${styles.gridToggleSwitch} ${
-              isCompactGrid ? styles.gridToggleSwitchOn : styles.gridToggleSwitchOff
+              isCompactGrid
+                ? styles.gridToggleSwitchOn
+                : styles.gridToggleSwitchOff
             }`}
             aria-pressed={isCompactGrid}
             aria-label="Slå kompakt grid av eller på"

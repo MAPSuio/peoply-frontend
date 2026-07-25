@@ -91,6 +91,7 @@
   min-height: 2.25rem;
   padding: 0 $spacer-small;
   text-align: left;
+  white-space: nowrap;
 
   &:hover,
   &:focus-visible {
@@ -170,10 +171,6 @@
   max-height: 10rem;
   overflow-y: auto;
   padding-right: $spacer-very-small;
-}
-
-.optionButton {
-  white-space: nowrap;
 }
 
 .noOptionsText {

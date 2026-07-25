@@ -565,7 +565,10 @@ function readSetCookieHeaders(headers: Headers) {
   return setCookieHeader ? [setCookieHeader] : [];
 }
 
-function applySetCookiesToHeader(cookieHeader: string, setCookieHeaders: string[]) {
+function applySetCookiesToHeader(
+  cookieHeader: string,
+  setCookieHeaders: string[],
+) {
   const cookies = new Map<string, string>();
 
   cookieHeader
