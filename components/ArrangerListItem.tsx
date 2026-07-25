@@ -9,26 +9,13 @@ import Button from "./Button";
 import Avatar from "./Avatar";
 
 // Hooks.
-import useUser from "../hooks/useUser";
-import useSnack from "../hooks/useSnack";
-import useRedirectToLogin from "../hooks/useRedirectToLogin";
-
-// Services.
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../services/fetchers";
+import useFollowArranger from "../hooks/useFollowArranger";
 
 // Utils.
 import { formatFollowedDate } from "../utils/functions";
 
 // Types.
-import {
-  ArrangerFollower,
-  ButtonSize,
-  ButtonType,
-  SnackTypes,
-} from "../types/types";
+import { ArrangerFollower, ButtonSize, ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/ArrangerListItem.module.scss";
@@ -38,9 +25,7 @@ interface ArrangerListItemProps {
 }
 
 const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
-  const { user } = useUser();
-  const { addSnack } = useSnack();
-  const redirectToLogin = useRedirectToLogin();
+  const setFollowingArranger = useFollowArranger();
 
   const [following, setFollowing] = useState(true);
 
@@ -76,39 +61,14 @@ const ArrangerListItem = ({ arrangerFollower }: ArrangerListItemProps) => {
 
   const dateString = formatFollowedDate(arrangerFollower.createdAt);
 
-  const followArranger = async () => {
-    try {
-      await fetchFromPeoplyApiJson(
-        `/users/${user?.id}/following/${arrangerFollower.arrangerId}`,
-        {
-          method: "POST",
-        },
-      );
-      setFollowing(true);
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
+  const followButtonFunction = async () => {
+    const changed = await setFollowingArranger(
+      arrangerFollower.arrangerId,
+      !following,
+    );
 
-  const unfollowArranger = async () => {
-    try {
-      await fetchFromPeoplyApi(
-        `/users/${user?.id}/following/${arrangerFollower.arrangerId}`,
-        {
-          method: "DELETE",
-        },
-      );
-      setFollowing(false);
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
-
-  const followButtonFunction = () => {
-    if (user) {
-      following ? unfollowArranger() : followArranger();
-    } else {
-      redirectToLogin();
+    if (changed) {
+      setFollowing(!following);
     }
   };
 

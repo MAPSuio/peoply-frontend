@@ -28,6 +28,7 @@ import useSnack from "../../../hooks/useSnack";
 import useOrganization from "../../../hooks/useOrganization";
 import useUser from "../../../hooks/useUser";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import useFollowArranger from "../../../hooks/useFollowArranger";
 
 // Services.
 import { getOrganization } from "../../../services/organizations";
@@ -67,6 +68,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   const today = useRef(new Date().toISOString());
   const { user } = useUser();
   const redirectToLogin = useRedirectToLogin();
+  const setFollowingArranger = useFollowArranger();
   const [reporting, setReporting] = useState(false);
   const [now, setNow] = useState(Date.now());
 
@@ -132,46 +134,17 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
   /* use either fresh or fallback data */
   const org = orgData ?? organization;
 
-  const followArranger = async () => {
-    try {
-      await fetchFromPeoplyApi(
-        `/users/${user?.id}/following/${org.arrangerId}`,
-        {
-          method: "POST",
-        },
-      );
-      mutateFollowedArrangers();
-      mutateFollowers();
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
-
-  const unfollowArranger = async () => {
-    try {
-      await fetchFromPeoplyApi(
-        `/users/${user?.id}/following/${org.arrangerId}`,
-        {
-          method: "DELETE",
-        },
-      );
-      mutateFollowedArrangers();
-      mutateFollowers();
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
-
   const following = (() => {
     const arrangers = followedArrangers?.map((arranger) => arranger.arrangerId);
     return arrangers?.includes(org.arrangerId);
   })();
 
-  const followButtonFunction = () => {
-    if (user) {
-      following ? unfollowArranger() : followArranger();
-    } else {
-      redirectToLogin();
+  const followButtonFunction = async () => {
+    const changed = await setFollowingArranger(org.arrangerId, !following);
+
+    if (changed) {
+      mutateFollowedArrangers();
+      mutateFollowers();
     }
   };
 
