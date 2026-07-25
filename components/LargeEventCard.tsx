@@ -216,7 +216,11 @@ const LargeEventCard = ({
               compact ? styles.compactTitleContainer : ""
             }`}
           >
-            <h3 className={`${styles.title} ${compact ? styles.compactTitle : ""}`}>
+            <h3
+              className={`${styles.title} ${
+                compact ? styles.compactTitle : ""
+              }`}
+            >
               {event.title}
             </h3>
             <div
@@ -225,9 +229,15 @@ const LargeEventCard = ({
               }`}
             >
               <UsersIcon
-                className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
+                className={`${styles.icon} ${
+                  compact ? styles.compactIcon : ""
+                } ${styles.marginRightVerySmall}`}
               />
-              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
+              <p
+                className={`${styles.data} ${
+                  compact ? styles.compactData : ""
+                }`}
+              >
                 <span className={styles.emphasis}>{registrations}</span>
                 {event.capacity && `\u200A/\u200A${event.capacity}`}
               </p>
@@ -244,7 +254,9 @@ const LargeEventCard = ({
                 {getArrangerImageOrIcon()}
                 <div>
                   <span
-                    className={`${styles.data} ${compact ? styles.compactData : ""}`}
+                    className={`${styles.data} ${
+                      compact ? styles.compactData : ""
+                    }`}
                   >
                     {getCompactEventArrangerLabel(event, 2)}
                   </span>
@@ -259,15 +271,23 @@ const LargeEventCard = ({
                   }`}
                 >
                   <TimeIcon
-                    className={`${styles.icon} ${compact ? styles.compactIcon : ""}`}
+                    className={`${styles.icon} ${
+                      compact ? styles.compactIcon : ""
+                    }`}
                   />
                 </div>
               ) : (
                 <TimeIcon
-                  className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
+                  className={`${styles.icon} ${
+                    compact ? styles.compactIcon : ""
+                  } ${styles.marginRightVerySmall}`}
                 />
               )}
-              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
+              <p
+                className={`${styles.data} ${
+                  compact ? styles.compactData : ""
+                }`}
+              >
                 {dateString}, {timeString}
               </p>
             </div>
@@ -279,15 +299,23 @@ const LargeEventCard = ({
                   }`}
                 >
                   <PlaceIcon
-                    className={`${styles.icon} ${compact ? styles.compactIcon : ""}`}
+                    className={`${styles.icon} ${
+                      compact ? styles.compactIcon : ""
+                    }`}
                   />
                 </div>
               ) : (
                 <PlaceIcon
-                  className={`${styles.icon} ${compact ? styles.compactIcon : ""} ${styles.marginRightVerySmall}`}
+                  className={`${styles.icon} ${
+                    compact ? styles.compactIcon : ""
+                  } ${styles.marginRightVerySmall}`}
                 />
               )}
-              <p className={`${styles.data} ${compact ? styles.compactData : ""}`}>
+              <p
+                className={`${styles.data} ${
+                  compact ? styles.compactData : ""
+                }`}
+              >
                 {event.locationName}
               </p>
             </div>
@@ -296,16 +324,12 @@ const LargeEventCard = ({
             <div
               className={`${styles.actionContainer} ${
                 compact ? styles.compactActionContainer : ""
-              } ${
-                stackActionsOnDesktop ? styles.stackedActions : ""
-              }`}
+              } ${stackActionsOnDesktop ? styles.stackedActions : ""}`}
             >
               <div
                 className={`${styles.primaryActions} ${
                   compact ? styles.compactPrimaryActions : ""
-                } ${
-                  stackActionsOnDesktop ? styles.stackedPrimaryActions : ""
-                }`}
+                } ${stackActionsOnDesktop ? styles.stackedPrimaryActions : ""}`}
               >
                 <JoinButton
                   event={event}

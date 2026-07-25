@@ -10,7 +10,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "npm run lint:eslint && npm run lint:stylelint",
-    "lint:eslint": "npx next lint",
+    "lint:eslint": "npx eslint . --ext .ts,.tsx",
     "lint:stylelint": "npx stylelint '**/*.{css,scss}'"
   },
   "dependencies": {

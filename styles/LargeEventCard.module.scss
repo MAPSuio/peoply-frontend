@@ -274,6 +274,11 @@
   width: 100%;
 }
 
+/* stylelint-disable-next-line no-descending-specificity --
+   Flagged against `.dataItemContainer > *:last-child` above, which targets an
+   unrelated element. Moving this rule earlier to satisfy the ordering check
+   would place it before the .stacked* width rules that style these same
+   children, changing which declaration wins. */
 .actionContainer > * {
   width: 100%;
 }
