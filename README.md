@@ -42,7 +42,7 @@ npm run seed:dev-db     # local users, organizations, events
 npm run dev             # http://localhost:3000
 ```
 
-Swagger for the API is at <http://localhost:3000/api>.
+Documentation for the API is at <http://localhost:3000/api>.
 
 The ports are not interchangeable. Auth cookies are cross-origin, so the backend
 must trust this app's exact origin. Both values are already in the backend's
