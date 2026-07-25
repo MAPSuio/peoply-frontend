@@ -9,7 +9,12 @@ const nextConfig = {
 
   reactStrictMode: true,
   sassOptions: {
-    prependData: `@import "variables"; @import "mixins"; @import "themes";`,
+    // Only value-producing partials belong here. `_themes.scss` emits actual
+    // rule blocks (html.dark/.night/.light), so injecting it into every
+    // *.module.scss made CSS Modules hash the class part of those selectors
+    // (html.Button_dark__x1y2z), which can never match the plain `dark` class
+    // that next-themes sets. It is imported once from globals.scss instead.
+    additionalData: `@import "variables"; @import "mixins";`,
   },
 
   images: {
