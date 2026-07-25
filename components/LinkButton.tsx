@@ -63,6 +63,8 @@ export default function LinkButton({
     switch (iconPlacement) {
       case IconPlacement.LEFT:
         return styles.iconLeft;
+      case IconPlacement.RIGHT:
+        return styles.iconRight;
       case IconPlacement.ABOVE:
         return styles.iconAbove;
       case IconPlacement.ABOVE_ON_MOBILE:

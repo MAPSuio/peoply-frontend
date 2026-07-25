@@ -12,6 +12,7 @@ import styles from "../styles/Button.module.scss";
 
 export enum IconPlacement {
   LEFT = "left",
+  RIGHT = "right",
   ABOVE = "above",
   ABOVE_ON_MOBILE = "aboveOnMobile",
 }
@@ -102,6 +103,8 @@ export default function Button({
     switch (iconPlacement) {
       case IconPlacement.LEFT:
         return styles.iconLeft;
+      case IconPlacement.RIGHT:
+        return styles.iconRight;
       case IconPlacement.ABOVE:
         return styles.iconAbove;
       case IconPlacement.ABOVE_ON_MOBILE:
