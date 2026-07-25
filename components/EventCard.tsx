@@ -1,26 +1,27 @@
 // Next.js.
 import Image from "next/legacy/image";
-import useSWR from "swr";
 
 // Components.
-import AddToCalendarButton from "./AddToCalendarButton";
-import JoinButton from "./JoinButton";
+import ArrangerAvatar from "./ArrangerAvatar";
+import EventActions from "./EventActions";
 import UserIconCard from "./svgs/UserIconCard";
 import PlaceIconCard from "./svgs/PlaceIconCard";
 import UsersIconCard from "./svgs/UsersIconCard";
+
+// Hooks.
+import useRegistrationCount from "../hooks/useRegistrationCount";
 
 // Utils.
 import { formatEventDate } from "../utils/functions";
 import {
   getCompactEventArrangerLabel,
-  getPrimaryEventArranger,
   getPrimaryEventArrangerOrganization,
 } from "../utils/eventArrangers";
 
 // Services.
 
 // Types.
-import { Event, EventDateFormat, RegStatus } from "../types/types";
+import { Event, EventDateFormat } from "../types/types";
 
 // Assets.
 import eventPlaceholder from "../assets/images/undraw_partying.png";
@@ -44,71 +45,7 @@ const EventCard = ({ event }: EventCardProps) => {
     data: registrations,
     error: registrationsError,
     mutate: updateRegistrations,
-  } = useSWR<number>(
-    `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-  );
-
-  const getArrangerImageOrIcon = () => {
-    if (event.eventArrangers && event.eventArrangers.length > 0) {
-      const firstArranger = getPrimaryEventArranger(event);
-      if (!firstArranger) {
-        return (
-          <div className={styles.iconContainer}>
-            <UserIconCard className={styles.icon} />
-          </div>
-        );
-      }
-      if (firstArranger.user) {
-        const imageSrc = firstArranger.user.image;
-        if (imageSrc) {
-          return (
-            <div className={styles.arrangerImage}>
-              <Image
-                src={imageSrc}
-                layout="fill"
-                alt="Arrangøren av arrangementet"
-                objectFit="cover"
-                sizes="5vw"
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
-            </div>
-          );
-        }
-      } else {
-        const imageSrc = firstArranger.organization?.image;
-        if (imageSrc) {
-          return (
-            <div className={styles.arrangerImage}>
-              <Image
-                src={imageSrc}
-                layout="fill"
-                alt="Arrangøren av arrangementet"
-                objectFit="cover"
-                sizes="5vw"
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
-            </div>
-          );
-        }
-      }
-    } else {
-      return (
-        <div className={styles.iconContainer}>
-          <UserIconCard className={styles.icon} />
-        </div>
-      );
-    }
-  };
+  } = useRegistrationCount(event.id);
 
   return (
     <div className={styles.eventCard}>
@@ -144,7 +81,15 @@ const EventCard = ({ event }: EventCardProps) => {
           <div className={styles.divider}></div>
           <div className={styles.eventCardInfoBody}>
             <div className={styles.eventCardInfoBodyItem}>
-              {getArrangerImageOrIcon()}
+              <ArrangerAvatar
+                event={event}
+                classNames={{
+                  image: styles.arrangerImage,
+                  iconContainer: styles.iconContainer,
+                  icon: styles.icon,
+                }}
+                fallbackIcon={<UserIconCard className={styles.icon} />}
+              />
               <div>
                 <p className={styles.data}>
                   {getCompactEventArrangerLabel(event, 2)}
@@ -163,24 +108,11 @@ const EventCard = ({ event }: EventCardProps) => {
           </div>
           {!isEventFinished(event) && (
             <div className={styles.actionContainer}>
-              <JoinButton
+              <EventActions
                 event={event}
-                countdownText="Åpner om"
                 updateOnChange={[updateRegistrations]}
-                joinText="Meld på"
-                joinedText="Påmeldt"
-                joinWaitlistText="Venteliste"
-                joinedWaitlistText="Du står i kø"
-                eventFinishedText="Arrangementet er ferdig"
-                regClosedText="Påmelding er stengt"
-                small
-                noShadow
-                className={styles.actionButton}
-              />
-              <AddToCalendarButton
-                event={event}
-                width="100%"
-                className={styles.actionButton}
+                joinButtonClassName={styles.actionButton}
+                calendarButtonClassName={styles.actionButton}
               />
             </div>
           )}

@@ -1,37 +1,22 @@
 // Next.js.
 import Link from "next/link";
 import Image from "next/image";
-import useSWR from "swr";
-
-// React.
-import { MouseEvent, useEffect, useState } from "react";
 
 // Components.
-import AddToCalendarButton from "./AddToCalendarButton";
-import JoinButton from "./JoinButton";
+import ArrangerAvatar from "./ArrangerAvatar";
+import EventActions from "./EventActions";
 import HeartIconGlass from "./HeartIconGlass";
 
 // Hooks.
-import useUser from "../hooks/useUser";
-import useSnack from "../hooks/useSnack";
-import useRedirectToLogin from "../hooks/useRedirectToLogin";
-
-// Services.
-import {
-  addFavorite,
-  getUserFavorite,
-  removeFavorite,
-} from "../services/events";
+import useEventFavorite from "../hooks/useEventFavorite";
+import useRegistrationCount from "../hooks/useRegistrationCount";
 
 // Utils.
 import { formatDateRange, formatTimeRange } from "../utils/functions";
-import {
-  getCompactEventArrangerLabel,
-  getPrimaryEventArranger,
-} from "../utils/eventArrangers";
+import { getCompactEventArrangerLabel } from "../utils/eventArrangers";
 
 // Types.
-import { Event, RegStatus, SnackTypes } from "../types/types";
+import { Event } from "../types/types";
 
 // Assets.
 import placeholderImage from "../assets/images/undraw_partying.png";
@@ -59,12 +44,11 @@ const LargeEventCard = ({
   compact = false,
   className,
 }: LargeEventCardProps) => {
-  const { user, loading: loadingUser } = useUser();
-  const { addSnack } = useSnack();
-  const redirectToLogin = useRedirectToLogin();
-
-  const [favorited, setFavorited] = useState(false);
-  const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable the favorite button until we get a response from the database.
+  const {
+    favorited,
+    loading: favoriteLoading,
+    toggleFavorite,
+  } = useEventFavorite(event.id);
 
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : null;
@@ -72,107 +56,8 @@ const LargeEventCard = ({
   const dateString = formatDateRange(startDate, endDate).slice(0, -5);
   const timeString = formatTimeRange(startDate, endDate);
 
-  const { data: registrations, mutate: updateRegistrations } = useSWR<number>(
-    `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-  );
-
-  useEffect(() => {
-    const getFavoriteStatus = async () => {
-      if (user) {
-        const favorite = await getUserFavorite(user.id, event.id);
-        setFavorited(favorite !== null);
-        setFavoriteFetched(true);
-      } else if (!loadingUser && !user && event) {
-        setFavoriteFetched(true);
-      }
-    };
-
-    getFavoriteStatus();
-  }, [user, event, loadingUser]);
-
-  const addFavoriteFunc = async (e: MouseEvent) => {
-    e.preventDefault();
-
-    if (user) {
-      let success;
-      if (!favorited) {
-        success = await addFavorite(user.id, event.id);
-        if (!success)
-          addSnack("Klarte ikke å legge til favoritt", SnackTypes.ERROR);
-      } else {
-        success = await removeFavorite(user.id, event.id);
-        if (!success)
-          addSnack("Klarte ikke å fjerne favoritt", SnackTypes.ERROR);
-      }
-
-      if (await success) setFavorited(!favorited);
-    } else {
-      /* User is not logged in. */
-      redirectToLogin();
-    }
-  };
-
-  const getArrangerImageOrIcon = () => {
-    if (event.eventArrangers && event.eventArrangers.length > 0) {
-      const firstArranger = getPrimaryEventArranger(event);
-      if (!firstArranger) {
-        return (
-          <div className={styles.iconContainer}>
-            <UserIconCard className={styles.icon} />
-          </div>
-        );
-      }
-      if (firstArranger.user) {
-        const imageSrc = firstArranger.user.image;
-        if (imageSrc) {
-          return (
-            <div className={styles.arrangerImage}>
-              <Image
-                src={imageSrc}
-                alt="Arrangøren av arrangementet"
-                fill
-                sizes="5vw"
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
-            </div>
-          );
-        }
-      } else {
-        const imageSrc = firstArranger.organization?.image;
-        if (imageSrc) {
-          return (
-            <div className={styles.arrangerImage}>
-              <Image
-                src={imageSrc}
-                layout="fill"
-                alt="Arrangøren av arrangementet"
-                objectFit="cover"
-                sizes="5vw"
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div className={styles.iconContainer}>
-              <UserIconCard className={styles.icon} />
-            </div>
-          );
-        }
-      }
-    } else {
-      return (
-        <div className={styles.iconContainer}>
-          <UserIconCard className={styles.icon} />
-        </div>
-      );
-    }
-  };
+  const { data: registrations, mutate: updateRegistrations } =
+    useRegistrationCount(event.id);
 
   return (
     <Link
@@ -199,9 +84,9 @@ const LargeEventCard = ({
           />
           <HeartIconGlass
             className={styles.favoriteIcon}
-            onClick={addFavoriteFunc}
+            onClick={toggleFavorite}
             favorited={favorited}
-            loading={!favoriteFetched}
+            loading={favoriteLoading}
           />
         </div>
         <div
@@ -249,7 +134,15 @@ const LargeEventCard = ({
           >
             {showArranger && (
               <div className={styles.dataItemContainer}>
-                {getArrangerImageOrIcon()}
+                <ArrangerAvatar
+                  event={event}
+                  classNames={{
+                    image: styles.arrangerImage,
+                    iconContainer: styles.iconContainer,
+                    icon: styles.icon,
+                  }}
+                  fallbackIcon={<UserIconCard className={styles.icon} />}
+                />
                 <div>
                   <span
                     className={`${styles.data} ${
@@ -329,28 +222,15 @@ const LargeEventCard = ({
                   compact ? styles.compactPrimaryActions : ""
                 } ${stackActionsOnDesktop ? styles.stackedPrimaryActions : ""}`}
               >
-                <JoinButton
+                <EventActions
                   event={event}
-                  countdownText="Åpner om"
                   updateOnChange={[updateRegistrations]}
-                  joinText="Meld på"
-                  joinedText="Påmeldt"
-                  joinWaitlistText="Venteliste"
-                  joinedWaitlistText="Du står i kø"
-                  eventFinishedText="Arrangementet er ferdig"
-                  regClosedText="Påmelding er stengt"
                   useUnregisterModal
-                  small
-                  noShadow
-                  className={`${styles.primaryActionButton} ${
+                  calendarButtonText={compact ? "Kalender" : undefined}
+                  joinButtonClassName={`${styles.primaryActionButton} ${
                     compact ? styles.compactActionButton : ""
                   }`}
-                />
-                <AddToCalendarButton
-                  event={event}
-                  buttonText={compact ? "Kalender" : undefined}
-                  width="100%"
-                  className={`${styles.secondaryActionButton} ${
+                  calendarButtonClassName={`${styles.secondaryActionButton} ${
                     compact ? styles.compactActionButton : ""
                   }`}
                 />

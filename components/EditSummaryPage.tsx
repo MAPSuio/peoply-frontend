@@ -8,7 +8,6 @@ import {
   EventCategory,
   Organization,
   EventRegistrationMode,
-  RegStatus,
   SnackTypes,
   Visibility,
 } from "../types/types";
@@ -52,6 +51,7 @@ import createStyles from "../styles/CreateEvent.module.scss";
 import { useRouter } from "next/router";
 import useSnack from "../hooks/useSnack";
 import useSWR from "swr";
+import useRegistrationCount from "../hooks/useRegistrationCount";
 
 // Utils
 import {
@@ -550,9 +550,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     "/organizations?orderBy=name",
     fetchAllFromPeoplyApiJson,
   );
-  const { data: goingCount } = useSWR<number>(
-    `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-  );
+  const { data: goingCount } = useRegistrationCount(event.id);
 
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = tempEventObject.eventImage
