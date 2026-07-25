@@ -54,6 +54,9 @@ export function UserProvider({
   }, []);
 
   useEffect(() => {
+    let active = true;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
     /* will attempt to fetch and set the user state */
     const checkAuth = async () => {
       try {
@@ -61,10 +64,19 @@ export function UserProvider({
         const user = await fetchFromPeoplyApiJson("/users/me", {
           headers: { "Cache-Control": "no-cache" },
         });
+
+        if (!active) {
+          return;
+        }
+
         authRetryAttempted.current = false;
         setError(undefined);
         setUser(user);
       } catch (error: unknown) {
+        if (!active) {
+          return;
+        }
+
         const response = error as Response;
 
         if (response?.status === 401) {
@@ -74,7 +86,7 @@ export function UserProvider({
         } else {
           if (!authRetryAttempted.current) {
             authRetryAttempted.current = true;
-            setTimeout(() => setReload((prev) => !prev), 1500);
+            retryTimer = setTimeout(() => setReload((prev) => !prev), 1500);
             return;
           }
 
@@ -85,16 +97,28 @@ export function UserProvider({
     };
 
     checkAuth();
+
+    return () => {
+      active = false;
+      clearTimeout(retryTimer);
+    };
   }, [reload]);
 
   /* separate hook to fetch orgs independently of user */
   useEffect(() => {
+    let active = true;
+
     if (user) {
       const fetchOrganizations = async () => {
         try {
           const organizations: Organization[] = await fetchFromPeoplyApiJson(
             `/users/${user.id}/organizations`,
           );
+
+          if (!active) {
+            return;
+          }
+
           setOrgs(organizations);
           const currentOrg = getOrgContext();
 
@@ -108,12 +132,18 @@ export function UserProvider({
             setCurrentOrg(org);
           }
         } catch (error: any) {
-          setError(error.message);
+          if (active) {
+            setError(error.message);
+          }
         }
       };
 
       fetchOrganizations();
     }
+
+    return () => {
+      active = false;
+    };
   }, [user, reload]);
 
   /* will clear user state and request to remove the cookies */

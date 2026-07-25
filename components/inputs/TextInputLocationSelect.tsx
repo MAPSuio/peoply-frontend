@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "../../styles/TextInputLocationSelect.module.scss";
 import {
@@ -38,8 +38,12 @@ const TextInputLocationSelect = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(false);
   const [locations, setLocations] = useState<AzureMapsSearchFuzzyResult[]>([]);
-  const [queuedSearch, setQueuedSearch] =
-    useState<ReturnType<typeof setTimeout>>();
+
+  /* Callers build `options` inline, so a new object identity on every parent
+     render would restart the debounce below. A ref keeps the effect reading
+     the latest value without depending on it. */
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
 
   const inputContainerStyles = (() => {
     if (valid || !focused) {
@@ -59,34 +63,38 @@ const TextInputLocationSelect = ({
     }
   })();
 
+  useEffect(() => {
+    setValid(Boolean(selectedLocation));
+  }, [selectedLocation]);
+
   /* hook to fetch whenever search term changes */
   useEffect(() => {
-    if (selectedLocation) {
-      setValid(true);
-    } else {
-      setValid(false);
+    if (!search) {
+      return;
     }
-    const performSearch = async () => {
-      if (search) {
-        const result: AzureMapsSearchFuzzyResponse = await searchLocationsFuzzy(
-          search,
-          options,
-        );
 
-        const fetchedLocations = result.results ?? [];
-        setLoading(false);
-        setLocations(fetchedLocations);
-      }
-    };
-    if (search) {
-      setLoading(true);
-      const req: ReturnType<typeof setTimeout> = setTimeout(
-        () => performSearch(),
-        500,
+    setLoading(true);
+    let cancelled = false;
+
+    const timer = setTimeout(async () => {
+      const result: AzureMapsSearchFuzzyResponse = await searchLocationsFuzzy(
+        search,
+        optionsRef.current,
       );
-      setQueuedSearch(req);
-    }
-  }, [options, search, selectedLocation]);
+      // A slower request for an earlier term must not overwrite the results
+      // of a later one.
+      if (cancelled) {
+        return;
+      }
+      setLoading(false);
+      setLocations(result.results ?? []);
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [search]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -95,9 +103,6 @@ const TextInputLocationSelect = ({
     }
     setSearch(query);
     setLocations([]);
-    if (queuedSearch) {
-      clearTimeout(queuedSearch);
-    }
 
     if (query.length < 1) {
       setLoading(false);
