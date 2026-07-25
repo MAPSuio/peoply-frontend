@@ -343,6 +343,7 @@ const Participants = () => {
                     search={search}
                     loading={false}
                     setSearch={setSearch}
+                    label="Søk blant påmeldte"
                   />
                 </div>
               </>
@@ -402,6 +403,7 @@ const Participants = () => {
                   search={search}
                   loading={false}
                   setSearch={setSearch}
+                  label="Søk på venteliste"
                 />
               </div>
             )}
@@ -446,6 +448,7 @@ const Participants = () => {
                   search={search}
                   loading={false}
                   setSearch={setSearch}
+                  label="Søk blant avmeldte"
                 />
               </div>
             )}

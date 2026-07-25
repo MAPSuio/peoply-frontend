@@ -366,14 +366,14 @@ const SummaryPage = ({
             {eventObject.eventLocationName}
           </p>
           {eventObject.eventLocation?.poi?.name && (
-            <a className={`${styles.placeText} ${styles.address}`}>
+            <span className={`${styles.placeText} ${styles.address}`}>
               {eventObject.eventLocation?.poi?.name}
-            </a>
+            </span>
           )}
           {eventObject.eventLocation?.address?.freeformAddress && (
-            <a className={`${styles.placeText} ${styles.address}`}>
+            <span className={`${styles.placeText} ${styles.address}`}>
               {eventObject.eventLocation?.address?.freeformAddress}
-            </a>
+            </span>
           )}
         </SummaryCard>
         <SummaryCard

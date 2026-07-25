@@ -7,12 +7,16 @@ interface SearchFieldProps {
   search: string;
   setSearch: (search: string) => void;
   loading: boolean;
+  /* The field has no visible label - only a magnifier icon - so callers must
+     say what it searches. Several can be on screen at once. */
+  label: string;
 }
 
 export default function SearchField({
   loading,
   search,
   setSearch,
+  label,
 }: SearchFieldProps) {
   const [focused, setFocused] = useState(false);
   return (
@@ -24,9 +28,10 @@ export default function SearchField({
         <input
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          type="text"
+          type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          aria-label={label}
         />
       </div>
     </div>

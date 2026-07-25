@@ -96,9 +96,10 @@ export default function UserSelect({
         <input
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          type="text"
+          type="search"
           value={search}
           onChange={handleChange}
+          aria-label="Søk etter personer"
         />
       </div>
       <div className={`${styles.results} ${users.length ? styles.show : ""}`}>
