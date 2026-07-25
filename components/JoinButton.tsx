@@ -64,7 +64,7 @@ export default function JoinButton({
   const { user, loading: userLoading, reload: reloadUser } = useUser();
   const {
     data: myRegistration,
-    error,
+    isLoading: registrationLoading,
     mutate: updateRegistration,
   } = useSWR<Registration>(() =>
     user?.id && event.id
@@ -164,7 +164,12 @@ export default function JoinButton({
     return fetchFromPeoplyApiJson(`/users/me/seenUpdate/${update}`);
   };
 
-  const loading = (!myRegistration && !error) || isCountdown === undefined;
+  /* Not being registered is a normal state, not a pending one - asking SWR
+     whether the request is still in flight is the only thing that separates
+     the two. Deriving it from `!myRegistration && !error` meant the button
+     could only stop spinning by the request *failing*. */
+  const loading =
+    userLoading || registrationLoading || isCountdown === undefined;
 
   const notLoggedIn = !user && !userLoading;
 
