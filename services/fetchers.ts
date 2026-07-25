@@ -18,6 +18,15 @@ export async function fetchFromPeoplyApiJson(
   init?: RequestInit,
 ) {
   const res = await fetchFromPeoplyApi(resource, init);
+
+  /* The API answers "this resource does not exist for you" with 204 and an
+     empty body - GET /users/:id/registrations/:eventId does it for every event
+     the user has not signed up for. Calling .json() on that throws a
+     SyntaxError, which is not a Response, so it slips past the status-based
+     suppression in SwrProvider's onError and snacks at the user. Absence is a
+     legitimate answer, so return it as one. */
+  if (res.status === 204) return undefined;
+
   return res.json();
 }
 

@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { MAX_PAGE_SIZE, fetchAllFromPeoplyApiJson } from "../services/fetchers";
+import {
+  MAX_PAGE_SIZE,
+  fetchAllFromPeoplyApiJson,
+  fetchFromPeoplyApiJson,
+} from "../services/fetchers";
 
 const API_URL = "https://api.example.test";
 
@@ -32,6 +36,55 @@ function mockApi(rows: unknown[]) {
 function rows(count: number) {
   return Array.from({ length: count }, (_, index) => ({ id: `id-${index}` }));
 }
+
+describe("fetchFromPeoplyApiJson", () => {
+  beforeEach(() => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", API_URL);
+  });
+
+  it("returns undefined for a 204 instead of throwing on the empty body", async () => {
+    /* The prod bug this replaced: GET /users/:id/registrations/:eventId answers
+       204 for every event the user has not signed up for. .json() on an empty
+       body throws a SyntaxError - not a Response - so SwrProvider's onError
+       could not tell it apart from a real failure and snacked "Noe gikk galt"
+       on every event page. */
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(null, { status: 204 })),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
+    ).resolves.toBeUndefined();
+  });
+
+  it("still parses the body on a 200", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ regStatus: "GOING" }), { status: 200 }),
+      ),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
+    ).resolves.toEqual({ regStatus: "GOING" });
+  });
+
+  it("still throws the response itself on a failure", async () => {
+    /* onError distinguishes 401/403/404 from real errors by reading .status off
+       the thrown value, so the raw Response has to survive. */
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("{}", { status: 500 })),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
+    ).rejects.toBeInstanceOf(Response);
+  });
+});
 
 describe("fetchAllFromPeoplyApiJson", () => {
   beforeEach(() => {
