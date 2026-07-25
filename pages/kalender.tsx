@@ -7,6 +7,7 @@ import HeadComponent from "../components/HeadComponent";
 import Layout from "../components/Layout";
 import Navbar from "../components/Navbar";
 import Avatar from "../components/Avatar";
+import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, Event, Organization } from "../types/types";
 import { queryToString } from "../utils/functions";
@@ -33,7 +34,6 @@ type NormalizedEvent = Omit<Event, "startDate"> & {
 };
 
 const DAYS_IN_WEEK = 7;
-const MAX_EVENTS = 500;
 
 function startOfDay(date: Date) {
   const nextDate = new Date(date);
@@ -184,13 +184,13 @@ export default function CalendarPage() {
       beforeDate: rangeEnd.toISOString(),
       orderBy: "startDate",
       orderDirection: "asc",
-      take: `${MAX_EVENTS}`,
     }),
     [rangeEnd, rangeStart],
   );
 
   const { data: events, error } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
+    fetchAllFromPeoplyApiJson,
   );
 
   const normalizedEvents = useMemo<NormalizedEvent[]>(

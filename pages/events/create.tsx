@@ -35,7 +35,10 @@ import NoFoodIcon from "../../components/svgs/NoFoodIcon";
 import FoodIcon from "../../components/svgs/FoodIcon";
 
 // Hooks.
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import {
+  fetchAllFromPeoplyApiJson,
+  fetchFromPeoplyApiJson,
+} from "../../services/fetchers";
 import useUser from "../../hooks/useUser";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import useSnack from "../../hooks/useSnack";
@@ -178,7 +181,8 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   /* Get all the possible event categories. */
   const { data: categories } = useSWR("/categories");
   const { data: organizations } = useSWR<Organization[]>(
-    "/organizations?take=500&orderBy=name",
+    "/organizations?orderBy=name",
+    fetchAllFromPeoplyApiJson,
   );
 
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {
