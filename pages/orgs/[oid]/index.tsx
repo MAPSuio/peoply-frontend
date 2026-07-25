@@ -89,9 +89,11 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     },
   );
 
-  const { data: followedArrangers, mutate: mutateFollowedArrangers } = useSWR<
-    ArrangerFollower[]
-  >(user ? `/users/${user.id}/following` : false);
+  const {
+    data: followedArrangers,
+    isLoading: followedArrangersLoading,
+    mutate: mutateFollowedArrangers,
+  } = useSWR<ArrangerFollower[]>(user ? `/users/${user.id}/following` : false);
 
   const { data: followers, mutate: mutateFollowers } = useSWR<
     ArrangerFollower[]
@@ -346,7 +348,12 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             type={followButtonType}
             noShadow
             onClick={followButtonFunction}
-            loading={user && !followedArrangers}
+            /* Absence of data is not the same as a request in flight: if
+               /following fails, the data never arrives and the button used to
+               spin forever. 401/403 are suppressed on purpose, so that failure
+               was silent - a permanent spinner and no error. Ask SWR whether
+               the request is actually running instead. */
+            loading={followedArrangersLoading}
           />
           {organizationCalendarLinks.downloadHref && (
             <div className={styles.calendarActions}>
