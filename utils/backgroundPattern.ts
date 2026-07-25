@@ -1,4 +1,4 @@
-export const BACKGROUND_PATTERN_STORAGE_KEY = "backgroundPatternEnabled";
+const BACKGROUND_PATTERN_STORAGE_KEY = "backgroundPatternEnabled";
 export const BACKGROUND_PATTERN_EVENT = "background-pattern-preference-change";
 
 export function getBackgroundPatternEnabled() {
