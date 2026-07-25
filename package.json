@@ -48,6 +48,6 @@
     "stylelint-config-recommended-scss": "5.0.2",
     "stylelint-order": "6.0.3",
     "stylelint-scss": "5.0.0",
-    "vitest": "3.2.4"
+    "vitest": "3.2.6"
   }
 }
