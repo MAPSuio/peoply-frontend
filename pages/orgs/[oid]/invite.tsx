@@ -74,7 +74,7 @@ export default function InviteMembersToOrg() {
           headers: { "Content-Type": "application/json; charset=utf-8" },
         });
         addSnack("Invitasjoner sendt!", SnackTypes.SUCCESS);
-      } catch (e) {
+      } catch {
         addSnack("Noe gikk galt", SnackTypes.ERROR);
       }
       router.push(`/orgs/${oid}/members`);

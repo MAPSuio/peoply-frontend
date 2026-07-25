@@ -23,7 +23,7 @@ export default function GlobalSearch({}) {
   const [selectedFilter, setSelectedFilter] = useState(FilterOption.ALL);
   const [events, setEvents] = useState<Event[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   /* hook to fetch whenever search term changes */
   useEffect(() => {
     if (search.length < 3) {

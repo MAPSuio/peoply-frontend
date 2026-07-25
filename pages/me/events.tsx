@@ -49,13 +49,13 @@ const MyEvents = () => {
   const { user, loading } = useUser();
   const redirectToLogin = useRedirectToLogin();
 
-  const { data: eventsArranging, error: myEventsError } = useSWR<Event[]>(
+  const { data: eventsArranging } = useSWR<Event[]>(
     `/users/${user?.id}/arranging`,
   );
-  const { data: eventsFavorited, error: myFavoritesError } = useSWR<Favorite[]>(
+  const { data: eventsFavorited } = useSWR<Favorite[]>(
     `/users/${user?.id}/favorites?includeEvent=true&includeArrangers=true`,
   );
-  const { data: eventsGoing, error: myGoingError } = useSWR<Registration[]>(
+  const { data: eventsGoing } = useSWR<Registration[]>(
     `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true&take=100`,
   );
 

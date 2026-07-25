@@ -27,7 +27,7 @@ export default function UserSelect({
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [focused, setFocused] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   /* hook to fetch whenever search term changes */
   useEffect(() => {

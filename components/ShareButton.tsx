@@ -62,7 +62,7 @@ export function ShareButton({
           addSnack("Teksten ble kopiert!", SnackTypes.SUCCESS);
         }
       }
-    } catch (error) {
+    } catch {
       addSnack("Kunne ikke dele akkurat nå", SnackTypes.ERROR);
     }
   }

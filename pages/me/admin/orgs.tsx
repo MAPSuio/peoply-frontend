@@ -56,7 +56,7 @@ const OrganizationApprovalAdmin: NextPage = () => {
         },
       );
       mutate();
-    } catch (e) {
+    } catch {
       addSnack("Kunne ikke oppdatere foreningen", SnackTypes.ERROR);
     }
   };

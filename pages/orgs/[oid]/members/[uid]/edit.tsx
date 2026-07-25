@@ -109,7 +109,7 @@ export default function EditOrganizationUser() {
       );
       addSnack("Medlem fjernet", SnackTypes.SUCCESS);
       router.back();
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };
@@ -123,7 +123,7 @@ export default function EditOrganizationUser() {
       });
       addSnack("Eier endret", SnackTypes.SUCCESS);
       router.back();
-    } catch (e) {
+    } catch {
       addSnack("Noe gikk galt", SnackTypes.ERROR);
     }
   };
@@ -154,7 +154,7 @@ export default function EditOrganizationUser() {
         );
       }
       addSnack("Bruker oppdatert", SnackTypes.SUCCESS);
-    } catch (error) {
+    } catch {
       addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
     } finally {
       router.push(`/orgs/${oid}/members`);

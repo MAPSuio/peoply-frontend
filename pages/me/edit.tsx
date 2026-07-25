@@ -74,7 +74,7 @@ const EditProfile: NextPage = () => {
       });
       reload();
       addSnack("Profil oppdatert", SnackTypes.SUCCESS);
-    } catch (error) {
+    } catch {
       addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
     }
   };

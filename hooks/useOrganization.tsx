@@ -59,13 +59,13 @@ export default function useOrganization(
               organization.id,
             );
             setOrganizationUsers(organizationUsers);
-          } catch (error) {
+          } catch {
             setOrganizationUsers(undefined);
           }
         } else {
           setOrganizationUsers(undefined);
         }
-      } catch (error) {
+      } catch {
         setError("Something went wrong when fetching organization data");
       }
       setLoading(false);
