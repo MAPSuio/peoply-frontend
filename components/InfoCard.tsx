@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/admin.module.scss";
 
 interface InfoCardProps {
@@ -9,10 +8,7 @@ interface InfoCardProps {
 }
 
 const InfoCard = ({ title, info, endpoint }: InfoCardProps) => {
-  const { data: registrations } = useSWR<number>(
-    endpoint,
-    fetchFromPeoplyApiJson,
-  );
+  const { data: registrations } = useSWR<number>(endpoint);
 
   return (
     <div className={styles.card}>

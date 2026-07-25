@@ -93,10 +93,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     data: followedArrangers,
     error: followedArrangersError,
     mutate: mutateFollowedArrangers,
-  } = useSWR<ArrangerFollower[]>(
-    user ? `/users/${user.id}/following` : false,
-    fetchFromPeoplyApiJson,
-  );
+  } = useSWR<ArrangerFollower[]>(user ? `/users/${user.id}/following` : false);
 
   const {
     data: followers,
@@ -106,13 +103,11 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
     user && isAdminOrOwner && orgData
       ? `/organizations/${orgData.id}/followers`
       : null,
-    fetchFromPeoplyApiJson,
   );
 
   const { data: reportStatus, mutate: mutateReportStatus } =
     useSWR<OrganizationReportStatus>(
       user && orgData ? `/organizations/${orgData.id}/report-status` : null,
-      fetchFromPeoplyApiJson,
     );
 
   useEffect(() => {

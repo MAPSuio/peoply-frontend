@@ -95,19 +95,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
 
   const { data: registrations, error: registrationsError } = useSWR<
     Registration[]
-  >(
-    () =>
-      event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
-    fetchFromPeoplyApiJson,
+  >(() =>
+    event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
   );
 
   const {
     data: updates,
     error: updatesError,
     mutate: mutateUpdates,
-  } = useSWR<EventUpdate[]>(
-    () => (event?.id ? `/events/${event.id}/updates` : false),
-    fetchFromPeoplyApiJson,
+  } = useSWR<EventUpdate[]>(() =>
+    event?.id ? `/events/${event.id}/updates` : false,
   );
 
   /* check if the user has this event as a favorite */

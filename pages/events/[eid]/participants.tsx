@@ -53,29 +53,23 @@ const Participants = () => {
   const [banUserId, setBanUserId] = useState<string | undefined>(undefined);
   const [unBanUserId, setUnBanUserId] = useState<string | undefined>(undefined);
 
-  const { data: event, error: eventError } = useSWR<Event>(
-    () => (eid ? `/events/${eid}` : false),
-    fetchFromPeoplyApiJson,
+  const { data: event, error: eventError } = useSWR<Event>(() =>
+    eid ? `/events/${eid}` : false,
   );
 
   const {
     data: registrations,
     error: registrationsError,
     mutate: mutateRegistrations,
-  } = useSWR<Registration[]>(
-    () =>
-      event?.id
-        ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
-        : false,
-    fetchFromPeoplyApiJson,
+  } = useSWR<Registration[]>(() =>
+    event?.id
+      ? `/events/${event.id}/registrations?includeUsers=true&take=1000`
+      : false,
   );
 
   const { data: invitations, error: invitationsError } = useSWR<
     EventInvitation[]
-  >(
-    () => (event?.id ? `/events/${event.id}/invitations` : false),
-    fetchFromPeoplyApiJson,
-  );
+  >(() => (event?.id ? `/events/${event.id}/invitations` : false));
 
   if (registrationsError || eventError || invitationsError) {
     addSnack("Kunne ikke laste inn data for arrangementet.", SnackTypes.ERROR);

@@ -66,26 +66,20 @@ export default function JoinButton({
     data: myRegistration,
     error,
     mutate: updateRegistration,
-  } = useSWR<Registration>(
-    () =>
-      user?.id && event.id
-        ? `/users/${user.id}/registrations/${event.id}`
-        : false,
-    fetchFromPeoplyApiJson,
+  } = useSWR<Registration>(() =>
+    user?.id && event.id
+      ? `/users/${user.id}/registrations/${event.id}`
+      : false,
   );
 
-  const { data: waitlistPosition } = useSWR<number>(
-    () =>
-      user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
-        ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
-        : false,
-    fetchFromPeoplyApiJson,
+  const { data: waitlistPosition } = useSWR<number>(() =>
+    user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
+      ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
+      : false,
   );
 
-  const { data: allergens } = useSWR<{ id: number; name: string }[]>(
-    "/allergens",
-    fetchFromPeoplyApiJson,
-  );
+  const { data: allergens } =
+    useSWR<{ id: number; name: string }[]>("/allergens");
 
   const [countdown, setCountdown] = useState<string>();
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);

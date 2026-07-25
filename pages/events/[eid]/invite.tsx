@@ -35,9 +35,8 @@ export default function InviteUsersToEvent() {
   const { addSnack } = useSnack();
   const router = useRouter();
   const { eid } = router.query;
-  const { data: event, error: eventError } = useSWR<Event>(
-    () => (eid ? `/events/${eid}` : false),
-    fetchFromPeoplyApiJson,
+  const { data: event, error: eventError } = useSWR<Event>(() =>
+    eid ? `/events/${eid}` : false,
   );
   const redirectToLogin = useRedirectToLogin();
   const [orgArrangerId, setOrgArrangerId] = useState<string | undefined>(

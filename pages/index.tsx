@@ -22,7 +22,6 @@ import "swiper/css/scrollbar";
 import "swiper/css/free-mode";
 
 // Services.
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 // Types.
 import { UrlObject } from "url";
@@ -56,7 +55,7 @@ const Home: NextPage = ({
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
     ArrangerFollower[]
-  >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
+  >(user ? `/users/${user.id}/following` : null);
 
   const followedEventsQuery = {
     afterDate: todayString,
@@ -73,7 +72,6 @@ const Home: NextPage = ({
 
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?afterDate=${todayString}&orderBy=startDate`,
-    fetchFromPeoplyApiJson,
   );
 
   const {
@@ -83,12 +81,11 @@ const Home: NextPage = ({
     followedArrangers && followedArrangers.length > 0
       ? `/events?afterDate=${todayString}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
       : null,
-    fetchFromPeoplyApiJson,
   );
 
   const { data: organizations, error: organizationsError } = useSWR<
     Organization[]
-  >(`/organizations?take=20`, fetchFromPeoplyApiJson);
+  >(`/organizations?take=20`);
 
   return (
     <>

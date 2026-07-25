@@ -20,7 +20,6 @@ import useUser from "../../hooks/useUser";
 import { formatDateRange, getWeekday } from "../../utils/functions";
 
 /* Services. */
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 /* Types. */
 import {
@@ -52,15 +51,12 @@ const MyEvents = () => {
 
   const { data: eventsArranging, error: myEventsError } = useSWR<Event[]>(
     `/users/${user?.id}/arranging`,
-    fetchFromPeoplyApiJson,
   );
   const { data: eventsFavorited, error: myFavoritesError } = useSWR<Favorite[]>(
     `/users/${user?.id}/favorites?includeEvent=true&includeArrangers=true`,
-    fetchFromPeoplyApiJson,
   );
   const { data: eventsGoing, error: myGoingError } = useSWR<Registration[]>(
     `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true&take=100`,
-    fetchFromPeoplyApiJson,
   );
 
   const changeActiveSection = (section: SectionTypes) => {

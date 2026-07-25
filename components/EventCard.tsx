@@ -18,7 +18,6 @@ import {
 } from "../utils/eventArrangers";
 
 // Services.
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 // Types.
 import { Event, EventDateFormat, RegStatus } from "../types/types";
@@ -47,7 +46,6 @@ const EventCard = ({ event }: EventCardProps) => {
     mutate: updateRegistrations,
   } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-    fetchFromPeoplyApiJson,
   );
 
   const getArrangerImageOrIcon = () => {

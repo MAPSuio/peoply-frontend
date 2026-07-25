@@ -9,7 +9,6 @@ import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
 import SearchIcon from "../../components/svgs/SearchIcon";
 import useBack from "../../hooks/useBack";
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import { Alignment, Category, Event, Organization } from "../../types/types";
 import { getEventArrangerDisplayItems } from "../../utils/eventArrangers";
 import { queryToString } from "../../utils/functions";
@@ -105,18 +104,9 @@ const Events: NextPage = () => {
     [],
   );
 
-  const { data: events, error } = useSWR<Event[]>(
-    queryUrl,
-    fetchFromPeoplyApiJson,
-  );
-  const { data: organizations } = useSWR<Organization[]>(
-    organizationsQueryUrl,
-    fetchFromPeoplyApiJson,
-  );
-  const { data: categories } = useSWR<Category[]>(
-    "/categories",
-    fetchFromPeoplyApiJson,
-  );
+  const { data: events, error } = useSWR<Event[]>(queryUrl);
+  const { data: organizations } = useSWR<Organization[]>(organizationsQueryUrl);
+  const { data: categories } = useSWR<Category[]>("/categories");
 
   const organizationOptions = useMemo(() => {
     const uniqueOrganizations = (organizations ?? []).reduce<

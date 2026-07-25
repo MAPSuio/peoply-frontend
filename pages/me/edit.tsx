@@ -28,10 +28,8 @@ const EditProfile: NextPage = () => {
   const [activeAllergens, setActiveAllergens] = useState<number[]>([]);
   const redirectToLogin = useRedirectToLogin();
 
-  const { data: allergens } = useSWR<{ id: number; name: string }[]>(
-    "/allergens",
-    fetchFromPeoplyApiJson,
-  );
+  const { data: allergens } =
+    useSWR<{ id: number; name: string }[]>("/allergens");
 
   const { addSnack } = useSnack();
   useEffect(() => {

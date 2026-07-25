@@ -542,14 +542,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
 
   const router = useRouter();
   /* Get all the possible event categories. */
-  const { data: allCategories } = useSWR("/categories", fetchFromPeoplyApiJson);
+  const { data: allCategories } = useSWR("/categories");
   const { data: organizations } = useSWR<Organization[]>(
     "/organizations?take=500&orderBy=name",
-    fetchFromPeoplyApiJson,
   );
   const { data: goingCount } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-    fetchFromPeoplyApiJson,
   );
 
   /* Get image source of either the supplied image or a placeholder. */

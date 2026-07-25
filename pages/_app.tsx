@@ -10,6 +10,7 @@ import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import SwrProvider from "../components/SwrProvider";
 import {
   BACKGROUND_PATTERN_EVENT,
   getBackgroundPatternEnabled,
@@ -70,58 +71,60 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <UserProvider>
         <SnackbarProvider>
-          <NotificationsProvider>
-            <ThemeProvider
-              attribute="class"
-              themes={["light", "dark", "night"]}
-            >
-              <Head>
-                <meta
-                  name="viewport"
-                  content="width=device-width, initial-scale=1"
-                />
-              </Head>
-              <AnnouncementBanner />
-              <div className={styles.wrapper}>
-                {backgroundPatternEnabled && (
-                  <div className={styles.background} aria-hidden="true">
-                    <svg
-                      className={styles.backgroundPattern}
-                      viewBox="0 0 100 140"
-                      preserveAspectRatio="xMidYMid slice"
-                    >
-                      {backgroundPatternRows.flatMap((row, rowIndex) =>
-                        row.split("").flatMap((character, characterIndex) => {
-                          if (character !== "o") {
-                            return [];
-                          }
+          <SwrProvider>
+            <NotificationsProvider>
+              <ThemeProvider
+                attribute="class"
+                themes={["light", "dark", "night"]}
+              >
+                <Head>
+                  <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                  />
+                </Head>
+                <AnnouncementBanner />
+                <div className={styles.wrapper}>
+                  {backgroundPatternEnabled && (
+                    <div className={styles.background} aria-hidden="true">
+                      <svg
+                        className={styles.backgroundPattern}
+                        viewBox="0 0 100 140"
+                        preserveAspectRatio="xMidYMid slice"
+                      >
+                        {backgroundPatternRows.flatMap((row, rowIndex) =>
+                          row.split("").flatMap((character, characterIndex) => {
+                            if (character !== "o") {
+                              return [];
+                            }
 
-                          return (
-                            <circle
-                              key={`${rowIndex}-${characterIndex}`}
-                              cx={
-                                BACKGROUND_PATTERN_START_X +
-                                characterIndex * BACKGROUND_PATTERN_STEP_X
-                              }
-                              cy={
-                                BACKGROUND_PATTERN_START_Y +
-                                rowIndex * BACKGROUND_PATTERN_STEP_Y
-                              }
-                              r="1.1"
-                              className={styles.circle}
-                            />
-                          );
-                        }),
-                      )}
-                    </svg>
+                            return (
+                              <circle
+                                key={`${rowIndex}-${characterIndex}`}
+                                cx={
+                                  BACKGROUND_PATTERN_START_X +
+                                  characterIndex * BACKGROUND_PATTERN_STEP_X
+                                }
+                                cy={
+                                  BACKGROUND_PATTERN_START_Y +
+                                  rowIndex * BACKGROUND_PATTERN_STEP_Y
+                                }
+                                r="1.1"
+                                className={styles.circle}
+                              />
+                            );
+                          }),
+                        )}
+                      </svg>
+                    </div>
+                  )}
+                  <div className={styles.container}>
+                    <Component {...pageProps} />
                   </div>
-                )}
-                <div className={styles.container}>
-                  <Component {...pageProps} />
                 </div>
-              </div>
-            </ThemeProvider>
-          </NotificationsProvider>
+              </ThemeProvider>
+            </NotificationsProvider>
+          </SwrProvider>
         </SnackbarProvider>
       </UserProvider>
       <Analytics />

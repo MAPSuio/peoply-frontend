@@ -20,7 +20,6 @@ import useRedirectToLogin from "../hooks/useRedirectToLogin";
 
 // Services.
 import { formatDateRange, formatTimeRange } from "../utils/functions";
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import {
   addFavorite,
   getUserFavorite,
@@ -61,7 +60,6 @@ const HighlightedEventCard = ({ event }: HighlightedEventCardProps) => {
     mutate: updateRegistrations,
   } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-    fetchFromPeoplyApiJson,
   );
 
   const arranger = (() => {

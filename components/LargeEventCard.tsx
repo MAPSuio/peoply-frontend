@@ -17,7 +17,6 @@ import useSnack from "../hooks/useSnack";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
 
 // Services.
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import {
   addFavorite,
   getUserFavorite,
@@ -75,7 +74,6 @@ const LargeEventCard = ({
 
   const { data: registrations, mutate: updateRegistrations } = useSWR<number>(
     `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`,
-    fetchFromPeoplyApiJson,
   );
 
   useEffect(() => {

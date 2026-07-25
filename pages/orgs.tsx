@@ -13,7 +13,6 @@ import OrganizationCard from "../components/OrganizationCard";
 import BackButton from "../components/BackButton";
 
 // Services.
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
 // Types.
 import { Alignment, Organization } from "../types/types";
@@ -40,9 +39,8 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
       : `/organizations?take=500`;
   }, [router.query]);
 
-  const { data: organizations, error: organizationsError } = useSWR<
-    Organization[]
-  >(orgQueryUrl, fetchFromPeoplyApiJson);
+  const { data: organizations, error: organizationsError } =
+    useSWR<Organization[]>(orgQueryUrl);
 
   const uniqueOrganizations = useMemo(() => {
     const allOrgs = organizations ?? [];

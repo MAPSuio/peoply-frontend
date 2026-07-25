@@ -56,9 +56,8 @@ const OrganizationSettings: NextPage = () => {
   );
 
   const { data: icsFeed, mutate: mutateIcsFeed } =
-    useSWR<OrganizationIcsFeed | null>(
-      () => (org?.id ? `/organizations/${org.id}/ics-feed` : false),
-      fetchFromPeoplyApiJson,
+    useSWR<OrganizationIcsFeed | null>(() =>
+      org?.id ? `/organizations/${org.id}/ics-feed` : false,
     );
 
   useEffect(() => {

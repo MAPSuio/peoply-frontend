@@ -7,7 +7,6 @@ import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
 
 // Services.
-import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 
 // Types.
 import { Alignment, ArrangerFollower } from "../../types/types";
@@ -34,7 +33,7 @@ const Following = ({ baseUrl }: FollowingProps) => {
 
   const { data: followedArrangers, error: followedArrangersError } = useSWR<
     ArrangerFollower[]
-  >(user ? `/users/${user.id}/following` : null, fetchFromPeoplyApiJson);
+  >(user ? `/users/${user.id}/following` : null);
 
   const renderFollowingList = () => {
     if (followedArrangers && followedArrangers.length > 0) {
