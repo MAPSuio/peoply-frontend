@@ -72,3 +72,26 @@ jobs:
           NEXT_PUBLIC_BASE_URL: https://example.com
           NEXT_PUBLIC_API_URL: https://example.com/api
           BLOB_DOMAIN: example.com
+
+  # Deploys prod only after every check above is green. The App Platform app is
+  # referenced by name, so the spec stays in DigitalOcean rather than in this
+  # repo; it holds production env vars that must not be committed here.
+  deploy:
+    name: Deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [typecheck, lint, test, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: deploy-prod-frontend
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: digitalocean/app_action/deploy@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          app_name: prod-peoply-frontend
+          print_build_logs: true
+          print_deploy_logs: true
