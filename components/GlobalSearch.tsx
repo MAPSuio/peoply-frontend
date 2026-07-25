@@ -20,15 +20,20 @@ export default function GlobalSearch({}) {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [queuedSearch, setQueuedSearch] =
-    useState<ReturnType<typeof setTimeout>>();
   const [selectedFilter, setSelectedFilter] = useState(FilterOption.ALL);
   const [events, setEvents] = useState<Event[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const { theme, setTheme } = useTheme();
   /* hook to fetch whenever search term changes */
   useEffect(() => {
-    const performSearch = async () => {
+    if (search.length < 3) {
+      return;
+    }
+
+    setLoading(true);
+    let cancelled = false;
+
+    const timer = setTimeout(async () => {
       const [events, organizations] = await Promise.all([
         fetchFromPeoplyApiJson(`/events?title=${encodeURIComponent(search)}`, {
           method: "GET",
@@ -40,22 +45,19 @@ export default function GlobalSearch({}) {
           },
         ),
       ]);
+      // A slower request for an earlier term must not overwrite the results
+      // of a later one.
+      if (cancelled) {
+        return;
+      }
       setEvents(events);
       setOrganizations(organizations);
       setLoading(false);
-    };
-
-    let req: ReturnType<typeof setTimeout>;
-    if (search.length >= 3) {
-      setLoading(true);
-      req = setTimeout(() => performSearch(), 400);
-      setQueuedSearch(req);
-    }
+    }, 400);
 
     return () => {
-      if (req) {
-        clearTimeout(req);
-      }
+      cancelled = true;
+      clearTimeout(timer);
     };
   }, [search]);
 
@@ -67,9 +69,6 @@ export default function GlobalSearch({}) {
     setSearch(query);
     setEvents([]); // clear users when search term is changed
     setOrganizations([]); // clear users when search term is changed
-    if (queuedSearch) {
-      clearTimeout(queuedSearch);
-    }
 
     if (query.length < 3) {
       setLoading(false);

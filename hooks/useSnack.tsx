@@ -7,7 +7,6 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { clearTimeout, setTimeout } from "timers";
 import Snackbar from "../components/Snackbar";
 import { SnackContextType, Snack, SnackTypes } from "../types/types";
 import { generateRandomKey } from "../utils/functions";
@@ -23,15 +22,21 @@ export function SnackbarProvider({
 }): JSX.Element {
   const [snacks, setSnacks] = useState<Snack[]>([]);
 
+  /* Depends on `snacks` rather than running after every render: this provider
+     wraps the whole app, so an unrelated re-render used to restart the timer
+     and a snackbar could stay on screen indefinitely. */
   useEffect(() => {
-    if (snacks.length > 0) {
-      const timer = setTimeout(
-        () => setSnacks((snacks) => snacks.slice(0, snacks.length - 1)),
-        SNACK_DURATION,
-      );
-      return () => clearTimeout(timer);
+    if (snacks.length === 0) {
+      return;
     }
-  });
+
+    const timer = setTimeout(
+      () => setSnacks((snacks) => snacks.slice(0, snacks.length - 1)),
+      SNACK_DURATION,
+    );
+
+    return () => clearTimeout(timer);
+  }, [snacks]);
 
   const addSnack = useCallback(
     (label: string, type?: SnackTypes) =>

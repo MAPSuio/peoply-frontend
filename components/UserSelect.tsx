@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/UserSearch.module.scss";
 import { User } from "../types/types";
@@ -25,36 +25,48 @@ export default function UserSelect({
 }: UserSearchProps) {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [focused, setFocused] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [queuedSearch, setQueuedSearch] =
-    useState<ReturnType<typeof setTimeout>>();
 
   /* hook to fetch whenever search term changes */
   useEffect(() => {
-    const performSearch = async () => {
+    if (search.length < 1) {
+      return;
+    }
+
+    setLoading(true);
+    let cancelled = false;
+
+    const timer = setTimeout(async () => {
       const result: User[] = await fetchFromPeoplyApiJson(
-        `/users?name=${search}`,
+        `/users?name=${encodeURIComponent(search)}`,
         {
           method: "GET",
         },
       );
+      // A slower request for an earlier term must not overwrite the results
+      // of a later one.
+      if (cancelled) {
+        return;
+      }
       setLoading(false);
-      /* filter out excluded users */
-      setUsers(
-        result.filter(({ id }) => !excludeUsers?.map((u) => u.id).includes(id)),
-      );
+      setSearchResults(result);
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
     };
-    if (search.length >= 1) {
-      setLoading(true);
-      const req: ReturnType<typeof setTimeout> = setTimeout(
-        () => performSearch(),
-        300,
-      );
-      setQueuedSearch(req);
-    }
-  }, [search, excludeUsers]);
+  }, [search]);
+
+  /* Filtering here rather than in the effect keeps `excludeUsers` out of its
+     dependencies - callers build it inline, so a new array identity on every
+     parent render would restart the debounce. */
+  const users = useMemo(() => {
+    const excludedIds = new Set(excludeUsers?.map(({ id }) => id));
+    return searchResults.filter(({ id }) => !excludedIds.has(id));
+  }, [excludeUsers, searchResults]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -62,10 +74,7 @@ export default function UserSelect({
       return;
     }
     setSearch(query);
-    setUsers([]); // clear users when search term is changed
-    if (queuedSearch) {
-      clearTimeout(queuedSearch);
-    }
+    setSearchResults([]); // clear users when search term is changed
 
     if (query.length < 1) {
       setLoading(false);
