@@ -176,10 +176,9 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
   const { addSnack } = useSnack();
 
   /* Get all the possible event categories. */
-  const { data: categories } = useSWR("/categories", fetchFromPeoplyApiJson);
+  const { data: categories } = useSWR("/categories");
   const { data: organizations } = useSWR<Organization[]>(
     "/organizations?take=500&orderBy=name",
-    fetchFromPeoplyApiJson,
   );
 
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {

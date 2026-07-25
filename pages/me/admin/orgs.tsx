@@ -12,10 +12,7 @@ import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { MAPS_ORG_ID } from "../../../constants/organizations";
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../../../services/fetchers";
+import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import { Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/OrganizationApprovalAdmin.module.scss";
 
@@ -40,7 +37,6 @@ const OrganizationApprovalAdmin: NextPage = () => {
     mutate,
   } = useSWR<Organization[]>(
     user && isMapsMember ? "/organizations/admin/all?take=500" : null,
-    fetchFromPeoplyApiJson,
   );
 
   const updateApproval = async (organizationId: string, approved: boolean) => {

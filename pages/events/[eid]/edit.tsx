@@ -3,7 +3,6 @@ import useSWR from "swr";
 import { useEffect } from "react";
 
 // Services
-import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Assets
 import EditSummaryPage from "../../../components/EditSummaryPage";
@@ -22,10 +21,7 @@ const Edit = () => {
   const goBack = useBack();
   const { addSnack } = useSnack();
   const { eid } = router.query;
-  const { data } = useSWR(
-    () => (eid ? `/events/${eid}` : false),
-    fetchFromPeoplyApiJson,
-  );
+  const { data } = useSWR(() => (eid ? `/events/${eid}` : false));
 
   useEffect(() => {
     if (data?.readOnly) {

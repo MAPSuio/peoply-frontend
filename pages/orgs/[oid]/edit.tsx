@@ -33,10 +33,7 @@ const EditOrgProfile: NextPage = () => {
     data: org,
     error: orgError,
     mutate,
-  } = useSWR<Organization>(
-    () => (oid ? `/organizations/${oid}` : false),
-    fetchFromPeoplyApiJson,
-  );
+  } = useSWR<Organization>(() => (oid ? `/organizations/${oid}` : false));
 
   const { addSnack } = useSnack();
   useEffect(() => {

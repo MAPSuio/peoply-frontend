@@ -20,10 +20,7 @@ import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { useTheme } from "next-themes";
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../../../services/fetchers";
+import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/UpdateEvent.module.scss";
 import {
   SnackTypes,
@@ -39,9 +36,8 @@ export default function UpdateEvent() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { eid } = router.query;
-  const { data: event, error: eventError } = useSWR<Event>(
-    () => (eid ? `/events/${eid}` : false),
-    fetchFromPeoplyApiJson,
+  const { data: event, error: eventError } = useSWR<Event>(() =>
+    eid ? `/events/${eid}` : false,
   );
   const [subject, setSubject] = useState("");
   const [subjectValid, setSubjectValid] = useState(true);

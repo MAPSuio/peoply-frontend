@@ -7,7 +7,6 @@ import HeadComponent from "../components/HeadComponent";
 import Layout from "../components/Layout";
 import Navbar from "../components/Navbar";
 import Avatar from "../components/Avatar";
-import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, Event, Organization } from "../types/types";
 import { queryToString } from "../utils/functions";
@@ -192,7 +191,6 @@ export default function CalendarPage() {
 
   const { data: events, error } = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
-    fetchFromPeoplyApiJson,
   );
 
   const normalizedEvents = useMemo<NormalizedEvent[]>(
