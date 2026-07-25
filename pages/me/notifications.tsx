@@ -265,8 +265,7 @@ export default function Notifications() {
                     </>
                   );
                 }
-              })()}{" "}
-              inviterer deg til å bli med på{" "}
+              })()} inviterer deg til å bli med på{" "}
               <Link href={`/events/${event?.urlId}`}>{event?.title}</Link>
             </p>
             <p className={styles.hoursSince}>

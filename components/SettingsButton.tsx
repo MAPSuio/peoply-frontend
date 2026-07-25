@@ -25,8 +25,8 @@ const SettingsButton = ({
           type && type === SettingTypes.DANGER
             ? styles.danger
             : type === SettingTypes.WARNING
-            ? styles.warning
-            : ""
+              ? styles.warning
+              : ""
         }`}
       >
         {text}

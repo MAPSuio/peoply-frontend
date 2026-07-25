@@ -125,8 +125,8 @@ export default function JoinButton({
       if (user.foodPreference) {
         setFoodPreference(user.foodPreference);
       }
-      if (user.userAllergens!.length > 0) {
-        setActiveAllergens(user?.userAllergens!.map((a) => a.allergenId));
+      if (user.userAllergens && user.userAllergens.length > 0) {
+        setActiveAllergens(user.userAllergens.map((a) => a.allergenId));
         fetchFromPeoplyApiJson(
           `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
           {
@@ -348,7 +348,9 @@ export default function JoinButton({
           event.id,
           status,
         )) as Registration;
-      } catch (e) {}
+      } catch (e) {
+        /* Falls through to the error snack below; `success` stays undefined. */
+      }
       if (success) {
         updateRegistration();
         runUpdate();
@@ -385,7 +387,9 @@ export default function JoinButton({
             RegStatus.GOING,
             formQuestionAnswer,
           )) as Registration;
-        } catch (e) {}
+        } catch (e) {
+          /* Falls through to the error snack below. */
+        }
         if (success) {
           updateRegistration();
           runUpdate();

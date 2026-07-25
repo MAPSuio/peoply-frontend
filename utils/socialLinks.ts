@@ -34,7 +34,7 @@ export const organizationSocialPlatforms = [
 ] as const;
 
 export type OrganizationSocialLinkKey =
-  typeof organizationSocialPlatforms[number]["key"];
+  (typeof organizationSocialPlatforms)[number]["key"];
 
 export type OrganizationSocialLinkValues = Record<
   OrganizationSocialLinkKey,
@@ -107,7 +107,7 @@ export const getOrganizationSocialLinks = (organization: Organization) =>
     .filter(
       (
         platform,
-      ): platform is typeof organizationSocialPlatforms[number] & {
+      ): platform is (typeof organizationSocialPlatforms)[number] & {
         url: string;
       } => Boolean(platform.url),
     );

@@ -288,7 +288,7 @@ const Participants = () => {
             if (!map.has(user.foodPreference)) {
               map.set(user.foodPreference, new Map<string, number>());
             }
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: users are filtered to those with allergens.
             const mapKey = user
               .userAllergens!.sort((a, b) => a.allergenId - b.allergenId)
               .map((a) => a.allergen.name)
@@ -297,7 +297,7 @@ const Participants = () => {
             if (map.get(user.foodPreference)?.has(mapKey)) {
               map.get(user.foodPreference)?.set(
                 mapKey,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: guarded by the has() check above.
                 map.get(user.foodPreference)!.get(mapKey)! + 1,
               );
             } else {

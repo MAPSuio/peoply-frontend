@@ -22,8 +22,9 @@ const SummaryCard = ({
   inputId,
   Icon,
   children,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onClick = () => {},
+  onClick = () => {
+    /* Cards are not always clickable. */
+  },
   inputComponent,
   editButtonVisible = false,
   editButtonDisabled = false,
