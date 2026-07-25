@@ -80,7 +80,7 @@ import {
   OrganizationRole,
   ButtonType,
 } from "../../types/types";
-import { Models } from "azure-maps-rest";
+import { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";
@@ -91,7 +91,7 @@ export interface EventObjectProps {
   eventCoOrganizerOrganizationIds: string[];
   eventDescription: string;
   eventLocationName: string;
-  eventLocation?: Models.SearchFuzzyResult;
+  eventLocation?: AzureMapsSearchFuzzyResult;
   eventRegStartDate: string;
   eventRegStartTime: string;
   eventRegEndDate: string;
@@ -256,7 +256,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
     });
   };
 
-  const updateEventLocation = (loc?: Models.SearchFuzzyResult) => {
+  const updateEventLocation = (loc?: AzureMapsSearchFuzzyResult) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventLocation: loc,

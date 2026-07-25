@@ -1,20 +1,23 @@
-import { Models } from "azure-maps-rest";
+import { AzureMapsSearchFuzzyOptions } from "../types/azureMaps";
 import { fetchFromPeoplyApiJson } from "./fetchers";
 
 /* takes a search string and optional options to bias search */
 export async function searchLocationsFuzzy(
   query: string,
-  options?: Models.SearchGetSearchFuzzyOptionalParams,
+  options?: AzureMapsSearchFuzzyOptions,
 ) {
-  // make an object with only the fields that are not undefined from options
-  const opts = options
-    ? Object.keys(options).reduce((acc: any, key) => {
-        if (options[key] !== undefined) {
-          acc[key] = options[key];
-        }
-        return acc;
-      }, {})
-    : {};
+  // keep only the options that are actually set; URLSearchParams would
+  // otherwise serialise `undefined` into the query string
+  const opts: Record<string, string> = {};
+  if (options) {
+    for (const [key, value] of Object.entries(options)) {
+      if (value !== undefined) {
+        // arrays (e.g. countrySet) join with commas, which is the format the
+        // Azure Maps API expects
+        opts[key] = String(value);
+      }
+    }
+  }
 
   const result = fetchFromPeoplyApiJson(
     `/maps/fuzzySearch?${new URLSearchParams({
