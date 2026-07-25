@@ -13,6 +13,15 @@
   }
 }
 
+.backdrop {
+  background: none;
+  border: none;
+  cursor: default;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+}
+
 .modal {
   background: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;

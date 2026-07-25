@@ -52,19 +52,31 @@ const EditProfileImageMenu = ({
   return (
     <div className={styles.container}>
       <span className={styles.divider} />
+      {/* Visually hidden and opened by the button below, so it is taken out of
+          the tab order rather than presented as a second, unlabelled control. */}
       <input
         className={styles.imageInput}
         type="file"
         accept="image/*"
         ref={imageInput}
         onChange={handleImageUpload}
+        aria-label="Velg profilbilde"
+        tabIndex={-1}
       />
-      <button className={styles.uploadImage} onClick={handleUploadClick}>
+      <button
+        type="button"
+        className={styles.uploadImage}
+        onClick={handleUploadClick}
+      >
         <UploadIcon />
         Last opp bilde
       </button>
       <span className={styles.divider} />
-      <button className={styles.removeImage} onClick={handleImageDelete}>
+      <button
+        type="button"
+        className={styles.removeImage}
+        onClick={handleImageDelete}
+      >
         <TrashIcon />
         Fjern gjeldende bilde
       </button>

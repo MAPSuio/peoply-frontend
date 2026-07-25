@@ -1188,9 +1188,13 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
                 noExtraInfo
                 card
               />
-              <a className={styles.deleteImage} onClick={deleteImage}>
+              <button
+                type="button"
+                className={styles.deleteImage}
+                onClick={deleteImage}
+              >
                 Slett bilde
-              </a>
+              </button>
             </>
           }
         >

@@ -17,6 +17,18 @@
   z-index: $z-index-modal;
 }
 
+.backdrop {
+  background: none;
+  border: none;
+  bottom: 0;
+  cursor: default;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .container {
   align-items: center;
   animation-duration: $animation-duration;

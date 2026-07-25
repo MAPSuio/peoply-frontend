@@ -186,9 +186,10 @@ export default function GlobalSearch({}) {
           <input
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            type="text"
+            type="search"
             value={search}
             onChange={handleChange}
+            aria-label="Søk etter arrangementer og foreninger"
           />
         </div>
       </div>

@@ -65,10 +65,17 @@ export default function AddToCalendarButton({
         className={`${styles.addToCalendarButton} ${className ?? ""}`}
       />
       {isOpen && (
-        <div className={styles.overlay} onClick={closeMenu} role="presentation">
+        <div className={styles.overlay}>
+          {/* See Modal.tsx: click-outside as a real button, not a div handler. */}
+          <button
+            type="button"
+            className={styles.backdrop}
+            onClick={closeMenu}
+            tabIndex={-1}
+            aria-hidden="true"
+          />
           <div
             className={styles.modal}
-            onClick={(ev) => ev.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label="Legg arrangement i kalender"
