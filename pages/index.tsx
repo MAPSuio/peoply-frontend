@@ -94,7 +94,7 @@ const Home: NextPage = ({
         description="Frontsiden til Peoply"
         url={`${baseUrl}${router.asPath}`}
       />
-      <Header />
+      <Header showSourceLink />
       <div className={styles.container}>
         {eventsFromFollowedOrganizations &&
         eventsFromFollowedOrganizations.length > 0 ? (
