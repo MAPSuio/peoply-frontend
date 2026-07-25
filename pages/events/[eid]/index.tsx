@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 // Components.
 import UserCircle from "../../../components/UserCircle";
+import ArrangerAvatar from "../../../components/ArrangerAvatar";
 import DateCircle from "../../../components/DateCircle";
 import PlaceCircle from "../../../components/PlaceCircle";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
@@ -27,17 +28,10 @@ import LinkIcon from "../../../components/svgs/LinkIcon";
 // Hooks.
 import useUser from "../../../hooks/useUser";
 import useBack from "../../../hooks/useBack";
-import useSnack from "../../../hooks/useSnack";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import useEventFavorite from "../../../hooks/useEventFavorite";
 import useSWR from "swr";
 
 // Services.
-import {
-  addFavorite,
-  getUserFavorite,
-  removeFavorite,
-} from "../../../services/events";
-
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
@@ -57,7 +51,6 @@ import {
   OrganizationRole,
   Registration,
   RegStatus,
-  SnackTypes,
   Visibility,
 } from "../../../types/types";
 
@@ -77,13 +70,14 @@ interface EventProps {
 }
 
 const Event = ({ event, baseUrl }: EventProps) => {
-  const { user, loading: loadingUser, orgs } = useUser();
+  const { user, orgs } = useUser();
   const goBack = useBack();
-  const [favorited, setFavorited] = useState(false);
-  const [favoriteFetched, setFavoriteFetched] = useState(false); // used to disable button until we get a response from the database
-  const { addSnack } = useSnack();
-  const redirectToLogin = useRedirectToLogin();
   const [mapsUrl, setMapsUrl] = useState<string>();
+  const {
+    favorited,
+    loading: favoriteLoading,
+    toggleFavorite,
+  } = useEventFavorite(event.id);
 
   const { data: eventData, mutate: updateEvent } = useSWR<Event>(
     `/events/${event.urlId}`,
@@ -107,7 +101,6 @@ const Event = ({ event, baseUrl }: EventProps) => {
     event?.id ? `/events/${event.id}/updates` : false,
   );
 
-  /* check if the user has this event as a favorite */
   useEffect(() => {
     if (navigator && eventData?.freeformAddress) {
       const url = `https://maps.google.com?q=`;
@@ -121,79 +114,17 @@ const Event = ({ event, baseUrl }: EventProps) => {
       }
       setMapsUrl(url + query);
     }
-
-    const getFavoriteStatus = async () => {
-      if (user && eventData) {
-        const favorite = await getUserFavorite(user.id, eventData.id);
-        setFavorited(favorite !== null);
-        setFavoriteFetched(true);
-      } else if (!loadingUser && !user && eventData) {
-        setFavoriteFetched(true);
-      }
-    };
-
-    getFavoriteStatus();
-  }, [eventData, user, loadingUser]);
+  }, [eventData]);
 
   if (!eventData) {
     return <div>Loading...</div>;
   }
-
-  const addFavoriteFunc = async () => {
-    if (user) {
-      let success;
-      if (!favorited) {
-        success = await addFavorite(user.id, eventData.id);
-        if (!success)
-          addSnack("Klarte ikke å legge til favoritt", SnackTypes.ERROR);
-      } else {
-        success = await removeFavorite(user.id, eventData.id);
-        if (!success)
-          addSnack("Klarte ikke å fjerne favoritt", SnackTypes.ERROR);
-      }
-
-      if (await success) setFavorited(!favorited);
-    } else {
-      /* User is not logged in. */
-      redirectToLogin();
-    }
-  };
 
   const editEventFunc = () => {
     router.push(`/events/${eventData.urlId}/edit`);
   };
 
   const eventArrangerDisplayItems = getEventArrangerDisplayItems(eventData);
-
-  const getArrangerImageOrIcon = () => {
-    if (eventData.eventArrangers && eventData.eventArrangers.length > 0) {
-      const firstArranger = eventData.eventArrangers[0].arranger;
-
-      const imageSrc = firstArranger?.user
-        ? firstArranger.user.image
-        : firstArranger?.organization?.image;
-
-      if (imageSrc) {
-        return (
-          <div className={styles.arrangerImage}>
-            <Image
-              src={imageSrc}
-              alt="Arrangøren av arrangementet"
-              fill
-              sizes="5vw"
-              style={{ objectFit: "cover" }}
-            />
-          </div>
-        );
-      } else {
-        return (
-          <div className={styles.iconContainer}>
-            <UserCircle className={styles.icon} />
-          </div>
-        );
-      }
-    }
-  };
 
   const isArranger = (() => {
     /* arrangerIds for orgs where the user is ownerOrAdmin */
@@ -243,9 +174,9 @@ const Event = ({ event, baseUrl }: EventProps) => {
           <BackButtonGlass className={styles.backIcon} onClick={goBack} />
           <HeartIconGlass
             className={styles.favoriteIcon}
-            onClick={addFavoriteFunc}
+            onClick={toggleFavorite}
             favorited={favorited}
-            loading={!favoriteFetched}
+            loading={favoriteLoading}
           />
           {isArranger && !eventData.readOnly && (
             <EditIconGlass
@@ -291,7 +222,16 @@ const Event = ({ event, baseUrl }: EventProps) => {
               <div
                 className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
               >
-                {getArrangerImageOrIcon()}
+                <ArrangerAvatar
+                  event={eventData}
+                  classNames={{
+                    image: styles.arrangerImage,
+                    iconContainer: styles.iconContainer,
+                    icon: styles.icon,
+                  }}
+                  fallbackIcon={<UserCircle className={styles.icon} />}
+                  hideWhenNoArranger
+                />
                 <p className={`${styles.infoText} ${styles.emphasis}`}>
                   {eventArrangerDisplayItems.map((arranger, index) => (
                     <span key={arranger.id} className={styles.arrangerLinkRow}>
