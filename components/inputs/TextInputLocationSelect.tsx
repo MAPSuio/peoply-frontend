@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 
 import styles from "../../styles/TextInputLocationSelect.module.scss";
-import { Models, SearchFuzzyOptions } from "azure-maps-rest";
+import {
+  AzureMapsSearchFuzzyOptions,
+  AzureMapsSearchFuzzyResponse,
+  AzureMapsSearchFuzzyResult,
+} from "../../types/azureMaps";
 import { searchLocationsFuzzy } from "../../services/maps";
 import ExitIcon from "../svgs/ExitIcon";
 import LoadingWheel from "../LoadingWheel";
@@ -12,9 +16,9 @@ interface TextInputLocationSelectProps {
   label?: string;
   placeholder: string;
   required?: boolean;
-  onLocationSelect: (location?: Models.SearchFuzzyResult) => void;
-  selectedLocation?: Models.SearchFuzzyResult;
-  options?: SearchFuzzyOptions;
+  onLocationSelect: (location?: AzureMapsSearchFuzzyResult) => void;
+  selectedLocation?: AzureMapsSearchFuzzyResult;
+  options?: AzureMapsSearchFuzzyOptions;
   card?: boolean;
 }
 
@@ -33,7 +37,7 @@ const TextInputLocationSelect = ({
   const [search, setSearch] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(false);
-  const [locations, setLocations] = useState<Models.SearchFuzzyResult[]>([]);
+  const [locations, setLocations] = useState<AzureMapsSearchFuzzyResult[]>([]);
   const [queuedSearch, setQueuedSearch] =
     useState<ReturnType<typeof setTimeout>>();
 
@@ -64,7 +68,7 @@ const TextInputLocationSelect = ({
     }
     const performSearch = async () => {
       if (search) {
-        const result: Models.SearchFuzzyResponse = await searchLocationsFuzzy(
+        const result: AzureMapsSearchFuzzyResponse = await searchLocationsFuzzy(
           search,
           options,
         );

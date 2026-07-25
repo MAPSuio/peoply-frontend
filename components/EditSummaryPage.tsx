@@ -65,7 +65,7 @@ import {
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
-import { Models } from "azure-maps-rest";
+import { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
 import TextInputLocationSelect from "./inputs/TextInputLocationSelect";
 import ModalButton from "./ModalButton";
 
@@ -172,7 +172,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   });
 
   const [location, setLocation] = useState<
-    Models.SearchFuzzyResult | undefined
+    AzureMapsSearchFuzzyResult | undefined
   >({
     poi: { name: event.poiName },
     address: {
