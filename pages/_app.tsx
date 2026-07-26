@@ -11,6 +11,7 @@ import { ThemeProvider } from "next-themes";
 import { SerwistProvider } from "@serwist/next/react";
 import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import ErrorBoundary from "../components/ErrorBoundary";
 import SwrProvider from "../components/SwrProvider";
 import {
   BACKGROUND_PATTERN_EVENT,
@@ -129,7 +130,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </div>
                   )}
                   <div className={styles.container}>
-                    <Component {...pageProps} />
+                    <ErrorBoundary>
+                      <Component {...pageProps} />
+                    </ErrorBoundary>
                   </div>
                 </div>
               </ThemeProvider>

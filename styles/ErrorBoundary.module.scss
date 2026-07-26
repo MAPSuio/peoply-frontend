@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: $spacer-large;
+  max-width: 480px;
+  text-align: center;
+  width: 90%;
+
+  h1 {
+    margin-bottom: $spacer-very-small;
+  }
+
+  p {
+    margin-bottom: $spacer-medium-plus;
+  }
+}
+
+.reloadButton {
+  width: 90%;
+}
