@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from "react";
+import { ReactElement, useEffect, useId, useRef } from "react";
 
 /* Styles */
 import styles from "../styles/Modal.module.scss";
@@ -8,7 +8,7 @@ interface ModalProps {
   label: string;
   description?: string;
   closeButtonOnClick?: () => void;
-  children?: JSX.Element;
+  children?: ReactElement;
 }
 
 const FOCUSABLE_SELECTOR = [

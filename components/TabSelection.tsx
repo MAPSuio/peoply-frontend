@@ -1,8 +1,8 @@
-import React from "react";
+import { ReactElement } from "react";
 import styles from "../styles/TabSelection.module.scss";
 
 interface TabSelectionProps {
-  options: { label: string; value: string; icon?: JSX.Element }[];
+  options: { label: string; value: string; icon?: ReactElement }[];
   selected: string;
   setSelected: (value: any) => void;
 }

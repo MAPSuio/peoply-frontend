@@ -1,5 +1,6 @@
 import {
   createContext,
+  ReactElement,
   ReactNode,
   useContext,
   useEffect,
@@ -19,7 +20,7 @@ export function NotificationsProvider({
   children,
 }: {
   children: ReactNode;
-}): JSX.Element {
+}): ReactElement {
   const { user } = useUser();
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const {

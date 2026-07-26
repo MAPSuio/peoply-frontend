@@ -1,5 +1,6 @@
 import {
   createContext,
+  ReactElement,
   ReactNode,
   useContext,
   useEffect,
@@ -19,7 +20,7 @@ export function UserProvider({
   children,
 }: {
   children: ReactNode;
-}): JSX.Element {
+}): ReactElement {
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);

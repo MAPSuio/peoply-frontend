@@ -16,7 +16,11 @@ const EditProfileImageMenu = ({
   endpoint,
   formDataKey,
 }: EditProfileImageMenuProps) => {
-  const imageInput: React.RefObject<HTMLInputElement> = useRef(null);
+  // React 19 types `useRef(null)` as RefObject<null>, so the old explicit
+  // RefObject<HTMLInputElement> annotation no longer matches. Passing the
+  // element type as the generic lets it infer RefObject<HTMLInputElement |
+  // null>, which is what a ref that starts unattached actually is.
+  const imageInput = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
     if (imageInput.current) {
