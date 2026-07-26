@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -346,6 +347,9 @@ const Events: NextPage = () => {
         <div className={styles.headerContainer}>
           <h1>Arrangementer</h1>
           <p>Se kommende arrangementer opptil ett år frem i tid.</p>
+          <Link href="/kalender" className={styles.calendarLink}>
+            Gå til kalendervisning
+          </Link>
         </div>
 
         <div className={styles.filterCard}>

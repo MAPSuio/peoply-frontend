@@ -23,6 +23,10 @@
     "postcss": "$postcss"
   },
   "dependencies": {
+    "@fullcalendar/core": "6.1.21",
+    "@fullcalendar/daygrid": "6.1.21",
+    "@fullcalendar/list": "6.1.21",
+    "@fullcalendar/react": "6.1.21",
     "@serwist/next": "^9.5.12",
     "@vercel/analytics": "2.0.1",
     "next": "^16.2.12",
