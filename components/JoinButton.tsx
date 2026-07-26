@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useSWR, { KeyedMutator } from "swr";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
+import useRegistrationCountdown from "../hooks/useRegistrationCountdown";
 import useSnack from "../hooks/useSnack";
 import useUser from "../hooks/useUser";
 import { registerUser, updateRegistrationUser } from "../services/events";
@@ -21,13 +22,11 @@ import {
   UserSeenUpdateType,
 } from "../types/types";
 import Button from "./Button";
-import Dropdown from "./Dropdown";
 import SmallCheckIcon from "./svgs/SmallCheckIcon";
+import FoodPreferenceModal from "./FoodPreferenceModal";
 import FormQuestionModal from "./FormQuestionModal";
-import Modal from "./Modal";
-import ModalButton from "./ModalButton";
+import UnregisterConfirmationModal from "./UnregisterConfirmationModal";
 import styles from "../styles/JoinButton.module.scss";
-import CategoryInput from "./inputs/CategoryInput";
 
 interface JoinButtonProps {
   event: Event;
@@ -85,44 +84,15 @@ export default function JoinButton({
   const { data: allergens } =
     useSWR<{ id: number; name: string }[]>("/allergens");
 
-  const [countdown, setCountdown] = useState<string>();
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
   const [foodPreference, setFoodPreference] = useState<FoodPreference>();
   const [formQuestionModalOpen, setFormQuestionModalOpen] = useState(false);
   const [formQuestionAnswer, setFormQuestionAnswer] = useState("");
   const [unregisterModalOpen, setUnregisterModalOpen] = useState(false);
-  const [isCountdown, setIsCountdown] = useState<boolean>();
   const [activeAllergens, setActiveAllergens] = useState<number[]>([]);
   const { addSnack } = useSnack();
   const redirectToLogin = useRedirectToLogin();
-
-  useEffect(() => {
-    const int = setInterval(() => {
-      const now = new Date();
-      const regStart = event.regStart && new Date(event.regStart);
-
-      if (regStart && regStart > now) {
-        setIsCountdown(true);
-        const diff = regStart.getTime() - now.getTime();
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / 1000 / 60) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-        setCountdown(
-          `${days ? days + "d " : ""} ${hours ? hours + "t " : ""} ${
-            minutes ? minutes + "m " : ""
-          } ${days === 0 ? seconds + "s" : ""}`,
-        );
-      } else {
-        setIsCountdown(false);
-        setCountdown(undefined);
-
-        // clear the interval when the countdown is over
-        clearInterval(int);
-      }
-    }, 1000);
-    return () => clearInterval(int);
-  }, [event.regStart]);
+  const { countdown, isCountdown } = useRegistrationCountdown(event.regStart);
 
   useEffect(() => {
     if (user) {
@@ -531,83 +501,47 @@ export default function JoinButton({
   return (
     <>
       {foodPreferenceModalOpen && (
-        <Modal
-          label={`Arrangementet har matservering`}
-          description="For å melde deg på arrangementet må du fylle ut matpreferanser på profilen din. Dette kan endres på profilen din senere."
-          closeButtonOnClick={() => setFoodPreferenceModalOpen(false)}
-        >
-          <div className={styles.modal}>
-            <Dropdown
-              className={styles.foodPreferenceDropdown}
-              options={[
-                {
-                  value: undefined,
-                  label: "Velg matpreferanse",
-                  isDefault: foodPreference !== undefined,
+        <FoodPreferenceModal
+          foodPreference={foodPreference}
+          onFoodPreferenceChange={changeFoodPreference}
+          allergens={allergens}
+          showAllergenInput={
+            !hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS)
+          }
+          activeAllergens={activeAllergens}
+          onToggleAllergen={(id) =>
+            setActiveAllergens((prev) => {
+              if (activeAllergens.includes(id)) {
+                return prev.filter((allergen) => allergen !== id);
+              }
+              return [...prev, id];
+            })
+          }
+          saveDisabled={user?.foodPreference === null}
+          onSave={async () => {
+            if (!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS)) {
+              await fetchFromPeoplyApi("/users/me", {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json; charset=utf-8",
                 },
+                body: JSON.stringify({
+                  allergens: activeAllergens,
+                }),
+              });
+              await fetchFromPeoplyApiJson(
+                `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
                 {
-                  value: FoodPreference.NO_PREFERENCE,
-                  label: "Ingen preferanse",
+                  method: "POST",
                 },
-                { value: FoodPreference.VEGETARIAN, label: "Vegetar" },
-                { value: FoodPreference.VEGAN, label: "Veganer" },
-                { value: FoodPreference.PESCETARIAN, label: "Pescetar" },
-              ]}
-              setValue={changeFoodPreference}
-              value={foodPreference}
-              label="Matpreferanse"
-              inputId="food-preference"
-            />
-            {!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS) &&
-              allergens && (
-                <CategoryInput
-                  title="Allergen(er)"
-                  activeCategories={activeAllergens}
-                  onClick={(id: number) =>
-                    setActiveAllergens((prev) => {
-                      if (activeAllergens.includes(id)) {
-                        return prev.filter((allergen) => allergen !== id);
-                      }
-                      return [...prev, id];
-                    })
-                  }
-                  categories={allergens}
-                  errorMessage=""
-                />
-              )}
-            <ModalButton
-              text="Lagre"
-              onClick={async () => {
-                if (!hasSeenUpdate(UserSeenUpdateType.HAS_SET_ALLERGENS)) {
-                  await fetchFromPeoplyApi("/users/me", {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json; charset=utf-8",
-                    },
-                    body: JSON.stringify({
-                      allergens: activeAllergens,
-                    }),
-                  });
-                  await fetchFromPeoplyApiJson(
-                    `/users/me/seenUpdate/${UserSeenUpdateType.HAS_SET_ALLERGENS}`,
-                    {
-                      method: "POST",
-                    },
-                  );
-                }
-                reloadUser();
-                await registerForEvent();
-                setFoodPreferenceModalOpen(false);
-              }}
-              disabled={user?.foodPreference === null}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setFoodPreferenceModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </div>
-        </Modal>
+              );
+            }
+            reloadUser();
+            await registerForEvent();
+            setFoodPreferenceModalOpen(false);
+          }}
+          onClose={() => setFoodPreferenceModalOpen(false)}
+        />
       )}
       {formQuestionModalOpen && (
         <FormQuestionModal
@@ -619,27 +553,14 @@ export default function JoinButton({
         />
       )}
       {useUnregisterModal && unregisterModalOpen && (
-        <Modal
-          label="Meld deg av arrangementet"
-          description={`Er du sikker på at du vil melde deg av ${event.title}?`}
-          closeButtonOnClick={() => setUnregisterModalOpen(false)}
-        >
-          <>
-            <ModalButton
-              text="Meld deg av"
-              onClick={() => {
-                updateRegistrationStatus(RegStatus.NOT_GOING);
-                setUnregisterModalOpen(false);
-              }}
-              type={ButtonType.DANGER}
-            />
-            <ModalButton
-              text="Forbli påmeldt"
-              onClick={() => setUnregisterModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </>
-        </Modal>
+        <UnregisterConfirmationModal
+          eventTitle={event.title}
+          onConfirm={() => {
+            updateRegistrationStatus(RegStatus.NOT_GOING);
+            setUnregisterModalOpen(false);
+          }}
+          onClose={() => setUnregisterModalOpen(false)}
+        />
       )}
       <Button
         type={buttonType}
