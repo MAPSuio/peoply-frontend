@@ -5,11 +5,15 @@ talks to the Peoply backend at `api.peoply.app`.
 
 ## Getting set up
 
-The project requires **Node >= 20.9.0** and **npm >= 8** (`engines` in
+The project requires **Node >= 22.11.0** and **npm >= 10** (`engines` in
 `package.json`). Older Node versions will install but fail in ways that are
 hard to read, so check `node -v` before opening an issue about a broken build.
 
+`.nvmrc` pins the exact version CI builds with — `nvm use` puts you on it, and
+the CI workflow reads the same file, so there is one version to keep current.
+
 ```bash
+nvm use       # reads .nvmrc
 npm ci        # install exactly what the lockfile says
 npm run dev   # http://localhost:3001
 ```

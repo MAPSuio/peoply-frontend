@@ -2,8 +2,8 @@
   "name": "peoply-frontend",
   "private": true,
   "engines": {
-    "node": ">=20.9.0",
-    "npm": ">=8.0.0"
+    "node": ">=22.11.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "dev": "next dev --webpack -p 3001",
