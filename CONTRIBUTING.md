@@ -88,6 +88,53 @@ what you commit is what you staged.
 It checks staged files only, so it is fast and it is not a substitute for
 `npm run lint`. `git commit --no-verify` skips it when you need it to.
 
+## Data fetching
+
+Three patterns coexist under `pages/`, on purpose — each answers a different
+question about a page.
+
+| Pattern | Used by | Why |
+| --- | --- | --- |
+| `getStaticProps` + `getStaticPaths` (ISR) | `orgs/[oid]`, `orgs/[oid]/events`, `users/[uid]` | Public, SEO-relevant pages with one canonical URL that doesn't depend on who's looking. `fallback: "blocking"` means no path is pre-rendered at build time — the first visitor renders it on the server and every later one gets the cached HTML, revalidated every 30 minutes (`revalidate: 60 * 30`). |
+| `getServerSideProps` | `events/[eid]`, `sitemap.xml` | Needs the actual request. `events/[eid]` reads `context.req.headers.cookie` so the server can render registration/visibility state for the visitor who's asking, not a cached stranger. `sitemap.xml` writes straight to `res` and has to reflect current data on every crawl, not a 30-minute-old snapshot. |
+| Client-side `useSWR`, no page-level data fetching | most other pages — `kalender`, `orgs` (the list), `events` (the list), everything under `me/*` | Either the content is user-specific/auth-gated (`me/*` needs a logged-in user before it can fetch anything, so there's nothing to pre-render) or it's genuinely dynamic (filters, search, "from today onward") where server-rendering the first page buys nothing. These also get the shared fetcher, retry policy and error toast from `SwrProvider` (see `components/SwrProvider.tsx`) for free. |
+
+Picking one for a new page:
+
+1. Public, cacheable, one URL per resource, same for every visitor →
+   `getStaticProps` + `getStaticPaths` with `fallback: "blocking"`.
+2. Needs something only the request has (cookies, headers) or must never
+   serve a stale/cached response → `getServerSideProps`.
+3. Otherwise (behind auth, user-specific, or a list/filter/search page) →
+   client-side `useSWR`.
+
+### QueryState
+
+Client-side pages used to hand-roll their own `error && …` / `!data && …`
+branches, so the same three states — loading, error, data — looked and
+behaved slightly differently on every page. `components/QueryState.tsx` is
+the shared version: it shows `LoadingWheel` while a request is in flight, a
+Norwegian error message (with a retry button when the query's `mutate` is
+passed through) once it fails, and calls its `children` render prop with the
+data once it's ready.
+
+```tsx
+const eventsQuery = useSWR<Event[]>(url, fetcher);
+
+<QueryState query={eventsQuery} errorMessage="Kunne ikke laste kalenderen.">
+  {(events) => <EventCalendar events={events} />}
+</QueryState>;
+```
+
+`query` accepts a `useSWR` result as-is, or a hand-built `{ data, error,
+mutate }` object when a page composes more than one query into a single
+gate. Use it for any page whose loading/error UI is just those three states;
+don't force it onto a page with a genuinely different shape — a skeleton
+card, several independent sections that fail separately, or a component that
+already has its own bespoke empty state. `pages/kalender.tsx`,
+`pages/orgs.tsx`, `pages/me/admin/orgs.tsx`, `pages/events/index.tsx` and
+`pages/me/following.tsx` are the reference adoptions.
+
 ## Dependency updates
 
 Dependabot opens PRs from `.github/dependabot.yml` — npm weekly, GitHub Actions
