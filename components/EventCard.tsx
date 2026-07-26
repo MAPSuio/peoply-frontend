@@ -12,6 +12,7 @@ import UsersIconCard from "./svgs/UsersIconCard";
 import useRegistrationCount from "../hooks/useRegistrationCount";
 
 // Utils.
+import cx from "../utils/cx";
 import { formatEventDate } from "../utils/functions";
 import {
   getCompactEventArrangerLabel,
@@ -68,11 +69,7 @@ const EventCard = ({ event }: EventCardProps) => {
               <UsersIconCard className={styles.icon} />
               <p className={styles.data}>
                 <span className={styles.emphasis}>
-                  {registrationsError
-                    ? "?"
-                    : registrations
-                      ? registrations
-                      : "0"}
+                  {registrationsError ? "?" : (registrations ?? 0)}
                 </span>
                 {event.capacity !== null && `\u200A/\u200A${event.capacity}`}
               </p>
@@ -112,7 +109,10 @@ const EventCard = ({ event }: EventCardProps) => {
                 event={event}
                 updateOnChange={[updateRegistrations]}
                 joinButtonClassName={styles.actionButton}
-                calendarButtonClassName={`${styles.actionButton} ${styles.calendarActionButton}`}
+                calendarButtonClassName={cx(
+                  styles.actionButton,
+                  styles.calendarActionButton,
+                )}
               />
             </div>
           )}

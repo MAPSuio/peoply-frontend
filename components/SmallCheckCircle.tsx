@@ -1,5 +1,6 @@
 import styles from "../styles/SmallCheckCircle.module.scss";
 
+import cx from "../utils/cx";
 import SmallCheckIcon from "./svgs/SmallCheckIcon";
 
 interface SmallCheckCircleProps {
@@ -21,23 +22,25 @@ export default function SmallCheckCircle({
   ultraSmall,
   className,
 }: SmallCheckCircleProps) {
-  const getCheckCircleStyles = () => {
-    return `${styles.container} ${
-      placeBottomCenter && styles.placeBottomCenter
-    }  ${purple && styles.purple} ${placeRight && styles.placeRight}`;
-  };
-
-  const checkCircleStyles = getCheckCircleStyles();
-
   /* A span rather than a div: the badge is used inside <p> elements (event
      page, cards), where a div is invalid HTML and breaks hydration. Layout
      is unaffected - display comes from the container class. */
   return (
-    <span className={checkCircleStyles}>
+    <span
+      className={cx(
+        styles.container,
+        placeBottomCenter && styles.placeBottomCenter,
+        purple && styles.purple,
+        placeRight && styles.placeRight,
+      )}
+    >
       <SmallCheckIcon
-        className={`${small && styles.small} ${verySmall && styles.verySmall} ${
-          ultraSmall && styles.ultraSmall
-        } ${className}`}
+        className={cx(
+          small && styles.small,
+          verySmall && styles.verySmall,
+          ultraSmall && styles.ultraSmall,
+          className,
+        )}
         strokeWidth={ultraSmall ? "3" : undefined}
       />
     </span>
