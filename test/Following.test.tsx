@@ -59,7 +59,7 @@ function renderPage(fetcher: () => Promise<unknown>) {
     </SWRConfig>
   );
 
-  return render(<Following baseUrl="" />, { wrapper });
+  return render(<Following />, { wrapper });
 }
 
 describe("/me/following", () => {

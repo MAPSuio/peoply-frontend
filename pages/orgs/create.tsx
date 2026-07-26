@@ -13,11 +13,7 @@ import { SnackTypes } from "../../types/types";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import HeadComponent from "../../components/HeadComponent";
 
-interface CreateProps {
-  baseUrl: string;
-}
-
-const Create = ({ baseUrl }: CreateProps) => {
+const Create = () => {
   const { user, loading, reload } = useUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -54,7 +50,7 @@ const Create = ({ baseUrl }: CreateProps) => {
       <HeadComponent
         title="Opprett organisasjon"
         description="Opprett en ny organisasjon"
-        url={`${baseUrl}/orgs/create`}
+        path="/orgs/create"
       />
       <div className={styles.container}>
         <BackButton onClick={goBack} />
@@ -100,15 +96,6 @@ const Create = ({ baseUrl }: CreateProps) => {
       </div>
     </>
   );
-};
-
-export const getStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default Create;

@@ -67,12 +67,13 @@ import JoinButton from "../../../components/JoinButton";
 import RSSIcon from "../../../components/svgs/RSSIcon";
 import EventUpdateCard from "../../../components/EventUpdateCard";
 
+import { BASE_URL } from "../../../constants/urls";
+
 interface EventProps {
   event: Event;
-  baseUrl: string;
 }
 
-const Event = ({ event, baseUrl }: EventProps) => {
+const Event = ({ event }: EventProps) => {
   const { user, orgs } = useUser();
   const goBack = useBack();
   const [mapsUrl, setMapsUrl] = useState<string>();
@@ -161,7 +162,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
       <HeadComponent
         title={eventData.title}
         description={eventData.description}
-        url={`${baseUrl}/events/${eventData.urlId}`}
+        path={`/events/${eventData.urlId}`}
         imageUrl={eventData.image}
         noIndex={
           eventData.visibility === Visibility.UNLISTED ||
@@ -394,7 +395,7 @@ const Event = ({ event, baseUrl }: EventProps) => {
                 />
                 <ShareButton
                   buttonText="Del arrangement"
-                  shareUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/events/${eventData.urlId}`}
+                  shareUrl={`${BASE_URL}/events/${eventData.urlId}`}
                   shareTitle={eventData.title}
                   iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
                 />
@@ -590,17 +591,12 @@ async function fetchEventForRequest(
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { eid } = context.params as IParams;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const baseApiUrl =
     process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL;
 
   try {
     if (!baseApiUrl) {
       throw new Error("Missing API base URL");
-    }
-
-    if (!baseUrl) {
-      throw new Error("Missing NEXT_PUBLIC_BASE_URL");
     }
 
     const eventResponse = await fetchEventForRequest(
@@ -630,7 +626,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        baseUrl,
         event,
       },
     };

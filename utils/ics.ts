@@ -1,3 +1,4 @@
+import { BASE_URL } from "../constants/urls";
 import { Event, Organization } from "../types/types";
 
 interface CalendarLink {
@@ -52,9 +53,9 @@ function slugifyFileName(value: string) {
 function getEventUrl(event: Event) {
   const eventSlug = event.urlId || event.id;
 
-  if (!process.env.NEXT_PUBLIC_BASE_URL || !eventSlug) return "";
+  if (!BASE_URL || !eventSlug) return "";
 
-  return `${process.env.NEXT_PUBLIC_BASE_URL}/events/${eventSlug}`;
+  return `${BASE_URL}/events/${eventSlug}`;
 }
 
 function getEventLocation(event: Event) {

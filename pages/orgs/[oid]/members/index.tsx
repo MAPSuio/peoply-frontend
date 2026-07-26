@@ -103,7 +103,7 @@ export default function Members() {
       <HeadComponent
         title={`${organization.name} - medlemmer`}
         description={`Medlemmer i ${organization.name}`}
-        url={`${process.env.NEXT_PUBLIC_BASE_URL}/organizations/${oid}/members`}
+        path={`/orgs/${oid}/members`}
         imageUrl={organization.image}
       />
       <div className={styles.container}>

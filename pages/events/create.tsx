@@ -1,5 +1,4 @@
 // Next.js.
-import { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
@@ -124,11 +123,7 @@ export interface EventObjectProps {
   imageCached: ImageCaching;
 }
 
-interface CreateEventProps {
-  baseUrl: string;
-}
-
-const CreateEvent = ({ baseUrl }: CreateEventProps) => {
+const CreateEvent = () => {
   const { user, ipInfo, orgs } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const [modalOpen, setModalOpen] = useState(false);
@@ -1593,7 +1588,7 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       <HeadComponent
         title="Nytt arrangement"
         description="Opprett et nytt arrangement på Peoply"
-        url={`${baseUrl}/events/create`}
+        path="/events/create"
       />
       <div className={styles.wrapper}>
         {modalOpen && (
@@ -1632,16 +1627,6 @@ const CreateEvent = ({ baseUrl }: CreateEventProps) => {
       </div>
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default CreateEvent;

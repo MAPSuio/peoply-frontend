@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import CheckCircle from "../../components/CheckCircle";
 import Button from "../../components/Button";
@@ -9,11 +9,10 @@ import MobileLoginIllustration from "../../components/svgs/MobileLoginIllustrati
 import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
 import Link from "next/link";
 import HeadComponent from "../../components/HeadComponent";
+import { API_URL } from "../../constants/urls";
 import { useEffect, useState } from "react";
 
-const Login: NextPage = ({
-  baseUrl,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Login: NextPage = () => {
   const { user, loading } = useUser();
   const router = useRouter();
   const [redirectURL, setRedirectURL] = useState<string>("/");
@@ -49,7 +48,7 @@ const Login: NextPage = ({
       <HeadComponent
         title="Logg inn"
         description="Logg inn på Peoply"
-        url={`${baseUrl}/login`}
+        path="/login"
       />
       {loading ? null : user ? (
         <div className={styles.loginWrapper}>
@@ -104,7 +103,7 @@ const Login: NextPage = ({
             </div>
             <div className={styles.loginButtonContainer}>
               <a
-                href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}
+                href={`${API_URL}/auth/login`}
                 onClick={() => {
                   if (redirectURL) {
                     localStorage.setItem("redirectURL", redirectURL);
@@ -120,7 +119,7 @@ const Login: NextPage = ({
               </p>
               <p className={styles.loginButtonText}>
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`}
+                  href={`${API_URL}/auth/login/google`}
                   onClick={() => {
                     if (redirectURL) {
                       localStorage.setItem("redirectURL", redirectURL);
@@ -137,15 +136,6 @@ const Login: NextPage = ({
       )}
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default Login;

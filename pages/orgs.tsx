@@ -1,5 +1,4 @@
 // Next.js.
-import { GetStaticProps } from "next";
 import useSWR from "swr";
 import HeadComponent from "../components/HeadComponent";
 import Link from "next/link";
@@ -26,11 +25,7 @@ import styles from "../styles/OrganizationList.module.scss";
 import { useRouter } from "next/router";
 import { queryToString } from "../utils/functions";
 
-interface OrganizationListProps {
-  baseUrl: string;
-}
-
-const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
+const OrganizationList = () => {
   const router = useRouter();
   const goBack = useBack();
   const orgQueryUrl = useMemo(() => {
@@ -58,7 +53,7 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
       <HeadComponent
         title="Foreninger"
         description="Se alle foreningene på IFI"
-        url={`${baseUrl}/orgs`}
+        path="/orgs"
       />
       <Layout align={Alignment.CENTER}>
         <BackButton onClick={goBack} />
@@ -77,15 +72,6 @@ const OrganizationList = ({ baseUrl }: OrganizationListProps) => {
       </Layout>
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default OrganizationList;

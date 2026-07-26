@@ -59,10 +59,9 @@ import { getOrganizationSocialLinks } from "../../../utils/socialLinks";
 
 interface OrganizationProps {
   organization: Organization;
-  baseUrl: string;
 }
 
-const Organization = ({ organization, baseUrl }: OrganizationProps) => {
+const Organization = ({ organization }: OrganizationProps) => {
   const goBack = useBack();
   const { addSnack } = useSnack();
   const router = useRouter();
@@ -273,7 +272,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             ? org.description
             : `Organisasjonssiden til ${org.name}`
         }
-        url={`${baseUrl}/orgs/${org.urlId ?? org.id}`}
+        path={`/orgs/${org.urlId ?? org.id}`}
         imageUrl={org.image}
       />
       <Layout>
@@ -368,7 +367,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
         <div className={styles.dataContainer}>
           {orgMembers && (
             <Link
-              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/members`}
+              href={`/orgs/${org.urlId ?? org.id}/members`}
               className={styles.iconContainer}
             >
               <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
@@ -378,7 +377,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           )}
           {isAdminOrOwner && followers && (
             <Link
-              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/followers`}
+              href={`/orgs/${org.urlId ?? org.id}/followers`}
               className={styles.iconContainer}
             >
               <FollowIcon className={`${styles.icon} ${styles.followIcon}`} />
@@ -387,7 +386,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
             </Link>
           )}
           <Link
-            href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}
+            href={`/orgs/${org.urlId ?? org.id}/events`}
             className={styles.iconContainer}
           >
             <CalendarIconCard className={styles.icon} />
@@ -399,7 +398,7 @@ const Organization = ({ organization, baseUrl }: OrganizationProps) => {
           <div className={styles.eventHeaderContainer}>
             <h2 className={styles.eventHeader}>Kommende arrangementer</h2>
             <Link
-              href={`${baseUrl}/orgs/${org.urlId ?? org.id}/events`}
+              href={`/orgs/${org.urlId ?? org.id}/events`}
               className={styles.link}
             >
               Se alle
@@ -427,8 +426,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   try {
     const organization = await getOrganization(oid);
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
     if (!organization) {
       return {
         notFound: true,
@@ -437,7 +434,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     return {
       props: {
-        baseUrl,
         organization,
       },
       revalidate: 60 * 30, // 30 minutes
@@ -445,7 +441,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   } catch {
     return {
       props: {
-        baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
         organization: null,
       },
       revalidate: 60 * 30, // 30 minutes
