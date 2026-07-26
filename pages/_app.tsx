@@ -8,6 +8,7 @@ import { SnackbarProvider } from "../hooks/useSnack";
 import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
+import { SerwistProvider } from "@serwist/next/react";
 import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
 import SwrProvider from "../components/SwrProvider";
@@ -63,7 +64,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <>
+    /* Replaces next-pwa's `register: true`, which injected the registration
+       script into the build. Serwist registers from the client instead, so it
+       has to be mounted here. `disable` mirrors the old config: no service
+       worker in development, where `serwist build` has not run and /sw.js does
+       not exist. */
+    <SerwistProvider
+      swUrl="/sw.js"
+      disable={process.env.NODE_ENV === "development"}
+    >
       <Script
         defer
         src="https://cloud.umami.is/script.js"
@@ -128,7 +137,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </SnackbarProvider>
       </UserProvider>
       <Analytics />
-    </>
+    </SerwistProvider>
   );
 }
 

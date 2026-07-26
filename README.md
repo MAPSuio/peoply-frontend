@@ -125,10 +125,14 @@ Three things it does that will bite you if you bypass it:
   from `globals.scss`; importing it into a module would break theming.
 - **Themes.** `next-themes` with three: `light`, `dark`, `night`.
 - **Locale.** `nb` only. UI copy is Norwegian.
-- **PWA.** `@ducanh2912/next-pwa`, disabled in development. It only appears in a
-  production build, so test service-worker changes with `npm run build && npm start`.
-  It is a webpack plugin, which is why `dev` and `build` pass `--webpack`. Under
-  Turbopack the build still succeeds but emits no `sw.js` — see `next.config.js`.
+- **PWA.** Serwist, disabled in development. The service worker source is
+  `service-worker/index.ts`; `serwist.config.mjs` decides what gets precached,
+  and `npm run build` bundles the two into `public/sw.js` as a step after
+  `next build`. It only exists in a production build, so test service-worker
+  changes with `npm run build && npm start` — and verify the emitted `sw.js`,
+  not the exit code. A build that emits no service worker still exits 0.
+  Because it runs as its own CLI step rather than a bundler plugin, nothing here
+  is tied to webpack.
 - **Analytics.** Umami (loaded in `pages/_app.tsx`, website ID
   `7ec1d359-0bab-4bee-b214-d6f116701233`) plus Vercel Analytics. Anonymized — the
   user-facing wording about this lives in `pages/faq.tsx`. Temporary Umami owner
@@ -143,7 +147,7 @@ Three things it does that will bite you if you bypass it:
 | `npm test` / `npm run test:watch` | Vitest |
 | `npm run lint` | Biome (JS/TS) + Stylelint (SCSS) |
 | `npm run format` | Applies Biome's fixes |
-| `npx tsc --noEmit` | Type check |
+| `npm run typecheck` | Type check (app, then the service worker separately — it needs `webworker` types instead of `dom`) |
 
 Those four checks — type check, lint, test, build — are exactly what CI runs, and
 a red job blocks both merge and deploy. Run them before pushing.
