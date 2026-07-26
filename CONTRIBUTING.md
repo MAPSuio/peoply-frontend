@@ -31,10 +31,24 @@ Work on a branch and open a pull request. Nothing is pushed straight to
 git checkout -b fix/thing-that-is-broken
 ```
 
-Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
-`feat:`, `fix:`, `chore:`, `refactor:`, `test:`, `ci:`, `build:`, optionally
-scoped (`fix(pwa):`). Write the subject so it says what changed for a user or
-a caller, not which file you touched.
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/),
+enforced by a `commit-msg` hook — a message that does not parse is rejected
+before the commit is created. Write the subject so it says what changed for a
+user or a caller, not which file you touched.
+
+```text
+feat(header): link to source code from the front page
+fix(pwa): stop the service worker precaching a 404
+feat(api)!: drop the v1 endpoints
+```
+
+Types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`,
+`revert`, `style`, `test`. The scope is optional; `!` before the colon marks a
+breaking change.
+
+The type must be lowercase. The subject need not be — `fix: API returns 500` is
+fine, because a rule that rejects it would reject naming `API`, `SWR` or `Vipps`
+first in the sentence. Merge, revert and fixup commits are ignored.
 
 ## Checks
 
@@ -55,10 +69,13 @@ order and uppercase hex colours.
 New behaviour should come with a test in `test/`. The suite is small enough
 that adding to it is cheap and skipping it is noticeable.
 
-### The pre-commit hook
+### The git hooks
 
-`npm ci` installs a Husky `pre-commit` hook that lints the staged files — Biome
-for JS/TS, Stylelint for SCSS. There is nothing to set up beyond the install.
+`npm ci` installs two Husky hooks. There is nothing to set up beyond the install.
+
+`commit-msg` checks the message against Conventional Commits (see above).
+
+`pre-commit` lints the staged files — Biome for JS/TS, Stylelint for SCSS.
 
 It only reads. A failure prints what is wrong and aborts the commit; run
 `npm run format` and stage the result. Nothing is rewritten underneath you, so
