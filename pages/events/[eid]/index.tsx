@@ -209,7 +209,6 @@ const Event = ({ event }: EventProps) => {
               </div>
             </div>
           </div>
-          {/* <div className={styles.eventPriceTag}>Gratis</div> */}
           <div className={styles.eventInfoContainer}>
             <p className={styles.eventTags}>
               {eventData.eventCategories

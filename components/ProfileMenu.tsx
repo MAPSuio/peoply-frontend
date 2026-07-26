@@ -30,12 +30,6 @@ export default function ProfileMenu() {
         ActionIcon={ChevronRightIcon}
         linkOrOnClick="/me/edit"
       />
-      {/* <ProfileMenuItem
-        text="Betalingsinformasjon"
-        Icon={CreditCardIcon}
-        ActionIcon={ChevronRightIcon}
-        linkOrOnClick={() => ""}
-      /> */}
       <ProfileMenuItem
         text="Organisasjoner"
         Icon={BriefcaseIcon}

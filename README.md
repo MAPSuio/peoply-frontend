@@ -187,21 +187,19 @@ Three things it does that will bite you if you bypass it:
 
 ## Analytics
 
-Two trackers, both mounted unconditionally in `pages/_app.tsx`:
-
-| | |
-| --- | --- |
-| Umami | `<Script src="https://cloud.umami.is/script.js">` with `data-website-id="7ec1d359-0bab-4bee-b214-d6f116701233"`. Hosted on Umami Cloud, not self-hosted |
-| Vercel | `<Analytics />` from `@vercel/analytics` |
+One tracker, mounted unconditionally in `pages/_app.tsx`: Umami, as
+`<Script src="https://cloud.umami.is/script.js">` with
+`data-website-id="7ec1d359-0bab-4bee-b214-d6f116701233"`. Hosted on Umami
+Cloud, not self-hosted.
 
 The website ID is not a secret and does not belong in `.env` — it is a public
 identifier that ships in the client bundle by design. Umami's own dashboard is
 the access control.
 
-**Both run in development.** This is the part that surprises people. The service
+**It runs in development.** This is the part that surprises people. The service
 worker two bullets up is explicitly disabled outside production
 (`disable={process.env.NODE_ENV === "development"}`, same file, ~15 lines above),
-but neither tracker has an equivalent guard. Every page view on
+but the tracker has no equivalent guard. Every page view on
 `localhost:3001` during `npm run dev` is recorded against the production website
 ID, indistinguishable from real traffic except by hostname. If that matters
 before you spend an afternoon clicking around, wrap the `<Script>` in the same

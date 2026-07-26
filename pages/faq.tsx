@@ -69,7 +69,6 @@ const FAQ = () => {
                       <span className={styles.emphasis}>Telefonnummer</span>
                       <ul className={styles.reducedPadding}>
                         <li>Brukes for å identifisere deg i systemet vårt.</li>
-                        {/* <li>Brukes for å sende deg SMS varslinger.</li> */}
                       </ul>
                     </li>
                     <li className={styles.marginBottomVerySmall}>

@@ -93,7 +93,6 @@ export async function fetchFromPeoplyApi(
   resource: RequestInfo,
   init?: RequestInit,
   options?: FetchOptions,
-  // version = "v1",
 ) {
   const path = String(resource);
   const url = `${getApiBaseUrl()}${path}`;

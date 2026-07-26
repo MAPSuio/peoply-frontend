@@ -18,7 +18,6 @@ interface OrgMenuProps {
   org: Organization;
 }
 
-/* TODO: WIP */
 export default function OrgMenu({ org }: OrgMenuProps) {
   const { addSnack } = useSnack();
   const [modalOpen, setModalOpen] = useState(false);

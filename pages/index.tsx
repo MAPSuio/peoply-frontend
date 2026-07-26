@@ -81,11 +81,6 @@ const Home: NextPage = () => {
       .join(","),
   };
 
-  // const { data: eventsOnIFI, error: eventsOnIFIError } = useSWR<Event[]>(
-  //   `/events?${queryToString(eventsOnIfiQuery)}`,
-  //   fetchFromPeoplyApiJson,
-  // );
-
   const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
     `/events?afterDate=${todayString}&orderBy=startDate`,
   );
@@ -119,15 +114,6 @@ const Home: NextPage = () => {
             }
           />
         ) : undefined}
-        {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
-          <EventSwiper
-            header={"Hva skjer på IFI?"}
-            seeAllUrl={{ pathname: `/events`, query: eventsOnIfiQuery }}
-            events={eventsOnIFI}
-            error={eventsOnIFIError}
-          />
-        ) : undefined}
- */}
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
             header={"Hva skjer fremover?"}

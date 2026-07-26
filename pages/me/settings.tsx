@@ -1,6 +1,3 @@
-/* Next. */
-// import Link from "next/link";
-
 /* Hooks. */
 import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
@@ -8,9 +5,6 @@ import { useTheme } from "next-themes";
 
 /* Components. */
 import BackButton from "../../components/BackButton";
-// import SwitchInput from "../../components/inputs/SwitchInput";
-// import CheckboxInput from "../../components/inputs/CheckboxInput";
-// import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 import SettingsButton from "../../components/SettingsButton";
 import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 
@@ -39,10 +33,6 @@ import {
 } from "../../utils/backgroundPattern";
 
 const Settings = () => {
-  /* TODO: Fetch and update most of these from API. */
-  // const [locationAccess, setLocationAccess] = useState(false);
-  // const [allowNotifications, setAllowNotifications] = useState(true);
-  // const [allowSMSNotifications, setAlllowSMSNotifications] = useState(true);
   const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
   const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
   const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
@@ -107,7 +97,6 @@ const Settings = () => {
     allowEmailFromArranger !== user?.allowEmailFromArranger;
   const validAllowEmailPromotionsEdit =
     allowEmailPromotions !== user?.allowEmailPromotions;
-  // const validEmailEdit = emailValid && email !== user?.email;
   const validEdit =
     validAllowEmailFromArrangerEdit ||
     validAllowEmailPromotionsEdit ||
@@ -116,7 +105,6 @@ const Settings = () => {
   const handleConfirm = async () => {
     try {
       const body = {
-        // ...(validEmailEdit && { email }),
         ...(validAllowEmailFromArrangerEdit && {
           allowEmailFromArranger,
           allowEmailOnWaitlist: allowEmailFromArranger,
@@ -152,48 +140,6 @@ const Settings = () => {
             Tilpass appen etter dine ønsker og behov
           </p>
           <div className={styles.contentContainer}>
-            {/* <div className={styles.section}>
-              <h2 className={styles.inputHeader}>Posisjonsdata</h2>
-              <SwitchInput
-                label="Bruk posisjonen min"
-                checked={locationAccess}
-                onClick={() => setLocationAccess(!locationAccess)}
-              />
-            </div> */}
-            {/* <div className={styles.section}>
-              <h2 className={styles.inputHeader}>Varslinger</h2>
-              <div className={styles.notificationContainer}>
-                <CheckboxInput
-                  label="Motta varsler"
-                  checked={allowNotifications}
-                  checkboxId="allowNotifications"
-                  checkboxName="allowNotifications"
-                  onChange={() => setAllowNotifications(!allowNotifications)}
-                />
-                <CheckboxInput
-                  label="Motta SMS varsler"
-                  checked={allowNotifications && allowSMSNotifications}
-                  checkboxId="allowSMSNotifications"
-                  checkboxName="allowSMSNotifications"
-                  disabled={!allowNotifications}
-                  className={styles.marginLeftMedium}
-                  onChange={() =>
-                    setAlllowSMSNotifications(!allowSMSNotifications)
-                  }
-                />
-                <CheckboxInput
-                  label="Motta email varsler"
-                  checked={allowNotifications && allowEmailNotifications}
-                  disabled={!allowNotifications}
-                  checkboxId="allowEmailNotifications"
-                  checkboxName="allowEmailNotifications"
-                  className={styles.marginLeftMedium}
-                  onChange={() =>
-                    setAllowEmailNotifications(!allowEmailNotifications)
-                  }
-                />
-              </div>
-            </div> */}
             <div className={styles.section}>
               <h2 className={styles.inputHeader}>Visning/tema</h2>
               <RadioInputSmall
@@ -261,45 +207,12 @@ const Settings = () => {
                       setAllowEmailPromotions(!allowEmailPromotions)
                     }
                   />
-                  {/* <TextInput
-                    value={email}
-                    inputId="subject"
-                    inputName="subject"
-                    label="Foretrukket epost"
-                    errorMessage={`Eposten må være gyldig.`}
-                    placeholder="svar@eksempel.no"
-                    maxLength={100}
-                    handleChange={(e) => setEmail(e.target.value)}
-                    setValid={setEmailValid}
-                    valid={emailValid}
-                    validate
-                    isEmail
-                  /> */}
-                  {/* <SwitchInput
-                    label="Tillat oppdateringer om ventelister"
-                    checked={allowEmailNotifications}
-                    onClick={() =>
-                      setAllowEmailNotifications(!allowEmailNotifications)
-                    }
-                  />
-                  <SwitchInput
-                    label="Tillat eposter fra Peoply-teamet"
-                    checked={allowEmailNotifications}
-                    onClick={() =>
-                      setAllowEmailNotifications(!allowEmailNotifications)
-                    }
-                  /> */}
                 </div>
               )}
             </div>
             <div className={styles.section}>
               <h2 className={styles.inputHeader}>Min bruker</h2>
               <div className={styles.userContainer}>
-                {/* <Link href="/me/data">
-                  <a>
-                    <SettingsButton text="Se dataene dine" isLink />
-                  </a>
-                </Link> */}
                 <SettingsButton
                   text="Slett min bruker"
                   type={SettingTypes.DANGER}

@@ -13,7 +13,6 @@ export default function UserCross({ className }: UserCheckProps) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      // className="feather feather-user-x"
       className={className}
       style={{ marginLeft: "8px" }}
     >
