@@ -55,6 +55,18 @@ order and uppercase hex colours.
 New behaviour should come with a test in `test/`. The suite is small enough
 that adding to it is cheap and skipping it is noticeable.
 
+### The pre-commit hook
+
+`npm ci` installs a Husky `pre-commit` hook that lints the staged files — Biome
+for JS/TS, Stylelint for SCSS. There is nothing to set up beyond the install.
+
+It only reads. A failure prints what is wrong and aborts the commit; run
+`npm run format` and stage the result. Nothing is rewritten underneath you, so
+what you commit is what you staged.
+
+It checks staged files only, so it is fast and it is not a substitute for
+`npm run lint`. `git commit --no-verify` skips it when you need it to.
+
 ## How deploys work
 
 Merging to `master` runs the `deploy` job in `.github/workflows/ci.yml`, which

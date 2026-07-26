@@ -1,0 +1,19 @@
+# Lints what is about to be committed. Read-only on purpose: a failure tells
+# you to run `npm run format` rather than rewriting files behind your back, so
+# the commit contains exactly what you staged.
+#
+# Scoped to staged files to stay fast. The full sweep is `npm run lint`, which
+# is what CI runs - this hook is a first pass, not a replacement for it.
+
+# Biome owns JS/TS and can scope itself to the index.
+# --no-errors-on-unmatched: a commit touching only SCSS or docs stages nothing
+# Biome handles, and an empty match is not a failure.
+npx biome check --staged --no-errors-on-unmatched
+
+# Stylelint has no --staged, so it gets the staged style files by hand.
+# Skipped entirely when there are none: stylelint exits non-zero on an empty
+# file list, which would fail every commit that does not touch SCSS.
+if git diff --cached --name-only --diff-filter=ACMR -- '*.scss' '*.css' | grep -q .; then
+  git diff --cached --name-only --diff-filter=ACMR -z -- '*.scss' '*.css' |
+    xargs -0 npx stylelint --
+fi
