@@ -4,9 +4,12 @@ import { generateGlobPatterns, serwist } from "@serwist/next/config";
  * Serwist in "configurator mode": `serwist build` bundles service-worker/index.ts
  * with esbuild and injects a precache manifest, as a separate step after
  * `next build`. This is the only Serwist setup that is not a webpack plugin, and
- * therefore the only one that survives the move to Turbopack. The obvious
- * drop-in, `withSerwistInit`, is a webpack plugin like next-pwa was and would
- * have kept us pinned to `--webpack`.
+ * therefore the only one that works under Turbopack, which the build now uses.
+ * The obvious drop-in, `withSerwistInit`, is a webpack plugin like next-pwa was
+ * and would have kept us pinned to `--webpack`.
+ *
+ * Nothing below assumes a bundler: it globs whatever `next build` wrote to disk,
+ * so `next build --webpack` still produces a correct service worker.
  *
  * `serwist()` resolves next.config.js itself to read `distDir` and `basePath`,
  * and derives the manifest transforms that map build-output paths to the URLs
@@ -50,14 +53,15 @@ export default await serwist.withNextConfig((nextConfig) => {
             url = `${pagesDir}${url.slice(defaultLocalePrefix.length)}`;
           }
 
-          /* Serwist globs the filesystem, so a dynamic route's chunk enters the
-             manifest under its literal name, events/[eid]-<hash>.js. Next's
-             router runs the asset path through encodeURI before fetching, so it
-             requests events/%5Beid%5D-<hash>.js. Precache entries are keyed by
-             URL, so leaving the brackets raw precaches 42 chunks under keys no
-             request ever matches - they are downloaded, stored, and never read.
-             encodeURI here is the same transform Next applies, so the key ends
-             up identical to the request. */
+          /* A no-op under Turbopack, which names every chunk with an opaque
+             hash. It is kept for the webpack escape hatch, where it is not:
+             webpack names a dynamic route's chunk after the route, so it lands
+             on disk as events/[eid]-<hash>.js, while Next's router runs asset
+             paths through encodeURI and requests events/%5Beid%5D-<hash>.js.
+             Precache entries are keyed by URL, so raw brackets would store 14
+             chunks under keys no request ever matches - downloaded, stored, and
+             never read. encodeURI is the same transform Next applies, so the
+             key ends up identical to the request either way. */
           return { ...entry, url: encodeURI(url) };
         }),
         warnings: [],

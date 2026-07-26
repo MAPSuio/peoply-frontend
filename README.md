@@ -131,8 +131,13 @@ Three things it does that will bite you if you bypass it:
   `next build`. It only exists in a production build, so test service-worker
   changes with `npm run build && npm start` — and verify the emitted `sw.js`,
   not the exit code. A build that emits no service worker still exits 0.
-  Because it runs as its own CLI step rather than a bundler plugin, nothing here
-  is tied to webpack.
+  Because it runs as its own CLI step rather than a bundler plugin, it is not
+  tied to a bundler — which is what let the build move to Turbopack.
+- **Turbopack.** Both `next dev` and `next build` use it; there is no `--webpack`
+  flag anywhere any more. It builds roughly twice as fast but emits more, smaller
+  chunks, so a first page load costs ~20 kB more gzipped and the precache holds
+  215 entries instead of 128. `--webpack` still works as an escape hatch if a
+  build ever misbehaves, and `serwist.config.mjs` is written to handle either.
 - **Analytics.** Umami (loaded in `pages/_app.tsx`, website ID
   `7ec1d359-0bab-4bee-b214-d6f116701233`) plus Vercel Analytics. Anonymized — the
   user-facing wording about this lives in `pages/faq.tsx`. Temporary Umami owner

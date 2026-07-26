@@ -6,8 +6,8 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "dev": "next dev --webpack -p 3001",
-    "build": "next build --webpack && serwist build serwist.config.mjs",
+    "dev": "next dev -p 3001",
+    "build": "next build && serwist build serwist.config.mjs",
     "start": "next start",
     "typecheck": "tsc --noEmit && tsc --noEmit -p service-worker",
     "test": "vitest run",

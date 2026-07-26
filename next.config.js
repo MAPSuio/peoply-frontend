@@ -1,8 +1,8 @@
 /**
  * No PWA plugin here any more. The service worker is built by `serwist build`
  * as a separate step after `next build` (see serwist.config.mjs and the
- * `build` script), which is what removes the last webpack plugin from this
- * config and unblocks Turbopack.
+ * `build` script). Removing the last webpack plugin from this config is what let
+ * the build switch to Turbopack; adding one back would undo that.
  */
 
 /** @type {import('next').NextConfig} */
