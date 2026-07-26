@@ -22,6 +22,7 @@ import {
 } from "../types/types";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
+import SmallCheckIcon from "./svgs/SmallCheckIcon";
 import FormQuestionModal from "./FormQuestionModal";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
@@ -42,6 +43,8 @@ interface JoinButtonProps {
   updateOnChange?: KeyedMutator<any>[];
   useUnregisterModal?: boolean;
   small?: boolean;
+  /** Overrides `small` when set. */
+  size?: ButtonSize;
   noShadow?: boolean;
 }
 
@@ -59,6 +62,7 @@ export default function JoinButton({
   updateOnChange,
   useUnregisterModal = false,
   small = false,
+  size,
   noShadow = false,
 }: JoinButtonProps) {
   const { user, loading: userLoading, reload: reloadUser } = useUser();
@@ -261,6 +265,12 @@ export default function JoinButton({
     }
     return ButtonType.PRIMARY;
   })();
+
+  const showJoinedCheck =
+    !eventFinished &&
+    !isCountdown &&
+    !regClosed &&
+    myRegistration?.regStatus === RegStatus.GOING;
 
   const shouldHideButton =
     event.registrationMode === EventRegistrationMode.EXTERNAL ||
@@ -634,6 +644,11 @@ export default function JoinButton({
       <Button
         type={buttonType}
         text={buttonText}
+        icon={
+          showJoinedCheck ? (
+            <SmallCheckIcon className={styles.joinedIcon} />
+          ) : undefined
+        }
         className={className}
         onClick={(e) => {
           e.preventDefault();
@@ -642,7 +657,7 @@ export default function JoinButton({
         }}
         loading={notLoggedIn ? false : loading}
         disabled={buttonDisabled}
-        size={small ? ButtonSize.SMALL : ButtonSize.MEDIUM}
+        size={size ?? (small ? ButtonSize.SMALL : ButtonSize.MEDIUM)}
         noShadow={noShadow}
       />
     </>

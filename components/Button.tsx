@@ -7,6 +7,9 @@ import LoadingWheel from "./LoadingWheel";
 // Types.
 import { ButtonSize, ButtonType } from "../types/types";
 
+// Utils.
+import cx from "../utils/cx";
+
 // Styles.
 import styles from "../styles/Button.module.scss";
 
@@ -49,68 +52,32 @@ export default function Button({
   const [onClickLoadingState, setOnClickLoadingState] = useState(false);
   const [onClickDisableState, setOnClickDisableState] = useState(false);
 
-  const sizeStyle = (() => {
-    switch (size) {
-      case ButtonSize.TINY:
-        return styles.tiny;
-      case ButtonSize.TINYWITHTEXT:
-        return styles.tinyWithText;
-      case ButtonSize.SMALL:
-        return styles.small;
-      case ButtonSize.MEDIUM:
-        return styles.medium;
-    }
-  })();
+  const sizeStyles: Record<ButtonSize, string> = {
+    [ButtonSize.TINY]: styles.tiny,
+    [ButtonSize.TINYWITHTEXT]: styles.tinyWithText,
+    [ButtonSize.COMPACT]: styles.compact,
+    [ButtonSize.SMALL]: styles.small,
+    [ButtonSize.MEDIUM]: styles.medium,
+  };
 
-  const buttonStyles = (() => {
-    switch (type) {
-      case ButtonType.PRIMARY:
-        return `${styles.button} ${sizeStyle} ${noShadow && styles.noShadow}`;
-      case ButtonType.SECONDARY:
-        return `${styles.button} ${styles.secondaryButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      case ButtonType.DANGER:
-        return `${styles.button} ${styles.dangerButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      case ButtonType.DANGERSOFT:
-        return `${styles.button} ${styles.dangerSoftButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      case ButtonType.WARNING:
-        return `${styles.button} ${styles.warningButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      case ButtonType.WARNINGSOFT:
-        return `${styles.button} ${styles.warningSoftButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      case ButtonType.HIGHLIGHTEDEVENTCARD:
-        return `${styles.button} ${
-          styles.highlightedEventCardButton
-        } ${sizeStyle} ${noShadow && styles.noShadow}`;
-      case ButtonType.CONFIRMED:
-        return `${styles.button} ${styles.confirmedButton} ${sizeStyle} ${
-          noShadow && styles.noShadow
-        }`;
-      default:
-        return `${styles.button} ${sizeStyle} ${noShadow && styles.noShadow}`;
-    }
-  })();
+  /* PRIMARY has no class of its own - the base .button styles are the
+     primary look. */
+  const typeStyles: Partial<Record<ButtonType, string>> = {
+    [ButtonType.SECONDARY]: styles.secondaryButton,
+    [ButtonType.DANGER]: styles.dangerButton,
+    [ButtonType.DANGERSOFT]: styles.dangerSoftButton,
+    [ButtonType.WARNING]: styles.warningButton,
+    [ButtonType.WARNINGSOFT]: styles.warningSoftButton,
+    [ButtonType.HIGHLIGHTEDEVENTCARD]: styles.highlightedEventCardButton,
+    [ButtonType.CONFIRMED]: styles.confirmedButton,
+  };
 
-  const iconPlacementStyles = (() => {
-    switch (iconPlacement) {
-      case IconPlacement.LEFT:
-        return styles.iconLeft;
-      case IconPlacement.RIGHT:
-        return styles.iconRight;
-      case IconPlacement.ABOVE:
-        return styles.iconAbove;
-      case IconPlacement.ABOVE_ON_MOBILE:
-        return styles.iconAboveOnMobile;
-    }
-  })();
+  const iconPlacementStyles: Record<IconPlacement, string> = {
+    [IconPlacement.LEFT]: styles.iconLeft,
+    [IconPlacement.RIGHT]: styles.iconRight,
+    [IconPlacement.ABOVE]: styles.iconAbove,
+    [IconPlacement.ABOVE_ON_MOBILE]: styles.iconAboveOnMobile,
+  };
 
   return (
     <button
@@ -135,7 +102,14 @@ export default function Button({
         setOnClickLoadingState(false);
         setOnClickDisableState(false);
       }}
-      className={`${buttonStyles} ${className} ${iconPlacementStyles}`}
+      className={cx(
+        styles.button,
+        type !== undefined && typeStyles[type],
+        sizeStyles[size],
+        noShadow && styles.noShadow,
+        className,
+        iconPlacementStyles[iconPlacement],
+      )}
       style={{ width }}
       disabled={loading || onClickDisableState || disabled}
     >
@@ -150,7 +124,7 @@ export default function Button({
       ) : (
         <>
           {icon}
-          {text}
+          <span>{text}</span>
         </>
       )}
     </button>

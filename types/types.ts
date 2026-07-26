@@ -482,6 +482,7 @@ export enum ButtonType {
 export enum ButtonSize {
   TINY,
   TINYWITHTEXT,
+  COMPACT,
   SMALL,
   MEDIUM,
 }

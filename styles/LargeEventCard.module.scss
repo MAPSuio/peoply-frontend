@@ -249,18 +249,11 @@
   gap: $spacer-very-small;
 }
 
+/* Sizing comes from ButtonSize.COMPACT; only layout lives here. */
 .primaryActionButton,
 .secondaryActionButton,
 .shareButton {
-  font-size: $font-size-tertiary;
-  padding-bottom: $spacer-mini;
-  padding-top: $spacer-mini;
   width: 100%;
-
-  svg {
-    height: 18px;
-    width: 18px;
-  }
 }
 
 .compactActionButton {
@@ -291,14 +284,6 @@
   .primaryActions {
     flex: 1 1 auto;
     flex-flow: row nowrap;
-  }
-
-  .primaryActionButton,
-  .secondaryActionButton,
-  .shareButton {
-    font-size: $font-size-tertiary-desktop;
-    padding-bottom: $spacer-mini;
-    padding-top: $spacer-mini;
   }
 
   .shareButton {

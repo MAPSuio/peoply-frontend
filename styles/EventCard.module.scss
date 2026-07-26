@@ -189,32 +189,32 @@
 
 .actionContainer {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   gap: $spacer-very-small-plus;
   margin-top: $spacer-small;
   padding-bottom: $spacer-small;
 }
 
+/* Sizing comes from ButtonSize.COMPACT; only layout lives here. */
 .actionButton {
-  font-size: $font-size-tertiary;
-  padding-bottom: $spacer-mini;
-  padding-top: $spacer-mini;
   width: 100%;
-
-  svg {
-    height: 18px;
-    width: 18px;
-  }
 }
 
-@include desktop() {
-  .actionContainer {
-    flex-flow: row nowrap;
-  }
+/* On narrow screens the calendar button shrinks to just its icon so both
+   buttons fit on one row. The label is clipped rather than removed, so the
+   button keeps its accessible name. */
+.calendarActionButton {
+  @media screen and (max-width: 599px) {
+    flex: 0 0 auto;
+    width: auto;
 
-  .actionButton {
-    font-size: $font-size-tertiary-desktop;
-    padding-bottom: $spacer-mini;
-    padding-top: $spacer-mini;
+    span {
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
   }
 }

@@ -2,7 +2,7 @@ import { KeyedMutator } from "swr";
 
 import AddToCalendarButton from "./AddToCalendarButton";
 import JoinButton from "./JoinButton";
-import { Event } from "../types/types";
+import { ButtonSize, Event } from "../types/types";
 
 interface EventActionsProps {
   event: Event;
@@ -41,14 +41,16 @@ const EventActions = ({
       eventFinishedText="Arrangementet er ferdig"
       regClosedText="Påmelding er stengt"
       useUnregisterModal={useUnregisterModal}
-      small
+      size={ButtonSize.COMPACT}
       noShadow
       className={joinButtonClassName}
     />
+    {/* Width comes from the card's className, so narrow screens can shrink
+        the button to icon-only - an inline width would win over that. */}
     <AddToCalendarButton
       event={event}
       buttonText={calendarButtonText}
-      width="100%"
+      size={ButtonSize.COMPACT}
       className={calendarButtonClassName}
     />
   </>

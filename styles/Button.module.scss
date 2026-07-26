@@ -204,6 +204,25 @@
   }
 }
 
+/* The dense size used on event cards. Lives here rather than as overrides in
+   the card stylesheets: cross-module overrides share specificity with these
+   rules, so which one wins depends on stylesheet injection order - which
+   Next.js reshuffles on client-side navigation and history restores. */
+.compact {
+  font-size: $font-size-tertiary;
+  padding: $spacer-mini $spacer-small;
+
+  svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+    padding: $spacer-mini $spacer-small-plus;
+  }
+}
+
 .tiny {
   font-size: $font-size-tertiary;
   height: fit-content;
