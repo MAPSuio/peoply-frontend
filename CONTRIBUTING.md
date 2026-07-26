@@ -115,9 +115,11 @@ Deploys are gated on CI rather than on App Platform's own push hook
 
 ## Environment variables
 
-`.env.development` and `.env.production` are committed on purpose. They hold
-only public values — the API base URL, the site URL and the blob domain, all of
-which ship to the browser anyway via `NEXT_PUBLIC_*`.
+Env files are not committed — copy `.env.example` to `.env.development` to get
+started (see the README). The variables hold only public values — the API base
+URL, the site URL and the blob domain, all of which ship to the browser anyway
+via `NEXT_PUBLIC_*`. CI passes its own values explicitly in the build job, and
+production values live in the App Platform spec.
 
 Nothing secret belongs in this repository. Anything that must stay private
 lives in the App Platform app or, for CI, in repository secrets.

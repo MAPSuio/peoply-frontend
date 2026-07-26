@@ -17,13 +17,14 @@ first.
 ## Run the frontend
 
 ```bash
-nvm use       # reads .nvmrc
-npm ci        # not npm install — see CONTRIBUTING.md
-npm run dev   # http://localhost:3001
+nvm use                          # reads .nvmrc
+npm ci                           # not npm install — see CONTRIBUTING.md
+cp .env.example .env.development # local env — see "Environment variables"
+npm run dev                      # http://localhost:3001
 ```
 
-No config needed. `.env.development` is committed and already points at
-`http://localhost:3000`, so `npm run dev` talks to a local backend out of the box.
+`.env.example` already points at `http://localhost:3000`, so after the copy
+`npm run dev` talks to a local backend out of the box.
 
 Without a backend running the app renders, but every request fails and you get
 the "Noe gikk galt" snackbar on most pages. For anything beyond static markup you
@@ -78,8 +79,15 @@ you want the UI logged in.
 
 ## Environment variables
 
-`.env.development` and `.env.production` are committed on purpose: they hold only
-public values that ship to the browser anyway. Nothing secret belongs in this repo.
+Env files are not committed. Copy the template and you are done — the defaults
+point at a local backend:
+
+```bash
+cp .env.example .env.development
+```
+
+Every variable is documented in `.env.example`. They hold only public values
+that ship to the browser anyway; nothing secret belongs in this repo.
 
 | Variable | | Local value |
 | --- | --- | --- |
