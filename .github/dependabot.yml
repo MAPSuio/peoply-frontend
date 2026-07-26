@@ -75,6 +75,21 @@ updates:
       sharp:
         patterns:
           - sharp
+      # The other `overrides` entry, and alone for the same reason. postcss is a
+      # devDependency nothing in this repo imports - it exists only so the
+      # `"postcss": "$postcss"` override has a top-level version to resolve to,
+      # which is also the only form Dependabot can see. So every bump here is
+      # really a bump of the postcss that Next and Stylelint run on, and it owes
+      # the evidence the README asks for: `npm run build`, then diff the sha256
+      # of every file in .next/static/**/*.css against the previous build, plus
+      # `npm run lint` because Stylelint parses with postcss too.
+      #
+      # Without this group it lands in development-minor-and-patch below,
+      # welded to whatever else moved that week - and then that check is either
+      # skipped or it blocks four unrelated bumps while someone runs it.
+      postcss:
+        patterns:
+          - postcss
       # Added after #27 and #25, which are the proof this is needed. Both were
       # opened by the bot, both were unmergeable the moment they arrived, and
       # neither failed a test: they failed at install with ERESOLVE. stylelint
