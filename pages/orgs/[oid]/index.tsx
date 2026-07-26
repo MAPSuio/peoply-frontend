@@ -31,6 +31,7 @@ import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useFollowArranger from "../../../hooks/useFollowArranger";
 
 // Services.
+import { ApiError } from "../../../services/apiError";
 import { getOrganization } from "../../../services/organizations";
 import {
   type ArrangerFollower,
@@ -224,8 +225,8 @@ const Organization = ({ organization }: OrganizationProps) => {
       );
       addSnack("Foreningen er rapportert", SnackTypes.SUCCESS);
     } catch (e) {
-      if (e instanceof Response && e.status === 429) {
-        const nextStatus = await e.json();
+      if (e instanceof ApiError && e.status === 429) {
+        const nextStatus = e.body as OrganizationReportStatus;
         const retryInSeconds = nextStatus.remainingSeconds ?? 0;
         const retryCountdown = (() => {
           const hours = Math.floor(retryInSeconds / 3600);

@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo } from "react";
 import { SWRConfig } from "swr";
 import useSnack from "../hooks/useSnack";
+import { ApiError } from "../services/apiError";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { SnackTypes } from "../types/types";
 
@@ -24,8 +25,7 @@ export default function SwrProvider({ children }: { children: ReactNode }) {
       errorRetryCount: 3,
 
       onError: (error: unknown) => {
-        // fetchers throw the raw Response rather than an Error.
-        const status = error instanceof Response ? error.status : undefined;
+        const status = error instanceof ApiError ? error.status : undefined;
 
         // 401/403 are handled by the auth flow - surfacing them here would
         // snack on every page a logged-out visitor opens. 404 is a legitimate

@@ -11,6 +11,7 @@ import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
+import { ApiError } from "../../../services/apiError";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 import { type Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/EditProfile.module.scss";
@@ -92,7 +93,7 @@ const EditOrgProfile: NextPage = () => {
       reload();
       addSnack("Profil oppdatert", SnackTypes.SUCCESS);
     } catch (error) {
-      if (error instanceof Response && error.status === 409) {
+      if (error instanceof ApiError && error.status === 409) {
         addSnack("URL-id er allerede i bruk", SnackTypes.ERROR);
       } else {
         addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);

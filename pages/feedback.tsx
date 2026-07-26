@@ -7,6 +7,7 @@ import TextInputLong from "../components/inputs/TextInputLong";
 import useBack from "../hooks/useBack";
 import useSnack from "../hooks/useSnack";
 import useUser from "../hooks/useUser";
+import { ApiError } from "../services/apiError";
 import { createFeedback } from "../services/feedback";
 import { ButtonType, SnackTypes } from "../types/types";
 import styles from "../styles/FeedbackPage.module.scss";
@@ -48,7 +49,7 @@ export default function FeedbackPage() {
       setMessage("");
       addSnack("Takk! Tilbakemeldingen din er sendt.", SnackTypes.SUCCESS);
     } catch (error) {
-      if (error instanceof Response) {
+      if (error instanceof ApiError) {
         if (error.status === 429) {
           addSnack(
             "Du kan sende maks en tilbakemelding per time",

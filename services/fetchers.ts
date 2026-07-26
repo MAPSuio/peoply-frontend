@@ -1,3 +1,4 @@
+import { ApiError, ApiTimeoutError } from "./apiError";
 import { getApiBaseUrl } from "./apiUrl";
 import { refreshAccessToken } from "./auth";
 
@@ -13,11 +14,69 @@ export const MAX_PAGE_SIZE = 100;
  */
 const MAX_PAGES = 50;
 
+/**
+ * Default budget for a single request to the Peoply API before it's treated
+ * as failed. Override per call via `options.timeoutMs`.
+ */
+export const DEFAULT_TIMEOUT_MS = 15_000;
+
+export interface FetchOptions {
+  /** Overrides DEFAULT_TIMEOUT_MS for this call. */
+  timeoutMs?: number;
+}
+
+/**
+ * Best-effort read of a failed response's body, so ApiError can carry it for
+ * the few callers that need to inspect it (e.g. a 429's retry-after
+ * payload). Reads as text first since not every error body is JSON, and
+ * swallows read failures entirely - a body we can't read is not worth
+ * losing the original status-based error over.
+ */
+async function readErrorBody(response: Response): Promise<unknown> {
+  try {
+    const text = await response.text();
+    if (!text) return undefined;
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return text;
+    }
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Runs `fetch` with an AbortController-based timeout. A timeout and any
+ * other failure that happens before a response arrives (offline, DNS, CORS)
+ * both surface as the same ApiTimeoutError - from the caller's side both mean
+ * "we don't know what the server would have said".
+ */
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  path: string,
+  timeoutMs: number,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } catch {
+    throw new ApiTimeoutError(path);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function fetchFromPeoplyApiJson(
   resource: RequestInfo,
   init?: RequestInit,
+  options?: FetchOptions,
 ) {
-  const res = await fetchFromPeoplyApi(resource, init);
+  const res = await fetchFromPeoplyApi(resource, init, options);
 
   /* The API answers "this resource does not exist for you" with 204 and an
      empty body - GET /users/:id/registrations/:eventId does it for every event
@@ -33,24 +92,45 @@ export async function fetchFromPeoplyApiJson(
 export async function fetchFromPeoplyApi(
   resource: RequestInfo,
   init?: RequestInit,
+  options?: FetchOptions,
   // version = "v1",
 ) {
-  const url = `${getApiBaseUrl()}${resource}`;
-  let response = await fetch(url, { credentials: "include", ...init });
+  const path = String(resource);
+  const url = `${getApiBaseUrl()}${path}`;
+  const timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+
+  let response = await fetchWithTimeout(
+    url,
+    { credentials: "include", ...init },
+    path,
+    timeoutMs,
+  );
   if (response.status === 401) {
     const refresh = await refreshAccessToken();
     if (refresh.ok) {
-      response = await fetch(url, {
-        credentials: "include",
-        ...init,
-      });
+      response = await fetchWithTimeout(
+        url,
+        { credentials: "include", ...init },
+        path,
+        timeoutMs,
+      );
     } else {
-      throw refresh;
+      throw new ApiError(
+        `Token refresh failed with status ${refresh.status}`,
+        refresh.status,
+        "/auth/refresh",
+      );
     }
   }
 
   if (!response.ok) {
-    throw response;
+    const body = await readErrorBody(response);
+    throw new ApiError(
+      `Request to ${path} failed with status ${response.status}`,
+      response.status,
+      path,
+      body,
+    );
   }
 
   return response;
@@ -67,6 +147,7 @@ export async function fetchFromPeoplyApi(
  */
 export async function fetchAllFromPeoplyApiJson<T>(
   resource: string,
+  options?: FetchOptions,
 ): Promise<T[]> {
   const separator = resource.includes("?") ? "&" : "?";
   const items: T[] = [];
@@ -76,9 +157,16 @@ export async function fetchAllFromPeoplyApiJson<T>(
     // Some endpoints validate skip as >= 1, so omit it on the first page
     // rather than sending skip=0.
     const query = `take=${MAX_PAGE_SIZE}${skip ? `&skip=${skip}` : ""}`;
-    const batch: T[] = await fetchFromPeoplyApiJson(
+    const batch: T[] | undefined = await fetchFromPeoplyApiJson(
       `${resource}${separator}${query}`,
+      undefined,
+      options,
     );
+
+    // A 204 (no content for this caller) comes back as undefined rather than
+    // an empty array - treat it the same as an empty/short page: nothing more
+    // to fetch, rather than crashing on `undefined.push(...)`.
+    if (!batch?.length) break;
 
     items.push(...batch);
 

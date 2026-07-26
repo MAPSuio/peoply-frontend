@@ -20,6 +20,7 @@ import BackButton from "../../../components/BackButton";
 import useOrganization from "../../../hooks/useOrganization";
 import TextInput from "../../../components/inputs/TextInput";
 import Button from "../../../components/Button";
+import { ApiError } from "../../../services/apiError";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 import PublicIcon from "../../../components/svgs/PublicIcon";
 import LinkIcon from "../../../components/svgs/LinkIcon";
@@ -168,11 +169,7 @@ const OrganizationSettings: NextPage = () => {
       await mutateIcsFeed();
       addSnack("ICS-integrasjonen er oppdatert", SnackTypes.SUCCESS);
     } catch (error: unknown) {
-      const status =
-        error instanceof Response
-          ? error.status
-          : ((error as { status?: number; statusCode?: number })?.status ??
-            (error as { status?: number; statusCode?: number })?.statusCode);
+      const status = error instanceof ApiError ? error.status : undefined;
 
       addSnack(
         status === 400
@@ -207,11 +204,7 @@ const OrganizationSettings: NextPage = () => {
       setSavedSocialLinks(nextSocialLinks);
       addSnack("Sosiale lenker er oppdatert", SnackTypes.SUCCESS);
     } catch (error: unknown) {
-      const status =
-        error instanceof Response
-          ? error.status
-          : ((error as { status?: number; statusCode?: number })?.status ??
-            (error as { status?: number; statusCode?: number })?.statusCode);
+      const status = error instanceof ApiError ? error.status : undefined;
 
       addSnack(
         status === 400
