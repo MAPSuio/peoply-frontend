@@ -37,7 +37,9 @@ import {
   ButtonSize,
   ButtonType,
   Event,
-  Organization,
+  /* Type-only: shadowed by the `Organization` component below - see the same
+     note in pages/events/[eid]/index.tsx. */
+  type Organization,
   OrganizationReportStatus,
   SnackTypes,
 } from "../../../types/types";
