@@ -12,18 +12,15 @@
  * same import specifier resolve to the same chunk, so a page showing both
  * carousels fetches Swiper once.
  *
- * `swiper/css` is imported here rather than in the page for the same reason -
- * from the page it would be pulled into the eager CSS regardless of where the
- * JS ended up.
+ * Swiper's stylesheets are deliberately NOT imported here - they live in
+ * pages/index.tsx so they are present at first paint rather than arriving with
+ * this chunk. See the comment there, and the one in styles/Home.module.scss.
  */
 import Link from "next/link";
 import { UrlObject } from "url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/scrollbar";
-import "swiper/css/free-mode";
 
 import EventCard from "./EventCard";
 import OrganizationAvatar from "./OrganizationAvatar";
