@@ -1,13 +1,16 @@
 {
   "extends": "stylelint-config-recommended-scss",
-  "plugins": ["stylelint-order", "stylelint-scss"],
+  "plugins": [
+    "@stylistic/stylelint-plugin",
+    "stylelint-order",
+    "stylelint-scss"
+  ],
   "rules": {
-    "indentation": 2,
+    "@stylistic/indentation": 2,
+    "@stylistic/color-hex-case": "upper",
     "order/properties-alphabetical-order": true,
     "scss/at-rule-no-unknown": null,
-    "scss/at-import-no-partial-leading-underscore": null,
     "block-no-empty": true,
-    "color-hex-case": "upper",
     "color-named": "never",
     "comment-no-empty": true
   }
