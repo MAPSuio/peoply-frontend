@@ -14,22 +14,23 @@ import {
 
 // Icons
 import TitleCircle from "./TitleCircle";
-import PlaceCircleSummary from "./PlaceCircleSummary";
-import InfoCircleSummary from "./InfoCircleSummary";
+import PlaceIconSummary from "./svgs/PlaceIconSummary";
+import IconCircle from "./IconCircle";
+import InfoIconSummary from "./svgs/InfoIconSummary";
 import RadioInput from "./inputs/RadioInput";
 import UnlistedIcon from "../components/svgs/UnlistedIcon";
 import PublicIcon from "../components/svgs/PublicIcon";
 import PrivateIconSmall from "./svgs/PrivateIconSmall";
 import PublicIconSmall from "./svgs/PublicIconSmall";
 import PlusIcon from "./svgs/PlusIcon";
-import ImageCircleSummary from "./ImageCircleSummary";
-import DataCircleSummary from "./DataCircleSummary";
+import ImageIconSummary from "./svgs/ImageIconSummary";
+import DataIconSummary from "./svgs/DataIconSummary";
 import PlaceholderImage from "../assets/images/cat.jpg";
 import MinusIcon from "./svgs/MinusIcon";
 
 // Components
 import SummaryCard from "./SummaryCard";
-import CalendarCircleSummary from "./CalendarCircleSummary";
+import CalendarIconSummary from "./svgs/CalendarIconSummary";
 import TextInput from "./inputs/TextInput";
 import DateInput from "./inputs/DateInput";
 import TimeInput from "./inputs/TimeInput";
@@ -643,7 +644,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCheck={acceptChange}
           onCross={rejectChange}
           inputId={1}
-          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={InfoIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           editButtonDisabled={editOpen}
           editButtonOnClick={() => setEditOpen(true)}
@@ -724,7 +730,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           onCheck={acceptChange}
           onCross={rejectChange}
           inputId={2}
-          Icon={<CalendarCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={CalendarIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           editButtonDisabled={editOpen}
           editButtonOnClick={() => setEditOpen(true)}
@@ -1030,7 +1041,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={3}
-          Icon={<PlaceCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={PlaceIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           valid={validLocationName}
           inputComponent={
@@ -1090,7 +1106,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={4}
-          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={InfoIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           valid={validDescription}
           inputComponent={
@@ -1125,7 +1146,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={5}
-          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={InfoIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           valid={validCategories}
           inputComponent={
@@ -1169,7 +1195,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={6}
-          Icon={<ImageCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={ImageIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           inputComponent={
             <>
@@ -1212,7 +1243,12 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
           editButtonOnClick={() => setEditOpen(true)}
           editButtonDisabled={editOpen}
           inputId={7}
-          Icon={<DataCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={DataIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           editButtonVisible
           inputComponent={
             <>

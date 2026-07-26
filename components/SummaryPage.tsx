@@ -9,11 +9,12 @@ import SummaryCard from "./SummaryCard";
 import TitleCircle from "./TitleCircle";
 import Tag from "./Tag";
 
-import CalendarCircleSummary from "./CalendarCircleSummary";
-import DataCircleSummary from "./DataCircleSummary";
-import PlaceCircleSummary from "./PlaceCircleSummary";
-import InfoCircleSummary from "./InfoCircleSummary";
-import ImageCircleSummary from "./ImageCircleSummary";
+import CalendarIconSummary from "./svgs/CalendarIconSummary";
+import IconCircle from "./IconCircle";
+import DataIconSummary from "./svgs/DataIconSummary";
+import PlaceIconSummary from "./svgs/PlaceIconSummary";
+import InfoIconSummary from "./svgs/InfoIconSummary";
+import ImageIconSummary from "./svgs/ImageIconSummary";
 import PrivateIconSmall from "./svgs/PrivateIconSmall";
 import PublicIconSmall from "./svgs/PublicIconSmall";
 import NoLimitIconSmall from "./svgs/NoLimitIconSmall";
@@ -313,7 +314,12 @@ const SummaryPage = ({
         )}
         <SummaryCard
           inputId={1}
-          Icon={<CalendarCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={CalendarIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           onClick={buttonOnClick}
         >
           <p
@@ -359,7 +365,12 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={2}
-          Icon={<PlaceCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={PlaceIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           onClick={buttonOnClick}
         >
           <p className={`${styles.placeText} ${styles.marginBottomSmall}`}>
@@ -378,7 +389,12 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={3}
-          Icon={<InfoCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={InfoIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           onClick={buttonOnClick}
         >
           <div className={styles.descriptionContainer}>
@@ -405,7 +421,12 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={4}
-          Icon={<ImageCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={ImageIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           onClick={buttonOnClick}
         >
           <div className={styles.imageContainer}>
@@ -420,7 +441,12 @@ const SummaryPage = ({
         </SummaryCard>
         <SummaryCard
           inputId={5}
-          Icon={<DataCircleSummary className={styles.summaryIcon} />}
+          Icon={
+            <IconCircle
+              Icon={DataIconSummary}
+              iconClassName={styles.summaryIcon}
+            />
+          }
           onClick={buttonOnClick}
         >
           <div className={styles.dataContainer}>
