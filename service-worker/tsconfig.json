@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    /* A service worker has no `window` and no DOM. `webworker` and `dom` both
+       declare globals of the same names with different types, so they cannot be
+       merged into the root tsconfig - this directory is excluded there and
+       type-checked through this file instead (see the `typecheck` script). */
+    "lib": ["esnext", "webworker"],
+    "types": ["@serwist/next/typings"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": []
+}
