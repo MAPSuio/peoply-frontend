@@ -138,6 +138,14 @@ Three things it does that will bite you if you bypass it:
   chunks, so a first page load costs ~20 kB more gzipped and the precache holds
   215 entries instead of 128. `--webpack` still works as an escape hatch if a
   build ever misbehaves, and `serwist.config.mjs` is written to handle either.
+- **sharp is force-deduped.** Next declares `sharp@^0.34.5` as an optional
+  dependency, and every 0.34.x carries four high-severity libvips CVEs with no
+  patched release in that line — the fix only exists in 0.35. The `overrides`
+  entry in `package.json` therefore points Next at our own top-level sharp,
+  deliberately outside the range it asks for. If Next ever starts using a sharp
+  API that 0.35 changed, image optimisation is where it will break, so re-run the
+  check that justified this: request `/_next/image?url=...&w=256&q=75` before and
+  after and compare the bytes, not just the status code.
 - **Analytics.** Umami (loaded in `pages/_app.tsx`, website ID
   `7ec1d359-0bab-4bee-b214-d6f116701233`) plus Vercel Analytics. Anonymized — the
   user-facing wording about this lives in `pages/faq.tsx`. Temporary Umami owner
