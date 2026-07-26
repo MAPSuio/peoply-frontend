@@ -13,6 +13,19 @@ const nextConfig = {
   },
 
   reactStrictMode: true,
+
+  experimental: {
+    // TypeScript 7 is the native Go port. It ships the `tsc` CLI but not the
+    // JS compiler API (`createProgram` and friends) that `next build` reaches
+    // for to run its own type check, so without this the build dies at
+    // "Running TypeScript ..." with a clear message and exit code 1.
+    //
+    // This makes Next shell out to the CLI instead - the same binary
+    // `npm run typecheck` already uses, so the two now agree by construction
+    // rather than by coincidence. Drop the flag once Next reads TS 7 natively.
+    useTypeScriptCli: true,
+  },
+
   sassOptions: {
     // Only value-producing partials belong here. `_themes.scss` emits actual
     // rule blocks (html.dark/.night/.light), so injecting it into every

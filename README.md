@@ -144,6 +144,16 @@ Three things it does that will bite you if you bypass it:
   chunks, so a first page load costs ~20 kB more gzipped and the precache holds
   215 entries instead of 128. `--webpack` still works as an escape hatch if a
   build ever misbehaves, and `serwist.config.mjs` is written to handle either.
+- **TypeScript 7 is the native port, and `next build` needs a flag for it.**
+  TS 7 ships the `tsc` CLI but not the JS compiler API, which is what
+  `next build` reaches for to run its own type check — without
+  `experimental.useTypeScriptCli` in `next.config.js` the build stops at
+  "Running TypeScript ..." and exits 1. The flag makes Next shell out to the
+  same binary `npm run typecheck` already uses, so the two agree by
+  construction rather than by coincidence. It does **not** weaken the check:
+  a type error still fails `next build` with exit 1 and emits no service
+  worker. Remove the flag only once Next reads TS 7 natively, and verify by
+  planting a deliberate type error rather than by the build going green.
 - **sharp is force-deduped.** Next declares `sharp@^0.34.5` as an optional
   dependency, and every 0.34.x carries four high-severity libvips CVEs with no
   patched release in that line — the fix only exists in 0.35. The `overrides`
