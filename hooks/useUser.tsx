@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { ApiError } from "../services/apiError";
 import { deleteMe, logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { fetchIpInfo } from "../services/ip";
@@ -83,9 +84,9 @@ export function UserProvider({
           return;
         }
 
-        const response = error as Response;
+        const apiError = error instanceof ApiError ? error : undefined;
 
-        if (response?.status === 401) {
+        if (apiError?.status === 401) {
           authRetryAttempted.current = false;
           setUser(undefined);
           setError("Unauthorized");

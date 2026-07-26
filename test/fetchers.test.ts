@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ApiError, ApiTimeoutError } from "../services/apiError";
 import {
   MAX_PAGE_SIZE,
   fetchAllFromPeoplyApiJson,
@@ -72,9 +73,10 @@ describe("fetchFromPeoplyApiJson", () => {
     ).resolves.toEqual({ regStatus: "GOING" });
   });
 
-  it("still throws the response itself on a failure", async () => {
+  it("throws an ApiError carrying the status on a failure", async () => {
     /* onError distinguishes 401/403/404 from real errors by reading .status off
-       the thrown value, so the raw Response has to survive. */
+       the thrown value, so that has to survive as a typed ApiError rather
+       than the raw Response. */
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => new Response("{}", { status: 500 })),
@@ -82,7 +84,56 @@ describe("fetchFromPeoplyApiJson", () => {
 
     await expect(
       fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
-    ).rejects.toBeInstanceOf(Response);
+    ).rejects.toBeInstanceOf(ApiError);
+
+    await expect(
+      fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
+    ).rejects.toMatchObject({
+      status: 500,
+      path: "/users/u1/registrations/e1",
+    });
+  });
+
+  it("carries the parsed error body on the ApiError", async () => {
+    /* pages/orgs/[oid]/index.tsx reads e.body off a 429 to show a retry
+       countdown - the body has to survive the throw. */
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ remainingSeconds: 42 }), {
+            status: 429,
+          }),
+      ),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/organizations/o1/report"),
+    ).rejects.toMatchObject({ status: 429, body: { remainingSeconds: 42 } });
+  });
+
+  it("surfaces a timeout as an ApiTimeoutError instead of hanging forever", async () => {
+    /* fetch never resolves on its own here - only aborting it does, exactly
+       like a request stuck against a dead API. */
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        (_url: string, init?: RequestInit) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => {
+              reject(
+                new DOMException("The operation was aborted.", "AbortError"),
+              );
+            });
+          }),
+      ),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/users/u1/registrations/e1", undefined, {
+        timeoutMs: 10,
+      }),
+    ).rejects.toBeInstanceOf(ApiTimeoutError);
   });
 });
 
@@ -159,6 +210,51 @@ describe("fetchAllFromPeoplyApiJson", () => {
 
     expect(result).toHaveLength(200);
     expect(requested).toHaveLength(3);
+  });
+
+  it("treats an undefined first batch (204) as no pages instead of crashing", async () => {
+    /* The documented 204 case: the API answers "nothing here" with an empty
+       body instead of an empty array, and fetchFromPeoplyApiJson turns that
+       into `undefined`. `items.push(...undefined)` used to throw. */
+    const requested: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        requested.push(url);
+        return new Response(null, { status: 204 });
+      }),
+    );
+
+    await expect(fetchAllFromPeoplyApiJson("/events")).resolves.toEqual([]);
+    expect(requested).toHaveLength(1);
+  });
+
+  it("stops cleanly when a later page comes back as an undefined batch (204)", async () => {
+    const requested: string[] = [];
+    const firstPage = rows(MAX_PAGE_SIZE);
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        requested.push(url);
+        const skip = Number(new URL(url).searchParams.get("skip") ?? 0);
+
+        if (skip === 0) {
+          return {
+            ok: true,
+            status: 200,
+            json: async () => firstPage,
+          };
+        }
+
+        return new Response(null, { status: 204 });
+      }),
+    );
+
+    const result = await fetchAllFromPeoplyApiJson("/events");
+
+    expect(result).toEqual(firstPage);
+    expect(requested).toHaveLength(2);
   });
 
   it("propagates a failed response instead of returning a partial list", async () => {
