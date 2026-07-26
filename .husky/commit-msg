@@ -1,0 +1,5 @@
+# Rejects commit messages that are not Conventional Commits.
+#
+# $1 is the file git puts the message in. --edit tells commitlint to read it
+# from there rather than from stdin.
+npx commitlint --edit "$1"
