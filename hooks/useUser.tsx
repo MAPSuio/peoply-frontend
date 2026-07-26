@@ -137,9 +137,9 @@ export function UserProvider({
             switchContext(org);
             setCurrentOrg(org);
           }
-        } catch (error: any) {
+        } catch (error) {
           if (active) {
-            setError(error.message);
+            setError(error instanceof Error ? error.message : undefined);
           }
         }
       };

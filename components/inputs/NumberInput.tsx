@@ -1,7 +1,7 @@
 import ErrorIcon from "../svgs/ErrorIcon";
 
 import styles from "../../styles/NumberInput.module.scss";
-import { useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 interface NumberInputProps {
   value: string;
@@ -13,7 +13,7 @@ interface NumberInputProps {
   min?: string;
   errorMessage: string;
   required?: boolean;
-  handleChange: (e: any) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const NumberInput = ({

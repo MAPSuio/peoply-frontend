@@ -23,7 +23,7 @@ interface DescriptionStepProps {
   validDataMap: Map<InputPages, boolean>;
   buttonOnClick: (step: number) => void;
   categories: Array<{ id: number; name: string }>;
-  updateEventDescription: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateEventDescription: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   eventDescriptionValid: boolean;
   setEventDescriptionValid: Dispatch<SetStateAction<boolean>>;
   updateEventCategories: (categoryId: number) => void;

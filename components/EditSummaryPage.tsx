@@ -1,6 +1,7 @@
 // Types
 import {
   ButtonType,
+  type Category,
   type Event,
   type EventCategory,
   type Organization,
@@ -216,7 +217,9 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   update the tempEventObject state with the new value of the input.
   The input id is used as the key in the tempEventObject.
   */
-  const updateTempObjectProps = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateTempObjectProps = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     let newObjectProps: EventObjectProps;
 
     for (const key in tempEventObject) {
@@ -519,7 +522,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
 
   const router = useRouter();
   /* Get all the possible event categories. */
-  const { data: allCategories } = useSWR("/categories");
+  const { data: allCategories } = useSWR<Category[]>("/categories");
   const { data: organizations } = useSWR<Organization[]>(
     "/organizations?orderBy=name",
     fetchAllFromPeoplyApiJson,

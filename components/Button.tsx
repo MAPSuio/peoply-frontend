@@ -82,8 +82,8 @@ export default function Button({
   return (
     <button
       type="button"
-      onClick={async (e: any) => {
-        let onClickResult: any = null;
+      onClick={async (e: MouseEvent<HTMLButtonElement>) => {
+        let onClickResult: unknown = null;
 
         // show loading wheel after `loadingIconLatency` ms
         setOnClickDisableState(true);

@@ -1,3 +1,4 @@
+import type { ChangeEvent } from "react";
 import { ButtonType } from "../types/types";
 import TextInputLong from "./inputs/TextInputLong";
 import Modal from "./Modal";
@@ -27,7 +28,9 @@ export default function FormQuestionModal({
       <TextInputLong
         label="Ditt svar til arrangøren"
         value={formAnswer}
-        handleChange={(e: any) => setFormAnswer(e.target.value)}
+        handleChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+          setFormAnswer(e.target.value)
+        }
         inputId="formAnswer"
         inputName="formAnswer"
         placeholder=""

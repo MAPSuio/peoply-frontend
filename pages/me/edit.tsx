@@ -57,7 +57,7 @@ const EditProfile: NextPage = () => {
     reload();
   };
 
-  const updateUserDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateUserDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 
@@ -97,9 +97,9 @@ const EditProfile: NextPage = () => {
 
     return [
       { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([key, value]) => {
+      ...Object.entries(FoodPreference).map(([, value]) => {
         return {
-          value: key,
+          value,
           label: valueToLabel(value),
         };
       }),

@@ -70,7 +70,7 @@ const EditOrgProfile: NextPage = () => {
     reload();
   };
 
-  const updateOrgDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateOrgDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 
@@ -91,8 +91,8 @@ const EditOrgProfile: NextPage = () => {
       mutate();
       reload();
       addSnack("Profil oppdatert", SnackTypes.SUCCESS);
-    } catch (error: any) {
-      if (error.status === 409) {
+    } catch (error) {
+      if (error instanceof Response && error.status === 409) {
         addSnack("URL-id er allerede i bruk", SnackTypes.ERROR);
       } else {
         addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);

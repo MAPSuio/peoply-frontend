@@ -24,6 +24,7 @@ import { formatDateRange, getWeekday } from "../../utils/functions";
 /* Types. */
 import {
   type Event,
+  type EventArranger,
   type Favorite,
   type Registration,
   RegStatus,
@@ -43,13 +44,19 @@ import { isEventFinished } from "../../utils/event";
 
 const MyEvents = () => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
-  const [activeRegistrations, setActiveRegistrations] = useState<any[]>([]);
+  // Registration/Favorite/EventArranger differ, but every card-rendering
+  // consumer below only ever reads the shared `.event` field.
+  const [activeRegistrations, setActiveRegistrations] = useState<
+    Array<Registration | Favorite | EventArranger>
+  >([]);
   const [dateAndEventsMap, setDateAndEventsMap] = useState(new Map());
-  const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<any[]>([]);
+  const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<
+    Array<{ date: string; events: Array<Event> }>
+  >([]);
   const { user, loading } = useUser();
   const redirectToLogin = useRedirectToLogin();
 
-  const { data: eventsArranging } = useSWR<Event[]>(
+  const { data: eventsArranging } = useSWR<EventArranger[]>(
     `/users/${user?.id}/arranging`,
   );
   const { data: eventsFavorited } = useSWR<Favorite[]>(
@@ -90,7 +97,7 @@ const MyEvents = () => {
   useEffect(() => {
     dateAndEventsMap.clear();
 
-    activeRegistrations.forEach((event: Registration) => {
+    activeRegistrations.forEach((event) => {
       const eventData = event.event;
       const startDate = new Date(eventData.startDate);
       startDate.setHours(0, 0, 0, 0);

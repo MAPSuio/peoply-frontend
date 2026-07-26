@@ -65,9 +65,9 @@ const FoodPreferences: NextPage = () => {
 
     return [
       { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([key, value]) => {
+      ...Object.entries(FoodPreference).map(([, value]) => {
         return {
-          value: key,
+          value,
           label: valueToLabel(value),
         };
       }),

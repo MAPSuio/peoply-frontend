@@ -207,7 +207,7 @@ export default function useCreateEventForm() {
     });
   };
 
-  const updateEventDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventDescription: e.target.value,
@@ -543,7 +543,7 @@ export default function useCreateEventForm() {
     });
   };
 
-  const updateEventFormQuestion = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventFormQuestion = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventFormQuestion: e.target.value,

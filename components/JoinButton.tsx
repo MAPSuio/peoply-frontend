@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useSWR, { type KeyedMutator } from "swr";
+import useSWR from "swr";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
 import useRegistrationCountdown from "../hooks/useRegistrationCountdown";
 import useSnack from "../hooks/useSnack";
@@ -39,7 +39,9 @@ interface JoinButtonProps {
   countdownText?: string;
   regClosedText?: string;
   bannedText?: string;
-  updateOnChange?: KeyedMutator<any>[];
+  /* SWR mutators to revalidate after the registration changes - see
+     EventActions for why these aren't typed as KeyedMutator<T>. */
+  updateOnChange?: Array<() => unknown>;
   useUnregisterModal?: boolean;
   small?: boolean;
   /** Overrides `small` when set. */

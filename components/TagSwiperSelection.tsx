@@ -8,20 +8,20 @@ import "swiper/css/free-mode";
 import styles from "../styles/TagSwiperSelection.module.scss";
 import Tag from "./Tag";
 
-interface TagSwiperSelectionProps {
+interface TagSwiperSelectionProps<T extends string> {
   options: {
     label: string;
-    value: string;
+    value: T;
   }[];
-  selected: string;
-  setSelected: (value: any) => void;
+  selected: T;
+  setSelected: (value: T) => void;
 }
 
-const TagSwiperSelection = ({
+const TagSwiperSelection = <T extends string>({
   options,
   selected,
   setSelected,
-}: TagSwiperSelectionProps) => {
+}: TagSwiperSelectionProps<T>) => {
   return (
     <div className={styles.container}>
       <Swiper

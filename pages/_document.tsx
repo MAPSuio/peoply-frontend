@@ -1,16 +1,10 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
-class MyDocument extends Document {
-  state: any;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      appName: "Peoply",
-      appUrl: "https://peoply.app",
-      appThemeColor: "#7C4DFF",
-    };
-  }
+const APP_NAME = "Peoply";
+const APP_URL = "https://peoply.app";
+const APP_THEME_COLOR = "#7C4DFF";
 
+class MyDocument extends Document {
   // icons generated using https://www.favicon-generator.org/
   render() {
     return (
@@ -27,16 +21,10 @@ class MyDocument extends Document {
           <link rel="manifest" href="/manifest.webmanifest" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="msapplication-tap-highlight" content="no" />
-          <meta name="application-name" content={this.state.appName} />
-          <meta
-            name="apple-mobile-web-app-title"
-            content={this.state.appName}
-          />
-          <meta
-            name="msapplication-TileColor"
-            content={this.state.appThemeColor}
-          />
-          <meta name="theme-color" content={this.state.appThemeColor} />
+          <meta name="application-name" content={APP_NAME} />
+          <meta name="apple-mobile-web-app-title" content={APP_NAME} />
+          <meta name="msapplication-TileColor" content={APP_THEME_COLOR} />
+          <meta name="theme-color" content={APP_THEME_COLOR} />
           {/* <meta
             name="theme-color"
             media="(prefers-color-scheme: light)"

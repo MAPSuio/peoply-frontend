@@ -37,7 +37,7 @@ interface ExtraInfoStepProps {
   updateEventExternalUrl: (e: React.ChangeEvent<HTMLInputElement>) => void;
   externalRegistrationUrlValid: boolean;
   setEventHasFormQuestion: (value: boolean) => void;
-  updateEventFormQuestion: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  updateEventFormQuestion: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const ExtraInfoStep = ({

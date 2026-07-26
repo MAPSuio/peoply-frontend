@@ -1,17 +1,17 @@
 import type { ReactElement } from "react";
 import styles from "../styles/TabSelection.module.scss";
 
-interface TabSelectionProps {
-  options: { label: string; value: string; icon?: ReactElement }[];
-  selected: string;
-  setSelected: (value: any) => void;
+interface TabSelectionProps<T extends string> {
+  options: { label: string; value: T; icon?: ReactElement }[];
+  selected: T;
+  setSelected: (value: T) => void;
 }
 
-const TabSelection = ({
+const TabSelection = <T extends string>({
   options,
   selected,
   setSelected,
-}: TabSelectionProps) => {
+}: TabSelectionProps<T>) => {
   return (
     <div className={styles.container}>
       {options.map(({ label, value, icon }) => {

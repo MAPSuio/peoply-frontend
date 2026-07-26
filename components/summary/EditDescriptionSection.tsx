@@ -17,7 +17,7 @@ interface EditDescriptionSectionProps {
   validDescription: boolean;
   setValidDescription: Dispatch<SetStateAction<boolean>>;
   tempDescription: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 /* Editable description card used by EditSummaryPage (event editing). */

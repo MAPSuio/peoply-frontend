@@ -122,7 +122,7 @@ export interface GeolocationContextType {
 
 export interface NotificationsContextType {
   notifications?: PeoplyNotification[];
-  notificationsError?: any;
+  notificationsError?: unknown;
   reload: () => void;
   markAsRead: () => void;
   hasUnreadNotifications: boolean;
@@ -134,7 +134,7 @@ export interface Snack {
 }
 
 export interface SnackContextType {
-  addSnack: any;
+  addSnack: (label: string, type?: SnackTypes) => void;
 }
 
 export enum InvitationStatus {

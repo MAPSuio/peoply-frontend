@@ -28,7 +28,7 @@ interface TitleStepProps {
   updateEventTitle: (e: ChangeEvent<HTMLInputElement>) => void;
   eventTitleValid: boolean;
   setEventTitleValid: Dispatch<SetStateAction<boolean>>;
-  validArrangersOptions: { value: any; label: string }[];
+  validArrangersOptions: { value: string; label: string }[];
   updateEventArrangerId: (arrangerId: string) => void;
   coOrganizerOptions: { id: string; label: string }[];
   visibleCoOrganizerOptions: { id: string; label: string }[];

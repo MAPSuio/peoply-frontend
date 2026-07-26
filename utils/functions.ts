@@ -5,6 +5,7 @@ import {
   OrganizationRole,
   EventDateFormat,
 } from "../types/types";
+import type { ParsedUrlQuery } from "querystring";
 
 import React from "react";
 
@@ -658,7 +659,7 @@ function calculateEditDistance(s1: string, s2: string): number {
   return d[m][n];
 }
 
-function queryToString(query: any) {
+function queryToString(query: ParsedUrlQuery) {
   return Object.keys(query)
     .map((key) => `${key}=${query[key]}`)
     .join("&");

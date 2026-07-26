@@ -4,17 +4,17 @@ import SmallCheckCircle from "../components/SmallCheckCircle";
 // Styles.
 import styles from "../styles/RadioButton.module.scss";
 
-interface RadioButtonProps {
-  id: number;
+interface RadioButtonProps<T> {
+  id: T;
   text: string;
   Icon: React.FunctionComponent;
   selected?: boolean;
   hintText?: string;
-  onClick: (id: any) => void;
+  onClick: (id: T) => void;
   card?: boolean;
 }
 
-const RadioButton = ({
+const RadioButton = <T,>({
   id,
   text,
   Icon,
@@ -22,7 +22,7 @@ const RadioButton = ({
   hintText,
   onClick,
   card,
-}: RadioButtonProps) => {
+}: RadioButtonProps<T>) => {
   const getRadioButtonStyles = () => {
     return selected
       ? `${styles.buttonContainer} ${styles.selected} ${card && styles.card}`
