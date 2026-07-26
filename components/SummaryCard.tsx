@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import styles from "../styles/SummaryCard.module.scss";
 import { throwNotImportedError } from "../utils/functions";
 import AcceptRejectButton from "./AcceptRejectButton";
@@ -6,10 +6,10 @@ import EditIconGlass from "./EditIconGlass";
 
 interface SummaryCardProps {
   inputId: number;
-  Icon: JSX.Element;
+  Icon: ReactElement;
   children: React.ReactNode;
   onClick?: (inputId: number) => void;
-  inputComponent?: JSX.Element;
+  inputComponent?: ReactElement;
   editButtonVisible?: boolean;
   editButtonDisabled?: boolean;
   onCheck?: () => void;

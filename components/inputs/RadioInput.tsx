@@ -1,3 +1,4 @@
+import { FunctionComponent } from "react";
 import RadioButton from "../RadioButton";
 
 import styles from "../../styles/RadioInput.module.scss";
@@ -7,7 +8,11 @@ interface RadioInputProps {
     id: any;
     text: string;
     hintText?: string;
-    icon: React.VoidFunctionComponent;
+    // Was React.VoidFunctionComponent, dropped in React 19's types.
+    // FunctionComponent is the exact replacement: since @types/react 18 it
+    // no longer declares an implicit `children`, which was the only thing
+    // VoidFunctionComponent existed to opt out of.
+    icon: FunctionComponent;
     active: boolean;
   }>;
   label: string;

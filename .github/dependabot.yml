@@ -33,6 +33,16 @@ updates:
           - "@vitest/*"
           - jsdom
           - "@testing-library/*"
+      # Also first, and for the same reason. React 19 has landed, so the ignore
+      # block that kept the bot off it is gone - but the four packages still
+      # have to move together, and a React minor would otherwise be swallowed
+      # by production-minor-and-patch below and split from its @types.
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
       production-minor-and-patch:
         dependency-type: production
         update-types:
@@ -43,19 +53,6 @@ updates:
         update-types:
           - minor
           - patch
-    ignore:
-      # React 19 is a coordinated upgrade: react, react-dom and both @types
-      # packages have to move together, and Next 16 has its own migration notes
-      # for it. A bot PR bumping one of the four in isolation is noise that
-      # cannot be merged. Remove this block once React 19 has landed by hand.
-      - dependency-name: react
-        update-types: [version-update:semver-major]
-      - dependency-name: react-dom
-        update-types: [version-update:semver-major]
-      - dependency-name: "@types/react"
-        update-types: [version-update:semver-major]
-      - dependency-name: "@types/react-dom"
-        update-types: [version-update:semver-major]
 
   # The workflow pins actions by major (actions/checkout@v4,
   # digitalocean/app_action/deploy@v2), so this only fires for a new major -

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ReactElement } from "react";
 import styles from "../styles/MemberCard.module.scss";
 import { User } from "../types/types";
 import Avatar from "./Avatar";
@@ -6,7 +7,7 @@ import Avatar from "./Avatar";
 interface MemberCardProps {
   user: User;
   description?: string;
-  icon?: JSX.Element;
+  icon?: ReactElement;
   iconOnClick?: () => void;
   comment?: string;
 }

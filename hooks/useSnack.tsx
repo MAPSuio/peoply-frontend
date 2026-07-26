@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useState,
+  ReactElement,
   ReactNode,
   useEffect,
   useMemo,
@@ -19,7 +20,7 @@ export function SnackbarProvider({
   children,
 }: {
   children: ReactNode;
-}): JSX.Element {
+}): ReactElement {
   const [snacks, setSnacks] = useState<Snack[]>([]);
 
   /* Depends on `snacks` rather than running after every render: this provider
