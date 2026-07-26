@@ -28,8 +28,14 @@ const nextConfig = {
     // rule blocks (html.dark/.night/.light), so injecting it into every
     // *.module.scss made CSS Modules hash the class part of those selectors
     // (html.Button_dark__x1y2z), which can never match the plain `dark` class
-    // that next-themes sets. It is imported once from globals.scss instead.
-    additionalData: `@import "variables"; @import "mixins";`,
+    // that next-themes sets. It is loaded once from globals.scss instead.
+    //
+    // `as *` keeps every member unprefixed, so `$primary-color-400` and
+    // `@include respond-to(...)` read the same as they did under `@import`.
+    // Both partials are listed even though `_mixins.scss` uses variables
+    // itself: `@use` does not re-export what it loads, so a module that only
+    // loaded mixins would not see a single variable.
+    additionalData: `@use "variables" as *; @use "mixins" as *;`,
   },
 
   images: {
