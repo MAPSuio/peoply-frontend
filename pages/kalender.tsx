@@ -1,13 +1,13 @@
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import Header from "../components/Header";
+import BackButton from "../components/BackButton";
 import HeadComponent from "../components/HeadComponent";
 import Layout from "../components/Layout";
 import LoadingWheel from "../components/LoadingWheel";
 import Navbar from "../components/Navbar";
+import useBack from "../hooks/useBack";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, Event } from "../types/types";
@@ -19,6 +19,7 @@ const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
 });
 
 export default function CalendarPage() {
+  const goBack = useBack();
   const eventsQuery = useMemo(() => {
     const rangeStart = new Date();
     rangeStart.setHours(0, 0, 0, 0);
@@ -45,13 +46,10 @@ export default function CalendarPage() {
         description="Kalenderoversikt over kommende arrangementer."
         path="/kalender"
       />
-      <Header />
+      <BackButton onClick={goBack} style={{ marginLeft: "5%" }} />
       <Layout align={Alignment.CENTER}>
         <div className={styles.pageHeader}>
           <h1>Kalender</h1>
-          <Link href="/events" className={styles.secondaryLink}>
-            Gå til listevisning
-          </Link>
         </div>
 
         {error && (
