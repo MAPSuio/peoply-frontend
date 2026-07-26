@@ -18,6 +18,9 @@
     "format": "biome check --write .",
     "prepare": "husky"
   },
+  "overrides": {
+    "sharp": "$sharp"
+  },
   "dependencies": {
     "@serwist/next": "^9.5.12",
     "@vercel/analytics": "2.0.1",
