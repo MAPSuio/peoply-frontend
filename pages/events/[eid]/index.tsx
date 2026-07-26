@@ -45,7 +45,10 @@ import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 // Types.
 import {
   ButtonType,
-  Event,
+  /* Type-only: the component below is also called `Event`, so without this a
+     per-file transpiler cannot tell whether the import is a value that the
+     local declaration collides with, or a type that vanishes at compile time. */
+  type Event,
   EventRegistrationMode,
   EventUpdate,
   OrganizationRole,

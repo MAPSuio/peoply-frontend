@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
-import { User } from "../../types/types";
+/* Type-only: shadowed by the `User` component below - see the note in
+   pages/events/[eid]/index.tsx. */
+import type { User } from "../../types/types";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/User.module.scss";

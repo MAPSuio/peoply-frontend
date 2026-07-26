@@ -30,7 +30,7 @@
     "sharp": "0.35.3",
     "swiper": "14.0.6",
     "swr": "2.4.2",
-    "typescript": "5.0.4"
+    "typescript": "6.0.3"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
