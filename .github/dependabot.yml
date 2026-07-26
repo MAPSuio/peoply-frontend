@@ -1,0 +1,58 @@
+version: 2
+
+updates:
+  # Minor and patch bumps are grouped into one PR per ecosystem per week.
+  # Ungrouped they arrive at roughly twenty PRs a month, which is the reliable
+  # way to make nobody read any of them.
+  #
+  # Majors are deliberately left ungrouped: they land as one PR each, because
+  # they are the ones that need a changelog read before merging.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      # Conventional Commits, matching commitlint.config.js. Dependabot commits
+      # through the API and so never runs the commit-msg hook, but a history
+      # where only the bot's commits break the convention is a history where
+      # `git log --grep` and any future changelog tooling quietly miss them.
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      production-minor-and-patch:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      development-minor-and-patch:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # React 19 is a coordinated upgrade: react, react-dom and both @types
+      # packages have to move together, and Next 16 has its own migration notes
+      # for it. A bot PR bumping one of the four in isolation is noise that
+      # cannot be merged. Remove this block once React 19 has landed by hand.
+      - dependency-name: react
+        update-types: [version-update:semver-major]
+      - dependency-name: react-dom
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/react"
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/react-dom"
+        update-types: [version-update:semver-major]
+
+  # The workflow pins actions by major (actions/checkout@v4,
+  # digitalocean/app_action/deploy@v2), so this only fires for a new major -
+  # rarely, and worth looking at when it does.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+      include: scope

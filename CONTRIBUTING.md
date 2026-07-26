@@ -88,6 +88,17 @@ what you commit is what you staged.
 It checks staged files only, so it is fast and it is not a substitute for
 `npm run lint`. `git commit --no-verify` skips it when you need it to.
 
+## Dependency updates
+
+Dependabot opens PRs from `.github/dependabot.yml` — npm weekly, GitHub Actions
+monthly. Minor and patch bumps arrive grouped into one PR so they can be
+reviewed as a batch; majors come one at a time, because those are the ones worth
+reading a changelog for.
+
+They go through the same four checks as any other PR. React majors are ignored
+on purpose: `react`, `react-dom` and both `@types` packages have to move
+together, so that upgrade is done by hand.
+
 ## How deploys work
 
 Merging to `master` runs the `deploy` job in `.github/workflows/ci.yml`, which
