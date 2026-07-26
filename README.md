@@ -123,6 +123,12 @@ Three things it does that will bite you if you bypass it:
 - **SCSS.** `_variables` and `_mixins` are auto-injected into every SCSS file by
   `next.config.js` — do not import them again. `_themes.scss` is imported once
   from `globals.scss`; importing it into a module would break theming.
+- **SCSS linting is Stylelint's job alone.** Biome ignores `.scss` outright, so
+  all 117 stylesheets are covered only by `npm run lint:stylelint`. Stylelint 16
+  dropped its formatting rules on the grounds that a formatter should own them —
+  but since no formatter here touches SCSS, `indentation` and `color-hex-case`
+  live on via `@stylistic/stylelint-plugin` rather than being dropped. Remove
+  that plugin only once something else formats SCSS.
 - **Themes.** `next-themes` with three: `light`, `dark`, `night`.
 - **Locale.** `nb` only. UI copy is Norwegian.
 - **PWA.** Serwist, disabled in development. The service worker source is

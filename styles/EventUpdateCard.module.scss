@@ -51,8 +51,8 @@
 
     p {
       @include normalText();
+      overflow-wrap: break-word;
       white-space: wrap;
-      word-wrap: break-word;
 
     }
   }
