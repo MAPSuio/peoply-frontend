@@ -1,25 +1,10 @@
 .pageHeader {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  gap: $spacer-very-small-plus;
   margin: 0 auto $spacer-medium;
   width: min(100%, 72rem);
 
   h1 {
     color: var(--text-color-emphasis, $text-color-emphasis);
   }
-
-  @include desktop() {
-    align-items: flex-end;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-.secondaryLink {
-  @include link();
-  font-weight: $font-weight-medium;
 }
 
 .calendarCard {

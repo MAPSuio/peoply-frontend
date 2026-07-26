@@ -6,12 +6,6 @@
   text-align: center;
 }
 
-.calendarLink {
-  @include link();
-  font-weight: $font-weight-medium;
-  margin-top: $spacer-very-small;
-}
-
 .filterCard {
   align-items: stretch;
   background-color: var(--background-color-card, $background-color-card);
