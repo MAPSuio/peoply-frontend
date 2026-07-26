@@ -22,6 +22,17 @@ updates:
       prefix-development: chore
       include: scope
     groups:
+      # Listed first: a dependency joins the first group it matches, and these
+      # have to move together regardless of update type. vitest pins the Vite
+      # major, and anything sharing that tree has to agree with it - the first
+      # attempt at bumping @vitejs/plugin-react alone (#17) could not install
+      # at all, because it wanted a Vite major that vitest did not accept.
+      test-toolchain:
+        patterns:
+          - vitest
+          - "@vitest/*"
+          - jsdom
+          - "@testing-library/*"
       production-minor-and-patch:
         dependency-type: production
         update-types:
