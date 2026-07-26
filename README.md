@@ -152,6 +152,17 @@ Three things it does that will bite you if you bypass it:
   API that 0.35 changed, image optimisation is where it will break, so re-run the
   check that justified this: request `/_next/image?url=...&w=256&q=75` before and
   after and compare the bytes, not just the status code.
+- **postcss is force-deduped too.** Next pins `postcss` to exactly `8.4.31`,
+  which carries three advisories (one high). `npm audit fix --force` "fixes" them
+  by installing `next@9.3.3`, so the `overrides` entry points Next at our own
+  copy instead. Both overrides use the `$name` form, which resolves to the
+  top-level pin — that is why `postcss` is a devDependency we never import: an
+  override written as a literal range is invisible to Dependabot and would sit
+  at whatever version it was added at forever. Bumping it owes the same evidence
+  sharp does, one directory over: `npm run build` and diff the sha256 of every
+  file in `.next/static/**/*.css` against the previous build. Stylelint parses
+  with postcss as well, so `npm run lint` is part of that check, not separate
+  from it.
 - **Analytics.** Umami (loaded in `pages/_app.tsx`, website ID
   `7ec1d359-0bab-4bee-b214-d6f116701233`) plus Vercel Analytics. Anonymized — the
   user-facing wording about this lives in `pages/faq.tsx`. Temporary Umami owner
