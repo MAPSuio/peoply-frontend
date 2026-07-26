@@ -9,7 +9,6 @@ import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { SerwistProvider } from "@serwist/next/react";
-import { Analytics } from "@vercel/analytics/react";
 import AnnouncementBanner from "../components/AnnouncementBanner";
 import ErrorBoundary from "../components/ErrorBoundary";
 import SwrProvider from "../components/SwrProvider";
@@ -140,7 +139,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           </SwrProvider>
         </SnackbarProvider>
       </UserProvider>
-      <Analytics />
     </SerwistProvider>
   );
 }
