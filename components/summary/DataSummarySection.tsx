@@ -14,7 +14,7 @@ import HelpCircleIcon from "../svgs/HelpCircleIcon";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
-import { EventObjectProps } from "../../pages/events/create";
+import type { EventObjectProps } from "../../pages/events/create";
 
 interface DataSummarySectionProps {
   eventObject: EventObjectProps;
@@ -65,7 +65,7 @@ const DataSummarySection = ({
             <HelpCircleIcon className={styles.dataIcon} />
             <p className={styles.dataLabel}>
               {eventObject.eventFormQuestion.length > 30
-                ? eventObject.eventFormQuestion.slice(0, 29) + "...?"
+                ? `${eventObject.eventFormQuestion.slice(0, 29)}...?`
                 : eventObject.eventFormQuestion}
             </p>
           </div>

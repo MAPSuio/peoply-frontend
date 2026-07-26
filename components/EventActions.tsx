@@ -1,13 +1,13 @@
-import { KeyedMutator } from "swr";
-
 import AddToCalendarButton from "./AddToCalendarButton";
 import JoinButton from "./JoinButton";
-import { ButtonSize, Event } from "../types/types";
+import { ButtonSize, type Event } from "../types/types";
 
 interface EventActionsProps {
   event: Event;
-  /* SWR mutators to revalidate after the registration changes. */
-  updateOnChange?: KeyedMutator<any>[];
+  /* SWR mutators to revalidate after the registration changes. They carry
+     different (and irrelevant, here) Data types, and are only ever called
+     with no arguments to trigger a revalidation - see JoinButton's runUpdate. */
+  updateOnChange?: Array<() => unknown>;
   useUnregisterModal?: boolean;
   calendarButtonText?: string;
   joinButtonClassName?: string;

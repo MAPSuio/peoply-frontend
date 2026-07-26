@@ -25,9 +25,9 @@ export default function useRegistrationCountdown(
         const minutes = Math.floor((diff / 1000 / 60) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
         setCountdown(
-          `${days ? days + "d " : ""} ${hours ? hours + "t " : ""} ${
-            minutes ? minutes + "m " : ""
-          } ${days === 0 ? seconds + "s" : ""}`,
+          `${days ? `${days}d ` : ""} ${hours ? `${hours}t ` : ""} ${
+            minutes ? `${minutes}m ` : ""
+          } ${days === 0 ? `${seconds}s` : ""}`,
         );
       } else {
         setIsCountdown(false);

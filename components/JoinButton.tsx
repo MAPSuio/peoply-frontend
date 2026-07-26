@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useSWR, { KeyedMutator } from "swr";
+import useSWR from "swr";
 import useRedirectToLogin from "../hooks/useRedirectToLogin";
 import useRegistrationCountdown from "../hooks/useRegistrationCountdown";
 import useSnack from "../hooks/useSnack";
@@ -12,11 +12,11 @@ import {
 import {
   ButtonSize,
   ButtonType,
-  Event,
+  type Event,
   EventRegistrationMode,
-  FoodPreference,
+  type FoodPreference,
   InvitationStatus,
-  Registration,
+  type Registration,
   RegStatus,
   SnackTypes,
   UserSeenUpdateType,
@@ -39,7 +39,9 @@ interface JoinButtonProps {
   countdownText?: string;
   regClosedText?: string;
   bannedText?: string;
-  updateOnChange?: KeyedMutator<any>[];
+  /* SWR mutators to revalidate after the registration changes - see
+     EventActions for why these aren't typed as KeyedMutator<T>. */
+  updateOnChange?: Array<() => unknown>;
   useUnregisterModal?: boolean;
   small?: boolean;
   /** Overrides `small` when set. */
@@ -127,7 +129,9 @@ export default function JoinButton({
   }, [user]);
 
   const runUpdate = () => {
-    updateOnChange?.forEach((mutate) => mutate());
+    updateOnChange?.forEach((mutate) => {
+      mutate();
+    });
   };
 
   const hasSeenUpdate = (update: UserSeenUpdateType) => {
@@ -177,7 +181,7 @@ export default function JoinButton({
     }
 
     if (isCountdown) {
-      return countdownText + " " + countdown;
+      return `${countdownText} ${countdown}`;
     }
 
     const freeSpace =
@@ -326,7 +330,7 @@ export default function JoinButton({
         return setFormQuestionModalOpen(true); // flow is resumed in answerFormQuestion()
       }
 
-      let success = undefined;
+      let success: Registration | undefined;
       try {
         success = (await updateRegistrationUser(
           user.id,
@@ -363,8 +367,8 @@ export default function JoinButton({
 
     /* assume food has already been set here */
     switch (myRegistration?.regStatus) {
-      case RegStatus.NOT_GOING:
-        let success = undefined;
+      case RegStatus.NOT_GOING: {
+        let success: Registration | undefined;
         try {
           success = (await updateRegistrationUser(
             user.id,
@@ -389,6 +393,7 @@ export default function JoinButton({
           addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
         }
         break;
+      }
       case RegStatus.INVITED:
         try {
           await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {

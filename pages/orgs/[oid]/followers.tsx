@@ -11,7 +11,11 @@ import useOrganization from "../../../hooks/useOrganization";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
-import { Alignment, ArrangerFollower, SnackTypes } from "../../../types/types";
+import {
+  Alignment,
+  type ArrangerFollower,
+  SnackTypes,
+} from "../../../types/types";
 import styles from "../../../styles/OrgFollowers.module.scss";
 
 const OrgFollowers = () => {

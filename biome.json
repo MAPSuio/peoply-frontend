@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
@@ -7,8 +7,8 @@
       "**",
       "!next.config.js",
       "!ecosystem.config.js",
-      "!public/**",
-      "!.next/**",
+      "!public",
+      "!.next",
       "!next-env.d.ts",
       "!tsconfig.json"
     ]
@@ -29,11 +29,12 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": false,
+      "recommended": true,
       "a11y": {
         "noLabelWithoutControl": "warn",
         "noNoninteractiveElementInteractions": "warn",
         "noStaticElementInteractions": "warn",
+        "noSvgWithoutTitle": "warn",
         "useKeyWithClickEvents": "warn",
         "useValidAnchor": "warn"
       },
@@ -43,7 +44,8 @@
       },
       "correctness": {
         "noPrecisionLoss": "error",
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn"
       },
       "performance": {
         "noImgElement": "warn",
@@ -67,11 +69,12 @@
         "noDocumentImportInPage": "error",
         "noDoubleEquals": "warn",
         "noEmptyBlockStatements": "error",
-        "noExplicitAny": "off",
+        "noExplicitAny": "error",
         "noExtraNonNullAssertion": "error",
         "noHeadImportInDocument": "error",
         "noMisleadingInstantiator": "error",
         "noNonNullAssertedOptionalChain": "error",
+        "noRedeclare": "off",
         "useAdjacentOverloadSignatures": "error",
         "useGoogleFontDisplay": "warn",
         "useNamespaceKeyword": "error"

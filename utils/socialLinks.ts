@@ -1,4 +1,4 @@
-import { Organization } from "../types/types";
+import type { Organization } from "../types/types";
 
 export const organizationSocialPlatforms = [
   {

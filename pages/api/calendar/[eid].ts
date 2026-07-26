@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { Event } from "../../../types/types";
+import type { Event } from "../../../types/types";
 import { createEventIcs } from "../../../utils/ics";
 
 function sanitizeFileName(value: string) {

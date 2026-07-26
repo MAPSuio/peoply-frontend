@@ -3,18 +3,14 @@ import { useState } from "react";
 import useSWR from "swr";
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
-import Dropdown from "../../../components/Dropdown";
 import HeadComponent from "../../../components/HeadComponent";
 import CheckboxInput from "../../../components/inputs/CheckboxInput";
 import RadioInput from "../../../components/inputs/RadioInput";
 import TextInput from "../../../components/inputs/TextInput";
 import TextInputLong from "../../../components/inputs/TextInputLong";
-import CloseIcon from "../../../components/svgs/CloseIcon";
 import PublicIcon from "../../../components/svgs/PublicIcon";
-import UnlistedIcon from "../../../components/svgs/UnlistedIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCheckLight from "../../../components/svgs/UserCheckLight";
-import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
@@ -24,8 +20,7 @@ import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/UpdateEvent.module.scss";
 import {
   SnackTypes,
-  User,
-  Event,
+  type Event,
   EventUpdateVisibility,
 } from "../../../types/types";
 

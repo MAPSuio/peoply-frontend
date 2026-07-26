@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
@@ -65,9 +65,9 @@ const FoodPreferences: NextPage = () => {
 
     return [
       { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([key, value]) => {
+      ...Object.entries(FoodPreference).map(([, value]) => {
         return {
-          value: key,
+          value,
           label: valueToLabel(value),
         };
       }),

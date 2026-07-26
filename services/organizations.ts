@@ -1,4 +1,4 @@
-import { Organization, UserOrganizationRoles } from "../types/types";
+import type { Organization, UserOrganizationRoles } from "../types/types";
 import { fetchFromPeoplyApiJson } from "./fetchers";
 
 // getOrganization returns an organization with the given ID.

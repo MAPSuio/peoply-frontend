@@ -20,12 +20,16 @@ const Tag = ({ text, active, onClick, style, noShadow }: TagProps) => {
 
   if (onClick) {
     return (
-      <button className={tagStyles} onClick={onClick}>
+      <button type="button" className={tagStyles} onClick={onClick}>
         {text}
       </button>
     );
   } else {
-    return <button className={tagStyles}>{text}</button>;
+    return (
+      <button type="button" className={tagStyles}>
+        {text}
+      </button>
+    );
   }
 };
 

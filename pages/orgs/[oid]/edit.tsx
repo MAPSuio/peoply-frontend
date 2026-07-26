@@ -1,6 +1,6 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import Avatar from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
@@ -12,7 +12,7 @@ import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import { Organization, SnackTypes } from "../../../types/types";
+import { type Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/EditProfile.module.scss";
 import EditProfileImageMenu from "../../../components/EditProfileImageMenu";
 import TextInput from "../../../components/inputs/TextInput";
@@ -70,7 +70,7 @@ const EditOrgProfile: NextPage = () => {
     reload();
   };
 
-  const updateOrgDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateOrgDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 
@@ -91,8 +91,8 @@ const EditOrgProfile: NextPage = () => {
       mutate();
       reload();
       addSnack("Profil oppdatert", SnackTypes.SUCCESS);
-    } catch (error: any) {
-      if (error.status === 409) {
+    } catch (error) {
+      if (error instanceof Response && error.status === 409) {
         addSnack("URL-id er allerede i bruk", SnackTypes.ERROR);
       } else {
         addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
@@ -104,6 +104,7 @@ const EditOrgProfile: NextPage = () => {
     <div className={styles.container}>
       <BackButton onClick={goBack} />
       <button
+        type="button"
         className={styles.editImageButton}
         onClick={() => setEditImage(true)}
       >

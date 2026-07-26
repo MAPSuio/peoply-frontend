@@ -1,4 +1,4 @@
-import { Event } from "../types/types";
+import type { Event } from "../types/types";
 import { formatDateAndTime } from "./functions";
 
 export function isEventFinished(event: Event): boolean {

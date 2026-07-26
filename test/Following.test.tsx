@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import Following from "../pages/me/following";
-import { ArrangerFollower, User } from "../types/types";
+import type { ArrangerFollower, User } from "../types/types";
 
 const USER = { id: "u1", firstName: "Kari" } as User;
 const EMPTY_STATE = /ikke følger noen arrangører/;

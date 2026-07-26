@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 import ErrorIcon from "../svgs/ErrorIcon";
 
@@ -15,7 +15,7 @@ interface TextInputLongProps {
   errorMessage: string;
   required?: boolean;
   className?: string;
-  handleChange: (e: any) => void;
+  handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   validate?: boolean;
   valid?: boolean;
   setValid?: React.Dispatch<React.SetStateAction<boolean>>;

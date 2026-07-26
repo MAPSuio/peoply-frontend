@@ -3,7 +3,7 @@ import Layout from "./Layout";
 import LargeEventCard from "./LargeEventCard";
 
 // Assets.
-import { Alignment, Event } from "../types/types";
+import { Alignment, type Event } from "../types/types";
 
 // Styles.
 import styles from "../styles/EventList.module.scss";

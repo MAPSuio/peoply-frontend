@@ -19,7 +19,7 @@ import { formatDateAndTime } from "../utils/functions";
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
 import { EventRegistrationMode } from "../types/types";
-import { EventObjectProps } from "../pages/events/create";
+import type { EventObjectProps } from "../pages/events/create";
 import useUser from "../hooks/useUser";
 
 interface SummaryPageProps {

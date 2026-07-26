@@ -1,4 +1,8 @@
-import { RegStatus, FavoriteData, Registration } from "../types/types";
+import {
+  RegStatus,
+  type FavoriteData,
+  type Registration,
+} from "../types/types";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
 async function getUserFavorite(userId: string, eventId: string) {

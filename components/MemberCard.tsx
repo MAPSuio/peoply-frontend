@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import styles from "../styles/MemberCard.module.scss";
-import { User } from "../types/types";
+import type { User } from "../types/types";
 import Avatar from "./Avatar";
 
 interface MemberCardProps {
@@ -36,7 +36,7 @@ export default function MemberCard({
           </div>
         </Link>
         {icon && (
-          <button className={styles.icon} onClick={onClick}>
+          <button type="button" className={styles.icon} onClick={onClick}>
             {icon}
           </button>
         )}

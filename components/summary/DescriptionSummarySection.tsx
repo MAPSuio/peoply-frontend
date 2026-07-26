@@ -6,7 +6,7 @@ import Tag from "../Tag";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
-import { EventObjectProps } from "../../pages/events/create";
+import type { EventObjectProps } from "../../pages/events/create";
 
 interface DescriptionSummarySectionProps {
   eventObject: EventObjectProps;

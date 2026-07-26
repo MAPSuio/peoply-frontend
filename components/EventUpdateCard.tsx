@@ -1,6 +1,6 @@
 import {
   ButtonType,
-  EventUpdate,
+  type EventUpdate,
   EventUpdateVisibility,
   SnackTypes,
 } from "../types/types";
@@ -37,7 +37,7 @@ export default function EventUpdateCard({
         },
       );
       addSnack("Oppdatering slettet");
-      mutateUpdates && mutateUpdates();
+      mutateUpdates?.();
     } catch {
       addSnack("Kunne ikke slette oppdatering", SnackTypes.ERROR);
     }
@@ -51,6 +51,7 @@ export default function EventUpdateCard({
           <h2>{update.subject}</h2>
           {isArranger && (
             <button
+              type="button"
               className={styles.deleteButton}
               onClick={() => setDeleteModalOpen(true)}
             >
@@ -67,6 +68,7 @@ export default function EventUpdateCard({
       </div>
       <div className={styles.body}>
         {update.body.split("\n").map((line, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: lines come from a fixed string split, never reordered/added independently.
           <p key={i}>{injectLink(line)}</p>
         ))}
       </div>
@@ -81,22 +83,20 @@ export default function EventUpdateCard({
             setDeleteModalOpen(false);
           }}
         >
-          <>
-            <ModalButton
-              text={"Slett"}
-              onClick={deleteUpdate}
-              type={ButtonType.DANGERSOFT}
-              noShadow
-            />
-            <ModalButton
-              text={"Avbryt"}
-              onClick={() => {
-                setDeleteModalOpen(false);
-              }}
-              type={ButtonType.SECONDARY}
-              noShadow
-            />
-          </>
+          <ModalButton
+            text={"Slett"}
+            onClick={deleteUpdate}
+            type={ButtonType.DANGERSOFT}
+            noShadow
+          />
+          <ModalButton
+            text={"Avbryt"}
+            onClick={() => {
+              setDeleteModalOpen(false);
+            }}
+            type={ButtonType.SECONDARY}
+            noShadow
+          />
         </Modal>
       )}
     </div>

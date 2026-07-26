@@ -1,5 +1,5 @@
 import { BASE_URL } from "../constants/urls";
-import { Event, Organization } from "../types/types";
+import type { Event, Organization } from "../types/types";
 
 interface CalendarLink {
   label: string;

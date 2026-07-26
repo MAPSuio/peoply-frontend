@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/UserSearch.module.scss";
-import { User } from "../types/types";
+import type { User } from "../types/types";
 import AddIcon from "./AddIcon";
 import Avatar from "./Avatar";
 import LoadingWheel from "./LoadingWheel";
@@ -113,6 +113,7 @@ export default function UserSelect({
               </Link>
               {isUserSelected(user) ? (
                 <button
+                  type="button"
                   className={styles.action}
                   onClick={() => onUserRemove(user)}
                 >
@@ -120,6 +121,7 @@ export default function UserSelect({
                 </button>
               ) : (
                 <button
+                  type="button"
                   className={styles.action}
                   onClick={() => onUserSelect(user)}
                 >

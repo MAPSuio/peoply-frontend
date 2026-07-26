@@ -324,18 +324,16 @@ const Settings = () => {
           description="Dette vil slette brukeren og all tilknyttet data. Dette kan ikke reverseres."
           closeButtonOnClick={() => setModalOpen(false)}
         >
-          <>
-            <ModalButton
-              text="Slett meg"
-              onClick={deleteMe}
-              type={ButtonType.DANGER}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </>
+          <ModalButton
+            text="Slett meg"
+            onClick={deleteMe}
+            type={ButtonType.DANGER}
+          />
+          <ModalButton
+            text="Lukk"
+            onClick={() => setModalOpen(false)}
+            type={ButtonType.SECONDARY}
+          />
         </Modal>
       )}
     </>

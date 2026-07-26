@@ -1,6 +1,6 @@
 // Next.js.
 import Image from "next/image";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import router from "next/router";
 
@@ -50,16 +50,16 @@ import {
      local declaration collides with, or a type that vanishes at compile time. */
   type Event,
   EventRegistrationMode,
-  EventUpdate,
+  type EventUpdate,
   OrganizationRole,
-  Registration,
+  type Registration,
   RegStatus,
   Visibility,
 } from "../../../types/types";
 
 // Assets.
 import placeholderImage from "../../../assets/images/undraw_partying.png";
-import { ParsedUrlQuery } from "querystring";
+import type { ParsedUrlQuery } from "node:querystring";
 
 // Styles.
 import styles from "../../../styles/Event.module.scss";
@@ -147,8 +147,7 @@ const Event = ({ event }: EventProps) => {
     if (user && arrangersIdsForEvent?.includes(user.arrangerId)) {
       return true;
     } else if (
-      organizationArrangerIdsForUser &&
-      organizationArrangerIdsForUser.some((id) =>
+      organizationArrangerIdsForUser?.some((id) =>
         arrangersIdsForEvent?.includes(id),
       )
     ) {

@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
 import GlobalSearch from "../components/GlobalSearch";

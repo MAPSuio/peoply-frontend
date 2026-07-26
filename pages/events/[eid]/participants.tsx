@@ -23,13 +23,13 @@ import {
 
 import styles from "../../../styles/Participants.module.scss";
 import {
-  Registration,
+  type Registration,
   SnackTypes,
-  Event,
+  type Event,
   RegStatus,
-  EventInvitation,
-  User,
-  FoodPreference,
+  type EventInvitation,
+  type User,
+  type FoodPreference,
   ButtonType,
 } from "../../../types/types";
 import {
@@ -243,33 +243,31 @@ const Participants = () => {
         "
         closeButtonOnClick={() => setBanUserId(undefined)}
       >
-        <>
-          <ModalButton
-            text="Meld av"
-            onClick={unregisterUser}
-            type={ButtonType.WARNINGSOFT}
-            noShadow
-          />
-          <ModalButton
-            text="Utesteng"
-            onClick={banUser}
-            type={ButtonType.DANGERSOFT}
-            noShadow
-          />
-          <ModalButton
-            text="Avbryt"
-            onClick={() => setBanUserId(undefined)}
-            type={ButtonType.SECONDARY}
-            noShadow
-          />
-        </>
+        <ModalButton
+          text="Meld av"
+          onClick={unregisterUser}
+          type={ButtonType.WARNINGSOFT}
+          noShadow
+        />
+        <ModalButton
+          text="Utesteng"
+          onClick={banUser}
+          type={ButtonType.DANGERSOFT}
+          noShadow
+        />
+        <ModalButton
+          text="Avbryt"
+          onClick={() => setBanUserId(undefined)}
+          type={ButtonType.SECONDARY}
+          noShadow
+        />
       </Modal>
     );
   }
 
   function renderTab(tab: TabOption) {
     switch (tab) {
-      case TabOption.PARTICIPANTS:
+      case TabOption.PARTICIPANTS: {
         const going = registrations?.filter(
           (registration) => registration.regStatus === RegStatus.GOING,
         );
@@ -365,8 +363,9 @@ const Participants = () => {
             {banUserId && renderBanModal()}
           </>
         );
+      }
 
-      case TabOption.WAITLIST:
+      case TabOption.WAITLIST: {
         const waitlisted = registrations?.filter(
           ({ regStatus }) => regStatus === RegStatus.WAITLISTED,
         );
@@ -424,8 +423,9 @@ const Participants = () => {
             {banUserId && renderBanModal()}
           </>
         );
+      }
 
-      case TabOption.NOT_GOING:
+      case TabOption.NOT_GOING: {
         const notGoing = registrations?.filter(
           (registration) =>
             registration.regStatus === RegStatus.NOT_GOING ||
@@ -468,6 +468,7 @@ const Participants = () => {
                 icon={
                   registration.regStatus === RegStatus.BANNED ? (
                     <button
+                      type="button"
                       className={styles.unbanButton}
                       onClick={() => setUnBanUserId(registration.userId)}
                     >
@@ -480,29 +481,26 @@ const Participants = () => {
               />
             ))}
             {unBanUserId && (
-              <>
-                <Modal
-                  label="Fjern utestenging"
-                  description="Er du sikker på at du vil fjerne utestengingen av brukeren?"
-                  closeButtonOnClick={() => setUnBanUserId(undefined)}
-                >
-                  <>
-                    <ModalButton
-                      text={"Fjern utestenging"}
-                      type={ButtonType.DANGER}
-                      onClick={unBanUser}
-                    />
-                    <ModalButton
-                      text={"avbryt"}
-                      onClick={() => setUnBanUserId(undefined)}
-                      type={ButtonType.SECONDARY}
-                    />
-                  </>
-                </Modal>
-              </>
+              <Modal
+                label="Fjern utestenging"
+                description="Er du sikker på at du vil fjerne utestengingen av brukeren?"
+                closeButtonOnClick={() => setUnBanUserId(undefined)}
+              >
+                <ModalButton
+                  text={"Fjern utestenging"}
+                  type={ButtonType.DANGER}
+                  onClick={unBanUser}
+                />
+                <ModalButton
+                  text={"avbryt"}
+                  onClick={() => setUnBanUserId(undefined)}
+                  type={ButtonType.SECONDARY}
+                />
+              </Modal>
             )}
           </>
         );
+      }
     }
   }
 

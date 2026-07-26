@@ -1,5 +1,5 @@
-import { NextPage } from "next";
-import { ChangeEvent, useEffect, useState } from "react";
+import type { NextPage } from "next";
+import { type ChangeEvent, useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
 import EditProfileImageMenu from "../../components/EditProfileImageMenu";
@@ -57,7 +57,7 @@ const EditProfile: NextPage = () => {
     reload();
   };
 
-  const updateUserDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateUserDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
   };
 
@@ -97,9 +97,9 @@ const EditProfile: NextPage = () => {
 
     return [
       { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([key, value]) => {
+      ...Object.entries(FoodPreference).map(([, value]) => {
         return {
-          value: key,
+          value,
           label: valueToLabel(value),
         };
       }),
@@ -120,6 +120,7 @@ const EditProfile: NextPage = () => {
     <div className={styles.container}>
       <BackButton onClick={goBack} />
       <button
+        type="button"
         className={styles.editImageButton}
         onClick={() => setEditImage(true)}
       >

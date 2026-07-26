@@ -1,5 +1,5 @@
 /* Next */
-import { StaticImageData } from "next/legacy/image";
+import type { StaticImageData } from "next/legacy/image";
 
 /* Components */
 import SummaryCard from "../SummaryCard";

@@ -1,5 +1,5 @@
 // React.
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 // Components.
 import TextInputLong from "../inputs/TextInputLong";
@@ -12,7 +12,7 @@ import { eventDescriptionMaxLength } from "../../utils/constants";
 
 // Types.
 import { InputPages } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";
@@ -23,7 +23,7 @@ interface DescriptionStepProps {
   validDataMap: Map<InputPages, boolean>;
   buttonOnClick: (step: number) => void;
   categories: Array<{ id: number; name: string }>;
-  updateEventDescription: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateEventDescription: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   eventDescriptionValid: boolean;
   setEventDescriptionValid: Dispatch<SetStateAction<boolean>>;
   updateEventCategories: (categoryId: number) => void;

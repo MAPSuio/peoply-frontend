@@ -1,4 +1,4 @@
-import { ButtonType } from "../types/types";
+import type { ButtonType } from "../types/types";
 import Button from "./Button";
 import styles from "../styles/ModalButton.module.scss";
 

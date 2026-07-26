@@ -5,7 +5,7 @@ import PlaceIconSummary from "../svgs/PlaceIconSummary";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
-import { EventObjectProps } from "../../pages/events/create";
+import type { EventObjectProps } from "../../pages/events/create";
 
 interface PlaceSummarySectionProps {
   eventObject: EventObjectProps;

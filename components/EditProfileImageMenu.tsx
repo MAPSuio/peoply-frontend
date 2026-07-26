@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/EditProfileImageMenu.module.scss";
 import TrashIcon from "./svgs/TrashIcon";
@@ -28,8 +28,8 @@ const EditProfileImageMenu = ({
     }
   };
 
-  const handleImageUpload = async (e: any) => {
-    const image: File = e.target.files[0];
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const image = e.target.files?.[0];
     if (image) {
       const formData = new FormData();
       formData.append(formDataKey, image, image.name);

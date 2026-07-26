@@ -18,7 +18,7 @@ import { getInputPageData } from "../../utils/functions";
 
 // Types.
 import { InputPages, Visibility } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";
@@ -37,7 +37,7 @@ interface ExtraInfoStepProps {
   updateEventExternalUrl: (e: React.ChangeEvent<HTMLInputElement>) => void;
   externalRegistrationUrlValid: boolean;
   setEventHasFormQuestion: (value: boolean) => void;
-  updateEventFormQuestion: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  updateEventFormQuestion: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const ExtraInfoStep = ({

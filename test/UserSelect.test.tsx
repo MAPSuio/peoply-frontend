@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import UserSelect from "../components/UserSelect";
-import { User } from "../types/types";
+import type { User } from "../types/types";
 
 const API_URL = "https://api.example.test";
 

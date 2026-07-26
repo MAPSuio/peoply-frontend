@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 import ErrorIcon from "../svgs/ErrorIcon";
 
@@ -13,7 +13,7 @@ interface DateInputProps {
   label?: string;
   errorMessage: string;
   required?: boolean;
-  handleChange: (e: any) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   initiallyFocused?: boolean;
   noExtraInfo?: boolean;
   card?: boolean;

@@ -34,6 +34,7 @@ const ProgressCircle = ({
   const progressCircleStyles = getProgressCircleStyles();
   return (
     <button
+      type="button"
       disabled={reachedStep < step} // disabled when step is not reached
       className={styles.wrapper}
       onClick={() => changeStep(step)}

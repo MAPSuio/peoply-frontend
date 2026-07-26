@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { type ReactElement, useState } from "react";
 import styles from "../styles/SummaryCard.module.scss";
 import { throwNotImportedError } from "../utils/functions";
 import AcceptRejectButton from "./AcceptRejectButton";
@@ -37,6 +37,7 @@ const SummaryCard = ({
 
   return (
     <button
+      type="button"
       onClick={() => onClick(inputId)}
       className={`${styles.summaryCardContainer} ${
         !editClosed && styles.noHover
@@ -55,7 +56,7 @@ const SummaryCard = ({
         )}
       </div>
       {editClosed ? (
-        <>{children}</>
+        children
       ) : (
         <>
           {inputComponent}

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -6,6 +6,9 @@ import IconCircle from "../IconCircle";
 import InfoIconSummary from "../svgs/InfoIconSummary";
 import CategoryInput from "../inputs/CategoryInput";
 import Tag from "../Tag";
+
+/* Types */
+import type { Category } from "../../types/types";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
@@ -17,7 +20,7 @@ interface EditCategorySectionProps {
   onCross: () => void;
   validCategories: boolean;
   setValidCategories: Dispatch<SetStateAction<boolean>>;
-  allCategories: any;
+  allCategories: Category[] | undefined;
   categoryIds: number[];
   onCategoryClick: (id: number) => void;
 }
@@ -48,7 +51,7 @@ const EditCategorySection = ({
       valid={validCategories}
       inputComponent={
         <CategoryInput
-          categories={allCategories}
+          categories={allCategories ?? []}
           activeCategories={categoryIds}
           errorMessage="Du må velge minst en kategori."
           onClick={onCategoryClick}
@@ -62,21 +65,17 @@ const EditCategorySection = ({
       <div className={styles.categoryContainer}>
         <p className={styles.categoryLabel}>Kategori(er)</p>
         <div className={styles.categoryTagsContainer}>
-          {categoryIds !== undefined &&
-            categoryIds.map((categoryId) => {
-              return (
-                <Tag
-                  key={categoryId}
-                  text={
-                    allCategories !== undefined
-                      ? allCategories.find((c: any) => c.id === categoryId)
-                          ?.name
-                      : "..."
-                  }
-                  active={true}
-                />
-              );
-            })}
+          {categoryIds?.map((categoryId) => {
+            return (
+              <Tag
+                key={categoryId}
+                text={
+                  allCategories?.find((c) => c.id === categoryId)?.name ?? "..."
+                }
+                active={true}
+              />
+            );
+          })}
         </div>
       </div>
     </SummaryCard>

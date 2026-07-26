@@ -1,5 +1,5 @@
 // React.
-import { MouseEvent, useState } from "react";
+import { type MouseEvent, useState } from "react";
 
 // Components.
 import LoadingWheel from "./LoadingWheel";
@@ -81,8 +81,9 @@ export default function Button({
 
   return (
     <button
-      onClick={async (e: any) => {
-        let onClickResult: any = null;
+      type="button"
+      onClick={async (e: MouseEvent<HTMLButtonElement>) => {
+        let onClickResult: unknown = null;
 
         // show loading wheel after `loadingIconLatency` ms
         setOnClickDisableState(true);

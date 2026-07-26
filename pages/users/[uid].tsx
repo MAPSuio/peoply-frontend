@@ -8,8 +8,8 @@ import type { User } from "../../types/types";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/User.module.scss";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { ParsedUrlQuery } from "querystring";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import type { ParsedUrlQuery } from "node:querystring";
 import HeadComponent from "../../components/HeadComponent";
 
 interface UserProps {

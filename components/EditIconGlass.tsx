@@ -17,6 +17,7 @@ export default function EditIconGlass({
 }: EditIconGlassProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={loading || disabled}
       className={`${styles.container} ${className}`}

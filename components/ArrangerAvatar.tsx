@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { getPrimaryEventArranger } from "../utils/eventArrangers";
-import { Event } from "../types/types";
+import type { Event } from "../types/types";
 
 interface ArrangerAvatarProps {
   event: Event;

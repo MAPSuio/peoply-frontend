@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import ArrangerListItem from "../components/ArrangerListItem";
-import { ArrangerFollower, User } from "../types/types";
+import type { ArrangerFollower, User } from "../types/types";
 
 const API_URL = "https://api.example.test";
 const USER = { id: "u1", firstName: "Kari" } as User;

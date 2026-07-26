@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
 import useSnack from "../hooks/useSnack";
 import { ButtonSize, SnackTypes } from "../types/types";
@@ -30,8 +30,7 @@ export function ShareButton({
     event.preventDefault();
     try {
       if (
-        navigator.canShare &&
-        navigator.canShare({
+        navigator.canShare?.({
           url: shareUrl,
           files: shareFiles,
           text: shareText,

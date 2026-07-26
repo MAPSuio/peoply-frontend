@@ -1,10 +1,8 @@
-// Next.js.
-import Image from "next/legacy/image";
 // Components.
 import Avatar from "./Avatar";
 
 // Types.
-import { Organization } from "../types/types";
+import type { Organization } from "../types/types";
 
 // Styles.
 import styles from "../styles/OrganizationAvatar.module.scss";

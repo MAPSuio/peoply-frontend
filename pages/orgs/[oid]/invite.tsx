@@ -13,9 +13,9 @@ import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/InviteMembersToOrg.module.scss";
 import {
   OrganizationRole,
-  OutboundOrganizationInvitation,
+  type OutboundOrganizationInvitation,
   SnackTypes,
-  User,
+  type User,
 } from "../../../types/types";
 
 export default function InviteMembersToOrg() {
@@ -98,6 +98,7 @@ export default function InviteMembersToOrg() {
             {selectedUsers.length !== 0 && <p>Valgte brukere: </p>}
             {selectedUsers.map((user) => (
               <button
+                type="button"
                 className={styles.selectedUser}
                 key={user.id}
                 onClick={() => onUserRemove(user)}

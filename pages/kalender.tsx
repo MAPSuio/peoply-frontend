@@ -10,7 +10,7 @@ import Navbar from "../components/Navbar";
 import useBack from "../hooks/useBack";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
-import { Alignment, Event } from "../types/types";
+import { Alignment, type Event } from "../types/types";
 import { queryToString } from "../utils/functions";
 
 const EventCalendar = dynamic(() => import("../components/EventCalendar"), {

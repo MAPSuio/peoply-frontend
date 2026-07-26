@@ -1,5 +1,5 @@
 // React.
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 // Components.
 import TextInput from "../inputs/TextInput";
@@ -14,9 +14,9 @@ import {
 } from "../../utils/constants";
 
 // Types.
-import { InputPages, IpInfo } from "../../types/types";
-import { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import { InputPages, type IpInfo } from "../../types/types";
+import type { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";

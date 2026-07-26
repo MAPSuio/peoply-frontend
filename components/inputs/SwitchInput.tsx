@@ -12,6 +12,7 @@ const SwitchInput = ({ label, checked, onClick }: SwitchInputProps) => {
     <div className={styles.switchContainer}>
       <span className={styles.label}>{label}</span>
       <button
+        type="button"
         className={`${styles.switch} ${checked && styles.checked}`}
         onClick={onClick}
       >

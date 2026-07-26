@@ -2,7 +2,7 @@
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
+    "source.fixAll.biome": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",

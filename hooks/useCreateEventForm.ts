@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 
 // React.
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 
 // Data fetching.
 import useSWR from "swr";
@@ -18,7 +18,6 @@ import useSnack from "./useSnack";
 
 // Utils.
 import {
-  getInputPageData,
   allEventInputsValid,
   dateInputStartValid,
   timeInputStartValid,
@@ -47,15 +46,15 @@ import {
 
 // Types.
 import {
-  Event,
+  type Event,
   InputPages,
-  Organization,
+  type Organization,
   Visibility,
   ImageCaching,
   SnackTypes,
   OrganizationRole,
 } from "../types/types";
-import { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
+import type { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -208,7 +207,7 @@ export default function useCreateEventForm() {
     });
   };
 
-  const updateEventDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventDescription: e.target.value,
@@ -383,13 +382,13 @@ export default function useCreateEventForm() {
 
   /* TODO: Fix this TS error. */
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const fileName = e.target.files[0].name;
       //should we add check for same filename to avoid excess writes?
       writeImageToLocalStorage(e.target.files[0]);
       setEventObject((prevEventObject) => ({
         ...prevEventObject,
-        // @ts-ignore
+        // @ts-expect-error
         eventImage: e.target.files[0],
         eventImageValid: true,
         imageStorageKey: fileName,
@@ -412,7 +411,7 @@ export default function useCreateEventForm() {
       .then((blob) => {
         const file = new File([blob], oldEventObject.imageStorageKey, {
           type: blob.type,
-          lastModified: new Date().getTime(),
+          lastModified: Date.now(),
         });
 
         setEventObject(() => ({
@@ -544,7 +543,7 @@ export default function useCreateEventForm() {
     });
   };
 
-  const updateEventFormQuestion = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventFormQuestion = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventFormQuestion: e.target.value,
@@ -584,26 +583,24 @@ export default function useCreateEventForm() {
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
-    {
-      if (!user) {
-        return redirectToLogin();
-      }
+    if (!user) {
+      return redirectToLogin();
+    }
 
-      try {
-        const event: Event = await fetchFromPeoplyApiJson("/events", {
-          method: "post",
-          body: formData,
-        });
-        addSnack("Ditt arrangement har blitt opprettet", SnackTypes.SUCCESS);
-        localStorage.removeItem("eventObject");
-        localStorage.removeItem("eventImage");
-        router.replace(`/events/${event.urlId}`);
-      } catch {
-        addSnack(
-          "Det skjedde en feil under opprettelsen av arrangementet",
-          SnackTypes.ERROR,
-        );
-      }
+    try {
+      const event: Event = await fetchFromPeoplyApiJson("/events", {
+        method: "post",
+        body: formData,
+      });
+      addSnack("Ditt arrangement har blitt opprettet", SnackTypes.SUCCESS);
+      localStorage.removeItem("eventObject");
+      localStorage.removeItem("eventImage");
+      router.replace(`/events/${event.urlId}`);
+    } catch {
+      addSnack(
+        "Det skjedde en feil under opprettelsen av arrangementet",
+        SnackTypes.ERROR,
+      );
     }
   };
 
@@ -662,13 +659,12 @@ export default function useCreateEventForm() {
           eventObject.eventDateStart,
           eventObject.eventDateEnd,
         )
-      : !eventObject.eventTimeEnd && !eventObject.eventDateEnd // if both are not there
-        ? true
-        : false;
+      : // if both are not there
+        !!(!eventObject.eventTimeEnd && !eventObject.eventDateEnd);
 
   const eventCapacityValid = radioInputValid(
     eventObject.eventHasCapacity,
-    parseInt(eventObject.eventCapacity),
+    parseInt(eventObject.eventCapacity, 10),
     0,
     10000,
   );

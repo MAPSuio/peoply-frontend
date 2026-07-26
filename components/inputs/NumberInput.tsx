@@ -1,7 +1,7 @@
 import ErrorIcon from "../svgs/ErrorIcon";
 
 import styles from "../../styles/NumberInput.module.scss";
-import { useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 interface NumberInputProps {
   value: string;
@@ -13,7 +13,7 @@ interface NumberInputProps {
   min?: string;
   errorMessage: string;
   required?: boolean;
-  handleChange: (e: any) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const NumberInput = ({
@@ -31,9 +31,9 @@ const NumberInput = ({
   const [focused, setFocused] = useState(false);
 
   // a number is valid if it is greater than 0 and less than or equal to max if max exists
-  let validNumber = parseInt(value) > 0;
+  let validNumber = parseInt(value, 10) > 0;
   if (max) {
-    validNumber = validNumber && parseInt(value) <= parseInt(max);
+    validNumber = validNumber && parseInt(value, 10) <= parseInt(max, 10);
   }
 
   const getInputContainerStyles = () => {

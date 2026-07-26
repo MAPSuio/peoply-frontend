@@ -1,5 +1,5 @@
-import { ChangeEvent } from "react";
-import { StaticImageData } from "next/legacy/image";
+import type { ChangeEvent } from "react";
+import type { StaticImageData } from "next/legacy/image";
 
 /* Components */
 import SummaryCard from "../SummaryCard";

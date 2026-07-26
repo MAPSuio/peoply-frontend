@@ -1,6 +1,6 @@
-import { MouseEvent as ReactMouseEvent, useEffect, useState } from "react";
+import { type MouseEvent as ReactMouseEvent, useEffect, useState } from "react";
 
-import { ButtonSize, ButtonType, Event } from "../types/types";
+import { ButtonSize, ButtonType, type Event } from "../types/types";
 import { getCalendarLinks } from "../utils/ics";
 import Button, { IconPlacement } from "./Button";
 import CalendarIconCard from "./svgs/CalendarIconCard";
@@ -85,7 +85,11 @@ export default function AddToCalendarButton({
                 <p className={styles.eyebrow}>Kalender</p>
                 <h3 className={styles.title}>Legg til arrangement</h3>
               </div>
-              <button className={styles.closeButton} onClick={closeMenu}>
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={closeMenu}
+              >
                 Lukk
               </button>
             </div>

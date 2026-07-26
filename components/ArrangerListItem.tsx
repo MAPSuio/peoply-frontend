@@ -15,7 +15,7 @@ import useFollowArranger from "../hooks/useFollowArranger";
 import { formatFollowedDate } from "../utils/functions";
 
 // Types.
-import { ArrangerFollower, ButtonSize, ButtonType } from "../types/types";
+import { type ArrangerFollower, ButtonSize, ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/ArrangerListItem.module.scss";

@@ -109,6 +109,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
                             return (
                               <circle
+                                // biome-ignore lint/suspicious/noArrayIndexKey: static decorative pattern generated once per render, rows/characters never reorder.
                                 key={`${rowIndex}-${characterIndex}`}
                                 cx={
                                   BACKGROUND_PATTERN_START_X +

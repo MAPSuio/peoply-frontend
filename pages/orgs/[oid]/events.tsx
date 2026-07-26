@@ -1,5 +1,5 @@
 // Next.js.
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import useSWRInfinite from "swr/infinite";
 
 // React.
@@ -14,10 +14,10 @@ import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 import { getOrganization } from "../../../services/organizations";
 
 // Types.
-import { Event, Organization } from "../../../types/types";
+import type { Event, Organization } from "../../../types/types";
 
 // Assets.
-import { ParsedUrlQuery } from "querystring";
+import type { ParsedUrlQuery } from "node:querystring";
 import TabSelection from "../../../components/TabSelection";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
@@ -113,7 +113,7 @@ const Events = ({ organization }: EventsProps) => {
           <EventList
             events={
               futureEvents && futureEvents?.length > 0
-                ? futureEvents.flatMap((ev) => ev)
+                ? futureEvents.flat()
                 : []
             }
             nextPage={futureNextPage}
@@ -122,9 +122,7 @@ const Events = ({ organization }: EventsProps) => {
         {selectedTab === TabOption.PAST_EVENTS && (
           <EventList
             events={
-              pastEvents && pastEvents?.length > 0
-                ? pastEvents.flatMap((ev) => ev)
-                : []
+              pastEvents && pastEvents?.length > 0 ? pastEvents.flat() : []
             }
             nextPage={pastNextPage}
           />

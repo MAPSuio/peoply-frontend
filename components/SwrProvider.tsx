@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { SWRConfig } from "swr";
 import useSnack from "../hooks/useSnack";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";

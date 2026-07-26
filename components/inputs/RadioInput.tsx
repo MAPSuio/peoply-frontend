@@ -1,11 +1,11 @@
-import { FunctionComponent } from "react";
+import type { FunctionComponent, Key } from "react";
 import RadioButton from "../RadioButton";
 
 import styles from "../../styles/RadioInput.module.scss";
 
-interface RadioInputProps {
+interface RadioInputProps<T extends Key> {
   optionsAndIcons: Array<{
-    id: any;
+    id: T;
     text: string;
     hintText?: string;
     // Was React.VoidFunctionComponent, dropped in React 19's types.
@@ -16,16 +16,16 @@ interface RadioInputProps {
     active: boolean;
   }>;
   label: string;
-  onClick: (id: any) => void;
+  onClick: (id: T) => void;
   card?: boolean;
 }
 
-const RadioInput = ({
+const RadioInput = <T extends Key>({
   optionsAndIcons,
   label,
   onClick,
   card,
-}: RadioInputProps) => {
+}: RadioInputProps<T>) => {
   return (
     <div className={styles.radioInputWrapper}>
       <p className={styles.labelText}>{label}</p>

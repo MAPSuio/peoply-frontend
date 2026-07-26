@@ -1,6 +1,6 @@
 // Next.js.
 import Link from "next/link";
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 
@@ -33,14 +33,14 @@ import useFollowArranger from "../../../hooks/useFollowArranger";
 // Services.
 import { getOrganization } from "../../../services/organizations";
 import {
-  ArrangerFollower,
+  type ArrangerFollower,
   ButtonSize,
   ButtonType,
-  Event,
+  type Event,
   /* Type-only: shadowed by the `Organization` component below - see the same
      note in pages/events/[eid]/index.tsx. */
   type Organization,
-  OrganizationReportStatus,
+  type OrganizationReportStatus,
   SnackTypes,
 } from "../../../types/types";
 import {
@@ -49,7 +49,7 @@ import {
 } from "../../../services/fetchers";
 
 // Assets.
-import { ParsedUrlQuery } from "querystring";
+import type { ParsedUrlQuery } from "node:querystring";
 
 // Styles.
 import styles from "../../../styles/Organization.module.scss";
@@ -344,7 +344,9 @@ const Organization = ({ organization }: OrganizationProps) => {
                 className={styles.calendarSecondaryLink}
                 target="_blank"
                 rel="noreferrer"
-              ></a>
+              >
+                Last ned kalender
+              </a>
             </div>
           )}
           {socialLinks.length > 0 && (

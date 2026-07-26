@@ -7,10 +7,8 @@ import Modal from "../components/Modal";
 function renderModal(onClose = vi.fn()) {
   const result = render(
     <Modal label="Slett arrangement" closeButtonOnClick={onClose}>
-      <>
-        <button type="button">Bekreft</button>
-        <button type="button">Avbryt</button>
-      </>
+      <button type="button">Bekreft</button>
+      <button type="button">Avbryt</button>
     </Modal>,
   );
 
