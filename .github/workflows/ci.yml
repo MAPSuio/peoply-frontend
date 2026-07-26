@@ -1,8 +1,12 @@
 name: CI
 
 on:
+  # Deliberately unfiltered. `branches:` on pull_request filters by the PR's
+  # *base* branch, so restricting it to master/main gave stacked PRs - one
+  # feature branch based on another - no checks at all. Not a red X: no runs,
+  # nothing to wait for, and a mergeable-looking PR that nothing ever built.
+  # Every PR gets checks; the push filter below is what gates the deploy.
   pull_request:
-    branches: [master, main]
   push:
     branches: [master, main]
 
