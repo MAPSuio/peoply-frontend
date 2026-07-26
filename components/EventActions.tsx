@@ -45,10 +45,11 @@ const EventActions = ({
       noShadow
       className={joinButtonClassName}
     />
+    {/* Width comes from the card's className, so narrow screens can shrink
+        the button to icon-only - an inline width would win over that. */}
     <AddToCalendarButton
       event={event}
       buttonText={calendarButtonText}
-      width="100%"
       className={calendarButtonClassName}
     />
   </>

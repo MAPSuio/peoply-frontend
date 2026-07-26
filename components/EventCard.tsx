@@ -112,7 +112,7 @@ const EventCard = ({ event }: EventCardProps) => {
                 event={event}
                 updateOnChange={[updateRegistrations]}
                 joinButtonClassName={styles.actionButton}
-                calendarButtonClassName={styles.actionButton}
+                calendarButtonClassName={`${styles.actionButton} ${styles.calendarActionButton}`}
               />
             </div>
           )}

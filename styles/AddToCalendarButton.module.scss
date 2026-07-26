@@ -86,8 +86,12 @@
   font-size: $font-size-secondary;
 }
 
-.addToCalendarButton {
+/* Doubled selector so the outline reliably beats .secondaryButton's
+   transparent one regardless of module order in the bundle. Without it the
+   button is invisible as a button against the card in the dark themes. */
+.addToCalendarButton.addToCalendarButton {
   border-radius: $border-radius-inside-card;
+  outline: 1px solid var(--border-color-input, $border-color-input);
 }
 
 .icon {

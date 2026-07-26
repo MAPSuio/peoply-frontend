@@ -22,6 +22,7 @@ import {
 } from "../types/types";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
+import SmallCheckIcon from "./svgs/SmallCheckIcon";
 import FormQuestionModal from "./FormQuestionModal";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
@@ -261,6 +262,12 @@ export default function JoinButton({
     }
     return ButtonType.PRIMARY;
   })();
+
+  const showJoinedCheck =
+    !eventFinished &&
+    !isCountdown &&
+    !regClosed &&
+    myRegistration?.regStatus === RegStatus.GOING;
 
   const shouldHideButton =
     event.registrationMode === EventRegistrationMode.EXTERNAL ||
@@ -634,6 +641,11 @@ export default function JoinButton({
       <Button
         type={buttonType}
         text={buttonText}
+        icon={
+          showJoinedCheck ? (
+            <SmallCheckIcon className={styles.joinedIcon} />
+          ) : undefined
+        }
         className={className}
         onClick={(e) => {
           e.preventDefault();

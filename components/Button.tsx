@@ -150,7 +150,7 @@ export default function Button({
       ) : (
         <>
           {icon}
-          {text}
+          <span>{text}</span>
         </>
       )}
     </button>
