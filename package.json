@@ -14,7 +14,8 @@
     "lint": "npm run lint:biome && npm run lint:stylelint",
     "lint:stylelint": "stylelint '**/*.{css,scss}'",
     "lint:biome": "biome check .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
@@ -38,6 +39,7 @@
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "4.3.4",
+    "husky": "9.1.7",
     "jsdom": "25.0.1",
     "stylelint": "14.16.1",
     "stylelint-config-recommended-scss": "5.0.2",
