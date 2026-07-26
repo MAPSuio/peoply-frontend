@@ -9,12 +9,15 @@ All data comes from the Peoply backend — this app owns no database.
 | Frontend | you are here | `http://localhost:3001` | `https://peoply.app` |
 | Backend | [`MAPSuio/peoply-backend`](https://github.com/MAPSuio/peoply-backend) | `http://localhost:3000` | `https://api.peoply.app` |
 
-Node >= 20.9.0, npm >= 8 (`engines` in `package.json`). Older Node installs fine
-and then fails during build in ways that are hard to read — check `node -v` first.
+Node >= 22.11.0, npm >= 10 (`engines` in `package.json`). `.nvmrc` pins the
+version CI builds with, so `nvm use` gets you the same one. Older Node installs
+fine and then fails during build in ways that are hard to read — check `node -v`
+first.
 
 ## Run the frontend
 
 ```bash
+nvm use       # reads .nvmrc
 npm ci        # not npm install — see CONTRIBUTING.md
 npm run dev   # http://localhost:3001
 ```
