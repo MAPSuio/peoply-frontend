@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.scss";
 import AddIcon from "../components/AddIcon";
 import HomeIcon from "./svgs/HomeIcon";
+import CalendarCheckIcon from "./svgs/CalendarCheckIcon";
 import CalendarIconSummary from "./svgs/CalendarIconSummary";
 import SearchIcon from "./svgs/SearchIcon";
-import BriefcaseIcon from "./svgs/BriefcaseIcon";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -74,16 +74,16 @@ export default function Navbar() {
         </div>
         <div
           className={`${styles.item} ${
-            isActive("/me/orgs") ? styles.active : ""
+            isActive("/me/events") ? styles.active : ""
           }`}
         >
-          <Link href="/me/orgs">
-            <BriefcaseIcon
+          <Link href="/me/events">
+            <CalendarCheckIcon
               className={`${styles.icon} ${
-                isActive("/me/orgs") ? styles.active : ""
+                isActive("/me/events") ? styles.active : ""
               }`}
             />
-            {isActive("/me/orgs") ? (
+            {isActive("/me/events") ? (
               <span className={styles.underline}></span>
             ) : (
               ""
@@ -92,16 +92,16 @@ export default function Navbar() {
         </div>
         <div
           className={`${styles.item} ${
-            isActive("/me/events") ? styles.active : ""
+            isActive("/kalender") ? styles.active : ""
           }`}
         >
-          <Link href="/me/events">
+          <Link href="/kalender">
             <CalendarIconSummary
               className={`${styles.icon} ${
-                isActive("/me/events") ? styles.active : ""
+                isActive("/kalender") ? styles.active : ""
               }`}
             />
-            {isActive("/me/events") ? (
+            {isActive("/kalender") ? (
               <span className={styles.underline}></span>
             ) : (
               ""
