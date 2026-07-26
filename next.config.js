@@ -1,3 +1,18 @@
+/**
+ * `next-pwa` is a webpack plugin: `withPWA` works by injecting a `webpack`
+ * config that runs workbox and emits public/sw.js. Turbopack does not run
+ * webpack plugins, so the `--webpack` flag in the `dev` and `build` scripts is
+ * load-bearing, not a leftover from the Next 16 upgrade.
+ *
+ * Removing it does not fail the build. `next build --turbopack` exits 0 and
+ * prerenders every route - it just silently emits no sw.js, no workbox-*.js
+ * and no fallback-*.js, so the deployed app quietly loses offline support and
+ * installability. Dropping the flag without `--turbopack` is at least loud:
+ * Next errors on "a `webpack` config and no `turbopack` config".
+ *
+ * Moving to Turbopack means replacing this plugin first - Serwist is the
+ * maintained successor by the same author - not deleting the flag.
+ */
 const withPWA = require('@ducanh2912/next-pwa').default;
 
 /** @type {import('next').NextConfig} */

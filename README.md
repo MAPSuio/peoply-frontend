@@ -124,6 +124,8 @@ Three things it does that will bite you if you bypass it:
 - **Locale.** `nb` only. UI copy is Norwegian.
 - **PWA.** `@ducanh2912/next-pwa`, disabled in development. It only appears in a
   production build, so test service-worker changes with `npm run build && npm start`.
+  It is a webpack plugin, which is why `dev` and `build` pass `--webpack`. Under
+  Turbopack the build still succeeds but emits no `sw.js` — see `next.config.js`.
 - **Analytics.** Umami (loaded in `pages/_app.tsx`, website ID
   `7ec1d359-0bab-4bee-b214-d6f116701233`) plus Vercel Analytics. Anonymized — the
   user-facing wording about this lives in `pages/faq.tsx`. Temporary Umami owner
