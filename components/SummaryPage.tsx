@@ -1,41 +1,26 @@
-/* Next */
-import Image from "next/legacy/image";
-
 /* Components */
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 import BackButton from "./BackButton";
-import SummaryCard from "./SummaryCard";
-import TitleCircle from "./TitleCircle";
-import Tag from "./Tag";
-
-import CalendarIconSummary from "./svgs/CalendarIconSummary";
-import IconCircle from "./IconCircle";
-import DataIconSummary from "./svgs/DataIconSummary";
-import PlaceIconSummary from "./svgs/PlaceIconSummary";
-import InfoIconSummary from "./svgs/InfoIconSummary";
-import ImageIconSummary from "./svgs/ImageIconSummary";
-import PrivateIconSmall from "./svgs/PrivateIconSmall";
-import PublicIconSmall from "./svgs/PublicIconSmall";
-import NoLimitIconSmall from "./svgs/NoLimitIconSmall";
-import LimitIconSmall from "./svgs/LimitIconSmall";
-import LinkIcon from "./svgs/LinkIcon";
+import TitleSummarySection from "./summary/TitleSummarySection";
+import PersonSummarySection from "./summary/PersonSummarySection";
+import DateTimeSummarySection from "./summary/DateTimeSummarySection";
+import PlaceSummarySection from "./summary/PlaceSummarySection";
+import DescriptionSummarySection from "./summary/DescriptionSummarySection";
+import ImageSummarySection from "./summary/ImageSummarySection";
+import DataSummarySection from "./summary/DataSummarySection";
 
 /* Assets */
 import PlaceholderImage from "../assets/images/cat.jpg";
 
 /* Utils */
-import { formatDateAndTime, getDateString } from "../utils/functions";
+import { formatDateAndTime } from "../utils/functions";
 
 /* Styles */
 import styles from "../styles/SummaryPage.module.scss";
-import { EventRegistrationMode, Visibility } from "../types/types";
+import { EventRegistrationMode } from "../types/types";
 import { EventObjectProps } from "../pages/events/create";
-import UserCircle from "./UserCircle";
 import useUser from "../hooks/useUser";
-import FoodIcon from "./svgs/FoodIcon";
-import NoFoodIcon from "./svgs/NoFoodIcon";
-import HelpCircleIcon from "./svgs/HelpCircleIcon";
 
 interface SummaryPageProps {
   title: string;
@@ -240,13 +225,6 @@ const SummaryPage = ({
 
   const validData = validDataMap.get(page);
 
-  /* Format dates for displaying in summary card. */
-  const dateStringStart = getDateString(eventObject.eventDateStart);
-  const dateStringEnd =
-    eventObject.eventHasDateEnd && eventObject.eventDateEnd
-      ? getDateString(eventObject.eventDateEnd)
-      : "";
-
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = eventObject.eventImage
     ? URL.createObjectURL(eventObject.eventImage)
@@ -285,231 +263,37 @@ const SummaryPage = ({
             changeStep={changeStep}
           />
         </div>
-        <SummaryCard
-          inputId={0}
-          Icon={<TitleCircle className={styles.summaryIcon} />}
+        <TitleSummarySection
+          title={eventObject.eventTitle}
           onClick={buttonOnClick}
-        >
-          <p className={styles.titleText}>{eventObject.eventTitle}</p>
-        </SummaryCard>
+        />
         {eventObject.eventArrangerId && (
-          <SummaryCard
-            inputId={0}
-            Icon={<UserCircle large className={styles.summaryIcon} />}
-            onClick={buttonOnClick}
-          >
-            <p className={styles.titleText}>{arrangerName}</p>
-          </SummaryCard>
+          <PersonSummarySection text={arrangerName} onClick={buttonOnClick} />
         )}
         {selectedCoOrganizerNames.length > 0 && (
-          <SummaryCard
-            inputId={0}
-            Icon={<UserCircle large className={styles.summaryIcon} />}
+          <PersonSummarySection
+            text={selectedCoOrganizerNames.join(" · ")}
             onClick={buttonOnClick}
-          >
-            <p className={styles.titleText}>
-              {selectedCoOrganizerNames.join(" · ")}
-            </p>
-          </SummaryCard>
+          />
         )}
-        <SummaryCard
-          inputId={1}
-          Icon={
-            <IconCircle
-              Icon={CalendarIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
+        <DateTimeSummarySection
+          eventObject={eventObject}
           onClick={buttonOnClick}
-        >
-          <p
-            className={`${styles.dateText} ${
-              eventObject.eventHasDateEnd && styles.marginBottomVerySmall
-            }`}
-          >
-            <span className={styles.textColorPrimary}>Start: </span>
-            {`${dateStringStart}, ${eventObject.eventTimeStart}`}
-          </p>
-          {eventObject.eventHasDateEnd && (
-            <p
-              className={`${styles.dateText} ${
-                eventObject.eventHasRegStart && styles.marginBottomVerySmall
-              }`}
-            >
-              <span className={styles.textColorPrimary}>Slutt: </span>
-              {`${dateStringEnd}, ${eventObject.eventTimeEnd}`}
-            </p>
-          )}
-          {eventObject.eventHasRegStart && (
-            <p
-              className={`${styles.dateText} ${
-                eventObject.eventHasRegEnd && styles.marginBottomVerySmall
-              }`}
-            >
-              <span className={styles.textColorPrimary}>Påmelding åpner: </span>
-              {`${getDateString(eventObject.eventRegStartDate)}, ${
-                eventObject.eventRegStartTime
-              }`}
-            </p>
-          )}
-          {eventObject.eventHasRegEnd && (
-            <p className={`${styles.dateText} ${styles.marginBottomVerySmall}`}>
-              <span className={styles.textColorPrimary}>
-                Påmelding stenger:{" "}
-              </span>
-              {`${getDateString(eventObject.eventRegEndDate)}, ${
-                eventObject.eventRegEndTime
-              }`}
-            </p>
-          )}
-        </SummaryCard>
-        <SummaryCard
-          inputId={2}
-          Icon={
-            <IconCircle
-              Icon={PlaceIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
+        />
+        <PlaceSummarySection
+          eventObject={eventObject}
           onClick={buttonOnClick}
-        >
-          <p className={`${styles.placeText} ${styles.marginBottomSmall}`}>
-            {eventObject.eventLocationName}
-          </p>
-          {eventObject.eventLocation?.poi?.name && (
-            <span className={`${styles.placeText} ${styles.address}`}>
-              {eventObject.eventLocation?.poi?.name}
-            </span>
-          )}
-          {eventObject.eventLocation?.address?.freeformAddress && (
-            <span className={`${styles.placeText} ${styles.address}`}>
-              {eventObject.eventLocation?.address?.freeformAddress}
-            </span>
-          )}
-        </SummaryCard>
-        <SummaryCard
-          inputId={3}
-          Icon={
-            <IconCircle
-              Icon={InfoIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
+        />
+        <DescriptionSummarySection
+          eventObject={eventObject}
+          summaryCategories={summaryCategories}
           onClick={buttonOnClick}
-        >
-          <div className={styles.descriptionContainer}>
-            {eventObject.eventDescription.split("\n").map((str) => (
-              <p key={str} className={styles.descriptionText}>
-                {str}
-                <br></br>
-              </p>
-            ))}
-          </div>
-          <div className={styles.categoryContainer}>
-            <p className={styles.categoryLabel}>Kategori(er)</p>
-            <div className={styles.categoryTagsContainer}>
-              {summaryCategories.map((cat) => (
-                <Tag
-                  key={cat.id}
-                  text={cat.name}
-                  active={eventObject.eventActiveCategories.includes(cat.id)}
-                  noShadow
-                />
-              ))}
-            </div>
-          </div>
-        </SummaryCard>
-        <SummaryCard
-          inputId={4}
-          Icon={
-            <IconCircle
-              Icon={ImageIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
+        />
+        <ImageSummarySection
+          imageSource={imageSource}
           onClick={buttonOnClick}
-        >
-          <div className={styles.imageContainer}>
-            <Image
-              src={imageSource}
-              alt="Bilde av arrangementet"
-              objectFit="cover"
-              layout="fill"
-              objectPosition="center"
-            />
-          </div>
-        </SummaryCard>
-        <SummaryCard
-          inputId={5}
-          Icon={
-            <IconCircle
-              Icon={DataIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          onClick={buttonOnClick}
-        >
-          <div className={styles.dataContainer}>
-            {eventObject.eventVisibility === Visibility.UNLISTED ? (
-              <div className={styles.dataItemContainer}>
-                <PrivateIconSmall className={styles.dataIcon} />{" "}
-                <p className={styles.dataLabel}>Ikke oppført</p>
-              </div>
-            ) : eventObject.eventVisibility === Visibility.PUBLIC ? (
-              <div className={styles.dataItemContainer}>
-                <PublicIconSmall className={styles.dataIcon} />
-                <p className={styles.dataLabel}>Offentlig</p>
-              </div>
-            ) : (
-              <>{/* TODO: implement Private */}</>
-            )}
-            {eventObject.eventHasCapacity ? (
-              <div className={styles.dataItemContainer}>
-                <LimitIconSmall className={styles.dataIcon} />
-                <p
-                  className={styles.dataLabel}
-                >{`${eventObject.eventCapacity} plasser`}</p>
-              </div>
-            ) : (
-              <div className={styles.dataItemContainer}>
-                <NoLimitIconSmall className={styles.dataIcon} />
-                <p className={styles.dataLabel}>Ingen kapasitet</p>
-              </div>
-            )}
-            {eventObject.eventHasFood ? (
-              <div className={styles.dataItemContainer}>
-                <FoodIcon className={styles.dataIcon} />
-                <p className={styles.dataLabel}>Det serveres mat</p>
-              </div>
-            ) : (
-              <div className={styles.dataItemContainer}>
-                <NoFoodIcon className={styles.dataIcon} />
-                <p className={styles.dataLabel}>Ingen matservering</p>
-              </div>
-            )}
-            {eventObject.eventFormQuestion && (
-              <div className={styles.dataItemContainer}>
-                <HelpCircleIcon className={styles.dataIcon} />
-                <p className={styles.dataLabel}>
-                  {eventObject.eventFormQuestion.length > 30
-                    ? eventObject.eventFormQuestion.slice(0, 29) + "...?"
-                    : eventObject.eventFormQuestion}
-                </p>
-              </div>
-            )}
-            {eventObject.eventHasExternalRegistration && (
-              <div className={styles.dataItemContainer}>
-                <LinkIcon className={styles.dataIcon} />
-                <p
-                  className={styles.dataLabel}
-                  style={{ overflowWrap: "anywhere" }}
-                >
-                  Ekstern påmelding: {eventObject.eventExternalUrl}
-                </p>
-              </div>
-            )}
-          </div>
-        </SummaryCard>
+        />
+        <DataSummarySection eventObject={eventObject} onClick={buttonOnClick} />
       </div>
       <Button
         onClick={() => createEventFunction(formData)}

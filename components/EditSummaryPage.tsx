@@ -1,6 +1,3 @@
-// Next
-import Image from "next/legacy/image";
-
 // Types
 import {
   ButtonType,
@@ -12,41 +9,24 @@ import {
   Visibility,
 } from "../types/types";
 
-// Icons
-import TitleCircle from "./TitleCircle";
-import PlaceIconSummary from "./svgs/PlaceIconSummary";
-import IconCircle from "./IconCircle";
-import InfoIconSummary from "./svgs/InfoIconSummary";
-import RadioInput from "./inputs/RadioInput";
-import UnlistedIcon from "../components/svgs/UnlistedIcon";
-import PublicIcon from "../components/svgs/PublicIcon";
-import PrivateIconSmall from "./svgs/PrivateIconSmall";
-import PublicIconSmall from "./svgs/PublicIconSmall";
-import PlusIcon from "./svgs/PlusIcon";
-import ImageIconSummary from "./svgs/ImageIconSummary";
-import DataIconSummary from "./svgs/DataIconSummary";
-import PlaceholderImage from "../assets/images/cat.jpg";
-import MinusIcon from "./svgs/MinusIcon";
-
 // Components
-import SummaryCard from "./SummaryCard";
-import CalendarIconSummary from "./svgs/CalendarIconSummary";
-import TextInput from "./inputs/TextInput";
-import DateInput from "./inputs/DateInput";
-import TimeInput from "./inputs/TimeInput";
-import CategoryInput from "./inputs/CategoryInput";
-import Tag from "./Tag";
 import Button from "./Button";
-import ImageInput from "./inputs/ImageInput";
-import TimeView from "./TimeView";
 import Modal from "./Modal";
-import TextInputLong from "./inputs/TextInputLong";
-import NumberInput from "./inputs/NumberInput";
-import CheckboxInput from "./inputs/CheckboxInput";
+import ModalButton from "./ModalButton";
+import EditTitleSection from "./summary/EditTitleSection";
+import EditCoOrganizerSection from "./summary/EditCoOrganizerSection";
+import EditDateTimeSection from "./summary/EditDateTimeSection";
+import EditPlaceSection from "./summary/EditPlaceSection";
+import EditDescriptionSection from "./summary/EditDescriptionSection";
+import EditCategorySection from "./summary/EditCategorySection";
+import EditImageSection from "./summary/EditImageSection";
+import EditDataSection from "./summary/EditDataSection";
+
+// Assets
+import PlaceholderImage from "../assets/images/cat.jpg";
 
 // Styles
 import styles from "../styles/SummaryPage.module.scss";
-import createStyles from "../styles/CreateEvent.module.scss";
 
 // Hooks
 import { useRouter } from "next/router";
@@ -57,8 +37,6 @@ import useRegistrationCount from "../hooks/useRegistrationCount";
 // Utils
 import {
   removeTimezone,
-  getISODateString,
-  getISOTimeString,
   addTimezone,
   laterThan,
   latherThanNowISOString,
@@ -70,8 +48,6 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
 import { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
-import TextInputLocationSelect from "./inputs/TextInputLocationSelect";
-import ModalButton from "./ModalButton";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -86,7 +62,7 @@ interface EditSummaryPageProps {
   event: Event;
 }
 
-interface EventObjectProps {
+export interface EventObjectProps {
   visibility: Visibility;
   registrationMode: EventRegistrationMode;
   title: string;
@@ -605,791 +581,144 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       eventObject.coOrganizerOrganizationIds.includes(organization.id),
     )
     .map((organization) => organization.label);
+
+  const editButtonOnClick = () => setEditOpen(true);
+
   return (
     <>
       <div className={styles.summaryContainer}>
-        <SummaryCard
-          inputId={0}
-          Icon={<TitleCircle className={styles.summaryIcon} />}
-          editButtonVisible
-          editButtonDisabled={editOpen}
+        <EditTitleSection
+          title={eventObject.title}
+          tempTitle={tempEventObject.title}
+          validTitle={validTitle}
+          setValidTitle={setValidTitle}
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
+          onChange={updateTempObjectProps}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          valid={validTitle}
-          inputComponent={
-            <TextInput
-              value={tempEventObject.title}
-              inputId="title"
-              inputName="eventTitle"
-              label="Endre tittel på arrangementet"
-              placeholder={tempEventObject.title}
-              maxLength={100}
-              minLength={3}
-              errorMessage={`Tittelen må være mellom ${3} og ${100} tegn`}
-              required={false}
-              handleChange={updateTempObjectProps}
-              setValid={setValidTitle}
-              valid={validTitle}
-              validate
-              noExtraInfo
-              card
-            />
-          }
-        >
-          <p className={styles.titleText}>{eventObject.title}</p>
-        </SummaryCard>
+        />
 
-        <SummaryCard
+        <EditCoOrganizerSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          inputId={1}
-          Icon={
-            <IconCircle
-              Icon={InfoIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
+          coOrganizerSearch={coOrganizerSearch}
+          setCoOrganizerSearch={setCoOrganizerSearch}
+          tempCoOrganizerOrganizationIds={
+            tempEventObject.coOrganizerOrganizationIds
           }
-          editButtonVisible
-          editButtonDisabled={editOpen}
-          editButtonOnClick={() => setEditOpen(true)}
-          inputComponent={
-            <div className={styles.coOrganizerEditor}>
-              <div className={styles.coOrganizerHeader}>
-                <h2>Medarrangører</h2>
-                <p>
-                  Legg til eller fjern foreninger som samarbeider om
-                  arrangementet.
-                </p>
-              </div>
-              <input
-                id="coOrganizerSearch"
-                className={createStyles.coOrganizerSearchInput}
-                type="text"
-                value={coOrganizerSearch}
-                onChange={(event) => setCoOrganizerSearch(event.target.value)}
-                placeholder="Søk etter forening"
-              />
-              {tempEventObject.coOrganizerOrganizationIds.length > 0 && (
-                <div className={createStyles.coOrganizerTags}>
-                  {coOrganizerOptions
-                    .filter((organization) =>
-                      tempEventObject.coOrganizerOrganizationIds.includes(
-                        organization.id,
-                      ),
-                    )
-                    .map((organization) => (
-                      <span
-                        key={organization.id}
-                        className={createStyles.coOrganizerTag}
-                      >
-                        {organization.label}
-                      </span>
-                    ))}
-                </div>
-              )}
-              <div className={createStyles.coOrganizerOptionList}>
-                {visibleCoOrganizerOptions.map((organization) => (
-                  <button
-                    key={organization.id}
-                    type="button"
-                    className={`${createStyles.coOrganizerOptionButton} ${
-                      tempEventObject.coOrganizerOrganizationIds.includes(
-                        organization.id,
-                      )
-                        ? createStyles.coOrganizerOptionButtonSelected
-                        : ""
-                    }`}
-                    onClick={() =>
-                      toggleCoOrganizerOrganization(organization.id)
-                    }
-                  >
-                    <span>{organization.label}</span>
-                  </button>
-                ))}
-                {visibleCoOrganizerOptions.length === 0 && (
-                  <p className={createStyles.coOrganizerEmptyText}>
-                    Ingen foreninger matcher søket.
-                  </p>
-                )}
-              </div>
-            </div>
-          }
-        >
-          <div className={styles.dataContainer}>
-            <p className={styles.categoryLabel}>Medarrangører</p>
-            <p className={styles.titleText}>
-              {selectedCoOrganizerNames.length > 0
-                ? selectedCoOrganizerNames.join(" · ")
-                : "Ingen medarrangører"}
-            </p>
-          </div>
-        </SummaryCard>
+          coOrganizerOptions={coOrganizerOptions}
+          visibleCoOrganizerOptions={visibleCoOrganizerOptions}
+          toggleCoOrganizerOrganization={toggleCoOrganizerOrganization}
+          selectedCoOrganizerNames={selectedCoOrganizerNames}
+        />
 
-        <SummaryCard
+        <EditDateTimeSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          inputId={2}
-          Icon={
-            <IconCircle
-              Icon={CalendarIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          editButtonVisible
-          editButtonDisabled={editOpen}
-          editButtonOnClick={() => setEditOpen(true)}
-          valid={validStart && validEnd}
-          inputComponent={
-            <>
-              <div
-                className={`${styles.horizontalContainer} ${styles.marginBottomVerySmall} `}
-              >
-                <DateInput
-                  value={getISODateString(tempEventObject.startDate)}
-                  inputId="dateStart"
-                  inputName="eventDateStart"
-                  label="Dato start"
-                  errorMessage="Dato må være i dag eller i fremtiden."
-                  handleChange={updateStartDate}
-                  valid={validStart}
-                  noExtraInfo
-                  card
-                />
-                <TimeInput
-                  value={getISOTimeString(tempEventObject.startDate)}
-                  inputId="timeStart"
-                  inputName="eventTimeStart"
-                  label="Tidspunkt start"
-                  errorMessage="Tiden må være i fremtiden."
-                  handleChange={updateStartTime}
-                  valid={validStart}
-                  noExtraInfo
-                  card
-                />
-              </div>
-              {!tempEventObject.endDate && (
-                <button
-                  className={styles.addDateContainer}
-                  onClick={() => {
-                    setTempEventObject({
-                      ...tempEventObject,
-                      endDate: tempEventObject.startDate,
-                    });
-                  }}
-                >
-                  <PlusIcon className={styles.addDateIcon} />
-                  <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
-                </button>
-              )}
-              {tempEventObject.endDate && (
-                <>
-                  <button
-                    className={styles.addDateContainer}
-                    onClick={() => {
-                      setTempEventObject({
-                        ...tempEventObject,
-                        endDate: undefined,
-                      });
-                      setValidEnd(true);
-                    }}
-                  >
-                    <MinusIcon
-                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                    />
-                    <p className={styles.addDateText}>
-                      Sluttdato og -tidspunkt
-                    </p>
-                  </button>
-                  <div className={`${styles.horizontalContainer} `}>
-                    <DateInput
-                      value={
-                        tempEventObject.endDate
-                          ? getISODateString(tempEventObject.endDate)
-                          : getISODateString(tempEventObject.startDate)
-                      }
-                      inputId="dateEnd"
-                      inputName="eventDateEnd"
-                      label="Dato slutt"
-                      errorMessage="Sluttdato kan ikke være før startdato."
-                      handleChange={updateEndDate}
-                      valid={validEnd}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                    <TimeInput
-                      value={
-                        tempEventObject.endDate
-                          ? getISOTimeString(tempEventObject.endDate)
-                          : getISOTimeString(tempEventObject.startDate)
-                      }
-                      inputId="timeEnd"
-                      inputName="eventTimeEnd"
-                      label="Tidspunkt slutt"
-                      errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
-                      handleChange={updateEndTime}
-                      valid={validEnd}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                  </div>
-                </>
-              )}
-              {!tempEventObject.regStart && (
-                <button
-                  className={styles.addDateContainer}
-                  onClick={() => {
-                    setTempEventObject({
-                      ...tempEventObject,
-                      regStart: tempEventObject.startDate,
-                    });
-                  }}
-                >
-                  <PlusIcon className={styles.addDateIcon} />
-                  <p className={styles.addDateText}>Påmelding åpner</p>
-                </button>
-              )}
-              {tempEventObject.regStart && (
-                <>
-                  <button
-                    className={styles.addDateContainer}
-                    onClick={() => {
-                      setTempEventObject({
-                        ...tempEventObject,
-                        regStart: undefined,
-                      });
-                      setValidRegStart(true);
-                    }}
-                  >
-                    <MinusIcon
-                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                    />
-                    <p className={styles.addDateText}>Påmelding åpner</p>
-                  </button>
-                  <div className={`${styles.horizontalContainer} `}>
-                    <DateInput
-                      value={
-                        tempEventObject.regStart
-                          ? getISODateString(tempEventObject.regStart)
-                          : ""
-                      }
-                      inputId="regDateStart"
-                      inputName="eventRegDateStart"
-                      label="Dato åpning"
-                      errorMessage="Påmelding må åpne før startdato."
-                      handleChange={updateRegStartDate}
-                      valid={validRegStart}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                    <TimeInput
-                      value={
-                        tempEventObject.regStart
-                          ? getISOTimeString(tempEventObject.regStart)
-                          : ""
-                      }
-                      inputId="regTimeStart"
-                      inputName="eventRegTimeStart"
-                      label="Tidspunkt åpning"
-                      errorMessage="Påmelding må åpne før startdato."
-                      handleChange={updateRegStartTime}
-                      valid={validRegStart}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                  </div>
-                </>
-              )}
-              {!tempEventObject.regEnd && (
-                <button
-                  className={styles.addDateContainer}
-                  onClick={() => {
-                    setTempEventObject({
-                      ...tempEventObject,
-                      regEnd: tempEventObject.startDate,
-                    });
-                  }}
-                >
-                  <PlusIcon className={styles.addDateIcon} />
-                  <p className={styles.addDateText}>Påmelding stenger</p>
-                </button>
-              )}
-              {tempEventObject.regEnd && (
-                <>
-                  <button
-                    className={styles.addDateContainer}
-                    onClick={() => {
-                      setTempEventObject({
-                        ...tempEventObject,
-                        regEnd: undefined,
-                      });
-                      setValidRegEnd(true);
-                    }}
-                  >
-                    <MinusIcon
-                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                    />
-                    <p className={styles.addDateText}>Påmelding stenger</p>
-                  </button>
-                  <div className={`${styles.horizontalContainer} `}>
-                    <DateInput
-                      value={
-                        tempEventObject.regEnd
-                          ? getISODateString(tempEventObject.regEnd)
-                          : ""
-                      }
-                      inputId="regDateEnd"
-                      inputName="eventRegDateEnd"
-                      label="Dato frist"
-                      errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                      handleChange={updateRegEndDate}
-                      valid={validRegEnd}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                    <TimeInput
-                      value={
-                        tempEventObject.regEnd
-                          ? getISOTimeString(tempEventObject.regEnd)
-                          : ""
-                      }
-                      inputId="regTimeEnd"
-                      inputName="eventRegTimeEnd"
-                      label="Tidspunkt frist"
-                      errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                      handleChange={updateRegEndTime}
-                      valid={validRegEnd}
-                      initiallyFocused
-                      noExtraInfo
-                      card
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          }
-        >
-          <div className={`${styles.horizontalContainer}`}>
-            <div className={`${styles.diagonalContainer} `}>
-              <span
-                className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-              >
-                Start:{" "}
-              </span>
-              {eventObject.endDate && (
-                <span
-                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-                >
-                  Slutt:{" "}
-                </span>
-              )}
-              {eventObject.regStart && (
-                <span
-                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-                >
-                  Påmelding åpner:
-                </span>
-              )}
-              {eventObject.regEnd && (
-                <span
-                  className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-                >
-                  Påmelding stenger:
-                </span>
-              )}
-            </div>
+          eventObject={eventObject}
+          tempEventObject={tempEventObject}
+          setTempEventObject={setTempEventObject}
+          validStart={validStart}
+          validEnd={validEnd}
+          setValidEnd={setValidEnd}
+          validRegStart={validRegStart}
+          setValidRegStart={setValidRegStart}
+          validRegEnd={validRegEnd}
+          setValidRegEnd={setValidRegEnd}
+          updateStartDate={updateStartDate}
+          updateStartTime={updateStartTime}
+          updateEndDate={updateEndDate}
+          updateEndTime={updateEndTime}
+          updateRegStartDate={updateRegStartDate}
+          updateRegStartTime={updateRegStartTime}
+          updateRegEndDate={updateRegEndDate}
+          updateRegEndTime={updateRegEndTime}
+        />
 
-            <div className={`${styles.diagonalContainer} ${styles.startAlign}`}>
-              <TimeView
-                ISOtime={tempEventObject.startDate}
-                styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-                localTime={false}
-              ></TimeView>
-              {tempEventObject.endDate && (
-                <TimeView
-                  ISOtime={tempEventObject.endDate}
-                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-                  localTime={false}
-                ></TimeView>
-              )}
-              {tempEventObject.regStart && (
-                <TimeView
-                  ISOtime={tempEventObject.regStart}
-                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-                  localTime={false}
-                ></TimeView>
-              )}
-              {tempEventObject.regEnd && (
-                <TimeView
-                  ISOtime={tempEventObject.regEnd}
-                  styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-                  localTime={false}
-                ></TimeView>
-              )}
-            </div>
-          </div>
-        </SummaryCard>
-
-        <SummaryCard
+        <EditPlaceSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          editButtonDisabled={editOpen}
-          inputId={3}
-          Icon={
-            <IconCircle
-              Icon={PlaceIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          editButtonVisible
-          valid={validLocationName}
-          inputComponent={
-            <>
-              <TextInput
-                value={tempEventObject.locationName}
-                inputId="locationName"
-                inputName="eventLocationName"
-                label="Kallenavn på stedet"
-                placeholder="F.eks. Bliss"
-                maxLength={100}
-                minLength={1}
-                errorMessage="Du må oppgi et kallenavn på stedet."
-                required
-                handleChange={updateTempObjectProps}
-                setValid={setValidLocationName}
-                valid={validLocationName}
-                validate
-                noExtraInfo
-                card
-              />
+          validLocationName={validLocationName}
+          setValidLocationName={setValidLocationName}
+          tempLocationName={tempEventObject.locationName}
+          onLocationNameChange={updateTempObjectProps}
+          location={location}
+          setLocation={setLocation}
+          ipInfo={ipInfo}
+          displayLocationName={eventObject.locationName}
+          mapsHref={mapsUrl(eventObject)}
+          displayFreeformAddress={eventObject?.freeformAddress}
+        />
 
-              <TextInputLocationSelect
-                inputId="Location"
-                inputName="eventLocation"
-                placeholder="F.eks. Gaustadalléen 23B"
-                onLocationSelect={setLocation}
-                selectedLocation={location}
-                card
-                options={
-                  ipInfo
-                    ? {
-                        countrySet: [ipInfo.country_code],
-                        lat: ipInfo.latitude,
-                        lon: ipInfo.longitude,
-                      }
-                    : undefined
-                }
-              />
-            </>
-          }
-        >
-          <p className={styles.titleText}>{eventObject.locationName}</p>
-          <a
-            className={styles.placeText}
-            href={mapsUrl(eventObject)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {eventObject?.freeformAddress}
-          </a>
-        </SummaryCard>
-
-        <SummaryCard
+        <EditDescriptionSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          editButtonDisabled={editOpen}
-          inputId={4}
-          Icon={
-            <IconCircle
-              Icon={InfoIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          editButtonVisible
-          valid={validDescription}
-          inputComponent={
-            <>
-              <TextInputLong
-                value={tempEventObject.description}
-                inputId="description"
-                inputName="eventTitle"
-                label="Endre beskrivelse av arrangementet"
-                placeholder={tempEventObject.description}
-                maxLength={2500}
-                errorMessage="Beskrivelsen kan ikke være tom"
-                required={false}
-                handleChange={updateTempObjectProps}
-                setValid={setValidDescription}
-                valid={validDescription}
-                validate
-                noExtraInfo
-                card
-              />
-            </>
-          }
-        >
-          <div className={styles.descriptionText}>
-            {tempEventObject.description}
-          </div>
-        </SummaryCard>
+          validDescription={validDescription}
+          setValidDescription={setValidDescription}
+          tempDescription={tempEventObject.description}
+          onChange={updateTempObjectProps}
+        />
 
-        <SummaryCard
+        <EditCategorySection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          editButtonDisabled={editOpen}
-          inputId={5}
-          Icon={
-            <IconCircle
-              Icon={InfoIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          editButtonVisible
-          valid={validCategories}
-          inputComponent={
-            <CategoryInput
-              categories={allCategories}
-              activeCategories={tempEventObject.categoryIds}
-              errorMessage="Du må velge minst en kategori."
-              onClick={updateCategories}
-              style={styles.categoryTag}
-              setValid={setValidCategories}
-              valid={validCategories}
-              noExtraInfo
-            />
-          }
-        >
-          <div className={styles.categoryContainer}>
-            <p className={styles.categoryLabel}>Kategori(er)</p>
-            <div className={styles.categoryTagsContainer}>
-              {tempEventObject.categoryIds !== undefined &&
-                tempEventObject.categoryIds.map((categoryId) => {
-                  return (
-                    <Tag
-                      key={categoryId}
-                      text={
-                        allCategories !== undefined
-                          ? allCategories.find((c: any) => c.id === categoryId)
-                              ?.name
-                          : "..."
-                      }
-                      active={true}
-                    />
-                  );
-                })}
-            </div>
-          </div>
-        </SummaryCard>
+          validCategories={validCategories}
+          setValidCategories={setValidCategories}
+          allCategories={allCategories}
+          categoryIds={tempEventObject.categoryIds}
+          onCategoryClick={updateCategories}
+        />
 
-        <SummaryCard
+        <EditImageSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          editButtonDisabled={editOpen}
-          inputId={6}
-          Icon={
-            <IconCircle
-              Icon={ImageIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
-          }
-          editButtonVisible
-          inputComponent={
-            <>
-              <ImageInput
-                value={tempEventObject.eventImage}
-                placeholder={event.image}
-                inputId="image"
-                inputName="eventImage"
-                label="Last opp et bilde til arrangementet"
-                buttonLabel="Endre bilde"
-                errorMessage="Bildet kan ikke være så stort."
-                onChange={updateEventImage}
-                noExtraInfo
-                card
-              />
-              <button
-                type="button"
-                className={styles.deleteImage}
-                onClick={deleteImage}
-              >
-                Slett bilde
-              </button>
-            </>
-          }
-        >
-          <div className={styles.imageContainer}>
-            <Image
-              src={imageSource ?? event.image ?? PlaceholderImage}
-              layout="fill"
-              alt="Bilde for arrangementet"
-              objectFit="cover"
-              objectPosition="center"
-            />
-          </div>
-        </SummaryCard>
+          tempImage={tempEventObject.eventImage}
+          placeholderImage={event.image}
+          onImageChange={updateEventImage}
+          onDeleteImage={deleteImage}
+          imageSource={imageSource ?? event.image ?? PlaceholderImage}
+        />
 
-        <SummaryCard
+        <EditDataSection
+          editOpen={editOpen}
+          editButtonOnClick={editButtonOnClick}
           onCheck={acceptChange}
           onCross={rejectChange}
-          editButtonOnClick={() => setEditOpen(true)}
-          editButtonDisabled={editOpen}
-          inputId={7}
-          Icon={
-            <IconCircle
-              Icon={DataIconSummary}
-              iconClassName={styles.summaryIcon}
-            />
+          tempVisibility={tempEventObject.visibility}
+          onVisibilityClick={updateVisibility}
+          capacityFieldVisible={capacityFieldVisible}
+          onAddCapacityField={addCapacityField}
+          onRemoveCapacityField={removeCapacityField}
+          tempCapacity={tempEventObject.capacity}
+          onCapacityChange={updateCapacity}
+          goingCount={goingCount}
+          externalRegistrationEnabled={externalRegistrationEnabled}
+          onToggleExternalRegistration={() =>
+            setExternalRegistration(!externalRegistrationEnabled)
           }
-          editButtonVisible
-          inputComponent={
-            <>
-              <RadioInput
-                optionsAndIcons={[
-                  {
-                    id: 1,
-                    text: "offentlig",
-                    hintText:
-                      "Synlig for offentligheten. Vises for alle i appen, inkludert personer uten brukerkonto.",
-                    icon: PublicIcon,
-                    active: tempEventObject.visibility === Visibility.PUBLIC,
-                  },
-                  {
-                    id: 2,
-                    text: "ikke oppført",
-                    hintText:
-                      "Ikke synlig for offentligheten, men alle med lenken kan se arrangementet, inkludert personer uten brukerkonto.",
-                    icon: UnlistedIcon,
-                    active: tempEventObject.visibility === Visibility.UNLISTED,
-                  },
-                ]}
-                onClick={updateVisibility}
-                label="Privat eller ikke oppført arrangement?"
-                card
-              />
-              {!capacityFieldVisible && (
-                <button
-                  className={styles.addDateContainer}
-                  onClick={addCapacityField}
-                >
-                  <PlusIcon className={styles.addDateIcon} />
-                  <p className={styles.addDateText}>Legg til antall plasser</p>
-                </button>
-              )}
-              {capacityFieldVisible && (
-                <>
-                  <button
-                    className={styles.addDateContainer}
-                    onClick={removeCapacityField}
-                  >
-                    <MinusIcon
-                      className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                    />
-                    <p className={styles.addDateText}>Fjern antall plasser</p>
-                  </button>
-                  <NumberInput
-                    value={`${tempEventObject.capacity ?? ""}`}
-                    inputId="capacity"
-                    inputName="eventCapacity"
-                    label="Antall plasser"
-                    placeholder="F.eks. 120"
-                    min={`${Math.max(goingCount ?? 1, 1)}`}
-                    errorMessage="Antall plasser må være større enn 0"
-                    required={false}
-                    handleChange={updateCapacity}
-                  />
-                  {typeof goingCount === "number" && (
-                    <p
-                      className={styles.dateText}
-                    >{`Du kan ikke sette færre enn ${goingCount} plasser fordi ${goingCount} er påmeldt.`}</p>
-                  )}
-                </>
-              )}
-              <CheckboxInput
-                onChange={() =>
-                  setExternalRegistration(!externalRegistrationEnabled)
-                }
-                checked={externalRegistrationEnabled}
-                label="Ekstern påmelding"
-                checkboxId="externalRegistration"
-                checkboxName="externalRegistration"
-              />
-              {externalRegistrationEnabled && (
-                <TextInput
-                  value={tempEventObject.externalUrl ?? ""}
-                  inputId="externalUrl"
-                  inputName="externalUrl"
-                  label="Påmelding URL"
-                  placeholder="https://example.com/pamelding"
-                  maxLength={500}
-                  errorMessage="Legg inn en gyldig URL som starter med http:// eller https://"
-                  required
-                  handleChange={updateExternalUrl}
-                  setValid={setValidExternalUrl}
-                  valid={validExternalUrl}
-                  validate
-                  noExtraInfo
-                  card
-                />
-              )}
-            </>
-          }
-        >
-          <div className={styles.dataContainer}>
-            {eventObject.visibility === Visibility.UNLISTED ? (
-              <div className={styles.dataItemContainer}>
-                <PrivateIconSmall className={styles.dataIcon} />{" "}
-                <p className={styles.dataLabel}>Ikke oppført</p>
-              </div>
-            ) : eventObject.visibility === Visibility.PUBLIC ? (
-              <div className={styles.dataItemContainer}>
-                <PublicIconSmall className={styles.dataIcon} />
-                <p className={styles.dataLabel}>Offentlig</p>
-              </div>
-            ) : (
-              <>{/* TODO: implement Private */}</>
-            )}
-            {eventObject.capacity !== null ? (
-              <div className={styles.dataItemContainer}>
-                <p
-                  className={styles.dataLabel}
-                >{`${eventObject.capacity} plasser`}</p>
-              </div>
-            ) : (
-              <div className={styles.dataItemContainer}>
-                <p className={styles.dataLabel}>Ubegrenset antall plasser</p>
-              </div>
-            )}
-            <div className={styles.dataItemContainer}>
-              <p className={styles.dataLabel}>
-                {eventObject.registrationMode === EventRegistrationMode.EXTERNAL
-                  ? "Ekstern påmelding"
-                  : eventObject.registrationMode === EventRegistrationMode.NONE
-                    ? "Ingen påmelding"
-                    : "Påmelding i Peoply"}
-              </p>
-            </div>
-            {eventObject.registrationMode === EventRegistrationMode.EXTERNAL &&
-              eventObject.externalUrl && (
-                <a
-                  className={styles.placeText}
-                  href={eventObject.externalUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {eventObject.externalUrl}
-                </a>
-              )}
-          </div>
-        </SummaryCard>
+          tempExternalUrl={tempEventObject.externalUrl}
+          onExternalUrlChange={updateExternalUrl}
+          validExternalUrl={validExternalUrl}
+          setValidExternalUrl={setValidExternalUrl}
+          displayVisibility={eventObject.visibility}
+          displayCapacity={eventObject.capacity}
+          displayRegistrationMode={eventObject.registrationMode}
+          displayExternalUrl={eventObject.externalUrl}
+        />
+
         <Button
           text={"Lagre endringer"}
           onClick={() => saveChanges(eventObject)}
