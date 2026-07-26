@@ -1,6 +1,5 @@
 // Next.js.
 import type { NextPage } from "next";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
 
@@ -120,12 +119,6 @@ const Home: NextPage = () => {
             }
           />
         ) : undefined}
-        <div className={styles.calendarEntryCard}>
-          <h2>Kalender</h2>
-          <Link href="/kalender" className={styles.calendarEntryLink}>
-            Åpne kalender
-          </Link>
-        </div>
         {/* {eventsOnIFI && eventsOnIFI.length > 0 ? (
           <EventSwiper
             header={"Hva skjer på IFI?"}
