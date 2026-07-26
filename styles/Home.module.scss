@@ -30,35 +30,49 @@
   }
 }
 
-.mySwiperSlide {
-  max-width: $max-width-event-card;
-  padding-bottom: $spacer-medium-plus;
-  width: 80%;
-}
+/* Every slide rule below is nested one level deeper than it needs to be, and
+   that is the whole point - it is not stylistic.
 
-.swiperSlideOrg {
-  padding-bottom: $spacer-medium-plus;
-  width: $avatar-size-large;
+   Swiper's own stylesheet sets `.swiper-slide { width: 100% }`. That is a
+   single-class selector, and so were these until now, which means the two had
+   identical specificity (0,1,0) and the cascade fell back to whichever
+   stylesheet the bundler happened to emit last. It emitted Swiper's last, so
+   width: 100% won and every carousel rendered exactly one full-width slide.
 
-  @include desktop() {
-    width: $avatar-size-large-desktop;
+   Nesting under .swiperContainer takes these to (0,2,0), so they beat Swiper's
+   base rule on specificity and no longer care about emission order at all.
+   Do not flatten them back out. */
+.swiperContainer {
+  .mySwiperSlide {
+    max-width: $max-width-event-card;
+    padding-bottom: $spacer-medium-plus;
+    width: 80%;
   }
-}
 
-.swiperSlideOrg:last-child {
-  margin-right: $spacer-small;
-}
+  .swiperSlideOrg {
+    padding-bottom: $spacer-medium-plus;
+    width: $avatar-size-large;
 
-.swiperSlideOrg:first-child {
-  margin-left: $spacer-small;
-}
+    @include desktop() {
+      width: $avatar-size-large-desktop;
+    }
+  }
 
-.mySwiperSlide:last-child {
-  margin-right: $spacer-small;
-}
+  .swiperSlideOrg:last-child {
+    margin-right: $spacer-small;
+  }
 
-.mySwiperSlide:first-child {
-  margin-left: $spacer-small;
+  .swiperSlideOrg:first-child {
+    margin-left: $spacer-small;
+  }
+
+  .mySwiperSlide:last-child {
+    margin-right: $spacer-small;
+  }
+
+  .mySwiperSlide:first-child {
+    margin-left: $spacer-small;
+  }
 }
 
 .link {

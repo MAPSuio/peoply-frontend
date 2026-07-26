@@ -20,6 +20,20 @@ import { Event, Organization } from "../types/types";
 import { ArrangerFollower } from "../types/types";
 
 // Styles.
+/* Swiper's CSS is imported here rather than from the lazy HomeSwipers chunk,
+   so it is present at first paint instead of arriving with the carousel.
+
+   Note what this does NOT do: it does not put Swiper's rules before
+   Home.module.scss. Turbopack emits them into a later chunk either way -
+   moving the import does not change the order, which was verified against the
+   built output rather than assumed. The rules that have to win over Swiper's
+   win on specificity instead; see the comment in styles/Home.module.scss.
+
+   The ~31 kB of Swiper JS stays lazy. Only the ~3 kB of CSS is eager. */
+import "swiper/css";
+import "swiper/css/scrollbar";
+import "swiper/css/free-mode";
+
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
 
