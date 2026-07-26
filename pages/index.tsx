@@ -2,35 +2,42 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import useSWR from "swr";
 
 // React.
 import { useEffect, useState } from "react";
 
 // Components.
-import EventCard from "../components/EventCard";
 import Navbar from "../components/Navbar";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
-import OrganizationAvatar from "../components/OrganizationAvatar";
-
-// Swiper.
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/scrollbar";
-import "swiper/css/free-mode";
 
 // Services.
 
 // Types.
-import { UrlObject } from "url";
 import { Event, Organization } from "../types/types";
 import { ArrangerFollower } from "../types/types";
 
 // Styles.
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
+
+/* Swiper is lazy loaded. Every carousel below is gated on SWR data, so none of
+   them can render until a fetch resolves - loading Swiper eagerly only moved
+   ~40 kB gzipped of it into the first paint of a page that could not use it yet.
+   Both point at the same module specifier, so they share one chunk.
+
+   `ssr: false` states what was already true: these never rendered on the server,
+   because the data they need is fetched from the client. */
+const EventSwiper = dynamic(
+  () => import("../components/HomeSwipers").then((m) => m.EventSwiper),
+  { ssr: false },
+);
+const OrganizationSwiper = dynamic(
+  () => import("../components/HomeSwipers").then((m) => m.OrganizationSwiper),
+  { ssr: false },
+);
 
 const Home: NextPage = ({
   baseUrl,
@@ -141,92 +148,6 @@ const Home: NextPage = ({
       </div>
       <Navbar />
     </>
-  );
-};
-
-interface EventSwiperProps {
-  header: string;
-  seeAllUrl: string | UrlObject;
-  events: Event[];
-  error: Error | null;
-}
-
-const EventSwiper = ({
-  header,
-  seeAllUrl,
-  events,
-  error,
-}: EventSwiperProps) => {
-  return (
-    <div className={styles.swiperContainer}>
-      <div className={styles.swiperHeader}>
-        <h1>{header}</h1>
-        <Link href={seeAllUrl} className={styles.link}>
-          Se alle
-        </Link>
-      </div>
-      <Swiper
-        className={styles.mySwiper}
-        modules={[Mousewheel, FreeMode, Navigation]}
-        mousewheel={{ forceToAxis: true }}
-        spaceBetween={16}
-        slidesPerView={"auto"}
-        freeMode={{ enabled: true }}
-      >
-        {events?.map((event: any) => (
-          <SwiperSlide key={event.urlId} className={styles.mySwiperSlide}>
-            <Link
-              href={{
-                pathname: "/events/[eventId]",
-                query: { eventId: event.urlId },
-              }}
-            >
-              <EventCard event={event} />
-            </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
-  );
-};
-
-interface OrganizationSwiperProps {
-  header: string;
-  seeAllUrl: string | UrlObject;
-  organizations: Organization[];
-  error: Error | null;
-}
-const OrganizationSwiper = ({
-  header,
-  seeAllUrl,
-  organizations,
-  error,
-}: OrganizationSwiperProps) => {
-  return (
-    <div className={styles.swiperContainer}>
-      <div className={styles.swiperHeader}>
-        <h1>{header}</h1>
-        <Link href={seeAllUrl} className={styles.link}>
-          Se alle
-        </Link>
-      </div>
-      <Swiper
-        className={styles.mySwiper}
-        modules={[Mousewheel, FreeMode, Navigation]}
-        mousewheel={{ forceToAxis: true }}
-        spaceBetween={16}
-        slidesPerView={"auto"}
-        freeMode={{ enabled: true }}
-      >
-        {organizations?.map((organization: Organization) => (
-          <SwiperSlide key={organization.id} className={styles.swiperSlideOrg}>
-            <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
-              <OrganizationAvatar organization={organization} />
-            </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
   );
 };
 
