@@ -17,7 +17,7 @@ import HeadComponent from "../../components/HeadComponent";
 import Layout from "../../components/Layout";
 import BackButton from "../../components/BackButton";
 import ArrangerListItem from "../../components/ArrangerListItem";
-import LoadingWheel from "../../components/LoadingWheel";
+import QueryState from "../../components/QueryState";
 
 // Assets.
 import AloneImage from "../../assets/images/undraw_alone.png";
@@ -30,30 +30,16 @@ const Following = () => {
   const goBack = useBack();
   const redirectToLogin = useRedirectToLogin();
 
-  const {
-    data: followedArrangers,
-    isLoading,
-    error,
-  } = useSWR<ArrangerFollower[]>(user ? `/users/${user.id}/following` : null);
+  /* An answer we do not have yet is not an answer of "nobody". QueryState
+     shows LoadingWheel while a request is in flight, so a slow request never
+     flashes the empty state - and a failed request stops being silent, since
+     SwrProvider swallows 401/403/404. */
+  const followingQuery = useSWR<ArrangerFollower[]>(
+    user ? `/users/${user.id}/following` : null,
+  );
 
-  const renderFollowingList = () => {
-    /* An answer we do not have yet is not an answer of "nobody". The list used
-       to render the empty state for every falsy value, so a slow request
-       flashed it and a failed one left it up for good - and a failed request
-       here is silent, since SwrProvider swallows 401/403/404. */
-    if (isLoading) {
-      return <LoadingWheel />;
-    }
-
-    if (error) {
-      return (
-        <h2 className={styles.errorMessage}>
-          Vi fikk ikke hentet arrangørene du følger. Prøv igjen om litt.
-        </h2>
-      );
-    }
-
-    if (followedArrangers && followedArrangers.length > 0) {
+  const renderFollowingList = (followedArrangers: ArrangerFollower[]) => {
+    if (followedArrangers.length > 0) {
       return (
         <ul className={styles.followingList}>
           {followedArrangers.map((a) => (
@@ -106,7 +92,12 @@ const Following = () => {
           <h1>Følger</h1>
           <p>Her kan du se alle arrangørene du følger</p>
         </div>
-        {renderFollowingList()}
+        <QueryState
+          query={followingQuery}
+          errorMessage="Vi fikk ikke hentet arrangørene du følger. Prøv igjen om litt."
+        >
+          {renderFollowingList}
+        </QueryState>
       </Layout>
     </>
   );

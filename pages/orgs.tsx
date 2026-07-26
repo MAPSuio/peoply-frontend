@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import Layout from "../components/Layout";
 import OrganizationCard from "../components/OrganizationCard";
 import BackButton from "../components/BackButton";
+import QueryState from "../components/QueryState";
 
 // Services.
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
@@ -33,12 +34,13 @@ const OrganizationList = () => {
     return query ? `/organizations?${query}` : "/organizations";
   }, [router.query]);
 
-  const { data: organizations, error: organizationsError } = useSWR<
-    Organization[]
-  >(orgQueryUrl, fetchAllFromPeoplyApiJson);
+  const organizationsQuery = useSWR<Organization[]>(
+    orgQueryUrl,
+    fetchAllFromPeoplyApiJson,
+  );
 
   const uniqueOrganizations = useMemo(() => {
-    const allOrgs = organizations ?? [];
+    const allOrgs = organizationsQuery.data ?? [];
     const orgMap = new Map();
     allOrgs.forEach((org) => {
       if (!orgMap.has(org.id)) {
@@ -46,7 +48,7 @@ const OrganizationList = () => {
       }
     });
     return Array.from(orgMap.values());
-  }, [organizations]);
+  }, [organizationsQuery.data]);
 
   return (
     <>
@@ -61,14 +63,20 @@ const OrganizationList = () => {
           <h1>Foreninger på IFI</h1>
           <p>Her kan du se alle foreningene på IFI</p>
         </div>
-        {organizationsError && <div className={styles.errorContainer}></div>}
-        <div className={styles.orgList}>
-          {uniqueOrganizations.map((org) => (
-            <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
-              <OrganizationCard organizationID={org.id} />
-            </Link>
-          ))}
-        </div>
+        <QueryState
+          query={organizationsQuery}
+          errorMessage="Kunne ikke hente foreningene. Prøv igjen om litt."
+        >
+          {() => (
+            <div className={styles.orgList}>
+              {uniqueOrganizations.map((org) => (
+                <Link href={`/orgs/${org.urlId ?? org.id}`} key={org.id}>
+                  <OrganizationCard organizationID={org.id} />
+                </Link>
+              ))}
+            </div>
+          )}
+        </QueryState>
       </Layout>
     </>
   );

@@ -7,6 +7,7 @@ import BackButton from "../../components/BackButton";
 import HeadComponent from "../../components/HeadComponent";
 import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
+import QueryState from "../../components/QueryState";
 import SearchIcon from "../../components/svgs/SearchIcon";
 import useBack from "../../hooks/useBack";
 import {
@@ -124,7 +125,7 @@ const Events: NextPage = () => {
   );
   const organizationsQueryUrl = "/organizations?orderBy=name";
 
-  const { data: events, error } = useSWR<Event[]>(
+  const eventsResult = useSWR<Event[]>(
     queryUrl,
     explicitTake ? fetchFromPeoplyApiJson : fetchAllFromPeoplyApiJson,
   );
@@ -219,7 +220,7 @@ const Events: NextPage = () => {
       .split(/\s+/)
       .filter(Boolean);
 
-    return (events ?? []).filter((event) => {
+    return (eventsResult.data ?? []).filter((event) => {
       const matchesOrganization =
         selectedOrganizationIds.length === 0 ||
         (event.eventArrangers ?? []).some((eventArranger) =>
@@ -256,7 +257,7 @@ const Events: NextPage = () => {
     });
   }, [
     deferredEventSearch,
-    events,
+    eventsResult.data,
     selectedCategoryIds,
     selectedOrganizationIds,
   ]);
@@ -558,57 +559,51 @@ const Events: NextPage = () => {
           </button>
         </div>
 
-        {!error && !events && (
-          <div className={styles.emptyState}>
-            <h2>Laster arrangementer...</h2>
-            <p>Henter kommende arrangementer for det neste året.</p>
-          </div>
-        )}
-
-        {error && (
-          <div className={styles.emptyState}>
-            <h2>Kunne ikke laste arrangementer</h2>
-            <p>Prøv igjen om litt.</p>
-          </div>
-        )}
-
-        {!error && events && eventsByMonth.length === 0 && (
-          <div className={styles.emptyState}>
-            <h2>Ingen arrangementer funnet</h2>
-            <p>
-              {hasActiveFilters
-                ? "Prøv å justere filtrene eller søket."
-                : "Kom tilbake senere for flere arrangementer."}
-            </p>
-          </div>
-        )}
-
-        <div className={styles.monthSections}>
-          {eventsByMonth.map((group) => (
-            <section key={group.key} className={styles.monthSection}>
-              <div className={styles.monthHeader}>
-                <h2>{group.label}</h2>
-                <p>{group.events.length} arrangementer</p>
+        <QueryState
+          query={eventsResult}
+          errorMessage="Kunne ikke laste arrangementer. Prøv igjen om litt."
+          className={styles.emptyState}
+        >
+          {() =>
+            eventsByMonth.length === 0 ? (
+              <div className={styles.emptyState}>
+                <h2>Ingen arrangementer funnet</h2>
+                <p>
+                  {hasActiveFilters
+                    ? "Prøv å justere filtrene eller søket."
+                    : "Kom tilbake senere for flere arrangementer."}
+                </p>
               </div>
-              <div
-                className={`${styles.eventGrid} ${
-                  isCompactGrid ? styles.eventGridCompact : ""
-                }`}
-              >
-                {group.events.map((event) => (
-                  <LargeEventCard
-                    key={event.id}
-                    event={event}
-                    showArranger
-                    compact={isCompactGrid}
-                    stackActionsOnDesktop={isCompactGrid}
-                    className={styles.eventCard}
-                  />
+            ) : (
+              <div className={styles.monthSections}>
+                {eventsByMonth.map((group) => (
+                  <section key={group.key} className={styles.monthSection}>
+                    <div className={styles.monthHeader}>
+                      <h2>{group.label}</h2>
+                      <p>{group.events.length} arrangementer</p>
+                    </div>
+                    <div
+                      className={`${styles.eventGrid} ${
+                        isCompactGrid ? styles.eventGridCompact : ""
+                      }`}
+                    >
+                      {group.events.map((event) => (
+                        <LargeEventCard
+                          key={event.id}
+                          event={event}
+                          showArranger
+                          compact={isCompactGrid}
+                          stackActionsOnDesktop={isCompactGrid}
+                          className={styles.eventCard}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
-            </section>
-          ))}
-        </div>
+            )
+          }
+        </QueryState>
       </Layout>
     </>
   );

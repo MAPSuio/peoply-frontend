@@ -1,0 +1,19 @@
+// No `width` here on purpose - a block element already fills its container,
+// and callers with their own width cap (e.g. a `min(100%, 72rem)` card) pass
+// it in via `className` instead of fighting this rule for specificity.
+.error {
+  @include card();
+  align-items: center;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  margin: 0 auto;
+  padding: $spacer-medium;
+  text-align: center;
+
+  p {
+    @include normalText();
+    margin: 0 auto;
+  }
+}
