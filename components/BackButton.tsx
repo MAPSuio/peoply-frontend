@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import styles from "../styles/BackButton.module.scss";
 import ChevronIcon from "./svgs/ChevronIcon";
 
@@ -18,7 +18,13 @@ export default function BackButton({
     : `${styles.container}`;
 
   return (
-    <button onClick={onClick} tabIndex={0} className={classes} style={style}>
+    <button
+      type="button"
+      onClick={onClick}
+      tabIndex={0}
+      className={classes}
+      style={style}
+    >
       <ChevronIcon className={styles.icon} />
       <span>Tilbake</span>
     </button>

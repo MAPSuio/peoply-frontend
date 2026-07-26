@@ -2,7 +2,7 @@
 import Image from "next/legacy/image";
 
 // React.
-import { useRef, ChangeEvent } from "react";
+import { useRef, type ChangeEvent } from "react";
 
 // Components.
 import WarningIcon from "../svgs/WarningIcon";
@@ -114,6 +114,7 @@ const ImageInput = ({
         onChange={onChange}
       />
       <button
+        type="button"
         className={`${styles.imageInputButton} ${card && styles.card}`}
         onClick={clickImageInput}
       >

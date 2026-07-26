@@ -1,4 +1,4 @@
-import { Event, EventArranger, Organization } from "../types/types";
+import type { Event, EventArranger, Organization } from "../types/types";
 
 export interface EventArrangerDisplayItem {
   id: string;

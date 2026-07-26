@@ -1,5 +1,3 @@
-import React from "react";
-
 // Swiper.
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Navigation } from "swiper/modules";

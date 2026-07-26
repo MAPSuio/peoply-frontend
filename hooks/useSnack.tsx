@@ -2,14 +2,14 @@ import {
   createContext,
   useContext,
   useState,
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useEffect,
   useMemo,
   useCallback,
 } from "react";
 import Snackbar from "../components/Snackbar";
-import { SnackContextType, Snack, SnackTypes } from "../types/types";
+import type { SnackContextType, Snack, SnackTypes } from "../types/types";
 import { generateRandomKey } from "../utils/functions";
 
 const SnackbarContext = createContext<SnackContextType>({} as SnackContextType);
@@ -41,7 +41,7 @@ export function SnackbarProvider({
 
   const addSnack = useCallback(
     (label: string, type?: SnackTypes) =>
-      setSnacks((snacks) => [{ label: label, type: type } /* , ...snacks */]),
+      setSnacks((_snacks) => [{ label: label, type: type } /* , ...snacks */]),
     [],
   );
 

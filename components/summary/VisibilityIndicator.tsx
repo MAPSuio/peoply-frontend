@@ -25,9 +25,7 @@ const VisibilityIndicator = ({ visibility }: VisibilityIndicatorProps) => {
       <PublicIconSmall className={styles.dataIcon} />
       <p className={styles.dataLabel}>Offentlig</p>
     </div>
-  ) : (
-    <>{/* TODO: implement Private */}</>
-  );
+  ) : /* TODO: implement Private */ null;
 };
 
 export default VisibilityIndicator;

@@ -12,7 +12,11 @@ export default function BackButtonGlass({
   onClick,
 }: BackButtonGlassProps) {
   return (
-    <button onClick={onClick} className={`${styles.glassButton} ${className}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`${styles.glassButton} ${className}`}
+    >
       <ChevronLeftIcon />
     </button>
   );

@@ -22,7 +22,7 @@ import {
 // Services.
 
 // Types.
-import { Event, EventDateFormat } from "../types/types";
+import { type Event, EventDateFormat } from "../types/types";
 
 // Assets.
 import eventPlaceholder from "../assets/images/undraw_partying.png";

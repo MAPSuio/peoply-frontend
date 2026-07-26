@@ -1,9 +1,9 @@
 // Types
 import {
   ButtonType,
-  Event,
-  EventCategory,
-  Organization,
+  type Event,
+  type EventCategory,
+  type Organization,
   EventRegistrationMode,
   SnackTypes,
   Visibility,
@@ -45,9 +45,9 @@ import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApiJson,
 } from "../services/fetchers";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
-import { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
+import type { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -284,8 +284,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   function updateStartTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate =
-      tempEventObject.startDate.substring(0, 11) + e.target.value + ":00.000Z";
+    const newDate = `${tempEventObject.startDate.substring(0, 11) + e.target.value}:00.000Z`;
 
     setTempEventObject({
       ...tempEventObject,
@@ -331,8 +330,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   function updateRegStartTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate =
-      tempEventObject.regStart?.substring(0, 11) + e.target.value + ":00.000Z";
+    const newDate = `${tempEventObject.regStart?.substring(0, 11) + e.target.value}:00.000Z`;
 
     setTempEventObject({
       ...tempEventObject,
@@ -374,10 +372,10 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   }
 
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       setTempEventObject((tempEventObject) => ({
         ...tempEventObject,
-        // @ts-ignore
+        // @ts-expect-error
         eventImage: e.target.files[0],
         deleteImage: false,
       }));
@@ -585,180 +583,177 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const editButtonOnClick = () => setEditOpen(true);
 
   return (
-    <>
-      <div className={styles.summaryContainer}>
-        <EditTitleSection
-          title={eventObject.title}
-          tempTitle={tempEventObject.title}
-          validTitle={validTitle}
-          setValidTitle={setValidTitle}
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onChange={updateTempObjectProps}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-        />
+    <div className={styles.summaryContainer}>
+      <EditTitleSection
+        title={eventObject.title}
+        tempTitle={tempEventObject.title}
+        validTitle={validTitle}
+        setValidTitle={setValidTitle}
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onChange={updateTempObjectProps}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+      />
 
-        <EditCoOrganizerSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          coOrganizerSearch={coOrganizerSearch}
-          setCoOrganizerSearch={setCoOrganizerSearch}
-          tempCoOrganizerOrganizationIds={
-            tempEventObject.coOrganizerOrganizationIds
-          }
-          coOrganizerOptions={coOrganizerOptions}
-          visibleCoOrganizerOptions={visibleCoOrganizerOptions}
-          toggleCoOrganizerOrganization={toggleCoOrganizerOrganization}
-          selectedCoOrganizerNames={selectedCoOrganizerNames}
-        />
+      <EditCoOrganizerSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        coOrganizerSearch={coOrganizerSearch}
+        setCoOrganizerSearch={setCoOrganizerSearch}
+        tempCoOrganizerOrganizationIds={
+          tempEventObject.coOrganizerOrganizationIds
+        }
+        coOrganizerOptions={coOrganizerOptions}
+        visibleCoOrganizerOptions={visibleCoOrganizerOptions}
+        toggleCoOrganizerOrganization={toggleCoOrganizerOrganization}
+        selectedCoOrganizerNames={selectedCoOrganizerNames}
+      />
 
-        <EditDateTimeSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          eventObject={eventObject}
-          tempEventObject={tempEventObject}
-          setTempEventObject={setTempEventObject}
-          validStart={validStart}
-          validEnd={validEnd}
-          setValidEnd={setValidEnd}
-          validRegStart={validRegStart}
-          setValidRegStart={setValidRegStart}
-          validRegEnd={validRegEnd}
-          setValidRegEnd={setValidRegEnd}
-          updateStartDate={updateStartDate}
-          updateStartTime={updateStartTime}
-          updateEndDate={updateEndDate}
-          updateEndTime={updateEndTime}
-          updateRegStartDate={updateRegStartDate}
-          updateRegStartTime={updateRegStartTime}
-          updateRegEndDate={updateRegEndDate}
-          updateRegEndTime={updateRegEndTime}
-        />
+      <EditDateTimeSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        eventObject={eventObject}
+        tempEventObject={tempEventObject}
+        setTempEventObject={setTempEventObject}
+        validStart={validStart}
+        validEnd={validEnd}
+        setValidEnd={setValidEnd}
+        validRegStart={validRegStart}
+        setValidRegStart={setValidRegStart}
+        validRegEnd={validRegEnd}
+        setValidRegEnd={setValidRegEnd}
+        updateStartDate={updateStartDate}
+        updateStartTime={updateStartTime}
+        updateEndDate={updateEndDate}
+        updateEndTime={updateEndTime}
+        updateRegStartDate={updateRegStartDate}
+        updateRegStartTime={updateRegStartTime}
+        updateRegEndDate={updateRegEndDate}
+        updateRegEndTime={updateRegEndTime}
+      />
 
-        <EditPlaceSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          validLocationName={validLocationName}
-          setValidLocationName={setValidLocationName}
-          tempLocationName={tempEventObject.locationName}
-          onLocationNameChange={updateTempObjectProps}
-          location={location}
-          setLocation={setLocation}
-          ipInfo={ipInfo}
-          displayLocationName={eventObject.locationName}
-          mapsHref={mapsUrl(eventObject)}
-          displayFreeformAddress={eventObject?.freeformAddress}
-        />
+      <EditPlaceSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        validLocationName={validLocationName}
+        setValidLocationName={setValidLocationName}
+        tempLocationName={tempEventObject.locationName}
+        onLocationNameChange={updateTempObjectProps}
+        location={location}
+        setLocation={setLocation}
+        ipInfo={ipInfo}
+        displayLocationName={eventObject.locationName}
+        mapsHref={mapsUrl(eventObject)}
+        displayFreeformAddress={eventObject?.freeformAddress}
+      />
 
-        <EditDescriptionSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          validDescription={validDescription}
-          setValidDescription={setValidDescription}
-          tempDescription={tempEventObject.description}
-          onChange={updateTempObjectProps}
-        />
+      <EditDescriptionSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        validDescription={validDescription}
+        setValidDescription={setValidDescription}
+        tempDescription={tempEventObject.description}
+        onChange={updateTempObjectProps}
+      />
 
-        <EditCategorySection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          validCategories={validCategories}
-          setValidCategories={setValidCategories}
-          allCategories={allCategories}
-          categoryIds={tempEventObject.categoryIds}
-          onCategoryClick={updateCategories}
-        />
+      <EditCategorySection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        validCategories={validCategories}
+        setValidCategories={setValidCategories}
+        allCategories={allCategories}
+        categoryIds={tempEventObject.categoryIds}
+        onCategoryClick={updateCategories}
+      />
 
-        <EditImageSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          tempImage={tempEventObject.eventImage}
-          placeholderImage={event.image}
-          onImageChange={updateEventImage}
-          onDeleteImage={deleteImage}
-          imageSource={imageSource ?? event.image ?? PlaceholderImage}
-        />
+      <EditImageSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        tempImage={tempEventObject.eventImage}
+        placeholderImage={event.image}
+        onImageChange={updateEventImage}
+        onDeleteImage={deleteImage}
+        imageSource={imageSource ?? event.image ?? PlaceholderImage}
+      />
 
-        <EditDataSection
-          editOpen={editOpen}
-          editButtonOnClick={editButtonOnClick}
-          onCheck={acceptChange}
-          onCross={rejectChange}
-          tempVisibility={tempEventObject.visibility}
-          onVisibilityClick={updateVisibility}
-          capacityFieldVisible={capacityFieldVisible}
-          onAddCapacityField={addCapacityField}
-          onRemoveCapacityField={removeCapacityField}
-          tempCapacity={tempEventObject.capacity}
-          onCapacityChange={updateCapacity}
-          goingCount={goingCount}
-          externalRegistrationEnabled={externalRegistrationEnabled}
-          onToggleExternalRegistration={() =>
-            setExternalRegistration(!externalRegistrationEnabled)
-          }
-          tempExternalUrl={tempEventObject.externalUrl}
-          onExternalUrlChange={updateExternalUrl}
-          validExternalUrl={validExternalUrl}
-          setValidExternalUrl={setValidExternalUrl}
-          displayVisibility={eventObject.visibility}
-          displayCapacity={eventObject.capacity}
-          displayRegistrationMode={eventObject.registrationMode}
-          displayExternalUrl={eventObject.externalUrl}
-        />
+      <EditDataSection
+        editOpen={editOpen}
+        editButtonOnClick={editButtonOnClick}
+        onCheck={acceptChange}
+        onCross={rejectChange}
+        tempVisibility={tempEventObject.visibility}
+        onVisibilityClick={updateVisibility}
+        capacityFieldVisible={capacityFieldVisible}
+        onAddCapacityField={addCapacityField}
+        onRemoveCapacityField={removeCapacityField}
+        tempCapacity={tempEventObject.capacity}
+        onCapacityChange={updateCapacity}
+        goingCount={goingCount}
+        externalRegistrationEnabled={externalRegistrationEnabled}
+        onToggleExternalRegistration={() =>
+          setExternalRegistration(!externalRegistrationEnabled)
+        }
+        tempExternalUrl={tempEventObject.externalUrl}
+        onExternalUrlChange={updateExternalUrl}
+        validExternalUrl={validExternalUrl}
+        setValidExternalUrl={setValidExternalUrl}
+        displayVisibility={eventObject.visibility}
+        displayCapacity={eventObject.capacity}
+        displayRegistrationMode={eventObject.registrationMode}
+        displayExternalUrl={eventObject.externalUrl}
+      />
 
-        <Button
-          text={"Lagre endringer"}
-          onClick={() => saveChanges(eventObject)}
-          disabled={!changesMade || editOpen || !allValid}
-        ></Button>
+      <Button
+        text={"Lagre endringer"}
+        onClick={() => saveChanges(eventObject)}
+        disabled={!changesMade || editOpen || !allValid}
+      ></Button>
 
-        <button
-          className={styles.deleteButton}
-          onClick={() => {
-            setDeleteModalOpen(true);
+      <button
+        type="button"
+        className={styles.deleteButton}
+        onClick={() => {
+          setDeleteModalOpen(true);
+        }}
+      >
+        Slett arrangementet
+      </button>
+      {deleteModalOpen && (
+        <Modal
+          label="Slette arrangement"
+          description="Er du sikker på at du vil slette arrangementet?"
+          closeButtonOnClick={() => {
+            setDeleteModalOpen(false);
           }}
         >
-          Slett arrangementet
-        </button>
-        {deleteModalOpen && (
-          <Modal
-            label="Slette arrangement"
-            description="Er du sikker på at du vil slette arrangementet?"
-            closeButtonOnClick={() => {
+          <ModalButton
+            text="Slett"
+            type={ButtonType.DANGER}
+            onClick={deleteEvent}
+          />
+          <ModalButton
+            text="Avbryt"
+            onClick={() => {
               setDeleteModalOpen(false);
             }}
-          >
-            <>
-              <ModalButton
-                text="Slett"
-                type={ButtonType.DANGER}
-                onClick={deleteEvent}
-              />
-              <ModalButton
-                text="Avbryt"
-                onClick={() => {
-                  setDeleteModalOpen(false);
-                }}
-                type={ButtonType.SECONDARY}
-              />
-            </>
-          </Modal>
-        )}
-      </div>
-    </>
+            type={ButtonType.SECONDARY}
+          />
+        </Modal>
+      )}
+    </div>
   );
 };
 

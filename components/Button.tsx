@@ -1,5 +1,5 @@
 // React.
-import { MouseEvent, useState } from "react";
+import { type MouseEvent, useState } from "react";
 
 // Components.
 import LoadingWheel from "./LoadingWheel";
@@ -81,6 +81,7 @@ export default function Button({
 
   return (
     <button
+      type="button"
       onClick={async (e: any) => {
         let onClickResult: any = null;
 

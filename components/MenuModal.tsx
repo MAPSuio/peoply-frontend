@@ -13,7 +13,7 @@ const MenuModal = ({ label, description, onClose, children }: ModalProps) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <button className={styles.exitIcon} onClick={onClose}>
+        <button type="button" className={styles.exitIcon} onClick={onClose}>
           <ExitIcon />
         </button>
         <h1 className={styles.title}>{label}</h1>

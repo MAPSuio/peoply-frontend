@@ -1,6 +1,6 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import Navbar from "../../../components/Navbar";
 import OrgMenu from "../../../components/OrgMenu";
@@ -11,7 +11,7 @@ import {
   ButtonType,
   EventRegistrationMode,
   IcsFeedSyncStatus,
-  OrganizationIcsFeed,
+  type OrganizationIcsFeed,
   SnackTypes,
 } from "../../../types/types";
 import styles from "../../../styles/OrganizationSettings.module.scss";
@@ -29,7 +29,7 @@ import {
   emptyOrganizationSocialLinkValues,
   getOrganizationSocialLinkFormValues,
   isValidOrganizationSocialLink,
-  OrganizationSocialLinkKey,
+  type OrganizationSocialLinkKey,
   organizationSocialPlatforms,
 } from "../../../utils/socialLinks";
 
@@ -153,7 +153,6 @@ const OrganizationSettings: NextPage = () => {
         return "Påmelding i Peoply";
       case EventRegistrationMode.NONE:
         return "Ingen påmelding i Peoply";
-      case EventRegistrationMode.EXTERNAL:
       default:
         return "Ekstern påmelding";
     }

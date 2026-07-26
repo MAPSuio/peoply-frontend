@@ -11,7 +11,7 @@ import { getInputPageData } from "../../utils/functions";
 
 // Types.
 import { InputPages } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";
@@ -114,6 +114,7 @@ const DateStep = ({
         </div>
         {!eventObject.eventHasDateEnd && (
           <button
+            type="button"
             className={styles.addDateContainer}
             onClick={() => setEventHasDateEnd(true)}
           >
@@ -123,6 +124,7 @@ const DateStep = ({
         )}
         {eventObject.eventHasDateEnd && (
           <button
+            type="button"
             className={styles.addDateContainer}
             onClick={() => setEventHasDateEnd(false)}
           >
@@ -159,6 +161,7 @@ const DateStep = ({
         <div className={styles.scheduledRegContainer}>
           {!eventObject.eventHasRegStart && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => seteventHasRegStart(true)}
             >
@@ -168,6 +171,7 @@ const DateStep = ({
           )}
           {eventObject.eventHasRegStart && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => seteventHasRegStart(false)}
             >
@@ -205,6 +209,7 @@ const DateStep = ({
         <div className={styles.scheduledRegContainer}>
           {!eventObject.eventHasRegEnd && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => seteventHasRegEnd(true)}
             >
@@ -214,6 +219,7 @@ const DateStep = ({
           )}
           {eventObject.eventHasRegEnd && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => seteventHasRegEnd(false)}
             >

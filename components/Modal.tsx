@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useId, useRef } from "react";
+import { type ReactNode, useEffect, useId, useRef } from "react";
 
 /* Styles */
 import styles from "../styles/Modal.module.scss";
@@ -8,7 +8,7 @@ interface ModalProps {
   label: string;
   description?: string;
   closeButtonOnClick?: () => void;
-  children?: ReactElement;
+  children?: ReactNode;
 }
 
 const FOCUSABLE_SELECTOR = [
@@ -31,7 +31,7 @@ const Modal = ({
 
   const closeClickFunction = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    closeButtonOnClick && closeButtonOnClick();
+    closeButtonOnClick?.();
   };
 
   /* Keeps the close callback out of the focus effect's dependencies: callers
@@ -125,6 +125,7 @@ const Modal = ({
         </h1>
         <div className={styles.descriptionContainer}>
           {description?.split("\n").map((str, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: lines come from a fixed string split, never reordered/added independently.
             <p className={styles.description} key={index}>
               {str}
               <br></br>

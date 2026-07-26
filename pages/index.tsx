@@ -14,8 +14,8 @@ import Header from "../components/Header";
 // Services.
 
 // Types.
-import { Event, Organization } from "../types/types";
-import { ArrangerFollower } from "../types/types";
+import type { Event, Organization } from "../types/types";
+import type { ArrangerFollower } from "../types/types";
 
 // Styles.
 /* Swiper's CSS is imported here rather than from the lazy HomeSwipers chunk,

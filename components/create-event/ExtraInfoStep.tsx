@@ -18,7 +18,7 @@ import { getInputPageData } from "../../utils/functions";
 
 // Types.
 import { InputPages, Visibility } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";

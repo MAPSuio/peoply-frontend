@@ -3,7 +3,7 @@ import RadioButtonSmall from "../RadioButtonSmall";
 
 /* Styles. */
 import styles from "../../styles/RadioInputSmall.module.scss";
-import React from "react";
+import type React from "react";
 
 interface RadioInputSmallProps {
   optionsAndIcons: Array<{

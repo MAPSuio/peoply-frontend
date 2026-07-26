@@ -24,6 +24,7 @@ const RadioButtonSmall = ({
   return (
     <div className={styles.buttonWrapper}>
       <button
+        type="button"
         className={`${styles.buttonContainer} ${selected && styles.selected}`}
         onClick={() => onClick(id)}
       >

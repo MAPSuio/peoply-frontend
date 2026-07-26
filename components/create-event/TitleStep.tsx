@@ -1,5 +1,5 @@
 // React.
-import { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 
 // Components.
 import TextInput from "../inputs/TextInput";
@@ -15,7 +15,7 @@ import {
 
 // Types.
 import { InputPages } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";

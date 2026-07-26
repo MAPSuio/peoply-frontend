@@ -1,7 +1,7 @@
 import {
   createContext,
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useContext,
   useEffect,
   useMemo,
@@ -9,7 +9,10 @@ import {
 } from "react";
 import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
-import { NotificationsContextType, PeoplyNotification } from "../types/types";
+import type {
+  NotificationsContextType,
+  PeoplyNotification,
+} from "../types/types";
 import useUser from "./useUser";
 
 const NotificationContext = createContext<NotificationsContextType>(
@@ -34,7 +37,7 @@ export function NotificationsProvider({
   );
 
   useEffect(() => {
-    if (!notifications || !notifications.length) {
+    if (!notifications?.length) {
       setHasUnreadNotifications(false);
       return;
     }

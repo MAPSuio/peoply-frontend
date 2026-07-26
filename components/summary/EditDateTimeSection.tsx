@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -15,7 +15,7 @@ import { getISODateString, getISOTimeString } from "../../utils/functions";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
-import { EventObjectProps } from "../EditSummaryPage";
+import type { EventObjectProps } from "../EditSummaryPage";
 
 interface EditDateTimeSectionProps {
   editOpen: boolean;
@@ -112,6 +112,7 @@ const EditDateTimeSection = ({
           </div>
           {!tempEventObject.endDate && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => {
                 setTempEventObject({
@@ -127,6 +128,7 @@ const EditDateTimeSection = ({
           {tempEventObject.endDate && (
             <>
               <button
+                type="button"
                 className={styles.addDateContainer}
                 onClick={() => {
                   setTempEventObject({
@@ -179,6 +181,7 @@ const EditDateTimeSection = ({
           )}
           {!tempEventObject.regStart && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => {
                 setTempEventObject({
@@ -194,6 +197,7 @@ const EditDateTimeSection = ({
           {tempEventObject.regStart && (
             <>
               <button
+                type="button"
                 className={styles.addDateContainer}
                 onClick={() => {
                   setTempEventObject({
@@ -246,6 +250,7 @@ const EditDateTimeSection = ({
           )}
           {!tempEventObject.regEnd && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={() => {
                 setTempEventObject({
@@ -261,6 +266,7 @@ const EditDateTimeSection = ({
           {tempEventObject.regEnd && (
             <>
               <button
+                type="button"
                 className={styles.addDateContainer}
                 onClick={() => {
                   setTempEventObject({

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -62,21 +62,19 @@ const EditCategorySection = ({
       <div className={styles.categoryContainer}>
         <p className={styles.categoryLabel}>Kategori(er)</p>
         <div className={styles.categoryTagsContainer}>
-          {categoryIds !== undefined &&
-            categoryIds.map((categoryId) => {
-              return (
-                <Tag
-                  key={categoryId}
-                  text={
-                    allCategories !== undefined
-                      ? allCategories.find((c: any) => c.id === categoryId)
-                          ?.name
-                      : "..."
-                  }
-                  active={true}
-                />
-              );
-            })}
+          {categoryIds?.map((categoryId) => {
+            return (
+              <Tag
+                key={categoryId}
+                text={
+                  allCategories !== undefined
+                    ? allCategories.find((c: any) => c.id === categoryId)?.name
+                    : "..."
+                }
+                active={true}
+              />
+            );
+          })}
         </div>
       </div>
     </SummaryCard>

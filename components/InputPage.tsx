@@ -7,7 +7,7 @@ import Button from "./Button";
 import BackButton from "./BackButton";
 
 // Assets.
-import { InputPages } from "../types/types";
+import type { InputPages } from "../types/types";
 
 // Styles.
 import styles from "../styles/InputPage.module.scss";

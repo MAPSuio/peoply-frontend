@@ -9,13 +9,13 @@ import {
 } from "../../services/fetchers";
 import {
   ButtonType,
-  EventInvitationNotification,
+  type EventInvitationNotification,
   InvitationStatus,
   NotificationType,
-  OrganizationInvitationNotification,
-  PeoplyNotification,
+  type OrganizationInvitationNotification,
+  type PeoplyNotification,
   SnackTypes,
-  Event,
+  type Event,
 } from "../../types/types";
 import styles from "../../styles/Notifications.module.scss";
 import Avatar from "../../components/Avatar";
@@ -96,7 +96,7 @@ export default function Notifications() {
     action: InvitationStatus,
   ) {
     switch (notification.type) {
-      case NotificationType.INVITATION_ORGANIZATION:
+      case NotificationType.INVITATION_ORGANIZATION: {
         const orgInvite = notification as OrganizationInvitationNotification;
         try {
           await fetchFromPeoplyApiJson(
@@ -124,8 +124,9 @@ export default function Notifications() {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
         }
         break;
+      }
 
-      case NotificationType.INVITATION_EVENT:
+      case NotificationType.INVITATION_EVENT: {
         const eventInvite = notification as EventInvitationNotification;
         try {
           if (action === InvitationStatus.ACCEPTED) {
@@ -163,6 +164,7 @@ export default function Notifications() {
           addSnack("Noe gikk galt", SnackTypes.ERROR);
         }
         break;
+      }
 
       default:
         return;
@@ -316,6 +318,9 @@ export default function Notifications() {
               </div>
             );
           });
+
+        default:
+          return type;
       }
     });
   }
@@ -363,17 +368,15 @@ export default function Notifications() {
           description="For å godta invitasjonen til arrangementet må du fylle ut matpreferanser på profilen din."
           closeButtonOnClick={() => setFoodPreferanceModalOpenModalOpen(false)}
         >
-          <>
-            <ModalButton
-              text="Rediger matpreferanser"
-              onClick={() => router.push("/me/edit")}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setFoodPreferanceModalOpenModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </>
+          <ModalButton
+            text="Rediger matpreferanser"
+            onClick={() => router.push("/me/edit")}
+          />
+          <ModalButton
+            text="Lukk"
+            onClick={() => setFoodPreferanceModalOpenModalOpen(false)}
+            type={ButtonType.SECONDARY}
+          />
         </Modal>
       )}
     </>

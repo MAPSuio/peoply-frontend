@@ -20,7 +20,7 @@ export default function Navbar() {
     if (scrollPos < 0) {
       setScrollPos(window.pageYOffset);
     } else {
-      const onscroll = function () {
+      const onscroll = () => {
         const currentScrollPos = window.pageYOffset;
         if (scrollPos > currentScrollPos) {
           setHidden(false);

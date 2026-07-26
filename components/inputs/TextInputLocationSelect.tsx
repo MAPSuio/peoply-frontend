@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import styles from "../../styles/TextInputLocationSelect.module.scss";
-import {
+import type {
   AzureMapsSearchFuzzyOptions,
   AzureMapsSearchFuzzyResponse,
   AzureMapsSearchFuzzyResult,
@@ -152,6 +152,7 @@ const TextInputLocationSelect = ({
         {selectedLocation && !loading ? (
           <div className={styles.cancelSearch}>
             <button
+              type="button"
               onClick={() => {
                 if (!locations.length) onLocationSelect(undefined);
                 setSearch(undefined);
@@ -175,6 +176,7 @@ const TextInputLocationSelect = ({
             <>
               <span className={styles.divider} />
               <button
+                type="button"
                 onClick={() => {
                   onLocationSelect(location);
                   setSearch(undefined);

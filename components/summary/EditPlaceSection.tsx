@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -8,8 +8,8 @@ import TextInput from "../inputs/TextInput";
 import TextInputLocationSelect from "../inputs/TextInputLocationSelect";
 
 /* Types */
-import { IpInfo } from "../../types/types";
-import { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
+import type { IpInfo } from "../../types/types";
+import type { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";

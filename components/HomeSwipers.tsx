@@ -17,14 +17,14 @@
  * this chunk. See the comment there, and the one in styles/Home.module.scss.
  */
 import Link from "next/link";
-import { UrlObject } from "url";
+import type { UrlObject } from "node:url";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel, Navigation } from "swiper/modules";
 
 import EventCard from "./EventCard";
 import OrganizationAvatar from "./OrganizationAvatar";
-import { Event, Organization } from "../types/types";
+import type { Event, Organization } from "../types/types";
 
 import styles from "../styles/Home.module.scss";
 

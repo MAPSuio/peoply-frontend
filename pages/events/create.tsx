@@ -252,25 +252,23 @@ const CreateEvent = () => {
               startNewEventCreation();
             }}
           >
-            <>
-              <ModalButton
-                text="Fortsett"
-                onClick={() => {
-                  continueEventCreation();
-                  setModalOpen(false);
-                }}
-                noShadow
-              />
-              <ModalButton
-                text="Opprett nytt"
-                onClick={() => {
-                  startNewEventCreation();
-                  setModalOpen(false);
-                }}
-                type={ButtonType.SECONDARY}
-                noShadow
-              />
-            </>
+            <ModalButton
+              text="Fortsett"
+              onClick={() => {
+                continueEventCreation();
+                setModalOpen(false);
+              }}
+              noShadow
+            />
+            <ModalButton
+              text="Opprett nytt"
+              onClick={() => {
+                startNewEventCreation();
+                setModalOpen(false);
+              }}
+              type={ButtonType.SECONDARY}
+              noShadow
+            />
           </Modal>
         )}
         <div className={styles.container}>

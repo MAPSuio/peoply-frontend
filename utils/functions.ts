@@ -286,8 +286,8 @@ function getTimeString(date: string): string {
 function getTimeStringFromDate(date: Date): string {
   const hour = date.getHours();
   const minute = date.getMinutes();
-  return `${hour < 10 ? "0" + hour : hour}:${
-    minute < 10 ? "0" + minute : minute
+  return `${hour < 10 ? `0${hour}` : hour}:${
+    minute < 10 ? `0${minute}` : minute
   }`;
 }
 
@@ -317,8 +317,8 @@ function getWeekday(date: Date): string {
 
 /* Formats a date (yyyy-mm-dd) and time (hh:mm) into an ISO date. */
 function formatDateAndTime(date: string, time: string) {
-  const hours = parseInt(time.slice(0, 3));
-  const minutes = parseInt(time.slice(3));
+  const hours = parseInt(time.slice(0, 3), 10);
+  const minutes = parseInt(time.slice(3), 10);
   const dateWithTime = new Date(date);
 
   dateWithTime.setHours(hours, minutes, 0, 0);
@@ -328,8 +328,8 @@ function formatDateAndTime(date: string, time: string) {
 
 /* Checks if a given time and date is later than the current time (valid). */
 function laterThanNow(date: string, timeStamp: string): boolean {
-  const hours = parseInt(timeStamp.slice(0, 3));
-  const minutes = parseInt(timeStamp.slice(3));
+  const hours = parseInt(timeStamp.slice(0, 3), 10);
+  const minutes = parseInt(timeStamp.slice(3), 10);
   const timeStampWithDate = new Date(date);
   const today = new Date();
 
@@ -348,12 +348,12 @@ function laterThanStart(
   dateStart: string,
   dateEnd: string,
 ) {
-  const hoursStart = parseInt(timeStampStart.slice(0, 3));
-  const minutesStart = parseInt(timeStampStart.slice(3));
+  const hoursStart = parseInt(timeStampStart.slice(0, 3), 10);
+  const minutesStart = parseInt(timeStampStart.slice(3), 10);
   const timeStampStartWithDate = new Date(dateStart);
 
-  const hoursEnd = parseInt(timeStampEnd.slice(0, 3));
-  const minutesEnd = parseInt(timeStampEnd.slice(3));
+  const hoursEnd = parseInt(timeStampEnd.slice(0, 3), 10);
+  const minutesEnd = parseInt(timeStampEnd.slice(3), 10);
   const timeStampEndWithDate = new Date(dateEnd);
 
   timeStampStartWithDate.setHours(hoursStart, minutesStart, 0, 0);

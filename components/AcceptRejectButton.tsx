@@ -15,10 +15,10 @@ export default function AcceptRejectButton({
 }: AcceptRejectButtonProps) {
   return (
     <div className={`${styles.buttonContainer} ${style}`}>
-      <button className={styles.check} onClick={checkOnClick}>
+      <button type="button" className={styles.check} onClick={checkOnClick}>
         <CheckIcon className={styles.icon} />
       </button>
-      <button className={styles.cross} onClick={crossOnClick}>
+      <button type="button" className={styles.cross} onClick={crossOnClick}>
         <CloseIcon className={styles.icon} />
       </button>
     </div>

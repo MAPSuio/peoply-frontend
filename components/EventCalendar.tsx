@@ -1,4 +1,4 @@
-import { EventClickArg, EventContentArg } from "@fullcalendar/core";
+import type { EventClickArg, EventContentArg } from "@fullcalendar/core";
 import nbLocale from "@fullcalendar/core/locales/nb";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
 import styles from "../styles/CalendarPage.module.scss";
-import { Event } from "../types/types";
+import type { Event } from "../types/types";
 import { getCompactEventArrangerLabel } from "../utils/eventArrangers";
 
 interface EventCalendarProps {

@@ -24,35 +24,33 @@ export default function FormQuestionModal({
       description={formQuestion}
       closeButtonOnClick={() => setModalOpen(false)}
     >
-      <>
-        <TextInputLong
-          label="Ditt svar til arrangøren"
-          value={formAnswer}
-          handleChange={(e: any) => setFormAnswer(e.target.value)}
-          inputId="formAnswer"
-          inputName="formAnswer"
-          placeholder=""
-          rows={3}
-          errorMessage={"Svaret er påkrevd"}
-          maxLength={150}
-          valid={formAnswer.length > 0}
-          validate
-          required
-        />
-        <ModalButton
-          text="Send svar"
-          onClick={() => {
-            onSubmit();
-            setModalOpen(false);
-          }}
-          disabled={formAnswer.length === 0}
-        />
-        <ModalButton
-          text="Lukk"
-          onClick={() => setModalOpen(false)}
-          type={ButtonType.SECONDARY}
-        />
-      </>
+      <TextInputLong
+        label="Ditt svar til arrangøren"
+        value={formAnswer}
+        handleChange={(e: any) => setFormAnswer(e.target.value)}
+        inputId="formAnswer"
+        inputName="formAnswer"
+        placeholder=""
+        rows={3}
+        errorMessage={"Svaret er påkrevd"}
+        maxLength={150}
+        valid={formAnswer.length > 0}
+        validate
+        required
+      />
+      <ModalButton
+        text="Send svar"
+        onClick={() => {
+          onSubmit();
+          setModalOpen(false);
+        }}
+        disabled={formAnswer.length === 0}
+      />
+      <ModalButton
+        text="Lukk"
+        onClick={() => setModalOpen(false)}
+        type={ButtonType.SECONDARY}
+      />
     </Modal>
   );
 }

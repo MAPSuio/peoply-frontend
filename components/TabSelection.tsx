@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import styles from "../styles/TabSelection.module.scss";
 
 interface TabSelectionProps {
@@ -17,6 +17,7 @@ const TabSelection = ({
       {options.map(({ label, value, icon }) => {
         return (
           <button
+            type="button"
             className={`${styles.tab} ${
               selected === value ? styles.selected : ""
             }

@@ -1,6 +1,6 @@
 /* component that accepts a list of orgs as props and renders them */
 
-import { Organization } from "../types/types";
+import type { Organization } from "../types/types";
 import styles from "../styles/OrgList.module.scss";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import PlusIcon from "./svgs/PlusIcon";
@@ -14,10 +14,10 @@ interface OrgListProps {
 export default function OrgList({ orgs }: OrgListProps) {
   return (
     <div className={styles.container}>
-      {orgs.map((org, index) => (
+      {orgs.map((org) => (
         <Link
           href={`/orgs/${org.urlId ?? org.id}`}
-          key={index}
+          key={org.id}
           className={styles.item}
         >
           <div>
@@ -27,6 +27,7 @@ export default function OrgList({ orgs }: OrgListProps) {
         </Link>
       ))}
       <button
+        type="button"
         className={styles.item}
         tabIndex={0}
         onClick={() => router.push("/orgs/create")}

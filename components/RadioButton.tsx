@@ -37,7 +37,11 @@ const RadioButton = ({
 
   return (
     <div className={styles.buttonWrapper}>
-      <button className={radioButtonStyles} onClick={() => onClick(id)}>
+      <button
+        type="button"
+        className={radioButtonStyles}
+        onClick={() => onClick(id)}
+      >
         <Icon />
         <p className={styles.radioButtonText}>{text}</p>
         {selected && (

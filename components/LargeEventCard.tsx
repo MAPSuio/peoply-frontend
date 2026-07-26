@@ -18,7 +18,7 @@ import { getCompactEventArrangerLabel } from "../utils/eventArrangers";
 import { isEventFinished } from "../utils/event";
 
 // Types.
-import { Event } from "../types/types";
+import type { Event } from "../types/types";
 
 // Assets.
 import placeholderImage from "../assets/images/undraw_partying.png";

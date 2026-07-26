@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -110,6 +110,7 @@ const EditDataSection = ({
           />
           {!capacityFieldVisible && (
             <button
+              type="button"
               className={styles.addDateContainer}
               onClick={onAddCapacityField}
             >
@@ -120,6 +121,7 @@ const EditDataSection = ({
           {capacityFieldVisible && (
             <>
               <button
+                type="button"
                 className={styles.addDateContainer}
                 onClick={onRemoveCapacityField}
               >

@@ -10,7 +10,7 @@ import styles from "../../../../styles/OrgMembers.module.scss";
 import {
   OrganizationRole,
   SnackTypes,
-  UserOrganizationRoles,
+  type UserOrganizationRoles,
 } from "../../../../types/types";
 import useSnack from "../../../../hooks/useSnack";
 import HeadComponent from "../../../../components/HeadComponent";

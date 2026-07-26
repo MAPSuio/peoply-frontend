@@ -15,7 +15,7 @@ import BackButton from "../components/BackButton";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 
 // Types.
-import { Alignment, Organization } from "../types/types";
+import { Alignment, type Organization } from "../types/types";
 
 // Hooks.
 import useBack from "../hooks/useBack";

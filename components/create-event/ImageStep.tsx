@@ -7,7 +7,7 @@ import { getInputPageData } from "../../utils/functions";
 
 // Types.
 import { InputPages } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 interface ImageStepProps {
   eventObject: EventObjectProps;

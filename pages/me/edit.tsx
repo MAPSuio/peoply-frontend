@@ -1,5 +1,5 @@
-import { NextPage } from "next";
-import { ChangeEvent, useEffect, useState } from "react";
+import type { NextPage } from "next";
+import { type ChangeEvent, useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
 import EditProfileImageMenu from "../../components/EditProfileImageMenu";
@@ -120,6 +120,7 @@ const EditProfile: NextPage = () => {
     <div className={styles.container}>
       <BackButton onClick={goBack} />
       <button
+        type="button"
         className={styles.editImageButton}
         onClick={() => setEditImage(true)}
       >

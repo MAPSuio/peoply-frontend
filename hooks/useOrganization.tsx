@@ -4,9 +4,9 @@ import {
   getOrganizationUsers,
 } from "../services/organizations";
 import {
-  Organization,
+  type Organization,
   OrganizationRole,
-  UserOrganizationRoles,
+  type UserOrganizationRoles,
 } from "../types/types";
 import useUser from "./useUser";
 

@@ -1,5 +1,5 @@
 // React.
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 // Components.
 import TextInputLong from "../inputs/TextInputLong";
@@ -12,7 +12,7 @@ import { eventDescriptionMaxLength } from "../../utils/constants";
 
 // Types.
 import { InputPages } from "../../types/types";
-import { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";

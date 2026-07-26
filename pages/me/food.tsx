@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";

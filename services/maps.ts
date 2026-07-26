@@ -1,4 +1,4 @@
-import { AzureMapsSearchFuzzyOptions } from "../types/azureMaps";
+import type { AzureMapsSearchFuzzyOptions } from "../types/azureMaps";
 import { fetchFromPeoplyApiJson } from "./fetchers";
 
 /* takes a search string and optional options to bias search */

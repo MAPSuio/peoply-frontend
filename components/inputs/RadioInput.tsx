@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import RadioButton from "../RadioButton";
 
 import styles from "../../styles/RadioInput.module.scss";

@@ -23,7 +23,7 @@ import {
   OrganizationRole,
   SettingTypes,
   SnackTypes,
-  UserOrganizationRoles,
+  type UserOrganizationRoles,
 } from "../../../../../types/types";
 import { getOrganizationRolePrivilege } from "../../../../../utils/functions";
 
@@ -61,7 +61,7 @@ export default function EditOrganizationUser() {
         setRoleDescription(userToEdit.roleDescription);
       }
     }
-  }, [organizationUsers, user, uid]);
+  }, [organizationUsers, uid]);
 
   if (loading || loadingOrganization) {
     return <></>;
@@ -270,18 +270,16 @@ export default function EditOrganizationUser() {
             description="Dette vil fjerne brukeren fra organisasjonen. Brukeren må inviteres på nytt for å bli medlem igjen."
             closeButtonOnClick={() => setModalOpen(false)}
           >
-            <>
-              <ModalButton
-                text="Fjern bruker"
-                onClick={() => deleteUser(userToEdit?.userId)}
-                type={ButtonType.DANGERSOFT}
-              />
-              <ModalButton
-                text="Lukk"
-                onClick={() => setModalOpen(false)}
-                type={ButtonType.SECONDARY}
-              />
-            </>
+            <ModalButton
+              text="Fjern bruker"
+              onClick={() => deleteUser(userToEdit?.userId)}
+              type={ButtonType.DANGERSOFT}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
           </Modal>
         )}
         {changeOwnerModalOpen && (
@@ -290,18 +288,16 @@ export default function EditOrganizationUser() {
             description="Dette vil gjøre brukeren til eier og fjerne deg som eier."
             closeButtonOnClick={() => setchangeOwnerModalOpen(false)}
           >
-            <>
-              <ModalButton
-                text="Gjør til eier"
-                onClick={() => changeOwner(userToEdit?.userId)}
-                type={ButtonType.DANGERSOFT}
-              />
-              <ModalButton
-                text="Lukk"
-                onClick={() => setchangeOwnerModalOpen(false)}
-                type={ButtonType.SECONDARY}
-              />
-            </>
+            <ModalButton
+              text="Gjør til eier"
+              onClick={() => changeOwner(userToEdit?.userId)}
+              type={ButtonType.DANGERSOFT}
+            />
+            <ModalButton
+              text="Lukk"
+              onClick={() => setchangeOwnerModalOpen(false)}
+              type={ButtonType.SECONDARY}
+            />
           </Modal>
         )}
       </>

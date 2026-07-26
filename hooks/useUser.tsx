@@ -1,7 +1,7 @@
 import {
   createContext,
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useContext,
   useEffect,
   useMemo,
@@ -11,7 +11,12 @@ import {
 import { deleteMe, logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { fetchIpInfo } from "../services/ip";
-import { IpInfo, Organization, User, UserContextType } from "../types/types";
+import type {
+  IpInfo,
+  Organization,
+  User,
+  UserContextType,
+} from "../types/types";
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 

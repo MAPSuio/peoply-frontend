@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -14,7 +14,12 @@ import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApiJson,
 } from "../../services/fetchers";
-import { Alignment, Category, Event, Organization } from "../../types/types";
+import {
+  Alignment,
+  type Category,
+  type Event,
+  type Organization,
+} from "../../types/types";
 import { getEventArrangerDisplayItems } from "../../utils/eventArrangers";
 import { queryToString } from "../../utils/functions";
 
@@ -139,10 +144,11 @@ const Events: NextPage = () => {
         return allOrganizations;
       }
 
-      return [
-        ...allOrganizations,
-        { value: organization.id, label: organization.name },
-      ];
+      allOrganizations.push({
+        value: organization.id,
+        label: organization.name,
+      });
+      return allOrganizations;
     }, []);
 
     return uniqueOrganizations.sort((a, b) =>
@@ -157,7 +163,8 @@ const Events: NextPage = () => {
           return allCategories;
         }
 
-        return [...allCategories, { value: category.id, label: category.name }];
+        allCategories.push({ value: category.id, label: category.name });
+        return allCategories;
       },
       [],
     );
@@ -330,7 +337,8 @@ const Events: NextPage = () => {
         return groupedEvents;
       }
 
-      return [...groupedEvents, { key, label, events: [event] }];
+      groupedEvents.push({ key, label, events: [event] });
+      return groupedEvents;
     }, []);
   }, [filteredEvents]);
 

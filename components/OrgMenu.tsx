@@ -4,7 +4,7 @@ import useSnack from "../hooks/useSnack";
 import useUser from "../hooks/useUser";
 import { fetchFromPeoplyApi } from "../services/fetchers";
 import styles from "../styles/ProfileMenu.module.scss";
-import { ButtonType, Organization, SnackTypes } from "../types/types";
+import { ButtonType, type Organization, SnackTypes } from "../types/types";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
 import ProfileMenuItem from "./ProfileMenuItem";
@@ -72,18 +72,16 @@ export default function OrgMenu({ org }: OrgMenuProps) {
           description="Dette vil slette organisasjonen og all tilknyttet data. Dette kan ikke reverseres."
           closeButtonOnClick={() => setModalOpen(false)}
         >
-          <>
-            <ModalButton
-              text={`Slett ${org.name}`}
-              onClick={handleDelete}
-              type={ButtonType.DANGER}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </>
+          <ModalButton
+            text={`Slett ${org.name}`}
+            onClick={handleDelete}
+            type={ButtonType.DANGER}
+          />
+          <ModalButton
+            text="Lukk"
+            onClick={() => setModalOpen(false)}
+            type={ButtonType.SECONDARY}
+          />
         </Modal>
       )}
     </div>

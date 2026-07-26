@@ -1,4 +1,4 @@
-import { Organization, User, Event } from "../types/types";
+import type { Organization, User, Event } from "../types/types";
 import styles from "../styles/Avatar.module.scss";
 import EditCircle from "./EditCircle";
 import Image from "next/legacy/image";

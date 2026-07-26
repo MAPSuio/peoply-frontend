@@ -1,5 +1,5 @@
 /* Next */
-import Image, { StaticImageData } from "next/legacy/image";
+import Image, { type StaticImageData } from "next/legacy/image";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";

@@ -2,7 +2,6 @@ import styles from "../../styles/CreateOrganization.module.scss";
 import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
-import router from "next/router";
 import Button from "../../components/Button";
 import TextInput from "../../components/inputs/TextInput";
 import { useState } from "react";

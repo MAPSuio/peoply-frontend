@@ -4,7 +4,7 @@ import styles from "../styles/GlobalSearch.module.scss";
 import LoadingWheel from "./LoadingWheel";
 import ResultItem from "./ResultItem";
 import SearchIcon from "./svgs/SearchIcon";
-import { Event, Organization } from "../types/types";
+import type { Event, Organization } from "../types/types";
 import Avatar from "./Avatar";
 import { calculateEditDistance } from "../utils/functions";
 import TagSwiperSelection from "./TagSwiperSelection";
@@ -16,7 +16,7 @@ enum FilterOption {
   ORGANIZATIONS = "ORGANIZATIONS",
 }
 
-export default function GlobalSearch({}) {
+export default function GlobalSearch() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -102,7 +102,7 @@ export default function GlobalSearch({}) {
 
     const toBeRendered = sortedByEditDistance.map((result) => {
       switch (result.type) {
-        case "event":
+        case "event": {
           const event = result as Event;
           return {
             element: (
@@ -117,7 +117,8 @@ export default function GlobalSearch({}) {
             ),
             type: "event",
           };
-        case "org":
+        }
+        case "org": {
           const org = result as Organization;
           return {
             element: (
@@ -132,6 +133,9 @@ export default function GlobalSearch({}) {
             ),
             type: "org",
           };
+        }
+        default:
+          return result;
       }
     });
 

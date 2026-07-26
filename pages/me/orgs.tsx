@@ -1,5 +1,5 @@
 import styles from "../../styles/Organizations.module.scss";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import useUser from "../../hooks/useUser";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
@@ -40,7 +40,7 @@ const Organizations: NextPage = () => {
             <h1>Organisasjoner</h1>
             <p>Se og endre dine organisasjoner</p>
           </div>
-          {orgs && orgs.length ? (
+          {orgs?.length ? (
             <OrgList orgs={orgs} />
           ) : (
             <>

@@ -23,9 +23,9 @@ import { formatDateRange, getWeekday } from "../../utils/functions";
 
 /* Types. */
 import {
-  Event,
-  Favorite,
-  Registration,
+  type Event,
+  type Favorite,
+  type Registration,
   RegStatus,
   SectionTypes,
 } from "../../types/types";
@@ -90,7 +90,7 @@ const MyEvents = () => {
   useEffect(() => {
     dateAndEventsMap.clear();
 
-    activeRegistrations.map((event: Registration) => {
+    activeRegistrations.forEach((event: Registration) => {
       const eventData = event.event;
       const startDate = new Date(eventData.startDate);
       startDate.setHours(0, 0, 0, 0);
@@ -142,8 +142,7 @@ const MyEvents = () => {
   }
 
   const hasFutureEvents = dateAndEventsMapArray.some(
-    (dateAndEvents) =>
-      new Date(dateAndEvents.date).getTime() >= new Date().getTime(),
+    (dateAndEvents) => new Date(dateAndEvents.date).getTime() >= Date.now(),
   );
 
   const hasPastEvents = dateAndEventsMapArray.some((dateAndEvents) => {
@@ -189,7 +188,7 @@ const MyEvents = () => {
                     new Date(dateAndEventA.date).getTime() -
                     new Date(dateAndEventB.date).getTime(),
                 )
-                .map((dateAndEvent, index) => {
+                .map((dateAndEvent) => {
                   const date = new Date(dateAndEvent.date);
                   const events = (dateAndEvent.events as Event[]).filter(
                     (event) => !isEventFinished(event),
@@ -203,7 +202,7 @@ const MyEvents = () => {
 
                   return (
                     <div
-                      key={index}
+                      key={dateAndEvent.date}
                       className={events.length > 1 ? styles.multiple : ""}
                     >
                       <p className={styles.dateTag}>{weekday}</p>
@@ -241,7 +240,7 @@ const MyEvents = () => {
                           new Date(dateAndEventB.date).getTime() -
                           new Date(dateAndEventA.date).getTime(),
                       )
-                      .map((dateAndEvent, index) => {
+                      .map((dateAndEvent) => {
                         const events = (dateAndEvent.events as Event[]).filter(
                           (event) => isEventFinished(event),
                         );
@@ -252,7 +251,7 @@ const MyEvents = () => {
 
                         return (
                           <div
-                            key={index}
+                            key={dateAndEvent.date}
                             className={events.length > 1 ? styles.multiple : ""}
                           >
                             <div className={styles.eventCardsContainer}>

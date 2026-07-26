@@ -1,8 +1,8 @@
-import { KeyedMutator } from "swr";
+import type { KeyedMutator } from "swr";
 
 import AddToCalendarButton from "./AddToCalendarButton";
 import JoinButton from "./JoinButton";
-import { ButtonSize, Event } from "../types/types";
+import { ButtonSize, type Event } from "../types/types";
 
 interface EventActionsProps {
   event: Event;

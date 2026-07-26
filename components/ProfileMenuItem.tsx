@@ -32,6 +32,7 @@ export default function ProfileMenuItem({
   }
   return (
     <button
+      type="button"
       onClick={linkOrOnClick}
       className={`${styles.container} ${danger && styles.danger}`}
     >

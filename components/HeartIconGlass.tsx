@@ -23,6 +23,7 @@ export default function HeartIconGlass({
 
   return (
     <button
+      type="button"
       onClick={async (e) => {
         setLoadingState(true);
         await onClick(e);

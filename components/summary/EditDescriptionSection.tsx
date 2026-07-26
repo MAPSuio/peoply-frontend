@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -43,26 +43,22 @@ const EditDescriptionSection = ({
       }
       editButtonVisible
       valid={validDescription}
-      inputComponent={
-        <>
-          <TextInputLong
-            value={tempDescription}
-            inputId="description"
-            inputName="eventTitle"
-            label="Endre beskrivelse av arrangementet"
-            placeholder={tempDescription}
-            maxLength={2500}
-            errorMessage="Beskrivelsen kan ikke være tom"
-            required={false}
-            handleChange={onChange}
-            setValid={setValidDescription}
-            valid={validDescription}
-            validate
-            noExtraInfo
-            card
-          />
-        </>
-      }
+      inputComponent=<TextInputLong
+        value={tempDescription}
+        inputId="description"
+        inputName="eventTitle"
+        label="Endre beskrivelse av arrangementet"
+        placeholder={tempDescription}
+        maxLength={2500}
+        errorMessage="Beskrivelsen kan ikke være tom"
+        required={false}
+        handleChange={onChange}
+        setValid={setValidDescription}
+        valid={validDescription}
+        validate
+        noExtraInfo
+        card
+      />
     >
       <div className={styles.descriptionText}>{tempDescription}</div>
     </SummaryCard>

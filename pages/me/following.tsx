@@ -10,7 +10,7 @@ import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 // Services.
 
 // Types.
-import { Alignment, ArrangerFollower } from "../../types/types";
+import { Alignment, type ArrangerFollower } from "../../types/types";
 
 // Components.
 import HeadComponent from "../../components/HeadComponent";

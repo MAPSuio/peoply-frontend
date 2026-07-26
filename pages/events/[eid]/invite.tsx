@@ -20,8 +20,8 @@ import {
 import styles from "../../../styles/InviteMembersToOrg.module.scss";
 import {
   SnackTypes,
-  User,
-  Event,
+  type User,
+  type Event,
   OrganizationRole,
   ButtonType,
   ButtonSize,
@@ -174,6 +174,7 @@ export default function InviteUsersToEvent() {
               {selectedUsers.length !== 0 && <p>Valgte brukere: </p>}
               {selectedUsers.map((user) => (
                 <button
+                  type="button"
                   className={styles.selectedUser}
                   key={user.id}
                   onClick={() => onUserRemove(user)}

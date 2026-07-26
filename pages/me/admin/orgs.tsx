@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -16,7 +16,7 @@ import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApi,
 } from "../../../services/fetchers";
-import { Organization, SnackTypes } from "../../../types/types";
+import { type Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/OrganizationApprovalAdmin.module.scss";
 
 const OrganizationApprovalAdmin: NextPage = () => {

@@ -19,7 +19,7 @@ const SettingsButton = ({
   onClick,
 }: SettingsButtonProps) => {
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button type="button" className={styles.button} onClick={onClick}>
       <p
         className={`${styles.buttonText} ${
           type && type === SettingTypes.DANGER
