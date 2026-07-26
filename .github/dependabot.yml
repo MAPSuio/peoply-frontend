@@ -12,7 +12,10 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    open-pull-requests-limit: 5
+    # One per group below, plus headroom for the ungrouped majors. Set too low,
+    # Dependabot silently stops opening the remaining ones rather than queueing
+    # them, and the groups it drops are whichever it got to last.
+    open-pull-requests-limit: 10
     commit-message:
       # Conventional Commits, matching commitlint.config.js. Dependabot commits
       # through the API and so never runs the commit-msg hook, but a history
@@ -43,6 +46,54 @@ updates:
           - react-dom
           - "@types/react"
           - "@types/react-dom"
+      # Same lockstep rule, and the one case where the two groups at the bottom
+      # actively got it wrong: `serwist` and `@serwist/next` are dependencies
+      # while `@serwist/cli` is a devDependency, so splitting by dependency-type
+      # sent one release train to two separate PRs. All three are pinned to the
+      # same version and all three run during `npm run build` - the CLI bundles
+      # the service worker, @serwist/next supplies the config helper, serwist is
+      # the runtime it imports. Version skew between them does not fail the
+      # build; it emits a service worker, which is the failure mode that matters
+      # least visibly and most in production.
+      serwist:
+        patterns:
+          - serwist
+          - "@serwist/*"
+      # Next on its own. It is both the highest-risk bump here and the one most
+      # likely to need a changelog read, and grouped with the rest a Next minor
+      # arrived welded to a sass or swiper patch - so a revert threw away four
+      # good bumps to undo one bad one.
+      next:
+        patterns:
+          - next
+          - "@next/*"
+      # Also alone, because a sharp bump is never just a version change: the
+      # `overrides` entry in package.json deliberately runs Next outside its
+      # declared range, so every bump has to re-verify that image optimisation
+      # still returns identical bytes (see the sharp note in README.md). That
+      # check belongs to a PR that contains nothing else.
+      sharp:
+        patterns:
+          - sharp
+      # Added after #27 and #25, which are the proof this is needed. Both were
+      # opened by the bot, both were unmergeable the moment they arrived, and
+      # neither failed a test: they failed at install with ERESOLVE. stylelint
+      # 14 -> 17 required stylelint-config-recommended-scss, stylelint-order,
+      # stylelint-scss and @stylistic/stylelint-plugin in the same commit
+      # because their peer ranges interlock. Grouped by dependency-type they
+      # only travelled together on minor and patch - and it was the major that
+      # broke. patterns-only, so majors group too.
+      stylelint:
+        patterns:
+          - stylelint
+          - "stylelint-*"
+          - "@stylistic/stylelint-plugin"
+      # Same shape, smaller stakes: the CLI and its shared config are versioned
+      # in lockstep and a major to one without the other stops commits from
+      # being lintable at all.
+      commitlint:
+        patterns:
+          - "@commitlint/*"
       production-minor-and-patch:
         dependency-type: production
         update-types:
@@ -54,8 +105,9 @@ updates:
           - minor
           - patch
 
-  # The workflow pins actions by major (actions/checkout@v4,
-  # digitalocean/app_action/deploy@v2), so this only fires for a new major -
+  # The workflow pins actions by major (actions/checkout@v7,
+  # actions/setup-node@v7, digitalocean/app_action/deploy@v2), so this only
+  # fires for a new major -
   # rarely, and worth looking at when it does.
   - package-ecosystem: github-actions
     directory: /
