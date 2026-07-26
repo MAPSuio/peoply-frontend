@@ -25,16 +25,6 @@ class MyDocument extends Document {
           <meta name="apple-mobile-web-app-title" content={APP_NAME} />
           <meta name="msapplication-TileColor" content={APP_THEME_COLOR} />
           <meta name="theme-color" content={APP_THEME_COLOR} />
-          {/* <meta
-            name="theme-color"
-            media="(prefers-color-scheme: light)"
-            content="white"
-          />
-          <meta
-            name="theme-color"
-            media="(prefers-color-scheme: dark)"
-            content="black"
-          /> */}
           <link rel="shortcut icon" href="/icons/favicon.ico" />
           <meta
             name="msapplication-TileImage"
@@ -109,22 +99,6 @@ class MyDocument extends Document {
             sizes="16x16"
             href="/icons/favicon-16x16.png"
           />
-          {/*
-          <link
-            rel="mask-icon"
-            href="/icons/safari-pinned-tab.svg"
-            color="#5bbad5"
-          />
-          */}
-          {/* Apple splash screen images
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_2048.png' sizes='2048x2732' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_1668.png' sizes='1668x2224' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_1536.png' sizes='1536x2048' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_1125.png' sizes='1125x2436' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_1242.png' sizes='1242x2208' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_750.png' sizes='750x1334' />
-          <link rel='apple-touch-startup-image' href='/images/apple_splash_640.png' sizes='640x1136' />
-          */}
           <meta
             name="facebook-domain-verification"
             content="aqkayfq709choeqq7dkumid27fheku"
