@@ -339,7 +339,6 @@ const Events: NextPage = () => {
       <HeadComponent
         title="Arrangementer"
         description="Utforsk arrangementer sortert etter måned"
-        url={`${process.env.NEXT_PUBLIC_BASE_URL}${router.asPath}`}
       />
       <BackButton onClick={goBack} style={{ marginLeft: "5%" }} />
       <Layout align={Alignment.CENTER}>

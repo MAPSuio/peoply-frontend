@@ -11,11 +11,7 @@ import { createFeedback } from "../services/feedback";
 import { ButtonType, SnackTypes } from "../types/types";
 import styles from "../styles/FeedbackPage.module.scss";
 
-interface FeedbackPageProps {
-  baseUrl: string;
-}
-
-export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
+export default function FeedbackPage() {
   const goBack = useBack();
   const router = useRouter();
   const { user, loading } = useUser();
@@ -82,7 +78,7 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
       <HeadComponent
         title="Feedback"
         description="Send anonym feedback til Peoply"
-        url={`${baseUrl}/feedback`}
+        path="/feedback"
         noIndex
       />
       <div className={styles.wrapper}>
@@ -155,13 +151,3 @@ export default function FeedbackPage({ baseUrl }: FeedbackPageProps) {
     </>
   );
 }
-
-export const getStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  return {
-    props: {
-      baseUrl,
-    },
-  };
-};

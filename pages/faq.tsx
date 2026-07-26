@@ -5,11 +5,7 @@ import useBack from "../hooks/useBack";
 
 import styles from "../styles/FAQ.module.scss";
 
-interface FAQProps {
-  baseUrl: string;
-}
-
-const FAQ = ({ baseUrl }: FAQProps) => {
+const FAQ = () => {
   const goBack = useBack();
 
   return (
@@ -17,7 +13,7 @@ const FAQ = ({ baseUrl }: FAQProps) => {
       <HeadComponent
         title="FAQ"
         description="Spørsmål og kontakt"
-        url={`${baseUrl}/faq`}
+        path="/faq"
       />
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -233,16 +229,6 @@ const FAQ = ({ baseUrl }: FAQProps) => {
       </div>
     </>
   );
-};
-
-export const getStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default FAQ;

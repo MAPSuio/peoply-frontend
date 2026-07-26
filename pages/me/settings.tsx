@@ -38,11 +38,7 @@ import {
   setBackgroundPatternEnabled,
 } from "../../utils/backgroundPattern";
 
-interface SettingsProps {
-  baseUrl: string;
-}
-
-const Settings = ({ baseUrl }: SettingsProps) => {
+const Settings = () => {
   /* TODO: Fetch and update most of these from API. */
   // const [locationAccess, setLocationAccess] = useState(false);
   // const [allowNotifications, setAllowNotifications] = useState(true);
@@ -146,7 +142,7 @@ const Settings = ({ baseUrl }: SettingsProps) => {
       <HeadComponent
         title="Innstillinger"
         description="Her kan du endre innstillinger for din bruker."
-        url={`${baseUrl}/me/settings`}
+        path="/me/settings"
       />
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -344,15 +340,6 @@ const Settings = ({ baseUrl }: SettingsProps) => {
       )}
     </>
   );
-};
-
-export const getStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default Settings;

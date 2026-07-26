@@ -25,11 +25,7 @@ import AloneImage from "../../assets/images/undraw_alone.png";
 // Styles.
 import styles from "../../styles/Following.module.scss";
 
-interface FollowingProps {
-  baseUrl: string;
-}
-
-const Following = ({ baseUrl }: FollowingProps) => {
+const Following = () => {
   const { user, loading: userLoading } = useUser();
   const goBack = useBack();
   const redirectToLogin = useRedirectToLogin();
@@ -101,7 +97,7 @@ const Following = ({ baseUrl }: FollowingProps) => {
       <HeadComponent
         title="Følger"
         description="Her kan du se hvem du følger"
-        url={`${baseUrl}/me/following`}
+        path="/me/following"
       />
 
       <Layout align={Alignment.CENTER}>
@@ -114,15 +110,6 @@ const Following = ({ baseUrl }: FollowingProps) => {
       </Layout>
     </>
   );
-};
-
-export const getStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default Following;

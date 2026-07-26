@@ -14,10 +14,9 @@ import HeadComponent from "../../components/HeadComponent";
 
 interface UserProps {
   user: User;
-  baseUrl: string;
 }
 
-const User = ({ user, baseUrl }: UserProps) => {
+const User = ({ user }: UserProps) => {
   const goBack = useBack();
   const router = useRouter();
   const { data: userData, error: userError } = useSWR<User>(
@@ -42,7 +41,7 @@ const User = ({ user, baseUrl }: UserProps) => {
       <HeadComponent
         title={`${userData.firstName} ${userData.lastName}`}
         description={`${userData.description}`}
-        url={`${baseUrl}/users/${user.id}`}
+        path={`/users/${user.id}`}
         imageUrl={userData.image}
         noIndex={true}
       />
@@ -66,7 +65,6 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { uid } = context.params as IParams;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   try {
     const user = await fetchFromPeoplyApiJson(`/users/${uid}`);
@@ -79,7 +77,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     return {
       props: {
-        baseUrl,
         user,
       },
       revalidate: 60 * 30, // 30 minutes

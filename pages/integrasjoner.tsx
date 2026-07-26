@@ -5,23 +5,20 @@ import HeadComponent from "../components/HeadComponent";
 import Navbar from "../components/Navbar";
 import useBack from "../hooks/useBack";
 
+import { API_URL } from "../constants/urls";
+
 import styles from "../styles/Integrasjoner.module.scss";
 
-interface IntegrasjonerProps {
-  apiUrl: string;
-  baseUrl: string;
-}
-
-const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
+const Integrasjoner = () => {
   const goBack = useBack();
-  const docsUrl = apiUrl ? `${apiUrl}/api` : undefined;
+  const docsUrl = API_URL ? `${API_URL}/api` : undefined;
 
   return (
     <>
       <HeadComponent
         title="Integrasjoner"
         description="Hvordan du kan integrere med Peoply API-et"
-        url={baseUrl ? `${baseUrl}/integrasjoner` : undefined}
+        path="/integrasjoner"
       />
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -45,7 +42,9 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
                   Åpne API-dokumentasjon
                 </a>
               )}
-              {apiUrl && <p className={styles.apiBase}>Base URL: `{apiUrl}`</p>}
+              {API_URL && (
+                <p className={styles.apiBase}>Base URL: `{API_URL}`</p>
+              )}
             </div>
           </section>
 
@@ -174,15 +173,6 @@ const Integrasjoner = ({ apiUrl, baseUrl }: IntegrasjonerProps) => {
       <Navbar />
     </>
   );
-};
-
-export const getStaticProps = async () => {
-  return {
-    props: {
-      apiUrl: "https://api.peoply.app",
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL ?? "",
-    },
-  };
 };
 
 export default Integrasjoner;

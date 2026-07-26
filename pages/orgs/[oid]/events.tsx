@@ -37,10 +37,9 @@ function getGetKey(queryUrl: string, pageSize: number) {
 
 interface EventsProps {
   organization: Organization;
-  baseUrl: string;
 }
 
-const Events = ({ organization, baseUrl }: EventsProps) => {
+const Events = ({ organization }: EventsProps) => {
   const today = useRef(new Date().toISOString());
   const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
   const [isMorePastEvents, setIsMorePastEvents] = useState(true);
@@ -92,7 +91,7 @@ const Events = ({ organization, baseUrl }: EventsProps) => {
       <HeadComponent
         title={`Arrangementer for ${organization.name}`}
         description={`Sjekk ut alle arrangementene til ${organization.name}`}
-        url={`${baseUrl}/orgs/${organization.urlId ?? organization.id}/events`}
+        path={`/orgs/${organization.urlId ?? organization.id}/events`}
       />
       <BackButton onClick={goBack} className={styles.backButton} />
       <TabSelection
@@ -142,7 +141,6 @@ interface IParams extends ParsedUrlQuery {
 // Get the data for the organization in question.
 export const getStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as IParams;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   try {
     const organization = await getOrganization(oid);
@@ -155,7 +153,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     return {
       props: {
-        baseUrl,
         organization,
       },
       revalidate: 60 * 30, // 30 minutes

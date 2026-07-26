@@ -1,6 +1,5 @@
 // Next.js.
-import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
-import { useRouter } from "next/router";
+import type { NextPage } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
@@ -53,10 +52,7 @@ const OrganizationSwiper = dynamic(
   { ssr: false },
 );
 
-const Home: NextPage = ({
-  baseUrl,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const router = useRouter();
+const Home: NextPage = () => {
   const { user } = useUser();
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
@@ -110,11 +106,7 @@ const Home: NextPage = ({
 
   return (
     <>
-      <HeadComponent
-        title="Peoply"
-        description="Frontsiden til Peoply"
-        url={`${baseUrl}${router.asPath}`}
-      />
+      <HeadComponent title="Peoply" description="Frontsiden til Peoply" />
       <Header showSourceLink />
       <div className={styles.container}>
         {eventsFromFollowedOrganizations &&
@@ -163,15 +155,6 @@ const Home: NextPage = ({
       <Navbar />
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  return {
-    props: {
-      baseUrl,
-    },
-  };
 };
 
 export default Home;

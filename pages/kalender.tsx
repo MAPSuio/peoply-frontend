@@ -320,7 +320,7 @@ export default function CalendarPage() {
       <HeadComponent
         title="Kalender"
         description="Kalenderoversikt over kommende arrangementer."
-        url={`${process.env.NEXT_PUBLIC_BASE_URL}/kalender`}
+        path="/kalender"
       />
       <Header />
       <Layout align={Alignment.CENTER}>
