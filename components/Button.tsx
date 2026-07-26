@@ -55,6 +55,8 @@ export default function Button({
         return styles.tiny;
       case ButtonSize.TINYWITHTEXT:
         return styles.tinyWithText;
+      case ButtonSize.COMPACT:
+        return styles.compact;
       case ButtonSize.SMALL:
         return styles.small;
       case ButtonSize.MEDIUM:

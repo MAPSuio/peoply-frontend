@@ -43,6 +43,8 @@ interface JoinButtonProps {
   updateOnChange?: KeyedMutator<any>[];
   useUnregisterModal?: boolean;
   small?: boolean;
+  /** Overrides `small` when set. */
+  size?: ButtonSize;
   noShadow?: boolean;
 }
 
@@ -60,6 +62,7 @@ export default function JoinButton({
   updateOnChange,
   useUnregisterModal = false,
   small = false,
+  size,
   noShadow = false,
 }: JoinButtonProps) {
   const { user, loading: userLoading, reload: reloadUser } = useUser();
@@ -654,7 +657,7 @@ export default function JoinButton({
         }}
         loading={notLoggedIn ? false : loading}
         disabled={buttonDisabled}
-        size={small ? ButtonSize.SMALL : ButtonSize.MEDIUM}
+        size={size ?? (small ? ButtonSize.SMALL : ButtonSize.MEDIUM)}
         noShadow={noShadow}
       />
     </>

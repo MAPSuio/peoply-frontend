@@ -2,7 +2,7 @@ import { KeyedMutator } from "swr";
 
 import AddToCalendarButton from "./AddToCalendarButton";
 import JoinButton from "./JoinButton";
-import { Event } from "../types/types";
+import { ButtonSize, Event } from "../types/types";
 
 interface EventActionsProps {
   event: Event;
@@ -41,7 +41,7 @@ const EventActions = ({
       eventFinishedText="Arrangementet er ferdig"
       regClosedText="Påmelding er stengt"
       useUnregisterModal={useUnregisterModal}
-      small
+      size={ButtonSize.COMPACT}
       noShadow
       className={joinButtonClassName}
     />
@@ -50,6 +50,7 @@ const EventActions = ({
     <AddToCalendarButton
       event={event}
       buttonText={calendarButtonText}
+      size={ButtonSize.COMPACT}
       className={calendarButtonClassName}
     />
   </>

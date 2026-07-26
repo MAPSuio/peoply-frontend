@@ -1,0 +1,15 @@
+- generic [active] [ref=f23e1]:
+  - generic [ref=f23e121]:
+    - button "Tilbake" [ref=f23e122] [cursor=pointer]
+    - generic [ref=f23e126]:
+      - heading "Logg inn" [level=1] [ref=f23e127]
+      - paragraph [ref=f23e128]: Logg inn eller opprett en bruker
+    - generic [ref=f23e159]:
+      - link [ref=f23e160] [cursor=pointer]:
+        - /url: http://localhost:3000/auth/login
+      - paragraph [ref=f23e166]: Hvis du har logget inn før, vil du bli tatt til din gamle bruker. Hvis ikke vil en ny bruker bli opprettet
+      - paragraph [ref=f23e167]:
+        - link "Har du ikke Vipps?" [ref=f23e168] [cursor=pointer]:
+          - /url: http://localhost:3000/auth/login/google
+  - button "Open Next.js Dev Tools" [ref=f23e115] [cursor=pointer]
+  - alert [ref=f23e119]: Logg inn

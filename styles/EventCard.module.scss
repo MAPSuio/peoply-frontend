@@ -195,16 +195,9 @@
   padding-bottom: $spacer-small;
 }
 
+/* Sizing comes from ButtonSize.COMPACT; only layout lives here. */
 .actionButton {
-  font-size: $font-size-tertiary;
-  padding-bottom: $spacer-mini;
-  padding-top: $spacer-mini;
   width: 100%;
-
-  svg {
-    height: 18px;
-    width: 18px;
-  }
 }
 
 /* On narrow screens the calendar button shrinks to just its icon so both
@@ -223,13 +216,5 @@
       white-space: nowrap;
       width: 1px;
     }
-  }
-}
-
-@include desktop() {
-  .actionButton {
-    font-size: $font-size-tertiary-desktop;
-    padding-bottom: $spacer-mini;
-    padding-top: $spacer-mini;
   }
 }

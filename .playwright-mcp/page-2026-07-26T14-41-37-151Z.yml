@@ -1,0 +1,59 @@
+- generic [active] [ref=f23e1]:
+  - generic [ref=f23e5]:
+    - generic [ref=f23e6]:
+      - button [ref=f23e7] [cursor=pointer]
+      - button [disabled] [ref=f23e10] [cursor=pointer]
+      - img "Et bilde som passer til arrangementet" [ref=f23e14]
+    - generic [ref=f23e15]:
+      - generic [ref=f23e17]:
+        - text: "28."
+        - generic [ref=f23e18]: Aug
+      - generic [ref=f23e20]:
+        - paragraph [ref=f23e21]: Alkohol · Mat · Fest
+        - heading "Will Code For Dr*nks" [level=1] [ref=f23e22]
+        - generic [ref=f23e23]:
+          - generic [ref=f23e24]:
+            - img "Arrangøren av arrangementet" [ref=f23e26]
+            - paragraph [ref=f23e27]:
+              - link [ref=f23e29] [cursor=pointer]:
+                - /url: /orgs/maps
+              - generic [ref=f23e34]:
+                - text: ·
+                - link [ref=f23e35] [cursor=pointer]:
+                  - /url: /orgs/cyb
+          - generic [ref=f23e45]:
+            - paragraph [ref=f23e46]: 28. aug 2026
+            - paragraph [ref=f23e47]: 18:00
+          - link [ref=f23e49] [cursor=pointer]:
+            - /url: https://maps.google.com?q=Gaustadall%C3%A9en%2023B%2C%200373%20Oslo
+            - generic [ref=f23e55]:
+              - paragraph [ref=f23e56]: Escape
+              - paragraph [ref=f23e57]: Gaustadalléen 23B, 0373 Oslo
+          - paragraph [ref=f23e65]: Matservering
+          - paragraph [ref=f23e71]: 18 påmeldte
+      - generic [ref=f23e72]:
+        - generic [ref=f23e73]:
+          - generic [ref=f23e74]:
+            - button "Legg i kalender" [ref=f23e75] [cursor=pointer]
+            - button "Del arrangement" [ref=f23e79] [cursor=pointer]
+            - link "Inviter brukere" [ref=f23e87] [cursor=pointer]:
+              - /url: /events/YAOVMEAS/invite
+          - heading "Informasjon" [level=2] [ref=f23e91]
+        - generic [ref=f23e92]:
+          - paragraph [ref=f23e93]: 🐻WCFD er tilbake!🐻
+          - paragraph [ref=f23e94]
+          - paragraph [ref=f23e95]: På Will Code For Dr*nks løser du logiske programmeringsoppgaver, og får bonger i belønning🎟️
+          - paragraph [ref=f23e96]
+          - paragraph [ref=f23e97]: Man deltar i lag på opptil 3, og man må ha med egen PC 💻
+          - paragraph [ref=f23e98]
+          - paragraph [ref=f23e99]: Flere oppgaver løst = flere bonger!! 🥳
+          - paragraph [ref=f23e100]
+          - paragraph [ref=f23e101]: "18.00: Dørene åpner"
+          - paragraph [ref=f23e102]: "19.00: WCFD"
+          - paragraph [ref=f23e103]: "19:15 (ish): Pizza! 🍕"
+          - paragraph [ref=f23e104]: "22.00: Afterparty🕺✨"
+          - paragraph [ref=f23e105]
+          - paragraph [ref=f23e106]: "(ID: 18+)"
+      - button [disabled] [ref=f23e107]
+  - button "Open Next.js Dev Tools" [ref=f23e115] [cursor=pointer]
+  - alert [ref=f23e119]

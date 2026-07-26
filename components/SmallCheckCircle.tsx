@@ -29,14 +29,17 @@ export default function SmallCheckCircle({
 
   const checkCircleStyles = getCheckCircleStyles();
 
+  /* A span rather than a div: the badge is used inside <p> elements (event
+     page, cards), where a div is invalid HTML and breaks hydration. Layout
+     is unaffected - display comes from the container class. */
   return (
-    <div className={checkCircleStyles}>
+    <span className={checkCircleStyles}>
       <SmallCheckIcon
         className={`${small && styles.small} ${verySmall && styles.verySmall} ${
           ultraSmall && styles.ultraSmall
         } ${className}`}
         strokeWidth={ultraSmall ? "3" : undefined}
       />
-    </div>
+    </span>
   );
 }
