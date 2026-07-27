@@ -1,11 +1,21 @@
 import { BASE_URL } from "../constants/urls";
 import type { Event, Organization } from "../types/types";
 
+export type CalendarProvider = "google" | "apple";
+
 interface CalendarLink {
+  provider: CalendarProvider;
   label: string;
   description: string;
   href: string;
   external: boolean;
+}
+
+interface CalendarLinkOptions {
+  /* Standalone PWAs (especially on iOS) cannot preview or download files, so
+     the .ics link is dead there. webcal:// hands the URL to the native
+     calendar app instead, which works from inside an installed PWA. */
+  preferWebcal?: boolean;
 }
 
 interface OrganizationCalendarLink {
@@ -94,7 +104,10 @@ export function createEventIcs(event: Event) {
   return `${lines.join("\r\n")}\r\n`;
 }
 
-export function getCalendarLinks(event: Event): CalendarLink[] {
+export function getCalendarLinks(
+  event: Event,
+  options?: CalendarLinkOptions,
+): CalendarLink[] {
   const { startDate, endDate } = getCalendarDateRange(event);
   const title = event.title;
   const description = getEventDescription(event);
@@ -107,18 +120,27 @@ export function getCalendarLinks(event: Event): CalendarLink[] {
     location,
   });
   const calendarFileHref = `/api/calendar/${eventSlug}`;
+  const useWebcal =
+    Boolean(options?.preferWebcal) && typeof window !== "undefined";
+  const appleHref = useWebcal
+    ? `webcal://${window.location.host}${calendarFileHref}`
+    : calendarFileHref;
 
   return [
     {
-      label: "Google Calendar",
-      description: "Apner i Google Calendar",
+      provider: "google",
+      label: "Google Kalender",
+      description: "Åpner arrangementet i Google Kalender",
       href: `https://calendar.google.com/calendar/render?action=TEMPLATE&${query.toString()}`,
       external: true,
     },
     {
-      label: "Apple Calendar",
-      description: "Apner standard kalenderfil for Apple",
-      href: calendarFileHref,
+      provider: "apple",
+      label: "Apple Kalender",
+      description: useWebcal
+        ? "Åpner Kalender-appen direkte"
+        : "Laster ned kalenderfil (.ics)",
+      href: appleHref,
       external: false,
     },
   ];
