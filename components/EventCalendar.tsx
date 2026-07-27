@@ -8,7 +8,11 @@ import { useMemo, useState } from "react";
 
 import styles from "../styles/CalendarPage.module.scss";
 import type { Event } from "../types/types";
-import { getCompactEventArrangerLabel } from "../utils/eventArrangers";
+import { getArrangerColor } from "../utils/arrangerColor";
+import {
+  getCompactEventArrangerLabel,
+  getPrimaryEventArrangerColorKey,
+} from "../utils/eventArrangers";
 
 interface EventCalendarProps {
   events: Event[];
@@ -64,16 +68,24 @@ export default function EventCalendar({ events }: EventCalendarProps) {
 
   const calendarEvents = useMemo(
     () =>
-      events.map((event) => ({
-        id: event.id,
-        title: event.title,
-        start: new Date(event.startDate),
-        end: event.endDate ? new Date(event.endDate) : undefined,
-        url: `/events/${event.urlId}`,
-        extendedProps: {
-          arranger: getCompactEventArrangerLabel(event, 1),
-        },
-      })),
+      events.map((event) => {
+        const color = getArrangerColor(getPrimaryEventArrangerColorKey(event));
+        return {
+          id: event.id,
+          title: event.title,
+          start: new Date(event.startDate),
+          end: event.endDate ? new Date(event.endDate) : undefined,
+          url: `/events/${event.urlId}`,
+          // backgroundColor tints the month-grid chip; borderColor drives the
+          // chip's left accent bar and the list view's event dot (see
+          // CalendarPage.module.scss).
+          backgroundColor: color.background,
+          borderColor: color.accent,
+          extendedProps: {
+            arranger: getCompactEventArrangerLabel(event, 1),
+          },
+        };
+      }),
     [events],
   );
 
