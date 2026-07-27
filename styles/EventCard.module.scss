@@ -200,21 +200,21 @@
   width: 100%;
 }
 
-/* On narrow screens the calendar button shrinks to just its icon so both
-   buttons fit on one row. The label is clipped rather than removed, so the
-   button keeps its accessible name. */
+/* The calendar button is icon-only so both buttons fit on one row. The swiper
+   card itself is narrow (~330px) on every viewport, so this can't key on
+   screen width - with the full label, desktop wrapped the text to two lines
+   and pushed the button out of the card. The label is clipped rather than
+   removed, so the button keeps its accessible name. */
 .calendarActionButton {
-  @media screen and (max-width: 599px) {
-    flex: 0 0 auto;
-    width: auto;
+  flex: 0 0 auto;
+  width: auto;
 
-    span {
-      clip-path: inset(50%);
-      height: 1px;
-      overflow: hidden;
-      position: absolute;
-      white-space: nowrap;
-      width: 1px;
-    }
+  span {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
   }
 }
