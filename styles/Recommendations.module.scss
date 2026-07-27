@@ -1,17 +1,31 @@
-/* Mobile-first: the feed is a single full-width column; the max-width only
-   kicks in on larger screens so the cards keep their card-like proportions. */
+/* Mobile-first: the feed is a single full-width column. On larger screens it
+   widens into a 2–3 column grid so the desktop space actually gets used; the
+   headings and the organization strip span every column. `dense` lets the card
+   that follows the full-width strip back-fill the hole in the row above it
+   when the row count doesn't divide evenly (the 2-column range). */
 .feed {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: $spacer-small-plus;
+  grid-auto-flow: dense;
+  grid-template-columns: minmax(0, 1fr);
   max-width: calc(#{$max-width-event-card} + 2 * #{$spacer-small});
   padding: 0 $spacer-small $spacer-medium;
   width: 100%;
+
+  @include desktop() {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: $max-width;
+  }
+
+  @include breakPoint(1000px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .heading {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-heading-medium;
+  grid-column: 1 / -1;
 
   @include desktop() {
     font-size: $font-size-heading-medium-desktop;
@@ -27,6 +41,7 @@
   display: flex;
   flex-direction: column;
   gap: $spacer-small;
+  grid-column: 1 / -1;
   /* The strip may scroll horizontally; without this the flex parent lets it
      dictate the feed's width instead of the other way around. */
   min-width: 0;

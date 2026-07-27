@@ -1,7 +1,9 @@
 /**
  * The recommendation feed on /find: a mobile-first vertical feed of
  * recommended events with a horizontal strip of suggested organizations
- * interleaved after the first few cards, social-media style.
+ * interleaved after the first few cards, social-media style. On desktop the
+ * feed widens into a 2–3 column card grid; the org strip keeps spanning the
+ * full width as a break in the feed.
  *
  * Backed by GET /recommendations/events and /recommendations/organizations,
  * which personalize from the session cookie when one is present and fall back
