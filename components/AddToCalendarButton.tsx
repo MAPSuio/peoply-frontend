@@ -3,7 +3,10 @@ import { type MouseEvent as ReactMouseEvent, useEffect, useState } from "react";
 import { ButtonSize, ButtonType, type Event } from "../types/types";
 import { getCalendarLinks } from "../utils/ics";
 import Button, { IconPlacement } from "./Button";
+import AppleLogo from "./svgs/AppleLogo";
 import CalendarIconCard from "./svgs/CalendarIconCard";
+import ChevronRightIcon from "./svgs/ChevronRightIcon";
+import GoogleCalendarLogo from "./svgs/GoogleCalendarLogo";
 import styles from "../styles/AddToCalendarButton.module.scss";
 
 interface AddToCalendarButtonProps {
@@ -16,6 +19,21 @@ interface AddToCalendarButtonProps {
   width?: string;
 }
 
+/* Installed PWAs can't preview or download files (iOS especially), so Apple
+   devices in standalone mode get a webcal:// link that opens the native
+   Calendar app instead of the .ics download. */
+function shouldPreferWebcal() {
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as Navigator & { standalone?: boolean }).standalone ===
+      true;
+  const isApplePlatform = /iPad|iPhone|iPod|Macintosh/.test(
+    window.navigator.userAgent,
+  );
+
+  return isStandalone && isApplePlatform;
+}
+
 export default function AddToCalendarButton({
   event,
   buttonText = "Legg i kalender",
@@ -26,7 +44,12 @@ export default function AddToCalendarButton({
   width,
 }: AddToCalendarButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const links = getCalendarLinks(event);
+  const [preferWebcal, setPreferWebcal] = useState(false);
+  const links = getCalendarLinks(event, { preferWebcal });
+
+  useEffect(() => {
+    setPreferWebcal(shouldPreferWebcal());
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -96,7 +119,7 @@ export default function AddToCalendarButton({
             <div className={styles.linkList}>
               {links.map((link) => (
                 <a
-                  key={link.label}
+                  key={link.provider}
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noreferrer" : undefined}
@@ -106,9 +129,21 @@ export default function AddToCalendarButton({
                     setIsOpen(false);
                   }}
                 >
-                  <span className={styles.linkLabel}>{link.label}</span>
-                  <span className={styles.linkDescription}>
-                    {link.description}
+                  <span className={styles.linkLogo} aria-hidden="true">
+                    {link.provider === "google" ? (
+                      <GoogleCalendarLogo className={styles.providerLogo} />
+                    ) : (
+                      <AppleLogo className={styles.providerLogo} />
+                    )}
+                  </span>
+                  <span className={styles.linkText}>
+                    <span className={styles.linkLabel}>{link.label}</span>
+                    <span className={styles.linkDescription}>
+                      {link.description}
+                    </span>
+                  </span>
+                  <span className={styles.linkChevron} aria-hidden="true">
+                    <ChevronRightIcon />
                   </span>
                 </a>
               ))}

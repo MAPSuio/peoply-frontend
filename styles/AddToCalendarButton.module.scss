@@ -1,12 +1,16 @@
 .overlay {
   align-items: flex-end;
-  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur($background-blur-soft);
+  background: var(
+    --background-color-modal-transparent,
+    $background-color-modal-transparent
+  );
   display: flex;
   inset: 0;
   justify-content: center;
   padding: $spacer-small;
   position: fixed;
-  z-index: 1000;
+  z-index: $z-index-modal;
 
   @include desktop() {
     align-items: center;
@@ -22,13 +26,26 @@
   position: absolute;
 }
 
+/* position: relative lifts the dialog above the absolutely positioned
+   backdrop sibling — without it every click lands on the backdrop and the
+   provider links are unclickable. */
 .modal {
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-name: calendar-modal-enter-reduced-motion;
+  animation-timing-function: ease;
   background: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-regular;
   box-shadow: var(--shadow-event-card, $shadow-event-card-light);
   max-width: 420px;
   padding: $spacer-small;
+  position: relative;
   width: min(100%, 420px);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: calendar-modal-enter-reduced-motion,
+      calendar-modal-enter-full-motion;
+  }
 }
 
 .header {
@@ -62,6 +79,7 @@
 }
 
 .linkCard {
+  align-items: center;
   background: var(
     --background-color-button-secondary,
     $background-color-button-secondary
@@ -69,12 +87,47 @@
   border-radius: $border-radius-inside-card;
   color: var(--text-color-emphasis, $text-color-emphasis);
   display: flex;
-  flex-direction: column;
-  gap: $spacer-mini;
+  gap: $spacer-very-small-plus;
   outline: 1px solid
     var(--border-color-secondary-button, $border-color-secondary-button);
-  padding: $spacer-small;
+  padding: $spacer-very-small-plus $spacer-small;
   text-decoration: none;
+  transition: background-color $animation-duration ease;
+
+  @include desktop() {
+    &:hover {
+      background: var(
+        --background-color-button-secondary-hover,
+        $background-color-button-secondary-hover
+      );
+    }
+  }
+}
+
+.linkLogo {
+  align-items: center;
+  background: var(--background-color-primary, $background-color-primary);
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  flex-shrink: 0;
+  height: 2.75rem;
+  justify-content: center;
+  outline: 1px solid
+    var(--border-color-secondary-button, $border-color-secondary-button);
+  width: 2.75rem;
+}
+
+.providerLogo {
+  fill: var(--text-color-emphasis, $text-color-emphasis);
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.linkText {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+  min-width: 0;
 }
 
 .linkLabel {
@@ -84,6 +137,16 @@
 .linkDescription {
   color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-secondary;
+}
+
+.linkChevron {
+  display: flex;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  path {
+    stroke: var(--text-color-primary, $text-color-primary);
+  }
 }
 
 /* Doubled selector so the outline reliably beats .secondaryButton's
@@ -96,4 +159,26 @@
 
 .icon {
   stroke: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+/* The reduced motion version of the animation. */
+@keyframes calendar-modal-enter-reduced-motion {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* The full motion version of the animation. */
+@keyframes calendar-modal-enter-full-motion {
+  from {
+    transform: translateY($spacer-small);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
