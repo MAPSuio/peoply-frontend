@@ -156,7 +156,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     id: event.id,
     provider: "entur",
     type: event.poiName ? "poi" : "address",
-    poi: { name: event.poiName },
+    poi: event.poiName ? { name: event.poiName } : undefined,
     address: {
       country: event.country,
       countryCode: event.countryCode,
