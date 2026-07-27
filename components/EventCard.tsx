@@ -108,7 +108,6 @@ const EventCard = ({ event }: EventCardProps) => {
               <EventActions
                 event={event}
                 updateOnChange={[updateRegistrations]}
-                useUnregisterModal
                 joinButtonClassName={styles.actionButton}
                 calendarButtonClassName={cx(
                   styles.actionButton,
