@@ -1,0 +1,49 @@
+/* Mobile-first: the feed is a single full-width column; the max-width only
+   kicks in on larger screens so the cards keep their card-like proportions. */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small-plus;
+  max-width: calc(#{$max-width-event-card} + 2 * #{$spacer-small});
+  padding: 0 $spacer-small $spacer-medium;
+  width: 100%;
+}
+
+.heading {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-medium;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
+}
+
+.eventLink {
+  display: block;
+  width: 100%;
+}
+
+.orgSuggestions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  /* The strip may scroll horizontally; without this the flex parent lets it
+     dictate the feed's width instead of the other way around. */
+  min-width: 0;
+}
+
+.orgStrip {
+  display: flex;
+  gap: $spacer-small;
+  -ms-overflow-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.orgStrip::-webkit-scrollbar {
+  display: none;
+}
+
+.orgLink {
+  flex-shrink: 0;
+}

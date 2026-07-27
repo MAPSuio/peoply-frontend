@@ -6,30 +6,16 @@ import { describe, expect, it, vi } from "vitest";
 import Recommendations from "../components/Recommendations";
 import type { Event, Organization } from "../types/types";
 
-/* The real carousels pull in Swiper, which has no business in a jsdom test.
-   The component under test only decides what to feed them. */
-vi.mock("../components/HomeSwipers", () => ({
-  EventSwiper: ({ header, events }: { header: string; events: Event[] }) => (
-    <div>
-      <h1>{header}</h1>
-      {events.map((event) => (
-        <span key={event.id}>{event.title}</span>
-      ))}
-    </div>
-  ),
-  OrganizationSwiper: ({
-    header,
-    organizations,
-  }: {
-    header: string;
-    organizations: Organization[];
-  }) => (
-    <div>
-      <h1>{header}</h1>
-      {organizations.map((organization) => (
-        <span key={organization.id}>{organization.name}</span>
-      ))}
-    </div>
+/* The real cards pull in images, icons and their own data hooks, which have no
+   business in this test. The component under test only decides what to feed
+   them and in what order. */
+vi.mock("../components/EventCard", () => ({
+  default: ({ event }: { event: Event }) => <span>{event.title}</span>,
+}));
+
+vi.mock("../components/OrganizationAvatar", () => ({
+  default: ({ organization }: { organization: Organization }) => (
+    <span>{organization.name}</span>
   ),
 }));
 
@@ -64,6 +50,21 @@ describe("Recommendations", () => {
     expect(screen.getByText("Kodekveld")).toBeInTheDocument();
     expect(screen.getByText("Foreninger du kanskje liker")).toBeInTheDocument();
     expect(screen.getByText("MAPS")).toBeInTheDocument();
+  });
+
+  it("interleaves the organization strip after the first three events", async () => {
+    const events = ["Ett", "To", "Tre", "Fire"].map(
+      (title, i) => ({ id: `e${i}`, urlId: `e${i}`, title }) as Event,
+    );
+    renderWithFetcher(async (key) =>
+      key.startsWith("/recommendations/events") ? events : [ORG],
+    );
+
+    await screen.findByText("Anbefalt for deg");
+    const feedTexts = [...document.querySelectorAll("span")].map(
+      (span) => span.textContent,
+    );
+    expect(feedTexts).toEqual(["Ett", "To", "Tre", "MAPS", "Fire"]);
   });
 
   it("renders only the section that has recommendations", async () => {
