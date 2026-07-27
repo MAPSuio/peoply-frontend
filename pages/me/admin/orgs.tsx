@@ -7,6 +7,7 @@ import BackButton from "../../../components/BackButton";
 import Avatar from "../../../components/Avatar";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
+import QueryState from "../../../components/QueryState";
 import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
@@ -34,14 +35,11 @@ const OrganizationApprovalAdmin: NextPage = () => {
     }
   }, [isMapsMember, loading, router, user]);
 
-  const {
-    data: organizations,
-    error,
-    mutate,
-  } = useSWR<Organization[]>(
+  const organizationsQuery = useSWR<Organization[]>(
     user && isMapsMember ? "/organizations/admin/all" : null,
     fetchAllFromPeoplyApiJson,
   );
+  const { mutate } = organizationsQuery;
 
   const updateApproval = async (organizationId: string, approved: boolean) => {
     try {
@@ -86,32 +84,42 @@ const OrganizationApprovalAdmin: NextPage = () => {
           <h1>Admin: foreninger</h1>
           <p>Se alle foreninger og sett approved-status.</p>
         </div>
-        {error && <p className={styles.status}>Kunne ikke hente foreninger.</p>}
-        {!error && organizations && organizations.length === 0 && (
-          <p className={styles.status}>Ingen foreninger funnet.</p>
-        )}
-        <div className={styles.list}>
-          {organizations?.map((organization) => (
-            <div key={organization.id} className={styles.item}>
-              <div className={styles.info}>
-                <div className={styles.nameRow}>
-                  <p className={styles.name}>{organization.name}</p>
-                  <Avatar org={organization} size="small" />
-                </div>
-                <p className={styles.meta}>
-                  {organization.orgNr || organization.id}
-                </p>
+        <QueryState
+          query={organizationsQuery}
+          errorMessage="Kunne ikke hente foreninger."
+        >
+          {(organizations) => (
+            <>
+              {organizations.length === 0 && (
+                <p className={styles.status}>Ingen foreninger funnet.</p>
+              )}
+              <div className={styles.list}>
+                {organizations.map((organization) => (
+                  <div key={organization.id} className={styles.item}>
+                    <div className={styles.info}>
+                      <div className={styles.nameRow}>
+                        <p className={styles.name}>{organization.name}</p>
+                        <Avatar org={organization} size="small" />
+                      </div>
+                      <p className={styles.meta}>
+                        {organization.orgNr || organization.id}
+                      </p>
+                    </div>
+                    <Button
+                      text={
+                        organization.approved ? "Approved" : "Ikke approved"
+                      }
+                      onClick={() =>
+                        updateApproval(organization.id, !organization.approved)
+                      }
+                      className={styles.button}
+                    />
+                  </div>
+                ))}
               </div>
-              <Button
-                text={organization.approved ? "Approved" : "Ikke approved"}
-                onClick={() =>
-                  updateApproval(organization.id, !organization.approved)
-                }
-                className={styles.button}
-              />
-            </div>
-          ))}
-        </div>
+            </>
+          )}
+        </QueryState>
       </div>
     </>
   );

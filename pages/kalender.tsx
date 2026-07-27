@@ -7,6 +7,7 @@ import HeadComponent from "../components/HeadComponent";
 import Layout from "../components/Layout";
 import LoadingWheel from "../components/LoadingWheel";
 import Navbar from "../components/Navbar";
+import QueryState from "../components/QueryState";
 import useBack from "../hooks/useBack";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
@@ -34,7 +35,7 @@ export default function CalendarPage() {
     };
   }, []);
 
-  const { data: events, error } = useSWR<Event[]>(
+  const eventsQueryResult = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
     fetchAllFromPeoplyApiJson,
   );
@@ -52,20 +53,17 @@ export default function CalendarPage() {
           <h1>Kalender</h1>
         </div>
 
-        {error && (
-          <div className={styles.stateCard}>
-            <h2>Kunne ikke laste kalenderen</h2>
-            <p>Prøv igjen om litt.</p>
-          </div>
-        )}
-
-        {!error && !events && <LoadingWheel />}
-
-        {!error && events && (
-          <section className={styles.calendarCard}>
-            <EventCalendar events={events} />
-          </section>
-        )}
+        <QueryState
+          query={eventsQueryResult}
+          errorMessage="Kunne ikke laste kalenderen. Prøv igjen om litt."
+          className={styles.stateWidth}
+        >
+          {(events) => (
+            <section className={styles.calendarCard}>
+              <EventCalendar events={events} />
+            </section>
+          )}
+        </QueryState>
       </Layout>
       <Navbar />
     </>
