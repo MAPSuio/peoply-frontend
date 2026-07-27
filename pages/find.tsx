@@ -1,10 +1,15 @@
+// Next.js.
 import type { NextPage } from "next";
+
+// Components.
+import GlobalSearch from "../components/GlobalSearch";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
-import GlobalSearch from "../components/GlobalSearch";
-
-import styles from "../styles/Find.module.scss";
 import Navbar from "../components/Navbar";
+import Recommendations from "../components/Recommendations";
+
+// Styles.
+import styles from "../styles/Find.module.scss";
 
 const Find: NextPage = () => {
   return (
@@ -22,6 +27,7 @@ const Find: NextPage = () => {
         <div className={styles.container}>
           <GlobalSearch />
         </div>
+        <Recommendations />
       </div>
       <Navbar />
     </>
