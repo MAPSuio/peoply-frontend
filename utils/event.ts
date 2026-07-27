@@ -1,5 +1,14 @@
-import type { Event } from "../types/types";
+import { type Event, EventRegistrationMode } from "../types/types";
 import { formatDateAndTime } from "./functions";
+
+/** Whether the event takes registrations through Peoply at all. Events with
+ *  external or no registration render no join button, only the calendar CTA. */
+export function eventHasSelfRegistration(event: Event): boolean {
+  return (
+    event.registrationMode !== EventRegistrationMode.EXTERNAL &&
+    event.registrationMode !== EventRegistrationMode.NONE
+  );
+}
 
 export function isEventFinished(event: Event): boolean {
   if (!event.endDate) {

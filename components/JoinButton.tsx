@@ -9,11 +9,11 @@ import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
 } from "../services/fetchers";
+import { eventHasSelfRegistration } from "../utils/event";
 import {
   ButtonSize,
   ButtonType,
   type Event,
-  EventRegistrationMode,
   type FoodPreference,
   InvitationStatus,
   type Registration,
@@ -246,11 +246,7 @@ export default function JoinButton({
     !regClosed &&
     myRegistration?.regStatus === RegStatus.GOING;
 
-  const shouldHideButton =
-    event.registrationMode === EventRegistrationMode.EXTERNAL ||
-    event.registrationMode === EventRegistrationMode.NONE;
-
-  if (shouldHideButton) {
+  if (!eventHasSelfRegistration(event)) {
     return null;
   }
 

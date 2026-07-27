@@ -217,6 +217,8 @@
    Next.js reshuffles on client-side navigation and history restores. */
 .compact {
   font-size: $font-size-tertiary;
+  /* 44px, the minimum comfortable touch target (Apple HIG / WCAG 2.5.5). */
+  min-height: 2.75rem;
   padding: $spacer-mini $spacer-small;
 
   svg {
