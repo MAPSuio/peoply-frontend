@@ -217,6 +217,7 @@
    Next.js reshuffles on client-side navigation and history restores. */
 .compact {
   font-size: $font-size-tertiary;
+  min-height: $min-tap-target;
   padding: $spacer-mini $spacer-small;
 
   svg {
@@ -260,4 +261,11 @@
   &:hover:not(:disabled) {
     box-shadow: none;
   }
+}
+
+/* The label of an icon-only button; see Button's hideText prop. Being
+   position: absolute it also leaves the flex flow, so the icon gap
+   collapses with it. */
+.visuallyHidden {
+  @include visuallyHidden();
 }

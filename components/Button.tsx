@@ -33,6 +33,8 @@ interface ButtonProps {
   loadingIconLatency?: number;
   icon?: React.ReactNode;
   iconPlacement?: IconPlacement;
+  /** Icon-only rendering: the text stays as the accessible name. */
+  hideText?: boolean;
 }
 
 export default function Button({
@@ -48,6 +50,7 @@ export default function Button({
   loadingIconLatency = 150,
   icon,
   iconPlacement = IconPlacement.LEFT,
+  hideText = false,
 }: ButtonProps) {
   const [onClickLoadingState, setOnClickLoadingState] = useState(false);
   const [onClickDisableState, setOnClickDisableState] = useState(false);
@@ -125,7 +128,9 @@ export default function Button({
       ) : (
         <>
           {icon}
-          <span>{text}</span>
+          <span className={hideText ? styles.visuallyHidden : undefined}>
+            {text}
+          </span>
         </>
       )}
     </button>

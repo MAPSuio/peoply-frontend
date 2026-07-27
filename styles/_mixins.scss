@@ -98,6 +98,17 @@
   font-variant-ligatures: no-common-ligatures;
 }
 
+/* Hides content visually while keeping it in the accessibility tree, so
+   icon-only controls keep their text as accessible name. */
+@mixin visuallyHidden() {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 @mixin label() {
   color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-secondary;

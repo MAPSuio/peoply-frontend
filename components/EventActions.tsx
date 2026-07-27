@@ -10,6 +10,8 @@ interface EventActionsProps {
   updateOnChange?: Array<() => unknown>;
   useUnregisterModal?: boolean;
   calendarButtonText?: string;
+  /** Icon-only calendar button, for cards too narrow for its label. */
+  calendarButtonIconOnly?: boolean;
   joinButtonClassName?: string;
   calendarButtonClassName?: string;
 }
@@ -26,6 +28,7 @@ const EventActions = ({
   updateOnChange,
   useUnregisterModal,
   calendarButtonText,
+  calendarButtonIconOnly,
   joinButtonClassName,
   calendarButtonClassName,
 }: EventActionsProps) => (
@@ -45,11 +48,10 @@ const EventActions = ({
       noShadow
       className={joinButtonClassName}
     />
-    {/* Width comes from the card's className, so narrow screens can shrink
-        the button to icon-only - an inline width would win over that. */}
     <AddToCalendarButton
       event={event}
       buttonText={calendarButtonText}
+      iconOnly={calendarButtonIconOnly}
       size={ButtonSize.COMPACT}
       className={calendarButtonClassName}
     />
