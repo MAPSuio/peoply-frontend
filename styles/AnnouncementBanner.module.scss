@@ -19,6 +19,47 @@
   margin: 0;
 }
 
+.repoList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  margin: $spacer-mini 0;
+}
+
+.repoLink {
+  align-items: center;
+  background: var(
+    --background-color-button-secondary,
+    $background-color-button-secondary
+  );
+  border-radius: $border-radius-inside-card;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  display: flex;
+  gap: $spacer-very-small;
+  outline: 1px solid
+    var(--border-color-secondary-button, $border-color-secondary-button);
+  padding: $spacer-very-small;
+  text-decoration: none;
+}
+
+.repoIcon {
+  flex-shrink: 0;
+}
+
+.repoText {
+  display: flex;
+  flex-direction: column;
+}
+
+.repoName {
+  font-weight: $font-weight-bold;
+}
+
+.repoDescription {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+}
+
 .actions {
   display: flex;
   flex-direction: column;
