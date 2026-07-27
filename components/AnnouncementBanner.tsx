@@ -17,7 +17,7 @@ const REPOSITORIES = [
   },
   {
     name: "peoply-backend",
-    description: "API-et som driver det hele",
+    description: "API-et som driver det",
     url: "https://github.com/MAPSuio/peoply-backend",
   },
 ];
