@@ -9,7 +9,7 @@ import TextInputLocationSelect from "../inputs/TextInputLocationSelect";
 
 /* Types */
 import type { IpInfo } from "../../types/types";
-import type { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
+import type { LocationSearchResult } from "../../types/locationSearch";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
@@ -23,8 +23,8 @@ interface EditPlaceSectionProps {
   setValidLocationName: Dispatch<SetStateAction<boolean>>;
   tempLocationName: string;
   onLocationNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  location: AzureMapsSearchFuzzyResult | undefined;
-  setLocation: Dispatch<SetStateAction<AzureMapsSearchFuzzyResult | undefined>>;
+  location: LocationSearchResult | undefined;
+  setLocation: Dispatch<SetStateAction<LocationSearchResult | undefined>>;
   ipInfo: IpInfo | undefined;
   displayLocationName: string;
   mapsHref: string | undefined;
@@ -93,7 +93,7 @@ const EditPlaceSection = ({
             options={
               ipInfo
                 ? {
-                    countrySet: [ipInfo.country_code],
+                    countryCode: ipInfo.country_code,
                     lat: ipInfo.latitude,
                     lon: ipInfo.longitude,
                   }

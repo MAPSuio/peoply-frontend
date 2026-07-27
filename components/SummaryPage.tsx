@@ -207,13 +207,13 @@ const SummaryPage = ({
           eventObject.eventLocation.address.freeformAddress,
         );
 
-      if (eventObject?.eventLocation?.position?.lat)
+      if (eventObject?.eventLocation?.position?.lat !== undefined)
         formData.set(
           "latitude",
           eventObject.eventLocation.position.lat.toString(),
         );
 
-      if (eventObject?.eventLocation?.position?.lon)
+      if (eventObject?.eventLocation?.position?.lon !== undefined)
         formData.set(
           "longitude",
           eventObject.eventLocation.position.lon.toString(),

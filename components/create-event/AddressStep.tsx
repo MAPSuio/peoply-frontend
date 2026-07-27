@@ -15,7 +15,7 @@ import {
 
 // Types.
 import { InputPages, type IpInfo } from "../../types/types";
-import type { AzureMapsSearchFuzzyResult } from "../../types/azureMaps";
+import type { LocationSearchResult } from "../../types/locationSearch";
 import type { EventObjectProps } from "../../hooks/useCreateEventForm";
 
 // Styles.
@@ -29,7 +29,7 @@ interface AddressStepProps {
   updateEventLocationName: (e: ChangeEvent<HTMLInputElement>) => void;
   eventAddressValid: boolean;
   setEventAddressValid: Dispatch<SetStateAction<boolean>>;
-  updateEventLocation: (loc?: AzureMapsSearchFuzzyResult) => void;
+  updateEventLocation: (loc?: LocationSearchResult) => void;
   ipInfo?: IpInfo;
 }
 
@@ -89,7 +89,7 @@ const AddressStep = ({
           options={
             ipInfo
               ? {
-                  countrySet: [ipInfo.country_code],
+                  countryCode: ipInfo.country_code,
                   lat: ipInfo.latitude,
                   lon: ipInfo.longitude,
                 }

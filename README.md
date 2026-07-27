@@ -182,6 +182,9 @@ Three things it does that will bite you if you bypass it:
   with postcss as well, so `npm run lint` is part of that check, not separate
   from it.
 - **Analytics.** See [Analytics](#analytics) below.
+- **Location search.** The UI now consumes a provider-neutral contract from
+  `services/locationSearch.ts` rather than provider-specific map payloads. See
+  [`docs/location-search.md`](docs/location-search.md).
 - **Approving an organization is a manual step** behind a hidden admin page. See
   [Admin: approving organizations](#admin-approving-organizations) below.
 
