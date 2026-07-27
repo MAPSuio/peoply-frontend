@@ -134,14 +134,22 @@
     text-decoration: none;
   }
 
+  /* Each event carries an inline background tint and border color derived
+     from its arranger (see EventCalendar.tsx). The border is collapsed to a
+     left accent bar here; the inline border-color fills it per event. */
   :global(.fc .fc-daygrid-event) {
     border-radius: $border-radius-inside-card;
+    border-style: solid;
+    border-width: 0 0 0 3px;
     cursor: pointer;
     margin-top: 2px;
+    overflow: hidden;
   }
 
+  /* The inline per-event background wins over any background-color rule, so
+     hover feedback is a translucent neutral overlay stacked on top of it. */
   :global(.fc .fc-daygrid-event:hover) {
-    background-color: var(--background-color-card-hover, $background-color-card-hover);
+    background-image: linear-gradient(rgb(128 128 128 / 12%), rgb(128 128 128 / 12%));
   }
 
   :global(.fc .fc-daygrid-day-events) {
@@ -202,8 +210,10 @@
     }
   }
 
+  /* The list view's dot picks up the same per-event border color as the
+     grid chips' accent bar. */
   :global(.fc .fc-list-event-graphic) {
-    display: none;
+    padding-right: 0;
   }
 
   :global(.fc .fc-list-empty) {

@@ -29,6 +29,14 @@ export function getPrimaryEventArrangerOrganization(
   return getPrimaryEventArranger(event)?.organization;
 }
 
+// Stable key for deriving a per-arranger color: the organization id when the
+// primary arranger is an org, otherwise the user id, otherwise the shared
+// Peoply fallback.
+export function getPrimaryEventArrangerColorKey(event: Event): string {
+  const arranger = getPrimaryEventArranger(event);
+  return arranger?.organization?.id ?? arranger?.user?.id ?? "peoply";
+}
+
 export function getEventArrangerDisplayItems(
   event: Event,
 ): EventArrangerDisplayItem[] {
