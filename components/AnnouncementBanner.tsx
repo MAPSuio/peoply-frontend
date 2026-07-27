@@ -1,15 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-import useUser from "../hooks/useUser";
-import { ButtonType, OrganizationRole } from "../types/types";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
+import GithubIcon from "./svgs/GithubIcon";
 import styles from "../styles/AnnouncementBanner.module.scss";
 
-const ANNOUNCEMENT_ID = "whats-new-2026-04-social-links-and-coorganizers";
+const ANNOUNCEMENT_ID = "open-source-2026-07";
 const ANNOUNCEMENT_KEY = `peoply-announcement:${ANNOUNCEMENT_ID}`;
-const ANNOUNCEMENT_END_AT = new Date("2026-06-01T00:00:00.000+02:00");
+const ANNOUNCEMENT_END_AT = new Date("2027-01-01T00:00:00.000+01:00");
+
+const REPOSITORIES = [
+  {
+    name: "peoply-frontend",
+    description: "Appen du bruker akkurat nå",
+    url: "https://github.com/MAPSuio/peoply-frontend",
+  },
+  {
+    name: "peoply-backend",
+    description: "API-et som driver det hele",
+    url: "https://github.com/MAPSuio/peoply-backend",
+  },
+];
 
 interface AnnouncementState {
   firstSeenAt: string;
@@ -17,41 +28,7 @@ interface AnnouncementState {
 }
 
 export default function AnnouncementBanner() {
-  const router = useRouter();
-  const { user, orgs, currentOrg } = useUser();
   const [visible, setVisible] = useState(false);
-
-  const manageableOrganizations = useMemo(() => {
-    if (!user || !orgs) {
-      return [];
-    }
-
-    return orgs.filter((organization) =>
-      organization.organizationRoles.some(
-        (organizationRole) =>
-          organizationRole.userId === user.id &&
-          organizationRole.role !== OrganizationRole.MEMBER,
-      ),
-    );
-  }, [orgs, user]);
-
-  const targetOrganization = useMemo(() => {
-    if (!manageableOrganizations.length) {
-      return undefined;
-    }
-
-    if (currentOrg) {
-      const activeOrganization = manageableOrganizations.find(
-        (organization) => organization.id === currentOrg.id,
-      );
-
-      if (activeOrganization) {
-        return activeOrganization;
-      }
-    }
-
-    return manageableOrganizations[0];
-  }, [currentOrg, manageableOrganizations]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -101,24 +78,6 @@ export default function AnnouncementBanner() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!visible || typeof window === "undefined") {
-      return;
-    }
-
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        acknowledgeAnnouncement();
-      }
-    };
-
-    window.addEventListener("keydown", closeOnEscape);
-
-    return () => {
-      window.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [visible]);
-
   const acknowledgeAnnouncement = () => {
     if (typeof window !== "undefined") {
       const storedValue = window.localStorage.getItem(ANNOUNCEMENT_KEY);
@@ -146,49 +105,47 @@ export default function AnnouncementBanner() {
     setVisible(false);
   };
 
-  const openSocialLinksSettings = async () => {
-    if (!targetOrganization) {
-      acknowledgeAnnouncement();
-      return;
-    }
-
-    acknowledgeAnnouncement();
-    await router.push(
-      `/orgs/${targetOrganization.urlId ?? targetOrganization.id}/settings`,
-    );
-  };
-
   if (!visible) {
     return null;
   }
 
   return (
     <Modal
-      label="Foreninger kan nå gjøre mer på Peoply"
-      description="Du kan nå legge til nettside, Instagram, Facebook, TikTok, LinkedIn og YouTube på foreningssiden.
-Du kan også samarbeide med flere foreninger om arrangementer direkte på Peoply."
+      label="Peoply er open source! 🎉"
+      description="Hele Peoply ligger nå åpent på GitHub — både appen og API-et. Alle kan lese koden, melde inn feil og bygge Peoply videre sammen med oss."
       closeButtonOnClick={acknowledgeAnnouncement}
     >
       <div className={styles.content}>
-        <p className={styles.eyebrow}>Nytt på Peoply</p>
-        {targetOrganization && (
-          <p className={styles.hint}>
-            Knappen under tar deg rett til innstillingene for{" "}
-            {targetOrganization.name}.
-          </p>
-        )}
+        <p className={styles.eyebrow}>Stor nyhet</p>
+        <div className={styles.repoList}>
+          {REPOSITORIES.map((repository) => (
+            <a
+              key={repository.url}
+              href={repository.url}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.repoLink}
+            >
+              <GithubIcon className={styles.repoIcon} />
+              <span className={styles.repoText}>
+                <span className={styles.repoName}>{repository.name}</span>
+                <span className={styles.repoDescription}>
+                  {repository.description}
+                </span>
+              </span>
+            </a>
+          ))}
+        </div>
         <p className={styles.hint}>
-          Medarrangører kan legges til og fjernes fra Rediger arrangement.
+          Gi oss en stjerne ⭐ og bli med og bidra — issues, kode, design, alt
+          teller! 🚀
+        </p>
+        <p className={styles.hint}>
+          Og ja: bidrag her kan du helt seriøst føre opp som prosjekterfaring på
+          CV-en. 💼
         </p>
         <div className={styles.actions}>
-          {targetOrganization && (
-            <ModalButton text="Gjør det nå" onClick={openSocialLinksSettings} />
-          )}
-          <ModalButton
-            text={targetOrganization ? "Senere" : "Skjønner"}
-            onClick={acknowledgeAnnouncement}
-            type={ButtonType.SECONDARY}
-          />
+          <ModalButton text="Rått! 🎉" onClick={acknowledgeAnnouncement} />
         </div>
       </div>
     </Modal>
