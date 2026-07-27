@@ -17,6 +17,9 @@ interface AddToCalendarButtonProps {
   size?: ButtonSize;
   type?: ButtonType;
   width?: string;
+  /** Icon-only rendering for narrow layouts; the text stays as the
+   *  accessible name. */
+  iconOnly?: boolean;
 }
 
 /* Installed PWAs can't preview or download files (iOS especially), so Apple
@@ -42,6 +45,7 @@ export default function AddToCalendarButton({
   size = ButtonSize.SMALL,
   type = ButtonType.SECONDARY,
   width,
+  iconOnly = false,
 }: AddToCalendarButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [preferWebcal, setPreferWebcal] = useState(false);
@@ -85,6 +89,7 @@ export default function AddToCalendarButton({
         noShadow
         icon={<CalendarIconCard className={styles.icon} />}
         iconPlacement={iconPlacement}
+        hideText={iconOnly}
         className={`${styles.addToCalendarButton} ${className ?? ""}`}
       />
       {isOpen && (

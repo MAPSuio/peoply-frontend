@@ -108,6 +108,7 @@ const EventCard = ({ event }: EventCardProps) => {
               <EventActions
                 event={event}
                 updateOnChange={[updateRegistrations]}
+                calendarButtonIconOnly
                 joinButtonClassName={styles.actionButton}
                 calendarButtonClassName={cx(
                   styles.actionButton,

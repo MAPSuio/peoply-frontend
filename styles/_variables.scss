@@ -251,6 +251,8 @@ $max-width-input-time: 120px;
 $max-width-input-time-desktop: 150px;
 $max-width-input-number: 100px;
 $max-width-button: 500px;
+// 44px - minste komfortable tap-target (Apple HIG / WCAG 2.5.5).
+$min-tap-target: 2.75rem;
 $max-width-card: 500px;
 $max-width-small-event-card: 400px;
 $max-width-event-card: 360px;
