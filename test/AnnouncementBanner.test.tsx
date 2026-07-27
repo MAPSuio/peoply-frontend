@@ -33,7 +33,11 @@ describe("AnnouncementBanner", () => {
     const user = userEvent.setup();
     render(<AnnouncementBanner />);
 
-    await user.click(screen.getByRole("button", { name: "Rått! 🎉" }));
+    await user.click(
+      screen.getByRole("button", {
+        name: "Fy! Nå ble jeg gæssed på en pils 🎉",
+      }),
+    );
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 

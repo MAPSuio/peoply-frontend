@@ -112,7 +112,7 @@ export default function AnnouncementBanner() {
   return (
     <Modal
       label="Peoply er open source! 🎉"
-      description="Hele Peoply ligger nå åpent på GitHub — både appen og API-et. Alle kan lese koden, melde inn feil og bygge Peoply videre sammen med oss."
+      description="Peoply eies av studentene - av deg. Alle kan lese koden, melde inn feil og bygge Peoply videre."
       closeButtonOnClick={acknowledgeAnnouncement}
     >
       <div className={styles.content}>
@@ -137,15 +137,17 @@ export default function AnnouncementBanner() {
           ))}
         </div>
         <p className={styles.hint}>
-          Gi oss en stjerne ⭐ og bli med og bidra — issues, kode, design, alt
-          teller! 🚀
+          Gi det en stjerne ⭐ på GitHub og bli med og bidra!
         </p>
         <p className={styles.hint}>
           Og ja: bidrag her kan du helt seriøst føre opp som prosjekterfaring på
           CV-en. 💼
         </p>
         <div className={styles.actions}>
-          <ModalButton text="Rått! 🎉" onClick={acknowledgeAnnouncement} />
+          <ModalButton
+            text="Fy! Nå ble jeg gæssed på en pils 🎉"
+            onClick={acknowledgeAnnouncement}
+          />
         </div>
       </div>
     </Modal>
