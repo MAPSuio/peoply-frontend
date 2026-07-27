@@ -54,6 +54,13 @@
     width: 24px;
   }
 
+  /* globals.scss gir alle span --text-color-primary, som i light mode er mørk
+     og overstyrer knappefargen (svart tekst på lilla). La teksten følge
+     knappevariantens egen farge i stedet. */
+  span {
+    color: inherit;
+  }
+
   &:disabled {
     background-color: var(--background-color-button-disabled, $background-color-button-disabled);
     box-shadow: none;
