@@ -256,3 +256,41 @@
   color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-tertiary;
 }
+
+.eventPreview {
+  background-color: var(--background-color-modal, $background-color-modal);
+  border: 1px solid var(--divider-color, $divider-color);
+  border-radius: $border-radius-inside-card;
+  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  max-width: min(22rem, calc(100vw - #{$spacer-small-plus}));
+  padding: $spacer-small;
+  position: fixed;
+  width: 20rem;
+  z-index: 999;
+}
+
+.eventPreviewDate,
+.eventPreviewMeta,
+.eventPreviewDescription {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+  margin: 0;
+}
+
+.eventPreviewTitle {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-secondary;
+  margin: $spacer-mini 0;
+}
+
+.eventPreviewMeta + .eventPreviewMeta {
+  margin-top: $spacer-mini;
+}
+
+.eventPreviewDescription {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  margin-top: $spacer-very-small;
+  overflow: hidden;
+}
