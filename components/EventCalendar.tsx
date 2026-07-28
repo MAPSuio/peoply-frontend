@@ -1,14 +1,20 @@
-import type { EventClickArg, EventContentArg } from "@fullcalendar/core";
+import type {
+  EventClickArg,
+  EventContentArg,
+  EventHoveringArg,
+  EventMountArg,
+} from "@fullcalendar/core";
 import nbLocale from "@fullcalendar/core/locales/nb";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import styles from "../styles/CalendarPage.module.scss";
 import type { Event } from "../types/types";
 import { getArrangerColor } from "../utils/arrangerColor";
+import { formatDateRange, formatTimeRange } from "../utils/functions";
 import {
   getCompactEventArrangerLabel,
   getPrimaryEventArrangerColorKey,
@@ -16,6 +22,11 @@ import {
 
 interface EventCalendarProps {
   events: Event[];
+}
+
+interface EventPreview {
+  event: Event;
+  position: { left: number; top: number };
 }
 
 // Rendered client-side only (next/dynamic with ssr: false), so window is
@@ -51,6 +62,10 @@ function renderEventContent(arg: EventContentArg) {
 
 export default function EventCalendar({ events }: EventCalendarProps) {
   const router = useRouter();
+  const closePreviewTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const [eventPreview, setEventPreview] = useState<EventPreview>();
   const [initialView] = useState(() =>
     window.matchMedia(DESKTOP_QUERY).matches ? "dayGridMonth" : "listUpcoming",
   );
@@ -83,6 +98,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
           borderColor: color.accent,
           extendedProps: {
             arranger: getCompactEventArrangerLabel(event, 1),
+            sourceEvent: event,
           },
         };
       }),
@@ -94,6 +110,80 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     if (info.event.url) {
       router.push(info.event.url);
     }
+  };
+
+  const cancelPreviewClose = () => {
+    if (closePreviewTimeout.current) {
+      clearTimeout(closePreviewTimeout.current);
+      closePreviewTimeout.current = undefined;
+    }
+  };
+
+  // This delay bridges the space between FullCalendar's event and the preview.
+  const schedulePreviewClose = () => {
+    cancelPreviewClose();
+    closePreviewTimeout.current = setTimeout(() => {
+      setEventPreview(undefined);
+    }, 150);
+  };
+
+  const showPreview = (info: EventHoveringArg | EventMountArg) => {
+    cancelPreviewClose();
+    const event = info.event.extendedProps.sourceEvent as Event | undefined;
+    if (!event) return;
+
+    const rect = info.el.getBoundingClientRect();
+    setEventPreview({
+      event,
+      position: { left: rect.left, top: rect.bottom + 8 },
+    });
+  };
+
+  const handleEventDidMount = (info: EventMountArg) => {
+    info.el.addEventListener("focusin", () => showPreview(info));
+    info.el.addEventListener("focusout", schedulePreviewClose);
+    info.el.setAttribute("aria-describedby", "calendar-event-preview");
+  };
+
+  const handlePreviewMount = (element: HTMLElement | null) => {
+    if (!element) return;
+    element.addEventListener("mouseenter", cancelPreviewClose);
+    element.addEventListener("mouseleave", schedulePreviewClose);
+  };
+
+  const renderEventPreview = () => {
+    if (!eventPreview) return null;
+
+    const { event, position } = eventPreview;
+    const startDate = new Date(event.startDate);
+    const endDate = event.endDate ? new Date(event.endDate) : null;
+    const arranger = getCompactEventArrangerLabel(event, 2);
+
+    return (
+      <aside
+        aria-live="polite"
+        className={styles.eventPreview}
+        id="calendar-event-preview"
+        ref={handlePreviewMount}
+        role="tooltip"
+        style={position}
+      >
+        <p className={styles.eventPreviewDate}>
+          {formatDateRange(startDate, endDate)} ·{" "}
+          {formatTimeRange(startDate, endDate)}
+        </p>
+        <h2 className={styles.eventPreviewTitle}>{event.title}</h2>
+        {arranger ? (
+          <p className={styles.eventPreviewMeta}>{arranger}</p>
+        ) : null}
+        {event.locationName ? (
+          <p className={styles.eventPreviewMeta}>{event.locationName}</p>
+        ) : null}
+        {event.description ? (
+          <p className={styles.eventPreviewDescription}>{event.description}</p>
+        ) : null}
+      </aside>
+    );
   };
 
   return (
@@ -119,6 +209,9 @@ export default function EventCalendar({ events }: EventCalendarProps) {
         events={calendarEvents}
         eventContent={renderEventContent}
         eventClick={handleEventClick}
+        eventMouseEnter={showPreview}
+        eventMouseLeave={schedulePreviewClose}
+        eventDidMount={handleEventDidMount}
         validRange={validRange}
         dayMaxEvents={3}
         height="auto"
@@ -127,6 +220,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
         eventDisplay="block"
         noEventsContent="Ingen kommende arrangementer i denne perioden."
       />
+      {renderEventPreview()}
     </div>
   );
 }
