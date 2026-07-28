@@ -48,7 +48,7 @@ import {
 } from "../services/fetchers";
 import { type ChangeEvent, useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
-import type { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
+import type { LocationSearchResult } from "../types/locationSearch";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -152,10 +152,11 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     ...eventObject,
   });
 
-  const [location, setLocation] = useState<
-    AzureMapsSearchFuzzyResult | undefined
-  >({
-    poi: { name: event.poiName },
+  const [location, setLocation] = useState<LocationSearchResult | undefined>({
+    id: event.id,
+    provider: "entur",
+    type: event.poiName ? "poi" : "address",
+    poi: event.poiName ? { name: event.poiName } : undefined,
     address: {
       country: event.country,
       countryCode: event.countryCode,

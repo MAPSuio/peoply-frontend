@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import styles from "../../styles/TextInputLocationSelect.module.scss";
 import type {
-  AzureMapsSearchFuzzyOptions,
-  AzureMapsSearchFuzzyResponse,
-  AzureMapsSearchFuzzyResult,
-} from "../../types/azureMaps";
-import { searchLocationsFuzzy } from "../../services/maps";
+  LocationSearchOptions,
+  LocationSearchResponse,
+  LocationSearchResult,
+} from "../../types/locationSearch";
+import { searchLocations } from "../../services/locationSearch";
 import ExitIcon from "../svgs/ExitIcon";
 import LoadingWheel from "../LoadingWheel";
 
@@ -16,9 +16,9 @@ interface TextInputLocationSelectProps {
   label?: string;
   placeholder: string;
   required?: boolean;
-  onLocationSelect: (location?: AzureMapsSearchFuzzyResult) => void;
-  selectedLocation?: AzureMapsSearchFuzzyResult;
-  options?: AzureMapsSearchFuzzyOptions;
+  onLocationSelect: (location?: LocationSearchResult) => void;
+  selectedLocation?: LocationSearchResult;
+  options?: LocationSearchOptions;
   card?: boolean;
 }
 
@@ -37,7 +37,7 @@ const TextInputLocationSelect = ({
   const [search, setSearch] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(false);
-  const [locations, setLocations] = useState<AzureMapsSearchFuzzyResult[]>([]);
+  const [locations, setLocations] = useState<LocationSearchResult[]>([]);
 
   /* Callers build `options` inline, so a new object identity on every parent
      render would restart the debounce below. A ref keeps the effect reading
@@ -77,17 +77,26 @@ const TextInputLocationSelect = ({
     let cancelled = false;
 
     const timer = setTimeout(async () => {
-      const result: AzureMapsSearchFuzzyResponse = await searchLocationsFuzzy(
-        search,
-        optionsRef.current,
-      );
-      // A slower request for an earlier term must not overwrite the results
-      // of a later one.
-      if (cancelled) {
-        return;
+      try {
+        const result: LocationSearchResponse = await searchLocations(
+          search,
+          optionsRef.current,
+        );
+        // A slower request for an earlier term must not overwrite the results
+        // of a later one.
+        if (cancelled) {
+          return;
+        }
+        setLocations(result.results ?? []);
+      } catch {
+        if (!cancelled) {
+          setLocations([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
-      setLocations(result.results ?? []);
     }, 500);
 
     return () => {
@@ -166,14 +175,12 @@ const TextInputLocationSelect = ({
           <div className={styles.loadingCircle}>
             <LoadingWheel />
           </div>
-        ) : (
-          <></>
-        )}
+        ) : null}
       </div>
       {locations.length > 0 && (
         <div className={styles.results}>
           {locations.map((location) => (
-            <>
+            <Fragment key={location.id}>
               <span className={styles.divider} />
               <button
                 type="button"
@@ -183,7 +190,7 @@ const TextInputLocationSelect = ({
                   setLocations([]);
                 }}
               >
-                <div key={location.id} className={styles.item}>
+                <div className={styles.item}>
                   {location.poi ? (
                     <>
                       <div>{`${location.poi.name}`}</div>
@@ -194,7 +201,7 @@ const TextInputLocationSelect = ({
                   )}
                 </div>
               </button>
-            </>
+            </Fragment>
           ))}
         </div>
       )}
