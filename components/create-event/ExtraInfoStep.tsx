@@ -68,7 +68,6 @@ const ExtraInfoStep = ({
       reachedStep={eventObject.reachedStep}
       stepCount={stepCount}
       buttonText={buttonText}
-      placeButtonStatic
       validDataMap={validDataMap}
       page={InputPages.EXTRA_INFO_PAGE}
       setEventExtraInfoValid={setEventExtraInfoValid}

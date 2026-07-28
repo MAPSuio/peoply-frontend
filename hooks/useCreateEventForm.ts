@@ -909,6 +909,20 @@ export default function useCreateEventForm() {
     }
   }, []);
 
+  /* The state initializer runs before the user has loaded, so a fresh visit
+     starts with an empty arrangerId. Without this backfill the POST is
+     rejected by the backend unless the user touches the arranger dropdown. */
+  useEffect(() => {
+    if (!user?.arrangerId) {
+      return;
+    }
+    setEventObject((prevEventObject) =>
+      prevEventObject.eventArrangerId === ""
+        ? { ...prevEventObject, eventArrangerId: user.arrangerId }
+        : prevEventObject,
+    );
+  }, [user?.arrangerId]);
+
   useEffect(() => {
     if (!coOrganizerOpen) {
       return;

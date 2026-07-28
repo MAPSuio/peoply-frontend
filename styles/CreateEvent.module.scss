@@ -161,14 +161,6 @@
   margin-bottom: $spacer-medium;
 }
 
-.marginBottomVeryLarge {
-  margin-bottom: $spacer-very-large;
-}
-
-.noExtraOptionPadding {
-  padding-bottom: calc($spacer-small + $font-size-primary + $spacer-very-small + $font-size-primary + $spacer-medium);
-}
-
 .addDateContainer {
   @include resetButton();
   display: flex;

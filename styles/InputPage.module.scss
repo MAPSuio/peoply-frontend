@@ -2,12 +2,10 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
+  min-height: calc(100dvh - $spacer-medium-plus);
   width: 100%;
 }
 
-.padding {
-  padding-bottom: 400px;
-}
 .actionContainer {
   align-items: flex-end;
   display: flex;
@@ -37,6 +35,7 @@
   display: flex;
   flex-flow: column nowrap;
   text-align: center;
+  width: 100%;
 }
 
 .title {
@@ -56,25 +55,57 @@
   }
 }
 
-.inputContainer {
+// Single column on mobile; on desktop a symmetric three-column grid
+// (rail | content | empty) so the content stays centered on the page
+// while the step rail sits in the left gutter.
+.layout {
   align-items: center;
   display: flex;
+  flex: 1;
+  flex-flow: column nowrap;
+  width: 100%;
+
+  @include createEventDesktop() {
+    align-items: stretch;
+    column-gap: $spacer-medium;
+    display: grid;
+    grid-template-columns:
+      minmax(160px, 1fr)
+      minmax(0, $max-width-input)
+      minmax(160px, 1fr);
+  }
+}
+
+.progressRail {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacer-large;
+
+  @include createEventDesktop() {
+    align-self: start;
+    grid-column: 1;
+    justify-content: flex-start;
+    justify-self: end;
+    margin-bottom: 0;
+    position: sticky;
+    top: $spacer-medium;
+    // Reserves room for the step labels, which extend to the right of the
+    // circles via absolute positioning in ProgressCircle.
+    width: 160px;
+  }
+}
+
+.main {
+  align-items: center;
+  display: flex;
+  flex: 1;
   flex-flow: column nowrap;
   max-width: $max-width-input;
   width: 100%;
 
   @include createEventDesktop() {
-    box-sizing: border-box;
-    max-width: calc($max-width-input + 180px);
-    padding-left: 180px;
-  }
-}
-
-.progressBarContainer {
-  margin-bottom: $spacer-large;
-
-  @include createEventDesktop() {
-    margin-bottom: 0;
+    grid-column: 2;
+    max-width: none;
   }
 }
 
@@ -85,54 +116,38 @@
   width: 100%;
 }
 
+// In flow (scrolling always reveals the inputs above it), pushed to the
+// bottom of the viewport on short pages by margin-top auto, and pinned above
+// the bottom edge on long pages by position sticky. The gradient fades the
+// page content out underneath the pinned button instead of a hard overlap.
+.ctaBar {
+  background: linear-gradient(
+    to top,
+    var(--background-color-primary, $background-color-primary) 70%,
+    transparent
+  );
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-bottom: $spacer-small;
+  padding-top: $spacer-medium;
+  position: sticky;
+  width: 100%;
+  z-index: 10;
+
+  @include createEventDesktop() {
+    margin-top: $spacer-medium;
+  }
+}
+
 .primaryButton {
-  bottom: $spacer-medium;
   font-size: $font-size-primary;
-  position: fixed;
-  width: $page-width-mobile;
+  width: 100%;
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
   }
-
-  @include createEventDesktop() {
-    margin-top: $spacer-large;
-    position: static;
-    width: 100%;
-  }
-}
-
-.placeStatic {
-  bottom: 0;
-  margin-bottom: 0;
-  margin-bottom: $spacer-medium;
-  margin-top: $spacer-large;
-  position: static;
-  width: 100%;
-}
-
-@media screen and (max-height: 600px) {
-  .primaryButton {
-    margin-bottom: $spacer-medium;
-    margin-top: $spacer-large;
-    position: static;
-  }
-}
-
-@media screen and (min-height: 900px) {
-  .primaryButton {
-    bottom: $spacer-large;
-  }
-}
-
-@media screen and (min-height: 1300px) {
-  .primaryButton {
-    bottom: 50%;
-  }
-}
-
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
 }
 
 @include desktop() {

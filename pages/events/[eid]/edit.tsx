@@ -47,16 +47,14 @@ const Edit = () => {
         title="Rediger arrangement"
         description="Rediger ditt arrangement på Peoply"
       />
-      <div className={styles.summaryContainer}>
-        <div className={styles.backButtonContainer}>
+      <div className={styles.editPage}>
+        <div className={styles.actionContainer}>
           <BackButton onClick={goBack} />
         </div>
         <div className={styles.headerContainer}>
           <h1 className={styles.title}>Rediger arrangement</h1>
         </div>
-        <div className={styles.summaryWrapper}>
-          <EditSummaryPage event={data}></EditSummaryPage>
-        </div>
+        <EditSummaryPage event={data} />
       </div>
     </>
   );

@@ -59,7 +59,6 @@ const AddressStep = ({
       validDataMap={validDataMap}
       page={InputPages.ADDRESS_PAGE}
       buttonOnClick={buttonOnClick}
-      padding
     >
       <div className={styles.textContainer}>
         <TextInput

@@ -45,6 +45,27 @@ const TextInputLocationSelect = ({
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
+  /* The result list must close when the user interacts with anything else on
+     the page, otherwise it keeps floating over the content below the input. */
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        containerRef.current &&
+        event.target instanceof Node &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setLocations([]);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, []);
+
   const inputContainerStyles = (() => {
     if (valid || !focused) {
       return `${styles.inputContainer} ${styles.noErrorPadding}`;
@@ -119,7 +140,7 @@ const TextInputLocationSelect = ({
   };
 
   return (
-    <div className={inputContainerStyles}>
+    <div className={inputContainerStyles} ref={containerRef}>
       {label && (
         <div className={styles.labelContainer}>
           {required ? (
