@@ -216,6 +216,9 @@
    rules, so which one wins depends on stylesheet injection order - which
    Next.js reshuffles on client-side navigation and history restores. */
 .compact {
+  /* Both card CTAs (join + calendar) share this radius so the pair reads as
+     one family - keep it here, not in the per-button stylesheets. */
+  border-radius: $border-radius-inside-card;
   font-size: $font-size-tertiary;
   min-height: $min-tap-target;
   padding: $spacer-mini $spacer-small;
