@@ -5,16 +5,19 @@
   width: 100%;
 }
 
+.actionContainer {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: $spacer-medium;
+  width: 100%;
+}
+
 .headerContainer {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
   text-align: center;
-  width: 90%;
-}
-
-.progressBarContainer {
-  margin-bottom: $spacer-large;
+  width: 100%;
 }
 
 .title {
@@ -24,42 +27,101 @@
 .subTitle {
   margin-bottom: $spacer-small;
 }
-.summaryWrapper {
-  width:90%;
+
+// Mirrors the layout grid in InputPage.module.scss: single column on
+// mobile, rail | content | empty on desktop so the content is centered.
+.layout {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+
+  @include createEventDesktop() {
+    align-items: stretch;
+    column-gap: $spacer-medium;
+    display: grid;
+    grid-template-columns:
+      minmax(160px, 1fr)
+      minmax(0, $max-width-input)
+      minmax(160px, 1fr);
+  }
 }
 
-.summaryContainer {
+.progressRail {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacer-large;
+
+  @include createEventDesktop() {
+    align-self: start;
+    grid-column: 1;
+    justify-content: flex-start;
+    justify-self: end;
+    margin-bottom: 0;
+    position: sticky;
+    top: $spacer-medium;
+    width: 160px;
+  }
+}
+
+.main {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium;
+  max-width: $max-width-input;
+  width: 100%;
+
+  @include createEventDesktop() {
+    grid-column: 2;
+    max-width: none;
+  }
+}
+
+// The edit page: header and back button span the page like on the create
+// steps, while the form itself sits in one centered column.
+.editPage {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-medium;
   width: 100%;
-
-  @include createEventDesktop() {
-    box-sizing: border-box;
-    max-width: calc($max-width-input + 180px);
-    padding-left: 180px;
-  }
 }
 
-.backButtonContainer {
-  width: 90%;
+.editSummary {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+// Same sticky CTA pattern as InputPage.module.scss: in flow, pinned above
+// the bottom edge on long pages, with a gradient fading out the content
+// underneath the pinned button.
+.ctaBar {
+  background: linear-gradient(
+    to top,
+    var(--background-color-primary, $background-color-primary) 70%,
+    transparent
+  );
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding-bottom: $spacer-small;
+  padding-top: $spacer-medium;
+  position: sticky;
+  width: 100%;
+  z-index: 10;
 }
 
 .primaryButton {
-  bottom: $spacer-medium;
   font-size: $font-size-primary;
-  position: fixed;
-  width: $page-width-mobile;
+  width: 100%;
 
   @include desktop() {
     font-size: $font-size-primary-desktop;
-  }
-
-  @include createEventDesktop() {
-    margin-top: $spacer-large;
-    position: static;
-    width: 100%;
   }
 }
 
@@ -112,15 +174,6 @@
   margin-top: -1rem;
   padding: 0;
   text-decoration: underline;
-}
-
-.placeStatic {
-  bottom: 0;
-  margin-bottom: 0;
-  margin-bottom: $spacer-medium;
-  margin-top: $spacer-large;
-  position: static;
-  width: 100%;
 }
 
 .titleText {
@@ -337,10 +390,6 @@
   .subTitle {
     font-size: $font-size-secondary-desktop;
     margin-bottom: $spacer-medium;
-  }
-
-  .progressBarContainer {
-    margin-bottom: 0;
   }
 }
 

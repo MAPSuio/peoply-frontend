@@ -587,7 +587,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const editButtonOnClick = () => setEditOpen(true);
 
   return (
-    <div className={styles.summaryContainer}>
+    <div className={styles.editSummary}>
       <EditTitleSection
         title={eventObject.title}
         tempTitle={tempEventObject.title}
@@ -720,11 +720,14 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
         displayExternalUrl={eventObject.externalUrl}
       />
 
-      <Button
-        text={"Lagre endringer"}
-        onClick={() => saveChanges(eventObject)}
-        disabled={!changesMade || editOpen || !allValid}
-      ></Button>
+      <div className={styles.ctaBar}>
+        <Button
+          text={"Lagre endringer"}
+          onClick={() => saveChanges(eventObject)}
+          disabled={!changesMade || editOpen || !allValid}
+          className={styles.primaryButton}
+        ></Button>
+      </div>
 
       <button
         type="button"

@@ -220,7 +220,6 @@ const CreateEvent = () => {
             reachedStep={eventObject.reachedStep}
             stepCount={stepCount}
             buttonText={buttonText}
-            placeButtonStatic
             validDataMap={validDataMap}
             page={InputPages.SUMMARY_PAGE}
             buttonOnClick={inputPageOnClick}

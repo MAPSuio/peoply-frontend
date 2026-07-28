@@ -82,12 +82,6 @@ const DateStep = ({
       validDataMap={validDataMap}
       page={InputPages.DATE_PAGE}
       buttonOnClick={buttonOnClick}
-      placeButtonStatic={[
-        eventObject.eventHasDateEnd,
-        eventObject.eventHasRegStart,
-        eventObject.eventHasRegEnd,
-        eventObject.eventHasExternalRegistration,
-      ].some((cond) => cond)}
     >
       <div className={styles.dateContainer}>
         <div className={styles.dateColumn}>
