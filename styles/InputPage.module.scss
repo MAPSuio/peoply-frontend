@@ -135,10 +135,6 @@
   position: sticky;
   width: 100%;
   z-index: 10;
-
-  @include createEventDesktop() {
-    margin-top: $spacer-medium;
-  }
 }
 
 .primaryButton {
