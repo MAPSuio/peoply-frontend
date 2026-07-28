@@ -6,6 +6,7 @@ import Avatar from "./Avatar";
 import NotificationIndicator from "./NotificationIndicator";
 import LinkButton from "./LinkButton";
 import GithubIcon from "./svgs/GithubIcon";
+import MapsLogo from "./svgs/MapsLogo";
 import LinkIcon from "./svgs/LinkIcon";
 import { IconPlacement } from "./Button";
 
@@ -23,9 +24,10 @@ import { sourceCodeUrl } from "../utils/constants";
 import styles from "../styles/Header.module.scss";
 
 /**
- * `showSourceLink` is opt-in rather than always on: the source link belongs
- * next to the logo on the front page, where it reads as "this project is open
- * source", not on every page that happens to render a header.
+ * `showSourceLink` is opt-in rather than always on: the MAPS-lockup and the
+ * source link belong next to the logo on the front page, where they read as
+ * "Peoply x MAPS, and it's open source", not on every page that happens to
+ * render a header.
  */
 export default function Header({
   showSourceLink = false,
@@ -42,16 +44,20 @@ export default function Header({
           Peoply
         </Link>
         {showSourceLink && (
-          <a
-            href={sourceCodeUrl}
-            className={styles.sourceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Se kildekoden på GitHub"
-            aria-label="Se kildekoden på GitHub"
-          >
-            <GithubIcon />
-          </a>
+          <>
+            <span className={styles.collab}>x</span>
+            <MapsLogo className={styles.mapsLogo} />
+            <a
+              href={sourceCodeUrl}
+              className={styles.sourceLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Se kildekoden på GitHub"
+              aria-label="Se kildekoden på GitHub"
+            >
+              <GithubIcon />
+            </a>
+          </>
         )}
         <div className={styles.navLinks}>
           <LinkButton
