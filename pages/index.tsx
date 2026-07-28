@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // Services.
 
@@ -101,7 +102,7 @@ const Home: NextPage = () => {
   return (
     <>
       <HeadComponent title="Peoply" description="Frontsiden til Peoply" />
-      <Header showSourceLink />
+      <Header />
       <div className={styles.container}>
         {eventsFromFollowedOrganizations &&
         eventsFromFollowedOrganizations.length > 0 ? (
@@ -131,6 +132,7 @@ const Home: NextPage = () => {
           />
         )}
       </div>
+      <Footer />
       <Navbar />
     </>
   );
