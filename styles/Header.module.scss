@@ -27,40 +27,6 @@
     }
   }
 
-  /* Sits directly after the logo. `.navLinks` takes the free space with
-     margin-left: auto, so this stays glued to the logo rather than being
-     spread out by the container's space-between. */
-  > .sourceLink {
-    /* Circular backdrop so the icon reads as a button rather than decoration -
-       same treatment the other standalone icons in the app get. */
-    @include iconCircle();
-    color: var(--text-color-primary, $text-color-primary);
-    margin-left: $spacer-very-small;
-    padding: $spacer-mini;
-    transition:
-      background-color 0.15s ease-in-out,
-      color 0.15s ease-in-out;
-
-    &:hover,
-    &:focus-visible {
-      background-color: var(
-        --background-color-card-hover,
-        $background-color-card-hover
-      );
-      color: var(--text-color-emphasis, $text-color-emphasis);
-    }
-
-    svg {
-      height: 18px;
-      width: 18px;
-
-      @include desktop() {
-        height: 20px;
-        width: 20px;
-      }
-    }
-  }
-
   a {
     color: var(--text-color-emphasis, $text-color-emphasis);
     margin: 0;

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Avatar from "./Avatar";
 import NotificationIndicator from "./NotificationIndicator";
 import LinkButton from "./LinkButton";
-import GithubIcon from "./svgs/GithubIcon";
 import LinkIcon from "./svgs/LinkIcon";
 import { IconPlacement } from "./Button";
 
@@ -16,22 +15,10 @@ import useNotifications from "../hooks/useNotifications";
 // Types.
 import { ButtonType } from "../types/types";
 
-// Utils.
-import { sourceCodeUrl } from "../utils/constants";
-
 // Styles.
 import styles from "../styles/Header.module.scss";
 
-/**
- * `showSourceLink` is opt-in rather than always on: the source link belongs
- * next to the logo on the front page, where it reads as "this project is open
- * source", not on every page that happens to render a header.
- */
-export default function Header({
-  showSourceLink = false,
-}: {
-  showSourceLink?: boolean;
-}) {
+export default function Header() {
   const { user } = useUser();
   const { hasUnreadNotifications } = useNotifications();
 
@@ -41,18 +28,6 @@ export default function Header({
         <Link href="/" className={styles.logo}>
           Peoply
         </Link>
-        {showSourceLink && (
-          <a
-            href={sourceCodeUrl}
-            className={styles.sourceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Se kildekoden på GitHub"
-            aria-label="Se kildekoden på GitHub"
-          >
-            <GithubIcon />
-          </a>
-        )}
         <div className={styles.navLinks}>
           <LinkButton
             text="Feedback"

@@ -1,0 +1,46 @@
+.footer {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small-plus;
+  /* Stor bunn-padding så footeren ikke gjemmer seg bak den flytende navbaren. */
+  padding: $spacer-large $spacer-small $spacer-large-plus;
+
+  a {
+    align-items: center;
+    color: var(--text-color-primary, $text-color-primary);
+    display: flex;
+    font-size: $font-size-secondary;
+    font-weight: $font-weight-medium;
+    gap: $spacer-very-small;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--text-color-emphasis, $text-color-emphasis);
+    }
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+  }
+
+  .mapsLogo {
+    /* Litt høyere enn teksten så logoen bærer bylinen. */
+    height: 2rem;
+    width: auto;
+
+    @include desktop() {
+      height: 2.5rem;
+    }
+  }
+
+  .githubIcon {
+    height: 18px;
+    width: 18px;
+
+    @include desktop() {
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
