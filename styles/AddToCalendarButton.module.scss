@@ -151,9 +151,10 @@
 
 /* Doubled selector so the outline reliably beats .secondaryButton's
    transparent one regardless of module order in the bundle. Without it the
-   button is invisible as a button against the card in the dark themes. */
+   button is invisible as a button against the card in the dark themes.
+   The radius is NOT set here - it follows the button size (Button.module's
+   .compact on cards), so the button always matches its siblings. */
 .addToCalendarButton.addToCalendarButton {
-  border-radius: $border-radius-inside-card;
   outline: 1px solid var(--border-color-input, $border-color-input);
 }
 
