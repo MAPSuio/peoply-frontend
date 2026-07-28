@@ -27,6 +27,7 @@ import FoodPreferenceModal from "./FoodPreferenceModal";
 import FormQuestionModal from "./FormQuestionModal";
 import UnregisterConfirmationModal from "./UnregisterConfirmationModal";
 import styles from "../styles/JoinButton.module.scss";
+import { getSafeExternalUrl } from "../utils/event";
 
 interface JoinButtonProps {
   event: Event;
@@ -248,7 +249,7 @@ export default function JoinButton({
 
   const externalUrl =
     event.registrationMode === EventRegistrationMode.EXTERNAL
-      ? event.externalUrl
+      ? getSafeExternalUrl(event)
       : undefined;
 
   const shouldHideButton =

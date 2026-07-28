@@ -11,6 +11,24 @@ export function isEventFinished(event: Event): boolean {
   return new Date(event.endDate) < new Date();
 }
 
+/* The external registration URL is arbitrary user input from the event form -
+   only http(s) may reach an href or window.open (blocks javascript: etc.). */
+export function getSafeExternalUrl(event: Event): string | undefined {
+  if (!event.externalUrl) {
+    return undefined;
+  }
+
+  try {
+    const parsed = new URL(event.externalUrl);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+      return parsed.toString();
+    }
+  } catch {
+    /* Malformed URL - treat as absent. */
+  }
+  return undefined;
+}
+
 export function isEventRegStartDateValid(
   regStartDate: string,
   eventStartDate: string,

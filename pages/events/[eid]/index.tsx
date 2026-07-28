@@ -41,6 +41,7 @@ import {
   injectLink,
 } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
+import { getSafeExternalUrl } from "../../../utils/event";
 
 // Types.
 import {
@@ -125,6 +126,7 @@ const Event = ({ event }: EventProps) => {
   };
 
   const eventArrangerDisplayItems = getEventArrangerDisplayItems(eventData);
+  const safeExternalUrl = getSafeExternalUrl(eventData);
 
   const isArranger = (() => {
     /* arrangerIds for orgs where the user is ownerOrAdmin */
@@ -445,10 +447,10 @@ const Event = ({ event }: EventProps) => {
             </div>
           )}
           {eventData.registrationMode === EventRegistrationMode.EXTERNAL &&
-          eventData.externalUrl ? (
+          safeExternalUrl ? (
             <LinkButton
               text="Gå til ekstern påmelding"
-              href={eventData.externalUrl}
+              href={safeExternalUrl}
               className={styles.primaryButton}
               type={ButtonType.PRIMARY}
               icon={<LinkIcon />}
