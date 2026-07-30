@@ -24,6 +24,7 @@ import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
 import LinkIcon from "../../../components/svgs/LinkIcon";
+import CoOrganizerInvitationBanner from "../../../components/CoOrganizerInvitationBanner";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -212,6 +213,10 @@ const Event = ({ event }: EventProps) => {
             </div>
           </div>
           <div className={styles.eventInfoContainer}>
+            <CoOrganizerInvitationBanner
+              eventId={eventData.id}
+              onAnswered={() => updateEvent()}
+            />
             <p className={styles.eventTags}>
               {eventData.eventCategories
                 ?.map((cat) => cat.category.name)

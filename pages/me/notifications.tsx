@@ -9,6 +9,7 @@ import {
 } from "../../services/fetchers";
 import {
   ButtonType,
+  type CoOrganizerInvitationNotification,
   type EventInvitationNotification,
   InvitationStatus,
   NotificationType,
@@ -17,6 +18,7 @@ import {
   SnackTypes,
   type Event,
 } from "../../types/types";
+import { respondToCoOrganizerInvitation } from "../../services/coOrganizerInvitations";
 import styles from "../../styles/Notifications.module.scss";
 import Avatar from "../../components/Avatar";
 import Button from "../../components/Button";
@@ -166,6 +168,32 @@ export default function Notifications() {
         break;
       }
 
+      case NotificationType.INVITATION_EVENT_COORGANIZER: {
+        const coOrganizerInvite =
+          notification as CoOrganizerInvitationNotification;
+        try {
+          await respondToCoOrganizerInvitation(
+            coOrganizerInvite.eventId,
+            coOrganizerInvite.id,
+            action,
+          );
+          if (action === InvitationStatus.ACCEPTED) {
+            addSnack(
+              `${coOrganizerInvite.organization.name} er nå medarrangør for ${coOrganizerInvite.event?.title}`,
+              SnackTypes.SUCCESS,
+            );
+          } else {
+            addSnack(
+              `Du avslo medarrangør-invitasjonen til ${coOrganizerInvite.event?.title}`,
+              SnackTypes.WARNING,
+            );
+          }
+        } catch {
+          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        }
+        break;
+      }
+
       default:
         return;
     }
@@ -178,7 +206,10 @@ export default function Notifications() {
     event?: Event,
   ) {
     switch (notification.type) {
+      /* Both are answered with a plain Godta/Avslå - neither signs the user up
+         for anything, so there is no JoinButton to reconcile with. */
       case NotificationType.INVITATION_ORGANIZATION:
+      case NotificationType.INVITATION_EVENT_COORGANIZER:
         return (
           <div className={styles.actions}>
             <Button
@@ -314,6 +345,47 @@ export default function Notifications() {
                     {renderTimeSince(orgInvitation)}
                   </p>
                   {renderNotificationActions(orgInvitation)}
+                </div>
+              </div>
+            );
+          });
+
+        case NotificationType.INVITATION_EVENT_COORGANIZER:
+          return values.map((notification) => {
+            const coOrganizerInvitation =
+              notification as CoOrganizerInvitationNotification;
+            const { organization, event, fromUser } = coOrganizerInvitation;
+            return (
+              <div
+                className={styles.notification}
+                key={coOrganizerInvitation.id}
+              >
+                {event && <Avatar event={event} />}
+                <div className={styles.info}>
+                  <p>
+                    {fromUser ? (
+                      <>
+                        <Link href={`/users/${fromUser.id}`}>
+                          {fromUser.firstName}
+                        </Link>{" "}
+                        vil ha{" "}
+                      </>
+                    ) : (
+                      <>Noen vil ha </>
+                    )}
+                    <Link
+                      href={`/orgs/${organization.urlId ?? organization.id}`}
+                    >
+                      {organization.name}
+                    </Link>{" "}
+                    som medarrangør for{" "}
+                    <Link href={`/events/${event?.urlId}`}>{event?.title}</Link>
+                    .
+                  </p>
+                  <p className={styles.hoursSince}>
+                    {renderTimeSince(coOrganizerInvitation)}
+                  </p>
+                  {renderNotificationActions(coOrganizerInvitation)}
                 </div>
               </div>
             );

@@ -1,0 +1,46 @@
+.banner {
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small;
+  margin-bottom: $spacer-small;
+  outline: 1px solid var(--text-color-link, $text-color-link);
+  padding: $spacer-small;
+
+  @include desktop() {
+    padding: $spacer-small-plus;
+  }
+}
+
+.eyebrow {
+  @include uppercase();
+  color: var(--text-color-link, $text-color-link);
+  font-size: $font-size-tertiary;
+  margin: 0;
+}
+
+.text {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+  line-height: $line-height-hint-text;
+  margin: 0;
+}
+
+.organization {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-weight: $font-weight-bold;
+}
+
+/* Stacked on mobile so both actions stay full-width thumb targets, side by
+   side once there is room. */
+.actions {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small;
+  margin-top: $spacer-mini;
+
+  @include desktop() {
+    flex-flow: row nowrap;
+  }
+}
