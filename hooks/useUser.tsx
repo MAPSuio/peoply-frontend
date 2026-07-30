@@ -35,6 +35,10 @@ export function UserProvider({
     undefined,
   );
   const [orgs, setOrgs] = useState<Organization[]>([]);
+  /* `orgs` starts empty and is fetched separately from the user, so "no
+     organizations" and "not asked yet" look identical. Anything that gates
+     access on membership has to be able to tell them apart. */
+  const [orgsLoaded, setOrgsLoaded] = useState(false);
   const [ipInfo, setIpInfo] = useState<IpInfo>();
   const authRetryAttempted = useRef(false);
 
@@ -142,6 +146,10 @@ export function UserProvider({
           if (active) {
             setError(error instanceof Error ? error.message : undefined);
           }
+        } finally {
+          if (active) {
+            setOrgsLoaded(true);
+          }
         }
       };
 
@@ -194,11 +202,12 @@ export function UserProvider({
       error,
       currentOrg,
       orgs,
+      orgsLoaded,
       switchContext,
       reload: () => setReload(!reload),
       ipInfo,
     }),
-    [user, loading, error, currentOrg, orgs, ipInfo, reload],
+    [user, loading, error, currentOrg, orgs, orgsLoaded, ipInfo, reload],
   );
 
   return (
