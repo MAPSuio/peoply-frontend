@@ -32,6 +32,7 @@
 }
 
 .info {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -55,8 +56,22 @@
   overflow-wrap: anywhere;
 }
 
+/* The shared Button is `width: 100%`, which on a 390px row swallows the space
+   the organization name needs and breaks the org number across two lines.
+   flex-basis wins over width on the main axis, so this pins it without
+   fighting Button.module.scss on specificity. */
 .button {
+  flex: 0 0 124px;
   min-width: 124px;
+}
+
+/* Same footprint as the button it replaces for members, so the rows stay
+   aligned whichever role is looking. */
+.readOnlyStatus {
+  @include monoFont();
+  flex: 0 0 124px;
+  font-size: $font-size-tertiary;
+  text-align: center;
 }
 
 .status {

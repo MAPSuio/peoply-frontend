@@ -73,6 +73,9 @@ export interface UserContextType {
   user?: User;
   currentOrg?: Organization;
   orgs?: Organization[];
+  /* False until the organizations request has settled, so an empty `orgs` can
+     be told apart from one that has not arrived yet. */
+  orgsLoaded: boolean;
   loading: boolean;
   error?: string;
   ipInfo?: IpInfo;
