@@ -325,7 +325,13 @@ export interface Event {
   readOnly?: boolean;
 
   eventArrangers?: EventArranger[];
+  /** @deprecated Unbounded — one element per registration, on an endpoint that
+   * needs no login. Use `goingCount`; the backend keeps this only until every
+   * deployed client has moved over. */
   registrations?: Registration[];
+  /** How many registrations are GOING. Counted by the database rather than by
+   * shipping the whole list and filtering it here. */
+  goingCount?: number;
   eventCategories?: EventCategory[];
   favorites?: Favorite[];
 }

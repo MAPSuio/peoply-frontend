@@ -93,6 +93,13 @@ const Event = ({ event }: EventProps) => {
     },
   );
 
+  /* Counted by the database. The registrations fallback only covers a client
+     that loaded before the backend started sending goingCount. */
+  const goingCount =
+    eventData?.goingCount ??
+    eventData?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
+      .length;
+
   const { data: registrations, error: registrationsError } = useSWR<
     Registration[]
   >(() =>
@@ -355,11 +362,7 @@ const Event = ({ event }: EventProps) => {
                       />
                     </div>
                     <p className={styles.infoText}>
-                      <span className={styles.emphasis}>{`${
-                        eventData.registrations?.filter(
-                          (r) => r.regStatus === RegStatus.GOING,
-                        ).length
-                      }${
+                      <span className={styles.emphasis}>{`${goingCount}${
                         eventData.capacity ? `/${eventData.capacity}` : ""
                       }`}</span>{" "}
                       påmeldte
@@ -377,11 +380,7 @@ const Event = ({ event }: EventProps) => {
                     />
                   </div>
                   <p className={styles.infoText}>
-                    <span className={styles.emphasis}>{`${
-                      eventData.registrations?.filter(
-                        (r) => r.regStatus === RegStatus.GOING,
-                      ).length
-                    }${
+                    <span className={styles.emphasis}>{`${goingCount}${
                       eventData.capacity ? `/${eventData.capacity}` : ""
                     }`}</span>{" "}
                     påmeldte

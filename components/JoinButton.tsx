@@ -185,11 +185,18 @@ export default function JoinButton({
       return `${countdownText} ${countdown}`;
     }
 
+    /* `goingCount` comes straight from the database. The registrations
+       fallback is only for a client that loaded before the backend started
+       sending it. */
+    const goingCount =
+      event?.goingCount ??
+      event?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
+        .length;
+
     const freeSpace =
-      event?.registrations &&
+      goingCount !== undefined &&
       event?.capacity &&
-      event.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
-        ?.length < event.capacity;
+      goingCount < event.capacity;
 
     switch (myRegistration?.regStatus) {
       case RegStatus.GOING:
