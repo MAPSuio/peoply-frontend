@@ -30,7 +30,7 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 // Styles.
 import styles from "../styles/EventCard.module.scss";
 import SmallCheckCircle from "./SmallCheckCircle";
-import { isEventFinished } from "../utils/event";
+import { getEventImage, isEventFinished } from "../utils/event";
 
 interface EventCardProps {
   event: Event;
@@ -52,7 +52,7 @@ const EventCard = ({ event }: EventCardProps) => {
     <div className={styles.eventCard}>
       <div className={styles.eventCardImageContainer}>
         <Image
-          src={event.image ?? eventPlaceholder}
+          src={getEventImage(event) ?? eventPlaceholder}
           layout="fill"
           alt="Noe som forhåpentligvis beskriver arrangementet"
           objectFit="cover"

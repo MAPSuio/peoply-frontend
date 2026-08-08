@@ -42,7 +42,7 @@ import {
   injectLink,
 } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
-import { getSafeExternalUrl } from "../../../utils/event";
+import { getEventImage, getSafeExternalUrl } from "../../../utils/event";
 
 // Types.
 import {
@@ -166,13 +166,15 @@ const Event = ({ event }: EventProps) => {
     return false;
   })();
 
+  const eventImage = getEventImage(eventData);
+
   return (
     <>
       <HeadComponent
         title={eventData.title}
         description={eventData.description}
         path={`/events/${eventData.urlId}`}
-        imageUrl={eventData.image}
+        imageUrl={eventImage}
         noIndex={
           eventData.visibility === Visibility.UNLISTED ||
           eventData.visibility === Visibility.PRIVATE
@@ -195,12 +197,14 @@ const Event = ({ event }: EventProps) => {
           )}
           <div className={styles.imageContainer}>
             <Image
-              src={eventData.image ?? placeholderImage}
+              src={eventImage ?? placeholderImage}
               fill
               sizes="50vw"
               style={{ objectFit: "cover" }}
               alt="Et bilde som passer til arrangementet"
-              placeholder={!eventData.image ? "blur" : "empty"}
+              /* "blur" needs a blurDataURL, which only the bundled placeholder
+                 has - a remote URL here would throw. */
+              placeholder={eventImage ? "empty" : "blur"}
             />
           </div>
         </div>

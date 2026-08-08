@@ -3,6 +3,7 @@ import styles from "../styles/Avatar.module.scss";
 import EditCircle from "./EditCircle";
 import Image from "next/legacy/image";
 import eventPlaceholderImage from "../assets/images/undraw_partying.png";
+import { getEventImage } from "../utils/event";
 
 interface AvatarProps {
   user?: User;
@@ -36,7 +37,7 @@ export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
           }`}
         >
           <Image
-            src={event.image ?? eventPlaceholderImage}
+            src={getEventImage(event) ?? eventPlaceholderImage}
             width={size === "small" ? "100" : "200"}
             height={size === "small" ? "100" : "200"}
             className={getSizeStyling()}
