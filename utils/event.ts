@@ -22,9 +22,11 @@ export function getEventImage(event: Event): string | undefined {
 
 export function isEventFinished(event: Event): boolean {
   if (!event.endDate) {
-    const endOfDayToday = new Date();
-    endOfDayToday.setHours(23, 59, 59, 999);
-    return new Date(event.startDate) < endOfDayToday;
+    /* Without an end date the event is assumed to last out its start day, so
+       it is only finished once that day is over. */
+    const endOfStartDay = new Date(event.startDate);
+    endOfStartDay.setHours(23, 59, 59, 999);
+    return endOfStartDay < new Date();
   }
 
   return new Date(event.endDate) < new Date();
