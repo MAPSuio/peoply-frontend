@@ -15,7 +15,7 @@ import useRegistrationCount from "../hooks/useRegistrationCount";
 import cx from "../utils/cx";
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 import { getCompactEventArrangerLabel } from "../utils/eventArrangers";
-import { isEventFinished } from "../utils/event";
+import { getEventImage, isEventFinished } from "../utils/event";
 
 // Types.
 import type { Event } from "../types/types";
@@ -113,7 +113,7 @@ const LargeEventCard = ({
           )}
         >
           <Image
-            src={event.image ?? placeholderImage}
+            src={getEventImage(event) ?? placeholderImage}
             alt="A very cute cat"
             fill
             style={{ objectFit: "cover", objectPosition: "center" }}
