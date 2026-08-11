@@ -1,3 +1,6 @@
+import "@fullcalendar/react/skeleton.css";
+import "@fullcalendar/react/themes/classic/theme.css";
+import "@fullcalendar/react/themes/classic/palette.css";
 import "../styles/globals.scss";
 import styles from "../styles/App.module.scss";
 import type { AppProps } from "next/app";
