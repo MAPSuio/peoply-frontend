@@ -8,12 +8,17 @@ import type { Event } from "../types/types";
 const routerPush = vi.fn();
 
 interface MockCalendarEvent {
+  color: string;
   title: string;
   url: string;
-  extendedProps: { sourceEvent: Event };
+  extendedProps: { backgroundColor: string; sourceEvent: Event };
 }
 
 interface MockCalendarProps {
+  buttons: { listUpcoming: { text: string } };
+  dayCellClass: unknown;
+  dayHeaderInnerClass: unknown;
+  eventContent: unknown;
   eventClick: (info: {
     event: MockCalendarEvent;
     jsEvent: { preventDefault: () => void };
@@ -28,20 +33,27 @@ interface MockCalendarProps {
   }) => void;
   eventMouseLeave: () => void;
   events: MockCalendarEvent[];
+  plugins: unknown[];
+  tableHeaderSticky: boolean;
+  views: Record<string, unknown>;
 }
+
+let calendarProps: MockCalendarProps;
 
 vi.mock("next/router", () => ({
   useRouter: () => ({ push: routerPush }),
 }));
 
 vi.mock("@fullcalendar/react", () => ({
-  default: ({
-    eventClick,
-    eventDidMount,
-    eventMouseEnter,
-    eventMouseLeave,
-    events,
-  }: MockCalendarProps) => {
+  default: (props: MockCalendarProps) => {
+    calendarProps = props;
+    const {
+      eventClick,
+      eventDidMount,
+      eventMouseEnter,
+      eventMouseLeave,
+      events,
+    } = props;
     const event = {
       ...events[0],
       extendedProps: events[0].extendedProps,
@@ -116,5 +128,26 @@ describe("EventCalendar", () => {
 
     await user.click(event);
     expect(routerPush).toHaveBeenCalledWith("/events/kodekveld");
+  });
+
+  it("uses the coordinated v7 configuration and event color fields", () => {
+    render(<EventCalendar events={[EVENT]} />);
+
+    expect(calendarProps.plugins).toHaveLength(3);
+    expect(calendarProps.buttons.listUpcoming.text).toBe("Agenda");
+    expect(calendarProps.tableHeaderSticky).toBe(false);
+    expect(calendarProps.dayCellClass).toBeTypeOf("function");
+    expect(calendarProps.dayHeaderInnerClass).toBeTypeOf("function");
+    expect(calendarProps.eventContent).toBeTypeOf("function");
+    expect(calendarProps.views).toHaveProperty("dayGrid.eventClass");
+    expect(calendarProps.views).toHaveProperty(
+      "listUpcoming.listItemEventClass",
+    );
+    expect(calendarProps.events[0]).toMatchObject({
+      color: expect.any(String),
+      extendedProps: { backgroundColor: expect.any(String) },
+    });
+    expect(calendarProps.events[0]).not.toHaveProperty("backgroundColor");
+    expect(calendarProps.events[0]).not.toHaveProperty("borderColor");
   });
 });

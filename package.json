@@ -23,10 +23,7 @@
     "postcss": "$postcss"
   },
   "dependencies": {
-    "@fullcalendar/core": "7.0.2",
-    "@fullcalendar/daygrid": "6.1.21",
-    "@fullcalendar/list": "6.1.21",
-    "@fullcalendar/react": "6.1.21",
+    "@fullcalendar/react": "7.0.2",
     "@serwist/next": "^9.5.12",
     "next": "^16.3.0",
     "next-themes": "^0.4.6",
@@ -37,6 +34,7 @@
     "sharp": "0.35.3",
     "swiper": "14.1.0",
     "swr": "2.5.0",
+    "temporal-polyfill": "1.0.3",
     "typescript": "7.0.2"
   },
   "devDependencies": {

@@ -1,13 +1,14 @@
-import type {
-  EventClickArg,
-  EventContentArg,
-  EventHoveringArg,
-  EventMountArg,
-} from "@fullcalendar/core";
-import nbLocale from "@fullcalendar/core/locales/nb";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from "@fullcalendar/list";
-import FullCalendar from "@fullcalendar/react";
+import FullCalendar, {
+  type DayCellInfo,
+  type EventClickInfo,
+  type EventDisplayInfo,
+  type EventHoveringInfo,
+  type MountInfo,
+} from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/react/daygrid";
+import listPlugin from "@fullcalendar/react/list";
+import nbLocale from "@fullcalendar/react/locales/nb";
+import classicThemePlugin from "@fullcalendar/react/themes/classic";
 import { useRouter } from "next/router";
 import { useMemo, useRef, useState } from "react";
 
@@ -33,13 +34,16 @@ interface EventPreview {
 // always available here.
 const DESKTOP_QUERY = "(min-width: 600px)";
 
-function renderEventContent(arg: EventContentArg) {
+function renderEventContent(arg: EventDisplayInfo) {
   if (arg.view.type === "listUpcoming") {
     // The list view expects an anchor inside the row when the event has a
     // url - replacing the default content without one breaks FullCalendar's
     // click handling.
     return (
       <a href={arg.event.url} className={styles.listEvent}>
+        {arg.timeText ? (
+          <span className={styles.listEventTime}>{arg.timeText}</span>
+        ) : undefined}
         <span className={styles.listEventTitle}>{arg.event.title}</span>
         {arg.event.extendedProps.arranger ? (
           <span className={styles.listEventArranger}>
@@ -91,13 +95,10 @@ export default function EventCalendar({ events }: EventCalendarProps) {
           start: new Date(event.startDate),
           end: event.endDate ? new Date(event.endDate) : undefined,
           url: `/events/${event.urlId}`,
-          // backgroundColor tints the month-grid chip; borderColor drives the
-          // chip's left accent bar and the list view's event dot (see
-          // CalendarPage.module.scss).
-          backgroundColor: color.background,
-          borderColor: color.accent,
+          color: color.accent,
           extendedProps: {
             arranger: getCompactEventArrangerLabel(event, 1),
+            backgroundColor: color.background,
             sourceEvent: event,
           },
         };
@@ -105,7 +106,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     [events],
   );
 
-  const handleEventClick = (info: EventClickArg) => {
+  const handleEventClick = (info: EventClickInfo) => {
     info.jsEvent.preventDefault();
     if (info.event.url) {
       router.push(info.event.url);
@@ -127,7 +128,9 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     }, 150);
   };
 
-  const showPreview = (info: EventHoveringArg | EventMountArg) => {
+  const showPreview = (
+    info: EventHoveringInfo | MountInfo<EventDisplayInfo>,
+  ) => {
     cancelPreviewClose();
     const event = info.event.extendedProps.sourceEvent as Event | undefined;
     if (!event) return;
@@ -139,7 +142,12 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     });
   };
 
-  const handleEventDidMount = (info: EventMountArg) => {
+  const handleEventDidMount = (info: MountInfo<EventDisplayInfo>) => {
+    info.el.style.setProperty(
+      "--calendar-event-background",
+      info.event.extendedProps.backgroundColor,
+    );
+    info.el.style.setProperty("--calendar-event-accent", info.color);
     info.el.addEventListener("focusin", () => showPreview(info));
     info.el.addEventListener("focusout", schedulePreviewClose);
     info.el.setAttribute("aria-describedby", "calendar-event-preview");
@@ -150,6 +158,15 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     element.addEventListener("mouseenter", cancelPreviewClose);
     element.addEventListener("mouseleave", schedulePreviewClose);
   };
+
+  const getDayCellClass = (info: DayCellInfo) =>
+    [
+      styles.dayCell,
+      info.isToday && styles.dayCellToday,
+      (info.isOther || info.isDisabled) && styles.dayCellMuted,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
   const renderEventPreview = () => {
     if (!eventPreview) return null;
@@ -189,7 +206,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   return (
     <div className={styles.calendar}>
       <FullCalendar
-        plugins={[dayGridPlugin, listPlugin]}
+        plugins={[classicThemePlugin, dayGridPlugin, listPlugin]}
         initialView={initialView}
         locale={nbLocale}
         headerToolbar={{
@@ -197,13 +214,49 @@ export default function EventCalendar({ events }: EventCalendarProps) {
           center: "title",
           right: "dayGridMonth,listUpcoming",
         }}
+        buttons={{
+          listUpcoming: { text: "Agenda" },
+        }}
+        headerToolbarClass={styles.calendarToolbar}
+        toolbarTitleClass={styles.calendarToolbarTitle}
+        buttonClass={(info) =>
+          [
+            styles.calendarButton,
+            info.isSelected && styles.calendarButtonActive,
+          ]
+            .filter(Boolean)
+            .join(" ")
+        }
+        dayCellTopInnerClass={styles.dayNumber}
+        dayCellBottomClass={styles.dayCellBottom}
+        moreLinkClass={styles.moreLink}
+        moreLinkInnerClass={styles.moreLinkInner}
+        popoverClass={styles.calendarPopover}
+        dayHeaderClass={(info) =>
+          info.inPopover ? styles.calendarPopoverHeader : undefined
+        }
+        dayHeaderInnerClass={(info) =>
+          info.inPopover ? styles.calendarPopoverTitle : styles.dayHeader
+        }
+        dayCellClass={(info) =>
+          info.inPopover ? styles.calendarPopoverBody : getDayCellClass(info)
+        }
+        listDayHeaderInnerClass={styles.listDayHeader}
+        noEventsClass={styles.noEvents}
+        noEventsInnerClass={styles.noEventsInner}
         views={{
           // Agenda spanning three months so the landing view always has
           // upcoming events in it, even late in the current month.
           listUpcoming: {
             type: "list",
             duration: { months: 3 },
-            buttonText: "Agenda",
+            className: styles.listView,
+            listItemEventClass: styles.listCalendarEvent,
+            listItemEventBeforeClass: styles.listEventDot,
+            listItemEventTimeClass: styles.listEventTime,
+          },
+          dayGrid: {
+            eventClass: styles.gridCalendarEvent,
           },
         }}
         events={calendarEvents}
@@ -215,7 +268,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
         validRange={validRange}
         dayMaxEvents={3}
         height="auto"
-        stickyHeaderDates={false}
+        tableHeaderSticky={false}
         eventTimeFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
         eventDisplay="block"
         noEventsContent="Ingen kommende arrangementer i denne perioden."
