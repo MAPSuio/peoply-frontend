@@ -73,6 +73,9 @@ export interface UserContextType {
   user?: User;
   currentOrg?: Organization;
   orgs?: Organization[];
+  /* False until the organizations request has settled, so an empty `orgs` can
+     be told apart from one that has not arrived yet. */
+  orgsLoaded: boolean;
   loading: boolean;
   error?: string;
   ipInfo?: IpInfo;
@@ -148,6 +151,7 @@ export enum InvitationStatus {
 export enum NotificationType {
   INVITATION_EVENT = "INVITATION_EVENT",
   INVITATION_ORGANIZATION = "INVITATION_ORGANIZATION",
+  INVITATION_EVENT_COORGANIZER = "INVITATION_EVENT_COORGANIZER",
 }
 
 export interface PeoplyNotification {
@@ -164,6 +168,10 @@ export interface EventInvitationNotification
 export interface OrganizationInvitationNotification
   extends PeoplyNotification,
     OrganizationInvitation {}
+
+export interface CoOrganizerInvitationNotification
+  extends PeoplyNotification,
+    EventCoOrganizerInvitation {}
 
 export interface UserOrganizationRoles {
   organizationId: string;
@@ -317,7 +325,13 @@ export interface Event {
   readOnly?: boolean;
 
   eventArrangers?: EventArranger[];
+  /** @deprecated Unbounded — one element per registration, on an endpoint that
+   * needs no login. Use `goingCount`; the backend keeps this only until every
+   * deployed client has moved over. */
   registrations?: Registration[];
+  /** How many registrations are GOING. Counted by the database rather than by
+   * shipping the whole list and filtering it here. */
+  goingCount?: number;
   eventCategories?: EventCategory[];
   favorites?: Favorite[];
 }
@@ -370,6 +384,26 @@ export interface EventInvitation {
   createdAt: string;
   updatedAt: string;
   invitationStatus: InvitationStatus;
+}
+
+/**
+ * An event asking an organization to co-organize it. Unlike the invitations
+ * above this one is addressed to an organization rather than a user: every
+ * ADMIN/OWNER of that organization sees it until one of them answers, which is
+ * why there is no toUser.
+ */
+export interface EventCoOrganizerInvitation {
+  id: string;
+  eventId: string;
+  event?: Event;
+  organizationId: string;
+  organization: Organization;
+  fromUserId: string | null;
+  fromUser?: User;
+  respondedByUserId: string | null;
+  invitationStatus: InvitationStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface EventUpdate {

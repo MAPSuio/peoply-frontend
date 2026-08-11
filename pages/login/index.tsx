@@ -11,6 +11,7 @@ import Link from "next/link";
 import HeadComponent from "../../components/HeadComponent";
 import { API_URL } from "../../constants/urls";
 import { useEffect, useState } from "react";
+import { toSafeRedirectPath } from "../../utils/redirect";
 
 const Login: NextPage = () => {
   const { user, loading } = useUser();
@@ -20,15 +21,17 @@ const Login: NextPage = () => {
   useEffect(() => {
     const redirectUrlFromLocalStorage = localStorage.getItem("redirectURL");
     if (redirectUrlFromLocalStorage) {
-      setRedirectURL(redirectUrlFromLocalStorage);
+      setRedirectURL(toSafeRedirectPath(redirectUrlFromLocalStorage));
       localStorage.removeItem("redirectURL");
     }
   }, []);
 
   useEffect(() => {
     if (router.query.redirect) {
-      const redURL = router.query.redirect as string;
-      setRedirectURL(redURL);
+      // Never leaves this page as anything but a path on this site: it is
+      // stashed in localStorage and handed to router.push after the OAuth hop,
+      // where a scheme would become a hard navigation.
+      setRedirectURL(toSafeRedirectPath(router.query.redirect));
     }
   }, [router.query.redirect]);
 

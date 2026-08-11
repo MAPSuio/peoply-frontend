@@ -108,7 +108,10 @@ const TitleStep = ({
           <div className={styles.coOrganizerCard} ref={coOrganizerCardRef}>
             <div className={styles.coOrganizerHeader}>
               <h2>Medarrangører</h2>
-              <p>Legg til en eller flere foreninger.</p>
+              <p>
+                Inviter en eller flere foreninger. De vises på arrangementet
+                først når de har godtatt.
+              </p>
             </div>
             <div className={styles.coOrganizerField}>
               <input

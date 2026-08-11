@@ -58,7 +58,9 @@ const EditCoOrganizerSection = ({
           <div className={styles.coOrganizerHeader}>
             <h2>Medarrangører</h2>
             <p>
-              Legg til eller fjern foreninger som samarbeider om arrangementet.
+              Inviter foreninger til å samarbeide om arrangementet. Foreningen
+              vises på arrangementet først når en av dens administratorer har
+              godtatt.
             </p>
           </div>
           <input

@@ -98,7 +98,8 @@
   position: absolute;
   right: 0;
   top: calc(100% + $spacer-very-small);
-  z-index: 1;
+  // Above the sticky CTA bar (z-index 10), same as the location dropdown.
+  z-index: 20;
 }
 
 .coOrganizerOptionButton {
