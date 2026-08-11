@@ -31,7 +31,8 @@ export default function useOrganization(
   oid: string,
   options: UseOrganizationOptions = {},
 ): useOrganizationUsersType {
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser();
+  const userId = user?.id;
   const { fetchMembers = true } = options;
   const [organizationUsers, setOrganizationUsers] =
     useState<UserOrganizationRoles[]>();
@@ -40,12 +41,16 @@ export default function useOrganization(
   const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    async function fetchOrganizationUsers() {
+    let active = true;
+
+    async function fetchOrganization() {
       setLoading(true);
+      setError(undefined);
+      setOrganization(undefined);
+      setOrganizationUsers(undefined);
+
       try {
-        /* fetch organization data */
         const organization = await getOrganization(oid);
-        setOrganization(organization);
 
         if (!organization) {
           throw new Error(
@@ -53,32 +58,43 @@ export default function useOrganization(
           );
         }
 
-        if (user && fetchMembers) {
-          try {
-            const organizationUsers = await getOrganizationUsers(
-              organization.id,
-            );
-            setOrganizationUsers(organizationUsers);
-          } catch {
-            setOrganizationUsers(undefined);
+        if (!active) {
+          return;
+        }
+
+        setOrganization(organization);
+
+        if (fetchMembers && userId) {
+          const organizationUsers = await getOrganizationUsers(organization.id);
+
+          if (!active) {
+            return;
           }
-        } else {
-          setOrganizationUsers(undefined);
+
+          setOrganizationUsers(organizationUsers);
         }
       } catch {
-        setError("Something went wrong when fetching organization data");
+        if (active) {
+          setError("Something went wrong when fetching organization data");
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
     }
-    if (oid) {
-      fetchOrganizationUsers();
+
+    if (oid && (!fetchMembers || !userLoading)) {
+      void fetchOrganization();
     }
-  }, [fetchMembers, oid, user]);
+
+    return () => {
+      active = false;
+    };
+  }, [fetchMembers, oid, userId, userLoading]);
 
   /* find the authenticated user in the organization */
-  const organizationUser = organizationUsers?.find(
-    (u) => u.user.id === user?.id,
-  );
+  const organizationUser = organizationUsers?.find((u) => u.user.id === userId);
 
   const isOwner = organizationUser?.role === OrganizationRole.OWNER;
   const isAdmin = organizationUser?.role === OrganizationRole.ADMIN;

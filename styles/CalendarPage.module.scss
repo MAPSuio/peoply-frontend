@@ -25,191 +25,188 @@
   width: min(100%, 72rem);
 }
 
-/* FullCalendar renders its own DOM, so its classes are targeted through
-   :global(...) scoped under .calendar. Turbopack only supports the functional
-   form, not bare `:global` blocks. */
-/* stylelint-disable selector-pseudo-class-no-unknown */
 .calendar {
+  --fc-classic-background: transparent;
+  --fc-classic-border: var(--divider-color, #{$divider-color});
+  --fc-classic-button: var(--background-color-button-secondary, #{$background-color-button-secondary});
+  --fc-classic-button-border: transparent;
+  --fc-classic-button-foreground: var(--text-color-emphasis, #{$text-color-emphasis});
+  --fc-classic-button-strong: var(--background-color-button-secondary-hover, #{$background-color-button-secondary-hover});
+  --fc-classic-button-strong-border: transparent;
+  --fc-classic-faint: transparent;
+  --fc-classic-foreground: var(--text-color-emphasis, #{$text-color-emphasis});
+  --fc-classic-muted: var(--background-color-input, #{$background-color-input});
+  --fc-classic-muted-foreground: var(--text-color-primary, #{$text-color-primary});
+  --fc-classic-primary: var(--primary-color-400, #{$primary-color-400});
+  --fc-classic-primary-foreground: var(--text-color-button, #{$text-color-button});
+  --fc-classic-today: rgb(124 77 255 / 8%);
 
-  :global(.fc) {
-    --fc-border-color: var(--divider-color, #{$divider-color});
-    --fc-button-active-bg-color: var(--primary-color-400, #{$primary-color-400});
-    --fc-button-active-border-color: transparent;
-    --fc-button-bg-color: var(--background-color-button-secondary, #{$background-color-button-secondary});
-    --fc-button-border-color: transparent;
-    --fc-button-hover-bg-color: var(--background-color-button-secondary-hover, #{$background-color-button-secondary-hover});
-    --fc-button-hover-border-color: transparent;
-    --fc-button-text-color: var(--text-color-emphasis, #{$text-color-emphasis});
-    --fc-event-bg-color: var(--background-color-circle, #{$background-color-circle});
-    --fc-event-border-color: transparent;
-    --fc-event-text-color: var(--text-color-emphasis, #{$text-color-emphasis});
-    --fc-list-event-hover-bg-color: var(--background-color-card-hover, #{$background-color-card-hover});
-    --fc-more-link-bg-color: transparent;
-    --fc-more-link-text-color: var(--text-color-link, #{$text-color-link});
-    --fc-neutral-bg-color: var(--background-color-input, #{$background-color-input});
-    --fc-neutral-text-color: var(--text-color-primary, #{$text-color-primary});
-    --fc-page-bg-color: transparent;
-    --fc-today-bg-color: rgb(124 77 255 / 8%);
+  font-family: $main-font;
+}
 
-    font-family: $main-font;
-  }
+.calendarToolbar {
+  flex-wrap: wrap;
+  gap: $spacer-very-small;
+  margin-bottom: $spacer-small;
+}
 
-  :global(.fc .fc-toolbar.fc-header-toolbar) {
-    flex-wrap: wrap;
-    gap: $spacer-very-small;
-    margin-bottom: $spacer-small;
-  }
+.calendarToolbarTitle {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-small;
+  text-transform: capitalize;
 
-  :global(.fc .fc-toolbar-title) {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    font-size: $font-size-heading-small;
-    text-transform: capitalize;
-
-    @include desktop() {
-      font-size: $font-size-heading-medium;
-    }
-  }
-
-  :global(.fc .fc-button) {
-    @include monoFont();
-    border-radius: $border-radius-inside-card;
-    font-size: $font-size-secondary;
-    padding: $spacer-mini $spacer-very-small-plus;
-    text-transform: capitalize;
-    transition: background-color $animation-duration ease;
-  }
-
-  :global(.fc .fc-button:focus),
-  :global(.fc .fc-button:not(:disabled):active:focus),
-  :global(.fc .fc-button:not(:disabled).fc-button-active:focus) {
-    box-shadow: none;
-  }
-
-  :global(.fc .fc-button:disabled) {
-    opacity: 0.4;
-  }
-
-  :global(.fc .fc-button-primary:not(:disabled).fc-button-active) {
-    color: var(--text-color-button, $text-color-button);
-  }
-
-  :global(.fc .fc-col-header-cell-cushion) {
-    @include uppercase();
-    color: var(--text-color-primary, $text-color-primary);
-    padding: $spacer-very-small 0;
-    text-decoration: none;
-  }
-
-  :global(.fc .fc-daygrid-day-number) {
-    color: var(--text-color-primary, $text-color-primary);
-    font-size: $font-size-secondary;
-    padding: $spacer-mini $spacer-very-small;
-    text-decoration: none;
-  }
-
-  :global(.fc .fc-day-today .fc-daygrid-day-number) {
-    color: var(--primary-color-200, $primary-color-200);
-    font-weight: $font-weight-bold;
-  }
-
-  :global(.fc .fc-day-other .fc-daygrid-day-number),
-  :global(.fc .fc-day-disabled .fc-daygrid-day-number) {
-    opacity: 0.5;
-  }
-
-  :global(.fc .fc-event) {
-    text-decoration: none;
-  }
-
-  /* Each event carries an inline background tint and border color derived
-     from its arranger (see EventCalendar.tsx). The border is collapsed to a
-     left accent bar here; the inline border-color fills it per event. */
-  :global(.fc .fc-daygrid-event) {
-    border-radius: $border-radius-inside-card;
-    border-style: solid;
-    border-width: 0 0 0 3px;
-    cursor: pointer;
-    margin-top: 2px;
-    overflow: hidden;
-  }
-
-  /* The inline per-event background wins over any background-color rule, so
-     hover feedback is a translucent neutral overlay stacked on top of it. */
-  :global(.fc .fc-daygrid-event:hover) {
-    background-image: linear-gradient(rgb(128 128 128 / 12%), rgb(128 128 128 / 12%));
-  }
-
-  :global(.fc .fc-daygrid-day-events) {
-    margin-bottom: $spacer-mini;
-  }
-
-  :global(.fc .fc-daygrid-more-link) {
-    color: var(--text-color-link, $text-color-link);
-    font-size: $font-size-tertiary;
-    margin: 0 $spacer-mini;
-    text-decoration: none;
-  }
-
-  :global(.fc .fc-popover) {
-    background-color: var(--background-color-modal, $background-color-modal);
-    border: 1px solid var(--divider-color, $divider-color);
-    border-radius: $border-radius-inside-card;
-    box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
-    z-index: 998;
-  }
-
-  :global(.fc .fc-popover-header) {
-    background-color: transparent;
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    padding: $spacer-very-small;
-  }
-
-  :global(.fc .fc-list) {
-    border: none;
-    border-radius: $border-radius-inside-card;
-    overflow: hidden;
-  }
-
-  :global(.fc .fc-list-day-cushion) {
-    padding: $spacer-very-small $spacer-small;
-  }
-
-  :global(.fc .fc-list-day-text),
-  :global(.fc .fc-list-day-side-text) {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    font-size: $font-size-secondary;
-    text-decoration: none;
-    text-transform: capitalize;
-  }
-
-  :global(.fc .fc-list-event) {
-    cursor: pointer;
-  }
-
-  :global(.fc .fc-list-event-time) {
-    @include monoFont();
-    color: var(--text-color-primary, $text-color-primary);
-    font-size: $font-size-tertiary;
-    white-space: nowrap;
-
-    @include desktop() {
-      font-size: $font-size-tertiary-desktop;
-    }
-  }
-
-  /* The list view's dot picks up the same per-event border color as the
-     grid chips' accent bar. */
-  :global(.fc .fc-list-event-graphic) {
-    padding-right: 0;
-  }
-
-  :global(.fc .fc-list-empty) {
-    background-color: transparent;
-    color: var(--text-color-primary, $text-color-primary);
-    padding: $spacer-medium;
+  @include desktop() {
+    font-size: $font-size-heading-medium;
   }
 }
-/* stylelint-enable selector-pseudo-class-no-unknown */
+
+.calendarButton {
+  @include monoFont();
+  border-radius: $border-radius-inside-card;
+  font-size: $font-size-secondary;
+  padding: $spacer-mini $spacer-very-small-plus;
+  text-transform: capitalize;
+  transition: background-color $animation-duration ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color-200, $primary-color-200);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.calendarButtonActive {
+  background-color: var(--primary-color-400, $primary-color-400);
+  color: var(--text-color-button, $text-color-button);
+}
+
+.dayHeader {
+  @include uppercase();
+  color: var(--text-color-primary, $text-color-primary);
+  padding: $spacer-very-small 0;
+  text-decoration: none;
+}
+
+.dayCellToday {
+  background-color: rgb(124 77 255 / 8%);
+}
+
+.dayNumber {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+  padding: $spacer-mini $spacer-very-small;
+  text-decoration: none;
+}
+
+.dayCellToday .dayNumber {
+  color: var(--primary-color-200, $primary-color-200);
+  font-weight: $font-weight-bold;
+}
+
+.dayCellMuted .dayNumber {
+  opacity: 0.5;
+}
+
+.dayCellBottom {
+  min-height: $spacer-mini;
+}
+
+.gridCalendarEvent {
+  background-color: var(--calendar-event-background);
+  border: 0;
+  border-inline-start: 3px solid var(--calendar-event-accent);
+  border-radius: $border-radius-inside-card;
+  cursor: pointer;
+  margin-top: 2px;
+  overflow: hidden;
+  text-decoration: none;
+
+  &:hover {
+    background-image: linear-gradient(rgb(128 128 128 / 12%), rgb(128 128 128 / 12%));
+  }
+}
+
+.moreLink {
+  margin: 0 $spacer-mini;
+  text-decoration: none;
+}
+
+.moreLinkInner {
+  color: var(--text-color-link, $text-color-link);
+  font-size: $font-size-tertiary;
+}
+
+.calendarPopover {
+  background-color: var(--background-color-modal, $background-color-modal);
+  border: 1px solid var(--divider-color, $divider-color);
+  border-radius: $border-radius-inside-card;
+  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  z-index: 998;
+}
+
+.calendarPopoverHeader {
+  background-color: transparent;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  padding: $spacer-very-small;
+}
+
+.calendarPopoverTitle {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+.calendarPopoverBody {
+  padding: $spacer-very-small;
+}
+
+.listView {
+  border: none;
+  border-radius: $border-radius-inside-card;
+  overflow: hidden;
+}
+
+.listDayHeader {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-secondary;
+  padding: $spacer-very-small $spacer-small;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.listCalendarEvent {
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--background-color-card-hover, $background-color-card-hover);
+  }
+}
+
+.listEventDot {
+  border-color: var(--calendar-event-accent);
+}
+
+.listEventTime {
+  @include monoFont();
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+  white-space: nowrap;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.noEvents {
+  background-color: transparent;
+  color: var(--text-color-primary, $text-color-primary);
+}
+
+.noEventsInner {
+  padding: $spacer-medium;
+}
 
 .gridEvent {
   display: flex;
