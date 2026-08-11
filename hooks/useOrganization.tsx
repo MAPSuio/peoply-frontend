@@ -31,7 +31,8 @@ export default function useOrganization(
   oid: string,
   options: UseOrganizationOptions = {},
 ): useOrganizationUsersType {
-  const { user } = useUser();
+  const { user, loading: userLoading } = useUser();
+  const userId = user?.id;
   const { fetchMembers = true } = options;
   const [organizationUsers, setOrganizationUsers] =
     useState<UserOrganizationRoles[]>();
@@ -57,8 +58,20 @@ export default function useOrganization(
           );
         }
 
-        if (active) {
-          setOrganization(organization);
+        if (!active) {
+          return;
+        }
+
+        setOrganization(organization);
+
+        if (fetchMembers && userId) {
+          const organizationUsers = await getOrganizationUsers(organization.id);
+
+          if (!active) {
+            return;
+          }
+
+          setOrganizationUsers(organizationUsers);
         }
       } catch {
         if (active) {
@@ -71,47 +84,17 @@ export default function useOrganization(
       }
     }
 
-    if (oid) {
+    if (oid && (!fetchMembers || !userLoading)) {
       void fetchOrganization();
     }
 
     return () => {
       active = false;
     };
-  }, [oid]);
-
-  useEffect(() => {
-    let active = true;
-
-    async function fetchOrganizationUsers() {
-      if (!organization || !user || !fetchMembers) {
-        setOrganizationUsers(undefined);
-        return;
-      }
-
-      try {
-        const organizationUsers = await getOrganizationUsers(organization.id);
-        if (active) {
-          setOrganizationUsers(organizationUsers);
-        }
-      } catch {
-        if (active) {
-          setOrganizationUsers(undefined);
-        }
-      }
-    }
-
-    void fetchOrganizationUsers();
-
-    return () => {
-      active = false;
-    };
-  }, [fetchMembers, organization, user]);
+  }, [fetchMembers, oid, userId, userLoading]);
 
   /* find the authenticated user in the organization */
-  const organizationUser = organizationUsers?.find(
-    (u) => u.user.id === user?.id,
-  );
+  const organizationUser = organizationUsers?.find((u) => u.user.id === userId);
 
   const isOwner = organizationUser?.role === OrganizationRole.OWNER;
   const isAdmin = organizationUser?.role === OrganizationRole.ADMIN;
