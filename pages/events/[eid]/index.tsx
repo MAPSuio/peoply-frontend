@@ -24,6 +24,7 @@ import { ShareButton } from "../../../components/ShareButton";
 import LinkButton from "../../../components/LinkButton";
 import MailIcon from "../../../components/svgs/MailIcon";
 import LinkIcon from "../../../components/svgs/LinkIcon";
+import CoOrganizerInvitationBanner from "../../../components/CoOrganizerInvitationBanner";
 
 // Hooks.
 import useUser from "../../../hooks/useUser";
@@ -41,6 +42,7 @@ import {
   injectLink,
 } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
+import { getEventImage, getSafeExternalUrl } from "../../../utils/event";
 
 // Types.
 import {
@@ -91,6 +93,13 @@ const Event = ({ event }: EventProps) => {
     },
   );
 
+  /* Counted by the database. The registrations fallback only covers a client
+     that loaded before the backend started sending goingCount. */
+  const goingCount =
+    eventData?.goingCount ??
+    eventData?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
+      .length;
+
   const { data: registrations, error: registrationsError } = useSWR<
     Registration[]
   >(() =>
@@ -125,6 +134,7 @@ const Event = ({ event }: EventProps) => {
   };
 
   const eventArrangerDisplayItems = getEventArrangerDisplayItems(eventData);
+  const safeExternalUrl = getSafeExternalUrl(eventData);
 
   const isArranger = (() => {
     /* arrangerIds for orgs where the user is ownerOrAdmin */
@@ -156,13 +166,15 @@ const Event = ({ event }: EventProps) => {
     return false;
   })();
 
+  const eventImage = getEventImage(eventData);
+
   return (
     <>
       <HeadComponent
         title={eventData.title}
         description={eventData.description}
         path={`/events/${eventData.urlId}`}
-        imageUrl={eventData.image}
+        imageUrl={eventImage}
         noIndex={
           eventData.visibility === Visibility.UNLISTED ||
           eventData.visibility === Visibility.PRIVATE
@@ -185,12 +197,14 @@ const Event = ({ event }: EventProps) => {
           )}
           <div className={styles.imageContainer}>
             <Image
-              src={eventData.image ?? placeholderImage}
+              src={eventImage ?? placeholderImage}
               fill
               sizes="50vw"
               style={{ objectFit: "cover" }}
               alt="Et bilde som passer til arrangementet"
-              placeholder={!eventData.image ? "blur" : "empty"}
+              /* "blur" needs a blurDataURL, which only the bundled placeholder
+                 has - a remote URL here would throw. */
+              placeholder={eventImage ? "empty" : "blur"}
             />
           </div>
         </div>
@@ -210,6 +224,10 @@ const Event = ({ event }: EventProps) => {
             </div>
           </div>
           <div className={styles.eventInfoContainer}>
+            <CoOrganizerInvitationBanner
+              eventId={eventData.id}
+              onAnswered={() => updateEvent()}
+            />
             <p className={styles.eventTags}>
               {eventData.eventCategories
                 ?.map((cat) => cat.category.name)
@@ -348,11 +366,7 @@ const Event = ({ event }: EventProps) => {
                       />
                     </div>
                     <p className={styles.infoText}>
-                      <span className={styles.emphasis}>{`${
-                        eventData.registrations?.filter(
-                          (r) => r.regStatus === RegStatus.GOING,
-                        ).length
-                      }${
+                      <span className={styles.emphasis}>{`${goingCount}${
                         eventData.capacity ? `/${eventData.capacity}` : ""
                       }`}</span>{" "}
                       påmeldte
@@ -370,11 +384,7 @@ const Event = ({ event }: EventProps) => {
                     />
                   </div>
                   <p className={styles.infoText}>
-                    <span className={styles.emphasis}>{`${
-                      eventData.registrations?.filter(
-                        (r) => r.regStatus === RegStatus.GOING,
-                      ).length
-                    }${
+                    <span className={styles.emphasis}>{`${goingCount}${
                       eventData.capacity ? `/${eventData.capacity}` : ""
                     }`}</span>{" "}
                     påmeldte
@@ -445,10 +455,10 @@ const Event = ({ event }: EventProps) => {
             </div>
           )}
           {eventData.registrationMode === EventRegistrationMode.EXTERNAL &&
-          eventData.externalUrl ? (
+          safeExternalUrl ? (
             <LinkButton
               text="Gå til ekstern påmelding"
-              href={eventData.externalUrl}
+              href={safeExternalUrl}
               className={styles.primaryButton}
               type={ButtonType.PRIMARY}
               icon={<LinkIcon />}

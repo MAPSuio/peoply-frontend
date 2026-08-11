@@ -115,3 +115,11 @@
 .infoText:not(:last-child) {
   margin-bottom: $spacer-small;
 }
+
+/* Foreningen bak siten - logoen står over kontaktinfoen dens. */
+.mapsLogo {
+  align-self: flex-start;
+  height: 2.5rem;
+  margin-bottom: $spacer-small;
+  width: auto;
+}

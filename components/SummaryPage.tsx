@@ -29,7 +29,6 @@ interface SummaryPageProps {
   reachedStep: number;
   stepCount: number;
   buttonText: string;
-  placeButtonStatic?: boolean;
   validDataMap: Map<string, boolean>;
   page: string;
   buttonOnClick: (step: number) => void;
@@ -50,7 +49,6 @@ const SummaryPage = ({
   reachedStep,
   stepCount,
   buttonText,
-  placeButtonStatic,
   validDataMap,
   page,
   buttonOnClick,
@@ -61,13 +59,6 @@ const SummaryPage = ({
   selectedCoOrganizerNames,
 }: SummaryPageProps) => {
   const { user, orgs } = useUser();
-  const getButtonStyles = () => {
-    if (placeButtonStatic) {
-      return `${styles.primaryButton} ${styles.placeStatic}`;
-    } else {
-      return styles.primaryButton;
-    }
-  };
 
   const appendEventData = (formData: FormData) => {
     /* Append correctly formatted dates with timestamp. */
@@ -207,21 +198,19 @@ const SummaryPage = ({
           eventObject.eventLocation.address.freeformAddress,
         );
 
-      if (eventObject?.eventLocation?.position?.lat)
+      if (eventObject?.eventLocation?.position?.lat !== undefined)
         formData.set(
           "latitude",
           eventObject.eventLocation.position.lat.toString(),
         );
 
-      if (eventObject?.eventLocation?.position?.lon)
+      if (eventObject?.eventLocation?.position?.lon !== undefined)
         formData.set(
           "longitude",
           eventObject.eventLocation.position.lon.toString(),
         );
     }
   };
-
-  const buttonStyles = getButtonStyles();
 
   const validData = validDataMap.get(page);
 
@@ -245,16 +234,15 @@ const SummaryPage = ({
 
   return (
     <div className={styles.container}>
-      <BackButton
-        onClick={() => buttonOnClick(stepCount - 2)}
-        className={styles.marginBottomMedium}
-      />
+      <div className={styles.actionContainer}>
+        <BackButton onClick={() => buttonOnClick(stepCount - 2)} />
+      </div>
       <div className={styles.headerContainer}>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
       </div>
-      <div className={styles.summaryContainer}>
-        <div className={styles.progressBarContainer}>
+      <div className={styles.layout}>
+        <aside className={styles.progressRail}>
           <ProgressBar
             currentStep={currentStep}
             reachedStep={reachedStep}
@@ -262,45 +250,52 @@ const SummaryPage = ({
             validDataMap={validDataMap}
             changeStep={changeStep}
           />
-        </div>
-        <TitleSummarySection
-          title={eventObject.eventTitle}
-          onClick={buttonOnClick}
-        />
-        {eventObject.eventArrangerId && (
-          <PersonSummarySection text={arrangerName} onClick={buttonOnClick} />
-        )}
-        {selectedCoOrganizerNames.length > 0 && (
-          <PersonSummarySection
-            text={selectedCoOrganizerNames.join(" · ")}
+        </aside>
+        <div className={styles.main}>
+          <TitleSummarySection
+            title={eventObject.eventTitle}
             onClick={buttonOnClick}
           />
-        )}
-        <DateTimeSummarySection
-          eventObject={eventObject}
-          onClick={buttonOnClick}
-        />
-        <PlaceSummarySection
-          eventObject={eventObject}
-          onClick={buttonOnClick}
-        />
-        <DescriptionSummarySection
-          eventObject={eventObject}
-          summaryCategories={summaryCategories}
-          onClick={buttonOnClick}
-        />
-        <ImageSummarySection
-          imageSource={imageSource}
-          onClick={buttonOnClick}
-        />
-        <DataSummarySection eventObject={eventObject} onClick={buttonOnClick} />
+          {eventObject.eventArrangerId && (
+            <PersonSummarySection text={arrangerName} onClick={buttonOnClick} />
+          )}
+          {selectedCoOrganizerNames.length > 0 && (
+            <PersonSummarySection
+              text={selectedCoOrganizerNames.join(" · ")}
+              onClick={buttonOnClick}
+            />
+          )}
+          <DateTimeSummarySection
+            eventObject={eventObject}
+            onClick={buttonOnClick}
+          />
+          <PlaceSummarySection
+            eventObject={eventObject}
+            onClick={buttonOnClick}
+          />
+          <DescriptionSummarySection
+            eventObject={eventObject}
+            summaryCategories={summaryCategories}
+            onClick={buttonOnClick}
+          />
+          <ImageSummarySection
+            imageSource={imageSource}
+            onClick={buttonOnClick}
+          />
+          <DataSummarySection
+            eventObject={eventObject}
+            onClick={buttonOnClick}
+          />
+          <div className={styles.ctaBar}>
+            <Button
+              onClick={() => createEventFunction(formData)}
+              text={buttonText}
+              className={styles.primaryButton}
+              disabled={!validData}
+            />
+          </div>
+        </div>
       </div>
-      <Button
-        onClick={() => createEventFunction(formData)}
-        text={buttonText}
-        className={buttonStyles}
-        disabled={!validData}
-      />
     </div>
   );
 };

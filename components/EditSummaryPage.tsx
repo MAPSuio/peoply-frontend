@@ -5,7 +5,9 @@ import {
   type Event,
   type EventCategory,
   type Organization,
+  type EventCoOrganizerInvitation,
   EventRegistrationMode,
+  InvitationStatus,
   SnackTypes,
   Visibility,
 } from "../types/types";
@@ -46,9 +48,9 @@ import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApiJson,
 } from "../services/fetchers";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import useUser from "../hooks/useUser";
-import type { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
+import type { LocationSearchResult } from "../types/locationSearch";
 
 function getCategories(categories: EventCategory[] | undefined) {
   if (categories === undefined) {
@@ -152,10 +154,11 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     ...eventObject,
   });
 
-  const [location, setLocation] = useState<
-    AzureMapsSearchFuzzyResult | undefined
-  >({
-    poi: { name: event.poiName },
+  const [location, setLocation] = useState<LocationSearchResult | undefined>({
+    id: event.id,
+    provider: "entur",
+    type: event.poiName ? "poi" : "address",
+    poi: event.poiName ? { name: event.poiName } : undefined,
     address: {
       country: event.country,
       countryCode: event.countryCode,
@@ -192,6 +195,50 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [changesMade, setChangesMade] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { addSnack } = useSnack();
+
+  const { data: coOrganizerInvitations } = useSWR<EventCoOrganizerInvitation[]>(
+    `/events/${event.id}/coorganizer-invitations`,
+    fetchFromPeoplyApiJson,
+  );
+  const pendingCoOrganizersMerged = useRef(false);
+
+  /* An organization that has been invited but has not answered yet is not an
+     arranger, so it is missing from the list derived from eventArrangers
+     above. Without merging it back in, saving any unrelated change on this
+     page would submit a list without it and withdraw the invitation.
+
+     Merged once: re-running on SWR revalidation would undo a deliberate
+     deselection the moment the user tabs away and back. */
+  useEffect(() => {
+    if (!coOrganizerInvitations || pendingCoOrganizersMerged.current) {
+      return;
+    }
+    pendingCoOrganizersMerged.current = true;
+
+    const pendingIds = coOrganizerInvitations
+      .filter(
+        ({ invitationStatus }) => invitationStatus === InvitationStatus.PENDING,
+      )
+      .map(({ organizationId }) => organizationId);
+
+    const merge = (previous: EventObjectProps) => {
+      const missing = pendingIds.filter(
+        (id) => !previous.coOrganizerOrganizationIds.includes(id),
+      );
+      return missing.length === 0
+        ? previous
+        : {
+            ...previous,
+            coOrganizerOrganizationIds: [
+              ...previous.coOrganizerOrganizationIds,
+              ...missing,
+            ],
+          };
+    };
+
+    setEventObject(merge);
+    setTempEventObject(merge);
+  }, [coOrganizerInvitations]);
 
   // syncronize location state and values in tempEventObject
   useEffect(() => {
@@ -586,7 +633,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const editButtonOnClick = () => setEditOpen(true);
 
   return (
-    <div className={styles.summaryContainer}>
+    <div className={styles.editSummary}>
       <EditTitleSection
         title={eventObject.title}
         tempTitle={tempEventObject.title}
@@ -719,11 +766,14 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
         displayExternalUrl={eventObject.externalUrl}
       />
 
-      <Button
-        text={"Lagre endringer"}
-        onClick={() => saveChanges(eventObject)}
-        disabled={!changesMade || editOpen || !allValid}
-      ></Button>
+      <div className={styles.ctaBar}>
+        <Button
+          text={"Lagre endringer"}
+          onClick={() => saveChanges(eventObject)}
+          disabled={!changesMade || editOpen || !allValid}
+          className={styles.primaryButton}
+        ></Button>
+      </div>
 
       <button
         type="button"

@@ -14,15 +14,22 @@
   }
 }
 
+/* Fixed image height so every card's image renders identically. With
+   `flex: 1 0 0` on both halves, the image got whatever the info column left
+   over, so cards with less info (external/no signup -> no join button) or a
+   wrapped title showed a taller/shorter image than their neighbours. The
+   height is the card height minus the info column's worst case (two title
+   lines) and the card gap, so nothing overflows. */
 .eventCardImageContainer {
   border-radius: $border-radius-image-card;
-  flex: 1 0 0;
+  flex: 0 0 auto;
+  height: $event-card-image-height;
   overflow: hidden;
   position: relative;
   width: 100%;
 
   @include desktop() {
-    flex: 1 0 0;
+    height: $event-card-image-height-desktop;
   }
 }
 
@@ -36,16 +43,14 @@
 }
 
 .eventCardInfoContainer {
-  align-items: flex-start;
+  /* Stretch (not flex-start) so .eventCardInfo fills the column and the
+     action row can pin itself to the card bottom. */
+  align-items: stretch;
   background-color: var(--background-color-card, $background-color-card);
   border-radius: $border-radius-event-info;
   display: flex;
-  flex: 1 0 0;
+  flex: 1 1 auto;
   padding: 0 $spacer-small 0;
-
-  @include desktop() {
-    flex: 1 0 0;
-  }
 }
 
 .eventCardInfoHeaderContainer {
@@ -191,8 +196,12 @@
   display: flex;
   flex-flow: row nowrap;
   gap: $spacer-very-small-plus;
-  margin-top: $spacer-small;
+  /* Bottom-pin the buttons so they line up across cards whose info column is
+     shorter (one-line titles); padding-top keeps the minimum spacing the old
+     margin-top gave when the column is at its tallest. */
+  margin-top: auto;
   padding-bottom: $spacer-small;
+  padding-top: $spacer-small;
 }
 
 /* Sizing comes from ButtonSize.COMPACT; only layout lives here. */

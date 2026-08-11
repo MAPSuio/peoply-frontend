@@ -27,6 +27,7 @@ import FoodPreferenceModal from "./FoodPreferenceModal";
 import FormQuestionModal from "./FormQuestionModal";
 import UnregisterConfirmationModal from "./UnregisterConfirmationModal";
 import styles from "../styles/JoinButton.module.scss";
+import { getSafeExternalUrl } from "../utils/event";
 
 interface JoinButtonProps {
   event: Event;
@@ -184,11 +185,18 @@ export default function JoinButton({
       return `${countdownText} ${countdown}`;
     }
 
+    /* `goingCount` comes straight from the database. The registrations
+       fallback is only for a client that loaded before the backend started
+       sending it. */
+    const goingCount =
+      event?.goingCount ??
+      event?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
+        .length;
+
     const freeSpace =
-      event?.registrations &&
+      goingCount !== undefined &&
       event?.capacity &&
-      event.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
-        ?.length < event.capacity;
+      goingCount < event.capacity;
 
     switch (myRegistration?.regStatus) {
       case RegStatus.GOING:
@@ -246,12 +254,37 @@ export default function JoinButton({
     !regClosed &&
     myRegistration?.regStatus === RegStatus.GOING;
 
+  const externalUrl =
+    event.registrationMode === EventRegistrationMode.EXTERNAL
+      ? getSafeExternalUrl(event)
+      : undefined;
+
   const shouldHideButton =
-    event.registrationMode === EventRegistrationMode.EXTERNAL ||
+    (event.registrationMode === EventRegistrationMode.EXTERNAL &&
+      !externalUrl) ||
     event.registrationMode === EventRegistrationMode.NONE;
 
   if (shouldHideButton) {
     return null;
+  }
+
+  if (externalUrl) {
+    /* Cards are wrapped in a <Link>, so a nested anchor is invalid HTML -
+       open the external registration page from a regular button instead. */
+    return (
+      <Button
+        type={ButtonType.PRIMARY}
+        text={joinText}
+        className={className}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.open(externalUrl, "_blank", "noopener,noreferrer");
+        }}
+        size={size ?? (small ? ButtonSize.SMALL : ButtonSize.MEDIUM)}
+        noShadow={noShadow}
+      />
+    );
   }
 
   async function createNewRegistration() {

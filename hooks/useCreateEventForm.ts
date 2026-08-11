@@ -54,7 +54,7 @@ import {
   SnackTypes,
   OrganizationRole,
 } from "../types/types";
-import type { AzureMapsSearchFuzzyResult } from "../types/azureMaps";
+import type { LocationSearchResult } from "../types/locationSearch";
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -62,7 +62,7 @@ export interface EventObjectProps {
   eventCoOrganizerOrganizationIds: string[];
   eventDescription: string;
   eventLocationName: string;
-  eventLocation?: AzureMapsSearchFuzzyResult;
+  eventLocation?: LocationSearchResult;
   eventRegStartDate: string;
   eventRegStartTime: string;
   eventRegEndDate: string;
@@ -229,7 +229,7 @@ export default function useCreateEventForm() {
     });
   };
 
-  const updateEventLocation = (loc?: AzureMapsSearchFuzzyResult) => {
+  const updateEventLocation = (loc?: LocationSearchResult) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
       eventLocation: loc,
@@ -908,6 +908,20 @@ export default function useCreateEventForm() {
       setModalOpen(true);
     }
   }, []);
+
+  /* The state initializer runs before the user has loaded, so a fresh visit
+     starts with an empty arrangerId. Without this backfill the POST is
+     rejected by the backend unless the user touches the arranger dropdown. */
+  useEffect(() => {
+    if (!user?.arrangerId) {
+      return;
+    }
+    setEventObject((prevEventObject) =>
+      prevEventObject.eventArrangerId === ""
+        ? { ...prevEventObject, eventArrangerId: user.arrangerId }
+        : prevEventObject,
+    );
+  }, [user?.arrangerId]);
 
   useEffect(() => {
     if (!coOrganizerOpen) {

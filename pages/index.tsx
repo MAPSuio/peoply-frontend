@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import HeadComponent from "../components/HeadComponent";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // Services.
 
@@ -51,10 +52,25 @@ const OrganizationSwiper = dynamic(
   { ssr: false },
 );
 
+/* Midlertidig fadderuke-overskrift. Etter 14.08.2026 faller frontsiden
+   automatisk tilbake til standardteksten - ingen deploy trengs for å rulle den
+   tilbake. Kutt konstantene og bruk DEFAULT_UPCOMING_HEADER direkte når
+   fadderuken er ferdig.
+
+   Grensen settes lokalt (00:00 den 15.08), ikke i UTC, slik at teksten står ut
+   hele 14.08 for brukere i norsk tid. Verdien leses først i useEffect fordi
+   serveren og klienten kan stå på hver sin side av grensen. */
+const FADDERUKE_HEADER_UNTIL = new Date(2026, 7, 15);
+const DEFAULT_UPCOMING_HEADER = "Hva skjer fremover?";
+const FADDERUKE_HEADER = "Velkommen til fadderuken!";
+
 const Home: NextPage = () => {
   const { user } = useUser();
   const [todayString, setTodayString] = useState<string>(
     new Date().toISOString(),
+  );
+  const [upcomingHeader, setUpcomingHeader] = useState<string>(
+    DEFAULT_UPCOMING_HEADER,
   );
 
   useEffect(() => {
@@ -62,6 +78,10 @@ const Home: NextPage = () => {
     today.setHours(today.getHours() - 2);
     const s = today.toISOString();
     setTodayString(s);
+
+    if (new Date() < FADDERUKE_HEADER_UNTIL) {
+      setUpcomingHeader(FADDERUKE_HEADER);
+    }
   }, []);
 
   const eventsQuery = {
@@ -101,7 +121,7 @@ const Home: NextPage = () => {
   return (
     <>
       <HeadComponent title="Peoply" description="Frontsiden til Peoply" />
-      <Header showSourceLink />
+      <Header />
       <div className={styles.container}>
         {eventsFromFollowedOrganizations &&
         eventsFromFollowedOrganizations.length > 0 ? (
@@ -116,7 +136,7 @@ const Home: NextPage = () => {
         ) : undefined}
         {futureEvents && futureEvents.length > 0 ? (
           <EventSwiper
-            header={"Hva skjer fremover?"}
+            header={upcomingHeader}
             seeAllUrl={{ pathname: `/events`, query: eventsQuery }}
             events={futureEvents}
             error={futureEventsError}
@@ -131,6 +151,7 @@ const Home: NextPage = () => {
           />
         )}
       </div>
+      <Footer />
       <Navbar />
     </>
   );

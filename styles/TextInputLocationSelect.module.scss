@@ -65,19 +65,23 @@
 }
 
 
+// max-height (not height) so the dropdown never covers more of the page
+// than it has results, and a solid background so it reads as an overlay.
 .results {
-  background-color: transparent;
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
   display: flex;
   flex-direction: column;
-  height: 200px;
+  max-height: 200px;
   overflow-y: auto;
   position: absolute;
   top: calc(64px + $spacer-very-small);
   width: 100%;
-  z-index: 1;
+  z-index: 20;
 
   @include desktop() {
-    height: 300px;
+    max-height: 300px;
     top: calc(82px + $spacer-very-small);
   }
 

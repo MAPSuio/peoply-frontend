@@ -8,6 +8,8 @@ import HeadComponent from "../../components/HeadComponent";
 import LargeEventCard from "../../components/LargeEventCard";
 import Layout from "../../components/Layout";
 import QueryState from "../../components/QueryState";
+import GridCompactIcon from "../../components/svgs/GridCompactIcon";
+import GridLargeIcon from "../../components/svgs/GridLargeIcon";
 import SearchIcon from "../../components/svgs/SearchIcon";
 import useBack from "../../hooks/useBack";
 import {
@@ -540,23 +542,38 @@ const Events: NextPage = () => {
         </div>
 
         <div className={styles.gridToggleBar}>
-          <span className={styles.gridToggleLabel}>Kompakt visning</span>
-          <button
-            type="button"
-            className={`${styles.gridToggleSwitch} ${
-              isCompactGrid
-                ? styles.gridToggleSwitchOn
-                : styles.gridToggleSwitchOff
-            }`}
-            aria-pressed={isCompactGrid}
-            aria-label="Slå kompakt grid av eller på"
-            onClick={() => setIsCompactGrid((current) => !current)}
-          >
-            <span className={styles.gridToggleState}>
-              {isCompactGrid ? "PÅ" : "AV"}
-            </span>
-            <span className={styles.gridToggleKnob} />
-          </button>
+          <div className={styles.gridSizeControl}>
+            <span
+              className={`${styles.gridSizeThumb} ${
+                isCompactGrid ? styles.gridSizeThumbCompact : ""
+              }`}
+              aria-hidden="true"
+            />
+            <button
+              type="button"
+              className={`${styles.gridSizeOption} ${
+                !isCompactGrid ? styles.gridSizeOptionActive : ""
+              }`}
+              aria-pressed={!isCompactGrid}
+              aria-label="Stor visning"
+              title="Stor visning"
+              onClick={() => setIsCompactGrid(false)}
+            >
+              <GridLargeIcon className={styles.gridSizeIcon} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.gridSizeOption} ${
+                isCompactGrid ? styles.gridSizeOptionActive : ""
+              }`}
+              aria-pressed={isCompactGrid}
+              aria-label="Kompakt visning"
+              title="Kompakt visning"
+              onClick={() => setIsCompactGrid(true)}
+            >
+              <GridCompactIcon className={styles.gridSizeIcon} />
+            </button>
+          </div>
         </div>
 
         <QueryState

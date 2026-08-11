@@ -22,13 +22,11 @@ interface InputPageProps {
   reachedStep: number;
   stepCount: number;
   buttonText: string;
-  placeButtonStatic?: boolean;
   validDataMap: Map<InputPages, boolean>;
   page: InputPages;
   setEventImageValid?: (eventImageValid: boolean) => void;
   setEventExtraInfoValid?: (eventExtraInfoValid: boolean) => void;
   firstPage?: boolean;
-  padding?: boolean;
   buttonOnClick: (step: number) => void;
   children: React.ReactNode;
 }
@@ -41,13 +39,11 @@ const InputPage = ({
   reachedStep,
   stepCount,
   buttonText,
-  placeButtonStatic,
   validDataMap,
   page,
   setEventImageValid,
   setEventExtraInfoValid,
   firstPage,
-  padding,
   buttonOnClick,
   children,
 }: InputPageProps) => {
@@ -61,16 +57,6 @@ const InputPage = ({
     }
   };
 
-  const getButtonStyles = () => {
-    if (placeButtonStatic) {
-      return `${styles.primaryButton} ${styles.placeStatic}`;
-    } else {
-      return styles.primaryButton;
-    }
-  };
-
-  const buttonStyles = getButtonStyles();
-
   const validData = validDataMap.get(page);
 
   if (setEventImageValid) {
@@ -82,7 +68,7 @@ const InputPage = ({
   }
 
   return (
-    <div className={`${styles.container} ${padding && styles.padding}`}>
+    <div className={styles.container}>
       <div className={styles.actionContainer}>
         <BackButton onClick={goBack} />
         <Link href="/" className={styles.close}>
@@ -93,8 +79,8 @@ const InputPage = ({
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.subTitle}>{subTitle}</p>
       </div>
-      <div className={styles.inputContainer}>
-        <div className={styles.progressBarContainer}>
+      <div className={styles.layout}>
+        <aside className={styles.progressRail}>
           <ProgressBar
             currentStep={currentStep}
             reachedStep={reachedStep}
@@ -102,15 +88,19 @@ const InputPage = ({
             validDataMap={validDataMap}
             changeStep={buttonOnClick}
           />
+        </aside>
+        <div className={styles.main}>
+          <div className={styles.childrenContainer}>{children}</div>
+          <div className={styles.ctaBar}>
+            <Button
+              onClick={() => buttonOnClick(step + 1)}
+              text={buttonText}
+              className={styles.primaryButton}
+              disabled={!validData}
+            />
+          </div>
         </div>
-        <div className={styles.childrenContainer}>{children}</div>
       </div>
-      <Button
-        onClick={() => buttonOnClick(step + 1)}
-        text={buttonText}
-        className={buttonStyles}
-        disabled={!validData}
-      />
     </div>
   );
 };

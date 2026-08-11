@@ -42,7 +42,6 @@ const ImageStep = ({
       page={InputPages.IMAGE_PAGE}
       setEventImageValid={setEventImageValid}
       buttonOnClick={buttonOnClick}
-      placeButtonStatic
     >
       <ImageInput
         value={eventObject.eventImage}

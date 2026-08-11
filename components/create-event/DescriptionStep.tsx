@@ -59,7 +59,6 @@ const DescriptionStep = ({
       validDataMap={validDataMap}
       page={InputPages.DESCRIPTION_PAGE}
       buttonOnClick={buttonOnClick}
-      placeButtonStatic
     >
       <div className={styles.textContainer}>
         <div className={styles.column}>

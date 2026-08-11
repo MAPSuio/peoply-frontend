@@ -1,14 +1,53 @@
-import type { Event } from "../types/types";
+import { type Event, EventSource } from "../types/types";
+import { getPrimaryEventArrangerOrganization } from "./eventArrangers";
 import { formatDateAndTime } from "./functions";
+
+/* Events imported from an .ics feed never carry an image: the calendar format
+   has no field for one, and the events are read-only so nobody can upload one
+   afterwards. The host organization's logo says more about the event than the
+   shared placeholder does, so it takes precedence over the placeholder.
+   Returns undefined when there is nothing to show - the caller picks its own
+   placeholder, which differs between the card and the detail page. */
+export function getEventImage(event: Event): string | undefined {
+  if (event.image) {
+    return event.image;
+  }
+
+  if (event.source !== EventSource.ICS) {
+    return undefined;
+  }
+
+  return getPrimaryEventArrangerOrganization(event)?.image;
+}
 
 export function isEventFinished(event: Event): boolean {
   if (!event.endDate) {
-    const endOfDayToday = new Date();
-    endOfDayToday.setHours(23, 59, 59, 999);
-    return new Date(event.startDate) < endOfDayToday;
+    /* Without an end date the event is assumed to last out its start day, so
+       it is only finished once that day is over. */
+    const endOfStartDay = new Date(event.startDate);
+    endOfStartDay.setHours(23, 59, 59, 999);
+    return endOfStartDay < new Date();
   }
 
   return new Date(event.endDate) < new Date();
+}
+
+/* The external registration URL is arbitrary user input from the event form -
+   only http(s) may reach an href or window.open (blocks javascript: etc.). */
+export function getSafeExternalUrl(event: Event): string | undefined {
+  if (!event.externalUrl) {
+    return undefined;
+  }
+
+  try {
+    const parsed = new URL(event.externalUrl);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+      return parsed.toString();
+    }
+  } catch {
+    /* Malformed URL - treat as absent. */
+  }
+  return undefined;
 }
 
 export function isEventRegStartDateValid(

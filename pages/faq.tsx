@@ -1,6 +1,9 @@
 import BackButton from "../components/BackButton";
 import ExpandableCard from "../components/ExpandableCard";
 import HeadComponent from "../components/HeadComponent";
+import MapsLogo from "../components/svgs/MapsLogo";
+
+import { mapsUrl } from "../utils/constants";
 import useBack from "../hooks/useBack";
 
 import styles from "../styles/FAQ.module.scss";
@@ -204,8 +207,9 @@ const FAQ = () => {
             </div>
             <div className={styles.section}>
               <span className={styles.divider} />
+              <MapsLogo className={styles.mapsLogo} />
               <p className={styles.infoText}>
-                <a href="https://foreninger.uio.no/maps/">
+                <a href={mapsUrl}>
                   MAPS - Matematikk, Algoritmer og Programmering for Studenter
                 </a>
               </p>

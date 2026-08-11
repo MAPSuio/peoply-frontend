@@ -256,6 +256,10 @@ $min-tap-target: 2.75rem;
 $max-width-card: 500px;
 $max-width-small-event-card: 400px;
 $max-width-event-card: 360px;
+// Fast bildehøyde på event-kort: korthøyde (300px/360px) minus kolonne-gap og
+// infokolonnens verste fall (to tittellinjer), så bildet er likt på alle kort.
+$event-card-image-height: 92px;
+$event-card-image-height-desktop: 126px;
 $max-width-highlighted-card: $max-width;
 $max-width-arranger-list-item: 500px;
 $max-width-org-card: 320px;
