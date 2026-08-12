@@ -187,16 +187,20 @@ export default function JoinButton({
 
     /* `goingCount` comes straight from the database. The registrations
        fallback is only for a client that loaded before the backend started
-       sending it. */
+       sending it. Both may be absent on list payloads (e.g. the homescreen
+       feed), so `goingCount` can legitimately be `undefined`. */
     const goingCount =
       event?.goingCount ??
       event?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
         .length;
 
+    /* Tri-state: `false` only when we KNOW the event is full. An unknown count
+       or unlimited capacity stays `undefined` so the label falls through to
+       "Meld på" rather than wrongly reading "Venteliste". */
     const freeSpace =
-      goingCount !== undefined &&
-      event?.capacity &&
-      goingCount < event.capacity;
+      goingCount === undefined || !event?.capacity
+        ? undefined
+        : goingCount < event.capacity;
 
     switch (myRegistration?.regStatus) {
       case RegStatus.GOING:
