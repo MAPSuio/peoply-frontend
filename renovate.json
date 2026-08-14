@@ -1,0 +1,95 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":enableVulnerabilityAlerts"],
+  "enabledManagers": ["npm", "github-actions"],
+  "timezone": "Europe/Oslo",
+  "schedule": ["before 6am on Monday"],
+  "prConcurrentLimit": 10,
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "packageRules": [
+    {
+      "description": ["Group routine production dependency updates"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "production minor and patch"
+    },
+    {
+      "description": ["Group routine development dependency updates"],
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "development minor and patch"
+    },
+    {
+      "description": ["Keep the test toolchain compatible"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": [
+        "vitest",
+        "@vitest/*",
+        "jsdom",
+        "@testing-library/*"
+      ],
+      "groupName": "test toolchain"
+    },
+    {
+      "description": ["Keep React runtime and types aligned"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "react"
+    },
+    {
+      "description": ["Keep Serwist build and runtime packages aligned"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["serwist", "@serwist/*"],
+      "groupName": "serwist"
+    },
+    {
+      "description": ["Isolate high-risk Next.js updates"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["next", "@next/*"],
+      "groupName": "next"
+    },
+    {
+      "description": ["Isolate sharp updates for image output verification"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["sharp"],
+      "groupName": "sharp"
+    },
+    {
+      "description": ["Isolate postcss updates for CSS output verification"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["postcss"],
+      "groupName": "postcss"
+    },
+    {
+      "description": ["Keep Stylelint and its plugins compatible"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": [
+        "stylelint",
+        "stylelint-*",
+        "@stylistic/stylelint-plugin"
+      ],
+      "groupName": "stylelint"
+    },
+    {
+      "description": ["Keep Commitlint packages aligned"],
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@commitlint/*"],
+      "groupName": "commitlint"
+    },
+    {
+      "description": ["Check GitHub Actions monthly"],
+      "matchManagers": ["github-actions"],
+      "schedule": ["before 6am on the first day of the month"],
+      "semanticCommitType": "ci"
+    }
+  ]
+}
