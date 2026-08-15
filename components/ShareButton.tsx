@@ -26,44 +26,44 @@ export function ShareButton({
   iconPlacement = IconPlacement.LEFT,
 }: ShareButtonProps) {
   const { addSnack } = useSnack();
-  async function buttonOnClick(event: MouseEvent) {
-    event.preventDefault();
+
+  async function share() {
+    const shareData = {
+      url: shareUrl,
+      files: shareFiles,
+      text: shareText,
+      title: shareTitle,
+    };
     try {
-      if (
-        navigator.canShare?.({
-          url: shareUrl,
-          files: shareFiles,
-          text: shareText,
-          title: shareTitle,
-        })
-      ) {
-        await navigator.share({
-          url: shareUrl,
-          files: shareFiles,
-          text: shareText,
-          title: shareTitle,
-        });
-      } else {
-        if (shareUrl) {
-          await navigator.clipboard.writeText(shareUrl);
-          addSnack("Lenken ble kopiert!", SnackTypes.SUCCESS);
-        } else if (shareFiles) {
-          const data = shareFiles.map((file) => {
-            const blob = new Blob([file], { type: file.type });
-            return new ClipboardItem({
-              [blob.type]: blob,
-            });
+      if (navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+      } else if (shareUrl) {
+        await navigator.clipboard.writeText(shareUrl);
+        addSnack("Lenken ble kopiert!", SnackTypes.SUCCESS);
+      } else if (shareFiles) {
+        const data = shareFiles.map((file) => {
+          const blob = new Blob([file], { type: file.type });
+          return new ClipboardItem({
+            [blob.type]: blob,
           });
-          await navigator.clipboard.write(data);
-          addSnack("Filen ble kopiert!", SnackTypes.SUCCESS);
-        } else if (shareText) {
-          await navigator.clipboard.writeText(shareText);
-          addSnack("Teksten ble kopiert!", SnackTypes.SUCCESS);
-        }
+        });
+        await navigator.clipboard.write(data);
+        addSnack("Filen ble kopiert!", SnackTypes.SUCCESS);
+      } else if (shareText) {
+        await navigator.clipboard.writeText(shareText);
+        addSnack("Teksten ble kopiert!", SnackTypes.SUCCESS);
       }
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
       addSnack("Kunne ikke dele akkurat nå", SnackTypes.ERROR);
     }
+  }
+
+  function buttonOnClick(event: MouseEvent) {
+    event.preventDefault();
+    void share();
   }
 
   return (
