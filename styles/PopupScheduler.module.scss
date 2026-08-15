@@ -232,4 +232,17 @@
   color: var(--error-color, $error-color);
   font-size: $font-size-secondary;
   margin-top: $spacer-very-small;
+
+  p {
+    color: inherit;
+    font-size: inherit;
+    line-height: $line-height-text;
+    max-width: none;
+  }
+}
+
+.conflictRange {
+  @include monoFont();
+  font-size: $font-size-tertiary;
+  margin-top: $spacer-mini;
 }
