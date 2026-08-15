@@ -23,11 +23,9 @@ function mockApi(rows: unknown[]) {
       const take = Number(query.get("take"));
       const skip = Number(query.get("skip") ?? 0);
 
-      return {
-        ok: true,
+      return new Response(JSON.stringify(rows.slice(skip, skip + take)), {
         status: 200,
-        json: async () => rows.slice(skip, skip + take),
-      };
+      });
     }),
   );
 
@@ -56,6 +54,21 @@ describe("fetchFromPeoplyApiJson", () => {
 
     await expect(
       fetchFromPeoplyApiJson("/users/u1/registrations/e1"),
+    ).resolves.toBeUndefined();
+  });
+
+  it("returns undefined for a bodiless 200 instead of throwing", async () => {
+    /* Nest's express adapter answers `response.send()` - a 200 with no body,
+       not a 204 - for any handler that resolves to null. GET /popups/active
+       does exactly that whenever nothing is scheduled, so the status check
+       alone was not enough and .json() threw a SyntaxError on every poll. */
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 200 })),
+    );
+
+    await expect(
+      fetchFromPeoplyApiJson("/popups/active"),
     ).resolves.toBeUndefined();
   });
 
@@ -240,11 +253,7 @@ describe("fetchAllFromPeoplyApiJson", () => {
         const skip = Number(new URL(url).searchParams.get("skip") ?? 0);
 
         if (skip === 0) {
-          return {
-            ok: true,
-            status: 200,
-            json: async () => firstPage,
-          };
+          return new Response(JSON.stringify(firstPage), { status: 200 });
         }
 
         return new Response(null, { status: 204 });
@@ -260,11 +269,13 @@ describe("fetchAllFromPeoplyApiJson", () => {
   it("propagates a failed response instead of returning a partial list", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => ({
-        ok: false,
-        status: 400,
-        json: async () => ({ message: ["take must not be greater than 100"] }),
-      })),
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({ message: ["take must not be greater than 100"] }),
+            { status: 400 },
+          ),
+      ),
     );
 
     await expect(fetchAllFromPeoplyApiJson("/events")).rejects.toMatchObject({

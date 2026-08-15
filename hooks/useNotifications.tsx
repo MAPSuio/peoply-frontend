@@ -33,7 +33,11 @@ export function NotificationsProvider({
   } = useSWR<PeoplyNotification[]>(
     () => (user ? `/users/${user.id}/notifications` : false),
     fetchFromPeoplyApiJson,
-    { refreshInterval: 7000 },
+    /* No refreshInterval: a request every 7 seconds from every open tab is a
+       lot of load for invitations that arrive a few times a week. SWR still
+       revalidates on mount and on focus, and `reload` is exposed for the
+       flows that accept or decline one. */
+    {},
   );
 
   useEffect(() => {

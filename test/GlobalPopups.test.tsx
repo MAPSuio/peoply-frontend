@@ -62,15 +62,28 @@ describe("GlobalPopups", () => {
     );
   });
 
-  it("falls back to the existing announcement when no popup is active", async () => {
-    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValueOnce(null);
+  it("shows no dialog when nothing is scheduled", async () => {
+    /* GET /popups/active answers "nothing scheduled" with an empty body, which
+       the fetcher reports as undefined. There is no hardcoded announcement to
+       fall back to - every announcement is a scheduled popup. */
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(undefined);
 
     renderPopups();
 
     await waitFor(() =>
-      expect(screen.getByRole("dialog")).toHaveAccessibleName(
-        "Peoply er open source! 🎉",
-      ),
+      expect(vi.mocked(fetchFromPeoplyApiJson)).toHaveBeenCalled(),
     );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("shows no dialog when the lookup fails", async () => {
+    vi.mocked(fetchFromPeoplyApiJson).mockRejectedValue(new Error("offline"));
+
+    renderPopups();
+
+    await waitFor(() =>
+      expect(vi.mocked(fetchFromPeoplyApiJson)).toHaveBeenCalled(),
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
