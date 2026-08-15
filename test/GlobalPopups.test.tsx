@@ -87,3 +87,78 @@ describe("GlobalPopups", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
+
+describe("GlobalPopups analytics", () => {
+  const track = vi.fn();
+
+  beforeEach(() => {
+    window.localStorage.clear();
+    track.mockClear();
+    window.umami = { track };
+  });
+
+  it("reports a popup as seen when it reaches the screen", async () => {
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(popup);
+
+    renderPopups();
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(track).toHaveBeenCalledWith("popup-vist", {
+      id: "popup-1",
+      title: "Viktig beskjed",
+    });
+  });
+
+  it("counts a popup once per browser, not once per page view", async () => {
+    /* It reappears on every page load until dismissed, so an event per
+       display would measure page views rather than people. */
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(popup);
+
+    const first = renderPopups();
+    await screen.findByRole("dialog");
+    first.unmount();
+
+    renderPopups();
+    await screen.findByRole("dialog");
+
+    expect(
+      track.mock.calls.filter(([name]) => name === "popup-vist"),
+    ).toHaveLength(1);
+  });
+
+  it("reports the dismissal separately, for a dismissal rate", async () => {
+    const user = userEvent.setup();
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(popup);
+
+    renderPopups();
+    const closeButton = (await screen.findByText("Lukk")).closest("button");
+    if (!closeButton) throw new Error("no close button");
+    await user.click(closeButton);
+
+    expect(track).toHaveBeenCalledWith("popup-lukket", {
+      id: "popup-1",
+      title: "Viktig beskjed",
+    });
+  });
+
+  it("does not report an already dismissed popup as seen again", async () => {
+    window.localStorage.setItem("peoply-popup:popup-1", "acknowledged");
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(popup);
+
+    renderPopups();
+
+    await waitFor(() => expect(fetchFromPeoplyApiJson).toHaveBeenCalled());
+    expect(track).not.toHaveBeenCalled();
+  });
+
+  it("survives a missing tracker", async () => {
+    /* Content blockers drop the script for a large share of users; the popup
+       still has to render. */
+    window.umami = undefined;
+    vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue(popup);
+
+    renderPopups();
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
+});
