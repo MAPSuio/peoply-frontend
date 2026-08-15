@@ -19,6 +19,7 @@ import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
+import { apiErrorMessage } from "../../../services/apiError";
 import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
@@ -34,7 +35,7 @@ import { isAdmin } from "../../../utils/admin";
 import {
   formatPopupRange,
   fromDateTimeLocal,
-  toDateTimeLocal,
+  getDefaultInterval,
 } from "../../../utils/popups";
 
 interface PopupPayload {
@@ -42,16 +43,6 @@ interface PopupPayload {
   body: string;
   startsAt?: string;
   endsAt?: string;
-}
-
-function getDefaultInterval() {
-  const interval = 15 * 60 * 1000;
-  const startsAt = new Date(Math.ceil(Date.now() / interval) * interval);
-  const endsAt = new Date(startsAt.getTime() + 60 * 60 * 1000);
-  return {
-    startsAt: toDateTimeLocal(startsAt),
-    endsAt: toDateTimeLocal(endsAt),
-  };
 }
 
 function ContentModal({
@@ -96,8 +87,11 @@ function ContentModal({
     try {
       await onSave(payload);
       onClose();
-    } catch {
-      setError("Kunne ikke lagre. Sjekk at tidsrommet er ledig.");
+    } catch (error) {
+      /* Show what the API actually said. Asserting a cause here ("sjekk at
+         tidsrommet er ledig") sent people looking for an overlap whenever the
+         real failure was something else entirely. */
+      setError(apiErrorMessage(error) ?? "Kunne ikke lagre pop-upen.");
     } finally {
       setSaving(false);
     }
@@ -349,7 +343,10 @@ const PopupScheduler: NextPage = () => {
     try {
       await updatePopup(popupId, payload);
     } catch (error) {
-      addSnack("Kunne ikke endre tidsrommet", SnackTypes.ERROR);
+      addSnack(
+        apiErrorMessage(error) ?? "Kunne ikke endre tidsrommet",
+        SnackTypes.ERROR,
+      );
       throw error;
     }
   };
@@ -363,8 +360,11 @@ const PopupScheduler: NextPage = () => {
       setDeletePopup(undefined);
       await query.mutate();
       addSnack("Pop-upen er slettet", SnackTypes.SUCCESS);
-    } catch {
-      addSnack("Kunne ikke slette pop-upen", SnackTypes.ERROR);
+    } catch (error) {
+      addSnack(
+        apiErrorMessage(error) ?? "Kunne ikke slette pop-upen",
+        SnackTypes.ERROR,
+      );
     }
   };
 
