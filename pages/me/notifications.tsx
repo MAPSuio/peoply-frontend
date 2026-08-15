@@ -7,6 +7,7 @@ import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
 } from "../../services/fetchers";
+import { ApiError } from "../../services/apiError";
 import {
   ButtonType,
   type CoOrganizerInvitationNotification,
@@ -93,6 +94,17 @@ export default function Notifications() {
   };
 
   /* updates a single notification with the given action and refetches the notifications */
+  function invitationErrorMessage(error: unknown) {
+    if (error instanceof ApiError && error.status === 403) {
+      const message = (error.body as { message?: string } | undefined)?.message;
+      if (message === "Invitation has expired") {
+        return "Invitasjonen har utløpt";
+      }
+      return "Du kan ikke lenger svare på denne invitasjonen";
+    }
+    return "Noe gikk galt";
+  }
+
   async function updateInvitation(
     notification: PeoplyNotification,
     action: InvitationStatus,
@@ -122,8 +134,8 @@ export default function Notifications() {
               SnackTypes.WARNING,
             );
           }
-        } catch {
-          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        } catch (error) {
+          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
         }
         break;
       }
@@ -162,8 +174,8 @@ export default function Notifications() {
               SnackTypes.WARNING,
             );
           }
-        } catch {
-          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        } catch (error) {
+          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
         }
         break;
       }
@@ -188,8 +200,8 @@ export default function Notifications() {
               SnackTypes.WARNING,
             );
           }
-        } catch {
-          addSnack("Noe gikk galt", SnackTypes.ERROR);
+        } catch (error) {
+          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
         }
         break;
       }
