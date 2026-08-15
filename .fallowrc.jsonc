@@ -1,0 +1,100 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+
+  // Filer som kjøres eller lastes uten at noe importerer dem. Next-pluginen
+  // finner pages/ og API-rutene selv; dette er resten. Tilpass når du legger
+  // til nye inngangspunkter, ellers rapporteres de som ubrukte filer.
+  "entry": ["test/setup.ts"],
+
+  // Byggeartefakter fra Next. dist/ og build/ er allerede ekskludert av fallow.
+  "ignorePatterns": [".next/**"],
+
+  // Pakker som brukes uten et import-uttrykk fallow ser. Skriv én linje per
+  // pakke med hvorfor — ellers vokser lista uten at noen tør rydde.
+  "ignoreDependencies": [
+    // Next kompilerer .scss selv og krever at sass er installert.
+    "sass",
+    // Next bruker sharp til bildeoptimalisering i produksjon. Ligger også som
+    // overrides-mål i package.json.
+    "sharp",
+    // Lastes av stylelint via "plugins" i .stylelintrc, ikke av en import.
+    "@stylistic/stylelint-plugin"
+  ],
+
+  "rules": {
+    // Alt som handler om kode ingen bruker, skal stoppe PR-en. Standard er
+    // allerede error for de fleste; disse er hevet fra warn.
+    "unused-dev-dependencies": "error",
+    "unused-optional-dependencies": "error",
+    "type-only-dependencies": "error",
+    "test-only-dependencies": "error",
+    "dev-dependencies-in-production": "error",
+    "re-export-cycle": "error",
+
+    // React/Next-spesifikt: en komponent ingen rendrer, en prop ingen leser
+    // eller en server action ingen kaller er død kode på linje med resten.
+    "unrendered-components": "error",
+    "unused-component-props": "error",
+    "unused-server-actions": "error",
+    "invalid-client-export": "error",
+    "mixed-client-server-barrel": "error",
+    "misplaced-directive": "error",
+
+    // Vi har brukerdata og innlogging. Server-kode som lekker inn i klienten
+    // eller en usikker sink skal ikke kunne snike seg forbi review.
+    "security-client-server-leak": "error",
+    "security-sink": "error",
+    "private-type-leaks": "error",
+
+    // SCSS-modulene: en referanse som ikke finnes eller en regel ingen bruker
+    // er en feil. De tre stilistiske CSS-reglene står som warn med vilje —
+    // de er smakssaker, og skal ikke blokkere en PR.
+    "css-broken-reference": "error",
+    "css-dead-surface": "error",
+
+    // Suppressions skal ha en begrunnelse, og de skal fjernes når de er
+    // utdaterte. Uten dette samler det seg opp ignore-kommentarer ingen
+    // husker hvorfor står der.
+    "require-suppression-reason": "error",
+    "stale-suppressions": "error"
+  },
+
+  "health": {
+    // Strengere enn fallows standard (20/15/60). En funksjon over disse
+    // grensene skal deles opp, ikke forklares bort. Trenger du unntak, bruk
+    // thresholdOverrides med en begrunnelse framfor å heve taket for alle.
+    "maxCyclomatic": 10,
+    "maxCognitive": 12,
+    "maxUnitSize": 50,
+
+    // CRAP er slått av som port. Formelen er cyclomatic² × (1 − dekning)³ +
+    // cyclomatic, og vi mater ikke inn dekningsdata, så fallow gjetter den.
+    // Gjetter den null, gir standardterskelen på 30 utslag på alt med
+    // cyclomatic ≥ 5 — det er en cyclomatic-teller med misvisende navn, og du
+    // kommer ikke forbi den ved å rydde. 500 ligger over det cyclomatic 20 gir
+    // ved null dekning, så cyclomatic, cognitive og unit size slår alltid ut
+    // først. Skru på ordentlig CRAP-måling den dagen CI produserer
+    // coverage-final.json.
+    //
+    // NB: nøkkelen slår ikke gjennom til `fallow audit` i 3.15.0 — workflowen
+    // sender --max-crap 500 på kommandolinja i tillegg.
+    "maxCrap": 500
+  },
+
+  "duplicates": {
+    // semantic blinder identifikatorer, så en kopiert funksjon med nye
+    // variabelnavn også fanges. `near` står av: gapped near-miss-deteksjon
+    // finner mye, men det meste av det er ikke kopier.
+    "mode": "semantic"
+  },
+
+  "typeAware": {
+    // Semantisk TypeScript-analyse. Uten den er «er dette symbolet brukt?»
+    // et tekstsøk; med den følger fallow faktiske typer på tvers av filer.
+    // best-effort: mangler den typeinfo et sted, rapporteres hullet framfor
+    // å felle hele jobben.
+    "enabled": true,
+    "projects": ["tsconfig.json"],
+    "require": "best-effort"
+  }
+}
