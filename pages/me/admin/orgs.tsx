@@ -12,52 +12,35 @@ import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
-import { MAPS_ORG_ID } from "../../../constants/organizations";
+import { isAdmin } from "../../../utils/admin";
 import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApi,
 } from "../../../services/fetchers";
-import {
-  type Organization,
-  OrganizationRole,
-  SnackTypes,
-} from "../../../types/types";
+import { type Organization, SnackTypes } from "../../../types/types";
 import styles from "../../../styles/OrganizationApprovalAdmin.module.scss";
 
 const OrganizationApprovalAdmin: NextPage = () => {
-  const { user, loading, orgs, orgsLoaded } = useUser();
+  const { user, loading } = useUser();
   const redirectToLogin = useRedirectToLogin();
   const goBack = useBack();
   const router = useRouter();
   const { addSnack } = useSnack();
 
-  const mapsOrg = orgs?.find((org) => org.id === MAPS_ORG_ID);
-  const isMapsMember = Boolean(mapsOrg);
-
-  /* Reading the queue is open to all of MAPS, but flipping approved is not:
+  /* Reading the queue is broader than changing approval:
      unapproving hides an organization and every one of its events from
      listings, recommendations and their own pages, platform wide. The API
-     answers 403 for a plain member, so showing them the button would only
-     produce a snack. */
-  const isMapsAdmin = Boolean(
-    mapsOrg?.organizationRoles?.some(
-      (role) =>
-        role.userId === user?.id &&
-        (role.role === OrganizationRole.ADMIN ||
-          role.role === OrganizationRole.OWNER),
-    ),
-  );
+     answers 403 without write access, so showing the button would only fail. */
+  const hasWriteAccess = isAdmin(user);
 
-  /* `orgs` is fetched separately from the user and starts out empty, so
-     redirecting before it has settled bounces legitimate MAPS members. */
   useEffect(() => {
-    if (!loading && user && orgsLoaded && !isMapsMember) {
+    if (!loading && user && !user.hasAdminAccess) {
       router.replace("/me");
     }
-  }, [isMapsMember, loading, orgsLoaded, router, user]);
+  }, [loading, router, user]);
 
   const organizationsQuery = useSWR<Organization[]>(
-    user && isMapsMember ? "/organizations/admin/all" : null,
+    user?.hasAdminAccess ? "/organizations/admin/all" : null,
     fetchAllFromPeoplyApiJson,
   );
   const { mutate } = organizationsQuery;
@@ -89,7 +72,7 @@ const OrganizationApprovalAdmin: NextPage = () => {
     return <></>;
   }
 
-  if (!loading && user && !isMapsMember) {
+  if (!loading && user && !user.hasAdminAccess) {
     return <></>;
   }
 
@@ -104,9 +87,9 @@ const OrganizationApprovalAdmin: NextPage = () => {
         <div className={styles.header}>
           <h1>Admin: foreninger</h1>
           <p>
-            {isMapsAdmin
+            {hasWriteAccess
               ? "Se alle foreninger og sett approved-status."
-              : "Se alle foreninger. Bare MAPS-administratorer kan endre approved-status."}
+              : "Se alle foreninger. Bare administratorer kan endre approved-status."}
           </p>
         </div>
         <QueryState
@@ -130,7 +113,7 @@ const OrganizationApprovalAdmin: NextPage = () => {
                         {organization.orgNr || organization.id}
                       </p>
                     </div>
-                    {isMapsAdmin ? (
+                    {hasWriteAccess ? (
                       <Button
                         text={
                           organization.approved ? "Approved" : "Ikke approved"

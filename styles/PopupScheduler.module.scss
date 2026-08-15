@@ -1,0 +1,223 @@
+.container {
+  margin: 0 auto 6rem;
+  width: 90%;
+
+  @include desktop() {
+    max-width: 820px;
+  }
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: $spacer-small;
+  justify-content: space-between;
+  margin: $spacer-medium 0 $spacer-medium-plus;
+
+  h1 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    margin-bottom: $spacer-mini;
+  }
+
+}
+
+.addButton {
+  flex: 0 0 44px;
+
+  svg {
+    stroke: var(--text-color-button, $text-color-button);
+  }
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-medium-plus;
+}
+
+.sectionHeading {
+  align-items: center;
+  display: flex;
+  gap: $spacer-very-small;
+  margin-bottom: $spacer-small;
+
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-heading-small;
+  }
+
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+}
+
+.card {
+  background: var(--background-color-card, $background-color-card);
+  border: 1px solid transparent;
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  overflow: visible;
+  padding: $spacer-small;
+
+  h3 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-heading-small;
+    margin: $spacer-very-small 0;
+  }
+
+  &.active {
+    border-color: var(--success-color-border, $success-color-border);
+    box-shadow: 0 0 0 3px var(--success-color-muted, $success-color-muted);
+  }
+
+  &.past {
+    box-shadow: none;
+    filter: grayscale(0.7);
+    opacity: 0.58;
+  }
+}
+
+.preview {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  font-size: $font-size-secondary;
+  -webkit-line-clamp: 2;
+  line-height: $line-height-text;
+  margin-bottom: $spacer-small;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.rangePicker {
+  position: relative;
+}
+
+.cardFooter {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dateRange {
+  @include monoFont();
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+  white-space: nowrap;
+}
+
+.calendarPopover {
+  background: var(--background-color-modal, $background-color-modal);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  padding: $spacer-very-small;
+  position: absolute;
+  right: 0;
+  top: calc(100% + $spacer-mini);
+  z-index: 2;
+
+}
+
+.dayPicker {
+  --rdp-accent-color: var(--primary-color-200, #{$primary-color-200});
+  --rdp-day-height: 36px;
+  --rdp-day-width: 36px;
+
+  margin: 0;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: $spacer-mini;
+  justify-content: flex-end;
+
+  button {
+    @include resetButton();
+    align-items: center;
+    display: flex;
+    font-size: $font-size-tertiary;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0;
+    width: 44px;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    svg {
+      height: 20px;
+      stroke: currentcolor;
+      width: 20px;
+    }
+  }
+}
+
+.delete {
+  color: var(--danger-color, $danger-color);
+}
+
+.emptyActive, .empty {
+  border: 1px dashed var(--divider-color, $divider-color);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-primary, $text-color-primary);
+  padding: $spacer-medium;
+  text-align: center;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  max-height: min(70dvh, 650px);
+  overflow-y: auto;
+  padding: 2px;
+  width: 100%;
+}
+
+.label {
+  @include label();
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-mini;
+
+  > span {
+    @include monoFont();
+    align-self: flex-end;
+    font-size: $font-size-tertiary;
+  }
+}
+
+.input, .textarea {
+  @include input();
+  max-width: none;
+  width: 100%;
+}
+
+.textarea {
+  line-height: $line-height-text;
+  resize: vertical;
+}
+
+.dateGrid {
+  display: grid;
+  gap: $spacer-very-small;
+  grid-template-columns: 1fr;
+  margin-top: $spacer-very-small;
+
+  @include desktop() {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formError {
+  color: var(--error-color, $error-color);
+  font-size: $font-size-secondary;
+  margin-top: $spacer-very-small;
+}

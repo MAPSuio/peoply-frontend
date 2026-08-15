@@ -1,0 +1,13 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-small;
+  width: 100%;
+
+  p {
+    color: var(--text-color-primary, $text-color-primary);
+    line-height: $line-height-text;
+    margin: 0;
+    white-space: pre-line;
+  }
+}
