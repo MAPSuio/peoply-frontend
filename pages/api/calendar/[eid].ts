@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import type { Event } from "../../../types/types";
+import { isValidEventId } from "../../../utils/eventId";
 import { createEventIcs } from "../../../utils/ics";
 
 function sanitizeFileName(value: string) {
@@ -18,7 +19,7 @@ export default async function handler(
   const eventId = Array.isArray(eid) ? eid[0] : eid;
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!eventId || !apiBaseUrl) {
+  if (!eventId || !apiBaseUrl || !isValidEventId(eventId)) {
     res.status(400).json({ message: "Missing calendar event configuration" });
     return;
   }
@@ -27,9 +28,12 @@ export default async function handler(
   const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
-    const response = await fetch(`${apiBaseUrl}/events/${eventId}`, {
-      signal: controller.signal,
-    });
+    const response = await fetch(
+      `${apiBaseUrl}/events/${encodeURIComponent(eventId)}`,
+      {
+        signal: controller.signal,
+      },
+    );
 
     if (!response.ok) {
       res.status(response.status).json({ message: "Event not found" });

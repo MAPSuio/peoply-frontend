@@ -43,6 +43,7 @@ import {
 } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 import { getEventImage, getSafeExternalUrl } from "../../../utils/event";
+import { isValidEventId } from "../../../utils/eventId";
 
 // Types.
 import {
@@ -558,7 +559,11 @@ async function fetchEventForRequest(
   baseApiUrl: string,
   res: GetServerSidePropsContext["res"],
 ) {
-  const eventUrl = `${baseApiUrl}/events/${eid.toUpperCase()}`;
+  /* eid is validated with isValidEventId before we get here; encoding keeps
+     the value inside a single path segment regardless. */
+  const eventUrl = `${baseApiUrl}/events/${encodeURIComponent(
+    eid.toUpperCase(),
+  )}`;
 
   const requestHeaders = cookieHeader ? { cookie: cookieHeader } : undefined;
   let eventResponse = await fetch(eventUrl, {
@@ -601,6 +606,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { eid } = context.params as IParams;
   const baseApiUrl =
     process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL;
+
+  if (!eid || !isValidEventId(eid)) {
+    return {
+      notFound: true,
+    };
+  }
 
   try {
     if (!baseApiUrl) {
