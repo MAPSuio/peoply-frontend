@@ -78,15 +78,21 @@ export async function fetchFromPeoplyApiJson(
 ) {
   const res = await fetchFromPeoplyApi(resource, init, options);
 
-  /* The API answers "this resource does not exist for you" with 204 and an
-     empty body - GET /users/:id/registrations/:eventId does it for every event
-     the user has not signed up for. Calling .json() on that throws a
-     SyntaxError, which is not a Response, so it slips past the status-based
-     suppression in SwrProvider's onError and snacks at the user. Absence is a
-     legitimate answer, so return it as one. */
+  /* The API answers "this resource does not exist for you" with an empty body,
+     in two shapes. GET /users/:id/registrations/:eventId sends 204 for every
+     event the user has not signed up for. GET /popups/active sends a *200*
+     with no body when nothing is scheduled: Nest's express adapter replies
+     `response.send()` for any handler resolving to null, so the status alone
+     does not identify absence. Calling .json() on either throws a SyntaxError,
+     which is not a Response, so it slips past the status-based suppression in
+     SwrProvider's onError and snacks at the user. Absence is a legitimate
+     answer, so return it as one. */
   if (res.status === 204) return undefined;
 
-  return res.json();
+  const text = await res.text();
+  if (!text) return undefined;
+
+  return JSON.parse(text);
 }
 
 export async function fetchFromPeoplyApi(

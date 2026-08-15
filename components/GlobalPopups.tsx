@@ -4,7 +4,6 @@ import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import type { Popup } from "../types/types";
 import styles from "../styles/GlobalPopups.module.scss";
-import AnnouncementBanner from "./AnnouncementBanner";
 import Modal from "./Modal";
 import ModalButton from "./ModalButton";
 
@@ -45,16 +44,21 @@ function ScheduledPopup({ popup }: { popup: Popup }) {
 }
 
 export default function GlobalPopups() {
-  const { data, error, isLoading } = useSWR<Popup | null>(
+  /* Mounted in _app, so this runs on every page. A popup that only starts
+     mattering once it is scheduled does not need to appear mid-session:
+     picking it up on the next page load is soon enough, and polling from
+     every open tab is a request per minute per tab for a value that changes
+     a handful of times a semester. */
+  const { data } = useSWR<Popup | undefined>(
     "/popups/active",
     fetchFromPeoplyApiJson,
-    { refreshInterval: 60_000 },
+    { revalidateOnFocus: false, revalidateOnReconnect: false },
   );
 
-  if (isLoading) return null;
-  if (data) return <ScheduledPopup popup={data} />;
+  /* Nothing scheduled, still loading and a failed lookup all mean the same
+     thing here: no dialog. Every announcement is a scheduled popup now, so
+     there is no hardcoded fallback to fall back to. */
+  if (!data) return null;
 
-  // Keep the existing announcement as fallback, but never mount two dialogs.
-  if (data === null || error) return <AnnouncementBanner />;
-  return null;
+  return <ScheduledPopup popup={data} />;
 }

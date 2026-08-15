@@ -25,7 +25,7 @@ function mockUserSearch(result: User[] = []) {
     "fetch",
     vi.fn(async (url: string) => {
       searched.push(new URL(url).searchParams.get("name") ?? "");
-      return { ok: true, status: 200, json: async () => result };
+      return new Response(JSON.stringify(result), { status: 200 });
     }),
   );
 
@@ -82,7 +82,7 @@ describe("UserSelect", () => {
       "fetch",
       vi.fn(async (url: string) => {
         requested.push(url);
-        return { ok: true, status: 200, json: async () => [] };
+        return new Response("[]", { status: 200 });
       }),
     );
 
