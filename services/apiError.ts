@@ -24,6 +24,36 @@ export class ApiError extends Error {
 }
 
 /**
+ * The message the API sent with a failed request, when it sent one worth
+ * showing.
+ *
+ * Nest answers errors with `{ statusCode, message, error }`, where `message`
+ * is a string for a thrown HttpException and an array of strings for a
+ * ValidationPipe rejection. Returns undefined when there is nothing usable,
+ * so callers keep their own wording as the fallback rather than showing an
+ * empty error.
+ */
+export function apiErrorMessage(error: unknown): string | undefined {
+  if (!(error instanceof ApiError) || typeof error.body !== "object") {
+    return undefined;
+  }
+
+  const { message } = (error.body ?? {}) as { message?: unknown };
+
+  if (typeof message === "string" && message.trim()) return message;
+
+  if (Array.isArray(message)) {
+    const messages = message.filter(
+      (entry): entry is string =>
+        typeof entry === "string" && Boolean(entry.trim()),
+    );
+    if (messages.length) return messages.join(". ");
+  }
+
+  return undefined;
+}
+
+/**
  * Thrown when a request is aborted for exceeding its timeout, or fails
  * before any response arrives at all (offline, DNS failure, CORS, etc).
  * Kept distinct from a plain ApiError so callers can tell "the server never
