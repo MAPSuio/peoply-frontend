@@ -1,3 +1,51 @@
+import { ApiError } from "../services/apiError";
+
+/** The popup a rejected interval collided with, as the API reports it. */
+export interface PopupConflict {
+  id: string;
+  title: string;
+  startsAt: string;
+  endsAt: string;
+}
+
+/**
+ * Reads the popup behind a 409 out of the error body.
+ *
+ * "Tidsrommet overlapper en annen popup" is unactionable on its own: the
+ * scheduler list only revalidates after a successful write, so the popup the
+ * interval collided with is usually not on screen and the conflict reads as
+ * invented. Returns undefined when the API did not name one, so callers keep
+ * the plain message.
+ */
+export function popupConflict(error: unknown): PopupConflict | undefined {
+  if (!(error instanceof ApiError) || typeof error.body !== "object") {
+    return undefined;
+  }
+
+  const { conflictingPopup } = (error.body ?? {}) as {
+    conflictingPopup?: unknown;
+  };
+  if (typeof conflictingPopup !== "object" || conflictingPopup === null) {
+    return undefined;
+  }
+
+  const { id, title, startsAt, endsAt } = conflictingPopup as Record<
+    keyof PopupConflict,
+    unknown
+  >;
+
+  if (
+    typeof id !== "string" ||
+    typeof title !== "string" ||
+    typeof startsAt !== "string" ||
+    typeof endsAt !== "string"
+  ) {
+    return undefined;
+  }
+
+  return { id, title, startsAt, endsAt };
+}
+
 const dayMonthFormatter = new Intl.DateTimeFormat("nb-NO", {
   day: "numeric",
   month: "short",

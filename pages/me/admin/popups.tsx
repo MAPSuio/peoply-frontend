@@ -19,7 +19,7 @@ import useBack from "../../../hooks/useBack";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
-import { apiErrorMessage } from "../../../services/apiError";
+import { ApiError, apiErrorMessage } from "../../../services/apiError";
 import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
@@ -36,6 +36,8 @@ import {
   formatPopupRange,
   fromDateTimeLocal,
   getDefaultInterval,
+  type PopupConflict,
+  popupConflict,
 } from "../../../utils/popups";
 
 interface PopupPayload {
@@ -61,6 +63,7 @@ function ContentModal({
   const [endsAt, setEndsAt] = useState(defaults.endsAt);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [conflict, setConflict] = useState<PopupConflict>();
 
   const save = async () => {
     const trimmedTitle = title.trim();
@@ -84,6 +87,7 @@ function ContentModal({
 
     setSaving(true);
     setError("");
+    setConflict(undefined);
     try {
       await onSave(payload);
       onClose();
@@ -92,6 +96,7 @@ function ContentModal({
          tidsrommet er ledig") sent people looking for an overlap whenever the
          real failure was something else entirely. */
       setError(apiErrorMessage(error) ?? "Kunne ikke lagre pop-upen.");
+      setConflict(popupConflict(error));
     } finally {
       setSaving(false);
     }
@@ -150,7 +155,22 @@ function ContentModal({
             </label>
           </div>
         )}
-        {error && <p className={styles.formError}>{error}</p>}
+        {error && (
+          <div className={styles.formError} role="alert">
+            <p>{error}</p>
+            {/* Without the interval the admin has nothing to move out of the
+                way - the colliding popup is often not in the list behind this
+                dialog, since it only revalidates after a successful write. */}
+            {conflict && (
+              <p className={styles.conflictRange}>
+                {`«${conflict.title}» opptar ${formatPopupRange(
+                  conflict.startsAt,
+                  conflict.endsAt,
+                )}`}
+              </p>
+            )}
+          </div>
+        )}
         <ModalButton
           text={
             saving ? "Lagrer …" : popup ? "Lagre innhold" : "Opprett pop-up"
@@ -314,26 +334,49 @@ const PopupScheduler: NextPage = () => {
     fetchFromPeoplyApiJson,
   );
 
+  /* Best-effort on purpose: the write has already landed by the time this
+     runs, so a refresh that fails must not make it look like the write did.
+     SwrProvider's onError already reports the failed refresh itself. */
+  const refresh = () => {
+    query.mutate().catch(() => {
+      // Already surfaced by onError; nothing left for this caller to do.
+    });
+  };
+
+  /* The list only ever revalidated after a *successful* write, so the popup
+     behind a 409 was one it had usually never seen: the conflict named a row
+     that was nowhere on the page, which reads as the scheduler making it up.
+     Pull the list in on conflict so the offender appears behind the dialog. */
+  const writePopup = async (resource: string, init: RequestInit) => {
+    try {
+      return await fetchFromPeoplyApiJson(resource, {
+        headers: { "Content-Type": "application/json" },
+        ...init,
+      });
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) refresh();
+      throw error;
+    }
+  };
+
   const createPopup = async (payload: PopupPayload) => {
-    await fetchFromPeoplyApiJson("/popups", {
+    await writePopup("/popups", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    await query.mutate();
     addSnack("Pop-upen er planlagt", SnackTypes.SUCCESS);
+    refresh();
   };
 
   const updatePopup = async (
     popupId: string,
     payload: Partial<PopupPayload>,
   ) => {
-    await fetchFromPeoplyApiJson(`/popups/${popupId}`, {
+    await writePopup(`/popups/${popupId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    await query.mutate();
+    refresh();
   };
 
   const updateDates = async (
@@ -358,8 +401,8 @@ const PopupScheduler: NextPage = () => {
         method: "DELETE",
       });
       setDeletePopup(undefined);
-      await query.mutate();
       addSnack("Pop-upen er slettet", SnackTypes.SUCCESS);
+      refresh();
     } catch (error) {
       addSnack(
         apiErrorMessage(error) ?? "Kunne ikke slette pop-upen",
@@ -399,17 +442,34 @@ const PopupScheduler: NextPage = () => {
         <QueryState query={query} errorMessage="Kunne ikke hente popupene.">
           {(popups) => {
             const now = Date.now();
-            const active = popups.find(
-              (popup) =>
-                new Date(popup.startsAt).getTime() <= now &&
-                new Date(popup.endsAt).getTime() > now,
-            );
-            const upcoming = popups.filter(
-              (popup) => new Date(popup.startsAt).getTime() > now,
-            );
-            const past = popups.filter(
-              (popup) => new Date(popup.endsAt).getTime() <= now,
-            );
+
+            /* Every popup lands in exactly one bucket, including one whose
+               dates we cannot read. Three independent predicates left such a
+               popup matching none of them, so it vanished from the page while
+               still occupying its interval - the scheduler then reported a
+               conflict against a popup that was nowhere on screen. */
+            const grouped: Record<"active" | "upcoming" | "past", Popup[]> = {
+              active: [],
+              upcoming: [],
+              past: [],
+            };
+
+            for (const popup of popups) {
+              const startsAt = new Date(popup.startsAt).getTime();
+              const endsAt = new Date(popup.endsAt).getTime();
+
+              if (Number.isNaN(startsAt) || Number.isNaN(endsAt)) {
+                grouped.upcoming.push(popup);
+              } else if (startsAt > now) {
+                grouped.upcoming.push(popup);
+              } else if (endsAt > now) {
+                grouped.active.push(popup);
+              } else {
+                grouped.past.push(popup);
+              }
+            }
+
+            const { active, upcoming, past } = grouped;
             const card = (
               popup: Popup,
               variant: "active" | "upcoming" | "past",
@@ -430,8 +490,8 @@ const PopupScheduler: NextPage = () => {
                   <div className={styles.sectionHeading}>
                     <h2 id="active-heading">Aktiv pop-up</h2>
                   </div>
-                  {active ? (
-                    card(active, "active")
+                  {active.length ? (
+                    active.map((popup) => card(popup, "active"))
                   ) : (
                     <div className={styles.emptyActive}>
                       <p>Ingen pop-up er aktiv akkurat nå.</p>

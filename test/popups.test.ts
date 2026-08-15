@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { ApiError } from "../services/apiError";
 import {
   formatPopupRange,
   fromDateTimeLocal,
   getDefaultInterval,
+  popupConflict,
   toDateTimeLocal,
 } from "../utils/popups";
 
@@ -43,5 +45,49 @@ describe("getDefaultInterval", () => {
       new Date(fromDateTimeLocal(endsAt)).getTime() -
         new Date(fromDateTimeLocal(startsAt)).getTime(),
     ).toBe(60 * 60 * 1000);
+  });
+});
+
+describe("popupConflict", () => {
+  const conflicting = {
+    id: "popup-1",
+    title: "Fadderuka",
+    startsAt: "2026-08-16T09:00:00.000Z",
+    endsAt: "2026-08-16T11:00:00.000Z",
+  };
+
+  it("reads the popup the API named in a 409", () => {
+    /* Without it the admin is told an interval is taken but not by what, and
+       the list behind the dialog may never have seen the offending popup. */
+    const error = new ApiError("failed", 409, "/popups", {
+      message: "Tidsrommet overlapper «Fadderuka»",
+      conflictingPopup: conflicting,
+    });
+
+    expect(popupConflict(error)).toEqual(conflicting);
+  });
+
+  it("returns undefined when the API named nothing", () => {
+    expect(
+      popupConflict(
+        new ApiError("failed", 409, "/popups", {
+          message: "Tidsrommet overlapper en annen popup",
+        }),
+      ),
+    ).toBeUndefined();
+    expect(
+      popupConflict(new ApiError("failed", 409, "/popups")),
+    ).toBeUndefined();
+    expect(popupConflict(new Error("offline"))).toBeUndefined();
+  });
+
+  it("rejects a payload missing the fields it would render", () => {
+    expect(
+      popupConflict(
+        new ApiError("failed", 409, "/popups", {
+          conflictingPopup: { id: "popup-1", title: "Fadderuka" },
+        }),
+      ),
+    ).toBeUndefined();
   });
 });
