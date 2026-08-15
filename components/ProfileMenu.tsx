@@ -3,7 +3,7 @@ import ProfileMenuItem from "./ProfileMenuItem";
 
 // Hooks.
 import useUser from "../hooks/useUser";
-import { MAPS_ORG_ID } from "../constants/organizations";
+import { isAdmin } from "../utils/admin";
 
 // Assets.
 import UserIcon from "./svgs/UserIcon";
@@ -14,13 +14,13 @@ import MailIcon from "./svgs/MailIcon";
 import LogoutIcon from "./svgs/LogoutIcon";
 import CloseIcon from "./svgs/CloseIcon";
 import UsersIcon from "./svgs/UsersIcon";
+import CalendarIconCard from "./svgs/CalendarIconCard";
 
 // Styles.
 import styles from "../styles/ProfileMenu.module.scss";
 
 export default function ProfileMenu() {
-  const { logout, orgs } = useUser();
-  const isMapsMember = orgs?.some((org) => org.id === MAPS_ORG_ID);
+  const { logout, user } = useUser();
 
   return (
     <div className={styles.container}>
@@ -42,12 +42,20 @@ export default function ProfileMenu() {
         ActionIcon={ChevronRightIcon}
         linkOrOnClick={"/me/following"}
       />
-      {isMapsMember && (
+      {user?.hasAdminAccess && (
         <ProfileMenuItem
           text="Admin: foreninger"
           Icon={BriefcaseIcon}
           ActionIcon={ChevronRightIcon}
           linkOrOnClick="/me/admin/orgs"
+        />
+      )}
+      {isAdmin(user) && (
+        <ProfileMenuItem
+          text="Schedule en pop-up"
+          Icon={CalendarIconCard}
+          ActionIcon={ChevronRightIcon}
+          linkOrOnClick="/me/admin/popups"
         />
       )}
       <ProfileMenuItem

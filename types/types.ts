@@ -16,6 +16,8 @@ export interface User {
   foodPreference?: FoodPreference;
   allowEmailFromArranger: boolean;
   allowEmailPromotions: boolean;
+  hasAdminAccess?: boolean;
+  isAdmin?: boolean;
   userAllergens?: {
     allergenId: number;
     allergen: { id: number; name: string };
@@ -157,6 +159,16 @@ export enum NotificationType {
 export interface PeoplyNotification {
   id: string;
   type: NotificationType;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Popup {
+  id: string;
+  title: string;
+  body: string;
+  startsAt: string;
+  endsAt: string;
   createdAt: string;
   updatedAt: string;
 }

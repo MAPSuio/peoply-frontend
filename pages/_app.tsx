@@ -1,6 +1,7 @@
 import "@fullcalendar/react/skeleton.css";
 import "@fullcalendar/react/themes/classic/theme.css";
 import "@fullcalendar/react/themes/classic/palette.css";
+import "react-day-picker/style.css";
 import "../styles/globals.scss";
 import styles from "../styles/App.module.scss";
 import type { AppProps } from "next/app";
@@ -12,7 +13,7 @@ import Head from "next/head";
 import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { SerwistProvider } from "@serwist/next/react";
-import AnnouncementBanner from "../components/AnnouncementBanner";
+import GlobalPopups from "../components/GlobalPopups";
 import ErrorBoundary from "../components/ErrorBoundary";
 import SwrProvider from "../components/SwrProvider";
 import {
@@ -95,7 +96,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     content="width=device-width, initial-scale=1"
                   />
                 </Head>
-                <AnnouncementBanner />
+                <GlobalPopups />
                 <div className={styles.wrapper}>
                   {backgroundPatternEnabled && (
                     <div className={styles.background} aria-hidden="true">
