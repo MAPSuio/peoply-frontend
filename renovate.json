@@ -4,6 +4,7 @@
   "enabledManagers": ["npm", "github-actions"],
   "timezone": "Europe/Oslo",
   "schedule": ["before 6am on Monday"],
+  "rebaseWhen": "behind-base-branch",
   "prConcurrentLimit": 10,
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
