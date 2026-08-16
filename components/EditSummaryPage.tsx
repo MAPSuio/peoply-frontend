@@ -574,7 +574,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     "/organizations?orderBy=name",
     fetchAllFromPeoplyApiJson,
   );
-  const { data: goingCount } = useRegistrationCount(event.id);
+  const { data: goingCount } = useRegistrationCount(event);
 
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = tempEventObject.eventImage

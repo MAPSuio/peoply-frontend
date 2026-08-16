@@ -91,7 +91,7 @@ const LargeEventCard = ({
   const timeString = formatTimeRange(startDate, endDate);
 
   const { data: registrations, mutate: updateRegistrations } =
-    useRegistrationCount(event.id);
+    useRegistrationCount(event);
 
   return (
     <Link

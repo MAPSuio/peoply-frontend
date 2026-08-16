@@ -1,15 +1,37 @@
 import useSWR from "swr";
 
-import { RegStatus } from "../types/types";
+import { type Event, RegStatus } from "../types/types";
 
 /**
- * Number of people going to an event. Three views built this URL by hand; one
- * place to change it if the endpoint or the status ever moves.
+ * Number of people going to an event.
+ *
+ * `GET /events` and `GET /events/:id` both carry `goingCount`, so a caller
+ * that already holds the event has the number in hand and there is nothing to
+ * fetch. That matters in lists: every card used to ask for its own count, so
+ * the front page was ten extra requests and `/events` with 30 cards was
+ * thirty, and the numbers appeared well after the cards they belong to.
+ *
+ * The request is not removed, only skipped. Events reached through endpoints
+ * that do not carry the count (a user's registrations or favourites, say) pass
+ * an event without `goingCount` and fetch exactly as before, so this does not
+ * depend on the backend and the frontend deploying in any particular order.
+ *
+ * `mutate()` still revalidates against the API, which is what keeps the count
+ * moving when someone joins or leaves from the card itself: the seeded value
+ * is a starting point, not a ceiling.
  */
-export default function useRegistrationCount(eventId?: string) {
+export default function useRegistrationCount(
+  event?: Pick<Event, "id" | "goingCount">,
+) {
+  const seeded = event?.goingCount;
+
   return useSWR<number>(
-    eventId
-      ? `/events/${eventId}/registration-count?regStatus=${RegStatus.GOING}`
+    event?.id
+      ? `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`
       : null,
+    {
+      fallbackData: seeded,
+      revalidateOnMount: seeded === undefined,
+    },
   );
 }
