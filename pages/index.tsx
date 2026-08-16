@@ -66,19 +66,26 @@ const FADDERUKE_HEADER = "Velkommen til fadderuken!";
 
 const Home: NextPage = () => {
   const { user } = useUser();
-  const [todayString, setTodayString] = useState<string>(
-    new Date().toISOString(),
-  );
+  /* Computed once on mount rather than in an effect. The effect version set
+     this twice - `new Date()` on the first render, then two hours earlier once
+     the effect ran - and SWR keys off the value, so every load of the front
+     page fired two `/events` requests and threw the first answer away:
+
+       GET /events?afterDate=2026-08-16T09:40:33.701Z&orderBy=startDate
+       GET /events?afterDate=2026-08-16T07:40:33.714Z&orderBy=startDate
+
+     Nothing renders the value, so unlike `upcomingHeader` below it cannot
+     produce a hydration mismatch by being decided during render. */
+  const [todayString] = useState<string>(() => {
+    const today = new Date();
+    today.setHours(today.getHours() - 2);
+    return today.toISOString();
+  });
   const [upcomingHeader, setUpcomingHeader] = useState<string>(
     DEFAULT_UPCOMING_HEADER,
   );
 
   useEffect(() => {
-    const today = new Date();
-    today.setHours(today.getHours() - 2);
-    const s = today.toISOString();
-    setTodayString(s);
-
     if (new Date() < FADDERUKE_HEADER_UNTIL) {
       setUpcomingHeader(FADDERUKE_HEADER);
     }
