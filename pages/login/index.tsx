@@ -7,7 +7,7 @@ import useUser from "../../hooks/useUser";
 import styles from "../../styles/Login.module.scss";
 import MobileLoginIllustration from "../../components/svgs/MobileLoginIllustration";
 import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
-import Link from "next/link";
+import Link from "../../components/Link";
 import HeadComponent from "../../components/HeadComponent";
 import { API_URL } from "../../constants/urls";
 import { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
 // Next.js.
 import Image from "next/image";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
-import Link from "next/link";
+import Link from "../../../components/Link";
 import router from "next/router";
 
 // React.

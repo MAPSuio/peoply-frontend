@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "./Link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "../styles/Navbar.module.scss";

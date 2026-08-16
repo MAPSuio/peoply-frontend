@@ -4,7 +4,7 @@ import { ButtonType } from "../types/types";
 
 // Styles.
 import styles from "../styles/Button.module.scss";
-import Link from "next/link";
+import Link from "./Link";
 import { IconPlacement } from "./Button";
 
 interface LinkButtonProps {

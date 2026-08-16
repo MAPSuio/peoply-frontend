@@ -1,6 +1,6 @@
 import BellIcon from "./svgs/BellIcon";
 import styles from "../styles/NotificationIndicator.module.scss";
-import Link from "next/link";
+import Link from "./Link";
 
 interface NotificationIndicatorProps {
   hasUnreadNotifications: boolean;

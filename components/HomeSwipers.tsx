@@ -16,7 +16,7 @@
  * pages/index.tsx so they are present at first paint rather than arriving with
  * this chunk. See the comment there, and the one in styles/Home.module.scss.
  */
-import Link from "next/link";
+import Link from "./Link";
 import type { UrlObject } from "node:url";
 
 import { Swiper, SwiperSlide } from "swiper/react";

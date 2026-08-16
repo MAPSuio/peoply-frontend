@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Image from "next/legacy/image";
-import Link from "next/link";
+import Link from "../components/Link";
 
 import Button from "../components/Button";
 import ErrorImage from "../assets/images/undraw_404.png";

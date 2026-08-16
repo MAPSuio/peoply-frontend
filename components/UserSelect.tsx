@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "./Link";
 import { useEffect, useMemo, useState } from "react";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/UserSearch.module.scss";

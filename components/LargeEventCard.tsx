@@ -1,5 +1,5 @@
 // Next.js.
-import Link from "next/link";
+import Link from "./Link";
 import Image from "next/image";
 
 // Components.
