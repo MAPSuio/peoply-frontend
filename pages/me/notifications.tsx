@@ -28,7 +28,7 @@ import SleepImage from "../../assets/images/undraw_sleeping.png";
 import Image from "next/legacy/image";
 import useNotifications from "../../hooks/useNotifications";
 import useSWR from "swr";
-import Link from "next/link";
+import Link from "../../components/Link";
 import { groupBy } from "../../utils/functions";
 import Modal from "../../components/Modal";
 import { useState } from "react";

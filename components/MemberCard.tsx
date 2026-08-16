@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "./Link";
 import type { ReactElement } from "react";
 import styles from "../styles/MemberCard.module.scss";
 import type { User } from "../types/types";

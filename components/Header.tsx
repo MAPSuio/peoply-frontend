@@ -1,5 +1,5 @@
 // Next.js.
-import Link from "next/link";
+import Link from "./Link";
 
 // Components.
 import Avatar from "./Avatar";

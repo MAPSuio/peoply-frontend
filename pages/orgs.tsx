@@ -1,7 +1,7 @@
 // Next.js.
 import useSWR from "swr";
 import HeadComponent from "../components/HeadComponent";
-import Link from "next/link";
+import Link from "../components/Link";
 
 // React.
 import { useMemo } from "react";

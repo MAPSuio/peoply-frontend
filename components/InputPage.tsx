@@ -12,7 +12,7 @@ import type { InputPages } from "../types/types";
 // Styles.
 import styles from "../styles/InputPage.module.scss";
 import CloseIcon from "./svgs/CloseIcon";
-import Link from "next/link";
+import Link from "./Link";
 
 interface InputPageProps {
   step: number;

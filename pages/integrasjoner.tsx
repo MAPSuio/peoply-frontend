@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "../components/Link";
 
 import BackButton from "../components/BackButton";
 import HeadComponent from "../components/HeadComponent";

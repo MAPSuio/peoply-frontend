@@ -11,7 +11,7 @@
  * user gating of its own.
  */
 // Next.js.
-import Link from "next/link";
+import Link from "./Link";
 
 // Hooks.
 import useSWR from "swr";

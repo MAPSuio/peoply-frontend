@@ -1,5 +1,5 @@
 // Next.js.
-import Link from "next/link";
+import Link from "../../../components/Link";
 import type { GetStaticProps } from "next";
 import useSWR from "swr";
 import { useRouter } from "next/router";

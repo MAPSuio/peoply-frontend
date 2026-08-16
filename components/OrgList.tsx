@@ -5,7 +5,7 @@ import styles from "../styles/OrgList.module.scss";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import PlusIcon from "./svgs/PlusIcon";
 import router from "next/router";
-import Link from "next/link";
+import Link from "./Link";
 
 interface OrgListProps {
   orgs: Organization[];
