@@ -14,6 +14,7 @@ import { NotificationsProvider } from "../hooks/useNotifications";
 import { ThemeProvider } from "next-themes";
 import { SerwistProvider } from "@serwist/next/react";
 import GlobalPopups from "../components/GlobalPopups";
+import { mainFont, monoFont } from "../styles/fonts";
 import ErrorBoundary from "../components/ErrorBoundary";
 import SwrProvider from "../components/SwrProvider";
 import {
@@ -96,6 +97,16 @@ function MyApp({ Component, pageProps }: AppProps) {
                     content="width=device-width, initial-scale=1"
                   />
                 </Head>
+                {/* The variables go on <html> rather than on the wrapper
+                    below, so GlobalPopups and the snackbar - which render as
+                    siblings of it - are covered too. This is server rendered,
+                    so the font is in place at first paint. */}
+                <style jsx global>{`
+                  html {
+                    --font-main: ${mainFont.style.fontFamily};
+                    --font-mono: ${monoFont.style.fontFamily};
+                  }
+                `}</style>
                 <GlobalPopups />
                 <div className={styles.wrapper}>
                   {backgroundPatternEnabled && (

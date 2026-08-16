@@ -340,9 +340,12 @@ $shadow-input-light: 0px 5px 12px rgba(106, 106, 106, 0.2);
 $shadow-button-confirmed-light: 0px 8px 20px rgba(124, 77, 255, 0.1);
 $shadow-button-confirmed-hover-light: 0px 8px 20px rgba(124, 77, 255, 0.3);
 
-// Font families.
-$main-font: "Space Grotesk", sans-serif;
-$mono-font: "Space Mono", monospace;
+// Font families. next/font defines these custom properties on <html> from
+// _app; see styles/fonts.ts. Each already resolves to the real face followed
+// by a metric-matched fallback ("Space Grotesk Fallback"), so naming the
+// typeface again here would only duplicate it in the computed value.
+$main-font: var(--font-main), sans-serif;
+$mono-font: var(--font-mono), monospace;
 
 // Font weights.
 $font-weight-regular: 400;
