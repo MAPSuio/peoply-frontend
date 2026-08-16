@@ -2,13 +2,11 @@
    prelude so the html.dark/.night/.light selectors are emitted exactly once,
    from a non-module stylesheet where they stay unhashed and can match.
 
-   This sits above the font @imports because Sass requires @use to precede
-   every other rule in a file. The emitted CSS is unaffected: @use produces no
-   output, so the `@import url(...)` lines below still lead the stylesheet. */
+   The fonts used to be pulled in right below this with two `@import url(...)`
+   lines against fonts.googleapis.com, one of which was a strict subset of the
+   other and downloaded for nothing. next/font self-hosts them now and defines
+   $main-font/$mono-font as custom properties on <html>; see styles/fonts.ts. */
 @use "themes";
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -31,7 +29,7 @@ html.light {
 html,
 body {
   background-color: var(--background-color-primary, $background-color-primary);
-  font-family: "Space Grotesk", sans-serif;
+  font-family: $main-font;
   margin: 0;
   padding: 0;
 }
