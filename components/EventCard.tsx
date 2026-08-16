@@ -46,7 +46,7 @@ const EventCard = ({ event }: EventCardProps) => {
     data: registrations,
     error: registrationsError,
     mutate: updateRegistrations,
-  } = useRegistrationCount(event.id);
+  } = useRegistrationCount(event);
 
   return (
     <div className={styles.eventCard}>
