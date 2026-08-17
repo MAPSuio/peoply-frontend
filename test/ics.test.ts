@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { Event } from "../types/types";
+import type { Event, Organization } from "../types/types";
 import { getCalendarLinks } from "../utils/ics";
 
 const event = {
@@ -60,5 +60,70 @@ describe("getCalendarLinks", () => {
     expect(url.searchParams.get("dates")).toBe(
       "20260728T140000Z/20260728T150000Z",
     );
+  });
+});
+
+const organization = {
+  id: "0a677218-d9d8-4035-af3a-350fcd896e73",
+  urlId: "sifi",
+} as Organization;
+
+/* constants/urls reads NEXT_PUBLIC_API_URL once at module load - the same
+   textual substitution Next does at build time - so the env has to be stubbed
+   before the module is pulled in, not after. */
+async function loadOrganizationCalendarLinks(apiUrl: string) {
+  vi.resetModules();
+  vi.stubEnv("NEXT_PUBLIC_API_URL", apiUrl);
+
+  const { getOrganizationCalendarLinks } = await import("../utils/ics");
+
+  return getOrganizationCalendarLinks(organization);
+}
+
+describe("getOrganizationCalendarLinks", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("subscribes Apple Kalender to the feed over webcal", async () => {
+    const { links } = await loadOrganizationCalendarLinks(
+      "https://api.peoply.app",
+    );
+
+    expect(links.find((link) => link.provider === "apple")?.href).toBe(
+      "webcal://api.peoply.app/organizations/sifi/calendar.ics",
+    );
+  });
+
+  it("hands Google Calendar the feed url as cid", async () => {
+    const { links } = await loadOrganizationCalendarLinks(
+      "https://api.peoply.app/",
+    );
+
+    const url = new URL(
+      links.find((link) => link.provider === "google")?.href ?? "",
+    );
+    expect(url.origin).toBe("https://calendar.google.com");
+    expect(url.searchParams.get("cid")).toBe(
+      "webcal://api.peoply.app/organizations/sifi/calendar.ics",
+    );
+  });
+
+  it("keeps the https feed url for the .ics download", async () => {
+    const { downloadHref } = await loadOrganizationCalendarLinks(
+      "https://api.peoply.app",
+    );
+
+    expect(downloadHref).toBe(
+      "https://api.peoply.app/organizations/sifi/calendar.ics",
+    );
+  });
+
+  it("offers nothing when the api origin is not absolute", async () => {
+    const { links, downloadHref } = await loadOrganizationCalendarLinks("");
+
+    expect(links).toEqual([]);
+    expect(downloadHref).toBe("");
   });
 });

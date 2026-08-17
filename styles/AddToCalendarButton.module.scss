@@ -40,6 +40,9 @@
   max-width: 420px;
   padding: $spacer-small;
   position: relative;
+  /* The org page centres its header text, and the dialog used to inherit that
+     and come out ragged. The sheet looks the same wherever it is opened from. */
+  text-align: left;
   width: min(100%, 420px);
 
   @media (prefers-reduced-motion: no-preference) {
@@ -137,6 +140,16 @@
 .linkDescription {
   color: var(--text-color-primary, $text-color-primary);
   font-size: $font-size-secondary;
+}
+
+.footer {
+  margin-top: $spacer-very-small-plus;
+  text-align: center;
+
+  a {
+    color: var(--text-color-link, $text-color-link);
+    font-size: $font-size-secondary;
+  }
 }
 
 .linkChevron {

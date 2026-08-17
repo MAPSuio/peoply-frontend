@@ -1,9 +1,9 @@
-import { BASE_URL } from "../constants/urls";
+import { API_URL, BASE_URL } from "../constants/urls";
 import type { Event, Organization } from "../types/types";
 
 export type CalendarProvider = "google" | "apple";
 
-interface CalendarLink {
+export interface CalendarLink {
   provider: CalendarProvider;
   label: string;
   description: string;
@@ -18,8 +18,8 @@ interface CalendarLinkOptions {
   preferWebcal?: boolean;
 }
 
-interface OrganizationCalendarLink {
-  subscribeHref: string;
+interface OrganizationCalendarLinks {
+  links: CalendarLink[];
   downloadHref: string;
 }
 
@@ -146,25 +146,51 @@ export function getCalendarLinks(
   ];
 }
 
+/* An organization's calendar is a feed, not a one-off event: the point is that
+   the client keeps polling the URL and picks up new arrangements. So both
+   providers get the feed URL itself rather than a prefilled event - Apple via
+   webcal://, which the Calendar app registers as a subscription, and Google via
+   the cid parameter, which opens the "add calendar from URL" flow. A bare
+   webcal:// link was the only option before, so anyone not on an Apple device
+   clicked it and nothing happened. */
 export function getOrganizationCalendarLinks(
   organization: Pick<Organization, "id" | "urlId">,
-): OrganizationCalendarLink {
+): OrganizationCalendarLinks {
   const organizationSlug = organization.urlId || organization.id;
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "";
+  const apiBaseUrl = API_URL.replace(/\/$/, "");
+  const feedHref = apiBaseUrl
+    ? `${apiBaseUrl}/organizations/${encodeURIComponent(
+        organizationSlug,
+      )}/calendar.ics`
+    : "";
 
-  if (!apiBaseUrl) {
-    return {
-      subscribeHref: "",
-      downloadHref: "",
-    };
+  /* Both subscription flows need an absolute URL - a calendar client resolves
+     it on its own servers, where a relative path means nothing. */
+  if (!/^https?:\/\//.test(feedHref)) {
+    return { links: [], downloadHref: "" };
   }
 
-  const downloadHref = `${apiBaseUrl}/organizations/${organizationSlug}/calendar.ics`;
+  const webcalHref = feedHref.replace(/^https?:\/\//, "webcal://");
 
   return {
-    subscribeHref: /^https?:\/\//.test(downloadHref)
-      ? downloadHref.replace(/^https?:\/\//, "webcal://")
-      : "",
-    downloadHref,
+    links: [
+      {
+        provider: "google",
+        label: "Google Kalender",
+        description: "Abonnerer på arrangementene i Google Kalender",
+        href: `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(
+          webcalHref,
+        )}`,
+        external: true,
+      },
+      {
+        provider: "apple",
+        label: "Apple Kalender",
+        description: "Åpner Kalender-appen og abonnerer",
+        href: webcalHref,
+        external: false,
+      },
+    ],
+    downloadHref: feedHref,
   };
 }

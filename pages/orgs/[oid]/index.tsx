@@ -13,6 +13,7 @@ import BackButton from "../../../components/BackButton";
 import LargeEventCard from "../../../components/LargeEventCard";
 import Layout from "../../../components/Layout";
 import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
+import CalendarLinksButton from "../../../components/CalendarLinksButton";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import SettingsIcon from "../../../components/svgs/SettingsIcon";
 import UsersIconCard from "../../../components/svgs/UsersIconCard";
@@ -330,26 +331,24 @@ const Organization = ({ organization }: OrganizationProps) => {
                the request is actually running instead. */
             loading={followedArrangersLoading}
           />
-          {organizationCalendarLinks.downloadHref && (
-            <div className={styles.calendarActions}>
-              {organizationCalendarLinks.subscribeHref && (
+          <div className={styles.calendarActions}>
+            <CalendarLinksButton
+              links={organizationCalendarLinks.links}
+              buttonText="Abonner på kalender"
+              title={`Abonner på ${org.name}`}
+              dialogLabel="Abonner på organisasjonens kalender"
+              size={ButtonSize.TINYWITHTEXT}
+              footer={
                 <a
-                  href={organizationCalendarLinks.subscribeHref}
-                  className={styles.calendarLink}
+                  href={organizationCalendarLinks.downloadHref}
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  Abonner på kalender
+                  Last ned kalenderfilen (.ics)
                 </a>
-              )}
-              <a
-                href={organizationCalendarLinks.downloadHref}
-                className={styles.calendarSecondaryLink}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Last ned kalender
-              </a>
-            </div>
-          )}
+              }
+            />
+          </div>
           {socialLinks.length > 0 && (
             <div className={styles.socialLinks}>
               {socialLinks.map((socialLink) => (
