@@ -14,13 +14,8 @@ import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import GoogleCalendarLogo from "./svgs/GoogleCalendarLogo";
 import styles from "../styles/AddToCalendarButton.module.scss";
 
-interface CalendarLinksButtonProps {
-  links: CalendarLink[];
-  buttonText: string;
-  title: string;
-  dialogLabel: string;
-  /** Rendered under the provider list - used for the .ics fallback. */
-  footer?: ReactNode;
+/** What the trigger button looks like; passed straight through to `Button`. */
+export interface CalendarButtonAppearance {
   className?: string;
   iconPlacement?: IconPlacement;
   size?: ButtonSize;
@@ -29,6 +24,15 @@ interface CalendarLinksButtonProps {
   /** Icon-only rendering for narrow layouts; the text stays as the
    *  accessible name. */
   iconOnly?: boolean;
+}
+
+export interface CalendarLinksButtonProps extends CalendarButtonAppearance {
+  links: CalendarLink[];
+  buttonText: string;
+  title: string;
+  dialogLabel: string;
+  /** Rendered under the provider list - used for the .ics fallback. */
+  footer?: ReactNode;
 }
 
 /**
