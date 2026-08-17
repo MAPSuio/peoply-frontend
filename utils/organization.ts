@@ -33,7 +33,10 @@ export const getOrganizationStaticProps: GetStaticProps = async (context) => {
       revalidate: 60 * 30, // 30 minutes
     };
   } catch (error) {
-    console.error(`Failed to fetch organization ${oid}:`, error);
+    /* The slug comes straight off the URL, so it is passed as its own
+       argument rather than interpolated: console treats the first argument as
+       a format string, and %s/%d in a slug would rewrite the log line. */
+    console.error("Failed to fetch organization", oid, error);
     return { notFound: true };
   }
 };
