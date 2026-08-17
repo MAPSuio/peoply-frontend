@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react";
 
-import type { ButtonSize, ButtonType, Event } from "../types/types";
+import type { Event } from "../types/types";
 import { getCalendarLinks } from "../utils/ics";
-import type { IconPlacement } from "./Button";
-import CalendarLinksButton from "./CalendarLinksButton";
+import CalendarLinksButton, {
+  type CalendarButtonAppearance,
+} from "./CalendarLinksButton";
 
-interface AddToCalendarButtonProps {
+export interface AddToCalendarButtonProps extends CalendarButtonAppearance {
   event: Event;
   buttonText?: string;
-  className?: string;
-  iconPlacement?: IconPlacement;
-  size?: ButtonSize;
-  type?: ButtonType;
-  width?: string;
-  /** Icon-only rendering for narrow layouts; the text stays as the
-   *  accessible name. */
-  iconOnly?: boolean;
 }
 
 /* Installed PWAs can't preview or download files (iOS especially), so Apple

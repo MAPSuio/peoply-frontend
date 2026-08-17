@@ -18,7 +18,7 @@ interface CalendarLinkOptions {
   preferWebcal?: boolean;
 }
 
-interface OrganizationCalendarLinks {
+export interface OrganizationCalendarLinks {
   links: CalendarLink[];
   downloadHref: string;
 }
