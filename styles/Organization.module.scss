@@ -68,6 +68,7 @@
 }
 
 .calendarActions {
+  align-items: center;
   display: flex;
   flex-direction: column;
   gap: $spacer-very-small;
@@ -97,16 +98,6 @@
 
 .socialLinkIcon {
   flex-shrink: 0;
-}
-
-.calendarLink,
-.calendarSecondaryLink {
-  @include link();
-  font-weight: $font-weight-medium;
-}
-
-.calendarSecondaryLink {
-  font-size: $font-size-tertiary;
 }
 
 .avatarContainer {
