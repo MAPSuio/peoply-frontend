@@ -36,11 +36,7 @@ import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
-import {
-  formatDateRange,
-  formatTimeRange,
-  injectLink,
-} from "../../../utils/functions";
+import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 import { getEventImage, getSafeExternalUrl } from "../../../utils/event";
 import { isValidEventId } from "../../../utils/eventId";
@@ -69,6 +65,7 @@ import styles from "../../../styles/Event.module.scss";
 import JoinButton from "../../../components/JoinButton";
 import RSSIcon from "../../../components/svgs/RSSIcon";
 import EventUpdateCard from "../../../components/EventUpdateCard";
+import DescriptionText from "../../../components/DescriptionText";
 
 import { BASE_URL } from "../../../constants/urls";
 
@@ -431,14 +428,11 @@ const Event = ({ event }: EventProps) => {
               </div>
               <h2 className={styles.descHeader}>Informasjon</h2>
             </div>
-            <div className={styles.descriptionContainer}>
-              {eventData.description.split("\n").map((str) => (
-                <p key={str} className={styles.descText}>
-                  {injectLink(str)}
-                  <br></br>
-                </p>
-              ))}
-            </div>
+            <DescriptionText
+              text={eventData.description}
+              className={styles.descriptionContainer}
+              paragraphClassName={styles.descText}
+            />
           </div>
           {updates && updates.length > 0 && (
             <div className={styles.announcementsWrapper}>
