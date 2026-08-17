@@ -1,5 +1,4 @@
 // Next.js.
-import type { GetStaticProps } from "next";
 import useSWRInfinite from "swr/infinite";
 
 // React.
@@ -11,17 +10,16 @@ import HeadComponent from "../../../components/HeadComponent";
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import { getOrganization } from "../../../services/organizations";
 
 // Types.
 import type { Event, Organization } from "../../../types/types";
 
 // Assets.
-import type { ParsedUrlQuery } from "node:querystring";
 import TabSelection from "../../../components/TabSelection";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
 import styles from "../../../styles/OrgEvents.module.scss";
+import { getOrganizationStaticProps } from "../../../utils/organization";
 
 enum TabOption {
   FUTURE_EVENTS = "FUTURE_EVENTS",
@@ -132,36 +130,7 @@ const Events = ({ organization }: EventsProps) => {
   );
 };
 
-interface IParams extends ParsedUrlQuery {
-  oid: string;
-}
-
-// Get the data for the organization in question.
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { oid } = context.params as IParams;
-
-  try {
-    const organization = await getOrganization(oid);
-
-    if (!organization) {
-      return {
-        notFound: true,
-      };
-    }
-
-    return {
-      props: {
-        organization,
-      },
-      revalidate: 60 * 30, // 30 minutes
-    };
-  } catch (error) {
-    console.error(`Failed to fetch organization ${oid}:`, error);
-    return {
-      notFound: true,
-    };
-  }
-};
+export const getStaticProps = getOrganizationStaticProps;
 
 export async function getStaticPaths() {
   return { paths: [], fallback: "blocking" };
