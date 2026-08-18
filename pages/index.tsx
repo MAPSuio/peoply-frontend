@@ -118,6 +118,7 @@ const Home: NextPage = () => {
             error={
               eventsFromFollowedOrganizationsError || followedArrangersError
             }
+            restoreKey="home-followed-events"
           />
         ) : undefined}
         {futureEvents && futureEvents.length > 0 ? (
@@ -126,6 +127,7 @@ const Home: NextPage = () => {
             seeAllUrl={{ pathname: `/events`, query: eventsQuery }}
             events={futureEvents}
             error={futureEventsError}
+            restoreKey="home-upcoming-events"
           />
         ) : undefined}
         {organizations && organizations.length > 0 && (
@@ -134,6 +136,7 @@ const Home: NextPage = () => {
             seeAllUrl="/orgs"
             organizations={organizations}
             error={organizationsError}
+            restoreKey="home-orgs"
           />
         )}
       </div>

@@ -39,17 +39,19 @@ export interface EventCarouselProps {
   seeAllUrl: string | UrlObject;
   events: Event[];
   error: Error | null;
+  restoreKey?: string;
 }
 
 export const EventCarousel = ({
   header,
   seeAllUrl,
   events,
+  restoreKey,
 }: EventCarouselProps) => {
   return (
     <div className={styles.carousel}>
       <CarouselHeader header={header} seeAllUrl={seeAllUrl} />
-      <ScrollRow>
+      <ScrollRow restoreKey={restoreKey}>
         {events?.map((event) => (
           <div key={event.urlId} className={styles.eventSlide}>
             <Link
@@ -72,17 +74,19 @@ export interface OrganizationCarouselProps {
   seeAllUrl: string | UrlObject;
   organizations: Organization[];
   error: Error | null;
+  restoreKey?: string;
 }
 
 export const OrganizationCarousel = ({
   header,
   seeAllUrl,
   organizations,
+  restoreKey,
 }: OrganizationCarouselProps) => {
   return (
     <div className={styles.carousel}>
       <CarouselHeader header={header} seeAllUrl={seeAllUrl} />
-      <ScrollRow>
+      <ScrollRow restoreKey={restoreKey}>
         {organizations?.map((organization) => (
           <div key={organization.id} className={styles.organizationSlide}>
             <Link href={`/orgs/${organization.urlId ?? organization.id}`}>
