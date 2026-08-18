@@ -49,12 +49,25 @@ import {
   type Event,
   InputPages,
   type Organization,
+  type User,
   Visibility,
   ImageCaching,
   SnackTypes,
   OrganizationRole,
 } from "../types/types";
 import type { LocationSearchResult } from "../types/locationSearch";
+
+/**
+ * Someone the signed-in user may create an event as: themselves, or an
+ * organization they administer. The organization or user is carried along
+ * whole rather than as a name, so the picker can show their avatar.
+ */
+export interface ArrangerOption {
+  value: string;
+  label: string;
+  organization?: Organization;
+  user?: User;
+}
 
 export interface EventObjectProps {
   eventTitle: string;
@@ -793,7 +806,7 @@ export default function useCreateEventForm() {
   );
   validDataMap.set(InputPages.SUMMARY_PAGE, validEvent);
 
-  const validArrangersOptions = (() => {
+  const validArrangersOptions = ((): ArrangerOption[] => {
     if (!user) return [];
     const validArrangers = orgs?.filter((org) => {
       const userRoleInOrganization = org.organizationRoles.find((userRole) => {
@@ -807,12 +820,14 @@ export default function useCreateEventForm() {
     });
 
     const userOption = {
-      label: `${user?.firstName} ${user?.lastName}`,
-      value: user?.arrangerId,
+      label: `${user.firstName} ${user.lastName}`,
+      value: user.arrangerId,
+      user,
     };
     const orgOptions = validArrangers?.map((org) => ({
       label: org.name,
       value: org.arrangerId,
+      organization: org,
     }));
     return orgOptions ? [userOption, ...orgOptions] : [userOption];
   })();
