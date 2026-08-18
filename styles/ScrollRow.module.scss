@@ -1,0 +1,38 @@
+.row {
+  /* Clipping alone is not enough: the row renders correctly without this, but
+     its content still counts towards the document's scrollable width, and the
+     whole page could be panned sideways by the width of the widest carousel.
+     Swiper's stylesheet happened to contain its track; containment has to be
+     asked for explicitly now. Verified by measuring
+     document.documentElement.scrollWidth on the front page. */
+  contain: paint;
+  display: flex;
+  /* Both are load bearing. Without a width the row sizes itself to the slides
+     it contains, the overflow never triggers, and the whole document ends up
+     as wide as the widest carousel - Swiper's own stylesheet used to supply
+     this, and removing it took the constraint with it. min-width covers the
+     case where the row is itself a flex item. */
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Keep a sideways flick inside the row: without this, reaching the end
+     chains the scroll on to the page, which on iOS is also the back gesture. */
+  overscroll-behavior-x: contain;
+  /* The rows sit flush against the page edges and the cards carry their own
+     margins, so a visible bar would only cut into the card shadows. */
+  scrollbar-width: none;
+  width: 100%;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Slides size themselves; they must never be squeezed to fit the row.
+     Deliberately no scroll snapping: the carousels scrolled freely before and
+     snapping also swallows the first slide's left margin, since a snap point
+     aligns the slide's edge with the start of the row. */
+  > * {
+    flex: 0 0 auto;
+  }
+}

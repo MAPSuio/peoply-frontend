@@ -19,36 +19,22 @@ import type { Event, Organization } from "../types/types";
 import type { ArrangerFollower } from "../types/types";
 
 // Styles.
-/* Swiper's CSS is imported here rather than from the lazy HomeSwipers chunk,
-   so it is present at first paint instead of arriving with the carousel.
-
-   Note what this does NOT do: it does not put Swiper's rules before
-   Home.module.scss. Turbopack emits them into a later chunk either way -
-   moving the import does not change the order, which was verified against the
-   built output rather than assumed. The rules that have to win over Swiper's
-   win on specificity instead; see the comment in styles/Home.module.scss.
-
-   The ~31 kB of Swiper JS stays lazy. Only the ~3 kB of CSS is eager. */
-import "swiper/css";
-import "swiper/css/scrollbar";
-import "swiper/css/free-mode";
-
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
 
-/* Swiper is lazy loaded. Every carousel below is gated on SWR data, so none of
-   them can render until a fetch resolves - loading Swiper eagerly only moved
-   ~40 kB gzipped of it into the first paint of a page that could not use it yet.
-   Both point at the same module specifier, so they share one chunk.
+/* Lazy loaded. Every carousel below is gated on SWR data, so none of them can
+   render until a fetch resolves. Both point at the same module specifier, so
+   they share one chunk.
 
    `ssr: false` states what was already true: these never rendered on the server,
    because the data they need is fetched from the client. */
-const EventSwiper = dynamic(
-  () => import("../components/HomeSwipers").then((m) => m.EventSwiper),
+const EventCarousel = dynamic(
+  () => import("../components/HomeCarousels").then((m) => m.EventCarousel),
   { ssr: false },
 );
-const OrganizationSwiper = dynamic(
-  () => import("../components/HomeSwipers").then((m) => m.OrganizationSwiper),
+const OrganizationCarousel = dynamic(
+  () =>
+    import("../components/HomeCarousels").then((m) => m.OrganizationCarousel),
   { ssr: false },
 );
 
@@ -132,7 +118,7 @@ const Home: NextPage = () => {
       <div className={styles.container}>
         {eventsFromFollowedOrganizations &&
         eventsFromFollowedOrganizations.length > 0 ? (
-          <EventSwiper
+          <EventCarousel
             header="Arrangementer fra foreninger du følger"
             seeAllUrl={{ pathname: `/events`, query: followedEventsQuery }}
             events={eventsFromFollowedOrganizations}
@@ -142,7 +128,7 @@ const Home: NextPage = () => {
           />
         ) : undefined}
         {futureEvents && futureEvents.length > 0 ? (
-          <EventSwiper
+          <EventCarousel
             header={upcomingHeader}
             seeAllUrl={{ pathname: `/events`, query: eventsQuery }}
             events={futureEvents}
@@ -150,7 +136,7 @@ const Home: NextPage = () => {
           />
         ) : undefined}
         {organizations && organizations.length > 0 && (
-          <OrganizationSwiper
+          <OrganizationCarousel
             header="Foreninger på IFI"
             seeAllUrl="/orgs"
             organizations={organizations}
