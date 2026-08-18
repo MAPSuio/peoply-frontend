@@ -78,9 +78,21 @@ export default function useOrganization(
     data: organization,
     error: organizationError,
     isLoading: organizationLoading,
-  } = useSWR<Organization>(oid ? `/organizations/${oid}` : null, () =>
-    getOrganization(oid),
-  );
+  } = useSWR<Organization>(oid ? `/organizations/${oid}` : null, async () => {
+    const organization = await getOrganization(oid);
+
+    /* An empty body is not an organization. The fetchers answer 204 and a
+       bodiless 200 with undefined rather than throwing, so without this the
+       hook would report no organization, no error and not loading, and the
+       callers gating on `error` would show nothing at all. */
+    if (!organization) {
+      throw new Error(
+        "Either the organization does not exist, or we could not fetch it",
+      );
+    }
+
+    return organization;
+  });
 
   const { members, membersError, membersLoading } = useOrganizationMembers(
     Boolean(fetchMembers && user),
