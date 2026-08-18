@@ -1,9 +1,6 @@
 // Next.js.
 import useSWR from "swr";
 
-// React.
-import { useRef } from "react";
-
 // Components.
 import Avatar from "./Avatar";
 import UserIconCard from "./svgs/UserIconCard";
@@ -12,6 +9,7 @@ import CalendarIconCard from "./svgs/CalendarIconCard";
 
 // Hooks.
 import useOrganization from "../hooks/useOrganization";
+import { eventWindowBoundary } from "../utils/eventWindow";
 
 // Services.
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
@@ -24,8 +22,6 @@ interface OrganizationCardProps {
 }
 
 const OrganizationCard = ({ organizationID }: OrganizationCardProps) => {
-  const today = useRef(new Date().toISOString());
-
   const {
     organization: org,
     organizationUsers: orgUsers,
@@ -36,7 +32,7 @@ const OrganizationCard = ({ organizationID }: OrganizationCardProps) => {
   const { data: orgEvents } = useSWR<Event[]>(
     () =>
       org?.id
-        ? `/events?afterDate=${today.current}&organizationId=${org?.id}`
+        ? `/events?afterDate=${eventWindowBoundary()}&organizationId=${org?.id}`
         : false,
     fetchFromPeoplyApiJson,
     {

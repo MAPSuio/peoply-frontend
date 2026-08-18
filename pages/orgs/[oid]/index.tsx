@@ -3,7 +3,6 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
-import { useRef } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
@@ -27,6 +26,7 @@ import {
 } from "../../../types/types";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
+import { eventWindowBoundary } from "../../../utils/eventWindow";
 import {
   getOrganizationStaticProps,
   organizationPath,
@@ -40,7 +40,6 @@ const Organization = ({ organization }: OrganizationProps) => {
   const { addSnack } = useSnack();
   const router = useRouter();
   const { oid } = router.query;
-  const today = useRef(new Date().toISOString());
 
   const {
     organization: orgData,
@@ -53,7 +52,7 @@ const Organization = ({ organization }: OrganizationProps) => {
   const { data: orgEvents, error: orgEventsError } = useSWR<Event[]>(
     () =>
       orgData?.id
-        ? `/events?afterDate=${today.current}&organizationId=${orgData?.id}`
+        ? `/events?afterDate=${eventWindowBoundary()}&organizationId=${orgData?.id}`
         : false,
     fetchFromPeoplyApiJson,
     {
