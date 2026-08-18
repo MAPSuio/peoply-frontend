@@ -37,12 +37,41 @@ interface UseOrganizationOptions {
  * SWR serves the cached organization on the next mount and revalidates behind
  * the rendered page.
  */
+/** The signed-in user's standing in the organization, from their membership. */
+function rolesOf(organizationUser?: UserOrganizationRoles) {
+  const role = organizationUser?.role;
+  const isOwner = role === OrganizationRole.OWNER;
+  const isAdmin = role === OrganizationRole.ADMIN;
+
+  return {
+    isOwner,
+    isAdmin,
+    isAdminOrOwner: isAdmin || isOwner,
+    isMember: role === OrganizationRole.MEMBER,
+  };
+}
+
+/**
+ * The organization's members. Keyed off the organization's id while the
+ * organization itself is keyed off whatever the URL used, slug or id; both stay
+ * stable across mounts, which is what makes the cache hit.
+ */
+function useOrganizationMembers(wanted: boolean, organization?: Organization) {
+  const key =
+    wanted && organization ? `/organizations/${organization.id}/members` : null;
+
+  const { data, error, isLoading } = useSWR<UserOrganizationRoles[]>(key, () =>
+    getOrganizationUsers((organization as Organization).id),
+  );
+
+  return { members: data, membersError: error, membersLoading: isLoading };
+}
+
 export default function useOrganization(
   oid: string,
   options: UseOrganizationOptions = {},
 ): useOrganizationUsersType {
   const { user, loading: userLoading } = useUser();
-  const userId = user?.id;
   const { fetchMembers = true } = options;
 
   const {
@@ -53,45 +82,23 @@ export default function useOrganization(
     getOrganization(oid),
   );
 
-  /* Members are keyed off the organization's id while the organization itself
-     is keyed off whatever the URL used, slug or id. Both stay stable across
-     mounts, which is what makes the cache hit. */
-  const membersKey =
-    fetchMembers && userId && organization
-      ? `/organizations/${organization.id}/members`
-      : null;
-
-  const {
-    data: organizationUsers,
-    error: membersError,
-    isLoading: membersLoading,
-  } = useSWR<UserOrganizationRoles[]>(membersKey, () =>
-    getOrganizationUsers((organization as Organization).id),
+  const { members, membersError, membersLoading } = useOrganizationMembers(
+    Boolean(fetchMembers && user),
+    organization,
   );
 
-  /* Still loading while the user is being resolved and members are wanted:
-     callers gate the whole page on this, and letting it fall to false early
-     would flash the page without the admin-only controls. */
-  const loading =
-    organizationLoading || (fetchMembers && (userLoading || membersLoading));
-
-  /* find the authenticated user in the organization */
-  const organizationUser = organizationUsers?.find((u) => u.user.id === userId);
-
-  const isOwner = organizationUser?.role === OrganizationRole.OWNER;
-  const isAdmin = organizationUser?.role === OrganizationRole.ADMIN;
-  const isAdminOrOwner = isAdmin || isOwner;
-  const isMember = organizationUser?.role === OrganizationRole.MEMBER;
+  const organizationUser = members?.find((u) => u.user.id === user?.id);
 
   return {
     organization,
-    organizationUsers,
+    organizationUsers: members,
     organizationUser,
-    isAdmin,
-    isMember,
-    isOwner,
-    isAdminOrOwner,
-    loading,
+    ...rolesOf(organizationUser),
+    /* Still loading while the user is being resolved and members are wanted:
+       callers gate the whole page on this, and letting it fall to false early
+       would flash the page without the admin-only controls. */
+    loading:
+      organizationLoading || (fetchMembers && (userLoading || membersLoading)),
     error:
       organizationError || membersError
         ? "Something went wrong when fetching organization data"
