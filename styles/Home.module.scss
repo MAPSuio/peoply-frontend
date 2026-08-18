@@ -6,8 +6,8 @@
     gap: $spacer-small;
   }
 
-  .swiperContainer {
-    .swiperHeader {
+  .carousel {
+    .carouselHeader {
       align-items: center;
       display: flex;
       flex-direction: row;
@@ -30,47 +30,28 @@
   }
 }
 
-/* Every slide rule below is nested one level deeper than it needs to be, and
-   that is the whole point - it is not stylistic.
+/* The slides size themselves; ScrollRow keeps them from being squeezed. */
+.eventSlide {
+  margin-right: $spacer-small;
+  max-width: $max-width-event-card;
+  padding-bottom: $spacer-medium-plus;
+  width: 80%;
 
-   Swiper's own stylesheet sets `.swiper-slide { width: 100% }`. That is a
-   single-class selector, and so were these until now, which means the two had
-   identical specificity (0,1,0) and the cascade fell back to whichever
-   stylesheet the bundler happened to emit last. It emitted Swiper's last, so
-   width: 100% won and every carousel rendered exactly one full-width slide.
-
-   Nesting under .swiperContainer takes these to (0,2,0), so they beat Swiper's
-   base rule on specificity and no longer care about emission order at all.
-   Do not flatten them back out. */
-.swiperContainer {
-  .mySwiperSlide {
-    max-width: $max-width-event-card;
-    padding-bottom: $spacer-medium-plus;
-    width: 80%;
-  }
-
-  .swiperSlideOrg {
-    padding-bottom: $spacer-medium-plus;
-    width: $avatar-size-large;
-
-    @include desktop() {
-      width: $avatar-size-large-desktop;
-    }
-  }
-
-  .swiperSlideOrg:last-child {
-    margin-right: $spacer-small;
-  }
-
-  .swiperSlideOrg:first-child {
+  &:first-child {
     margin-left: $spacer-small;
   }
+}
 
-  .mySwiperSlide:last-child {
-    margin-right: $spacer-small;
+.organizationSlide {
+  margin-right: $spacer-small;
+  padding-bottom: $spacer-medium-plus;
+  width: $avatar-size-large;
+
+  @include desktop() {
+    width: $avatar-size-large-desktop;
   }
 
-  .mySwiperSlide:first-child {
+  &:first-child {
     margin-left: $spacer-small;
   }
 }

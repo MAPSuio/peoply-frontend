@@ -7,7 +7,7 @@ import SearchIcon from "./svgs/SearchIcon";
 import type { Event, Organization } from "../types/types";
 import Avatar from "./Avatar";
 import { calculateEditDistance } from "../utils/functions";
-import TagSwiperSelection from "./TagSwiperSelection";
+import TagSelection from "./TagSelection";
 import { useTheme } from "next-themes";
 
 enum FilterOption {
@@ -200,7 +200,7 @@ export default function GlobalSearch() {
       {hasResults && (
         <div className={styles.results}>
           <div className={styles.header}>
-            <TagSwiperSelection
+            <TagSelection
               selected={selectedFilter}
               setSelected={setSelectedFilter}
               options={[

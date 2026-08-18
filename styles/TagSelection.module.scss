@@ -1,7 +1,5 @@
-.container {
-  display: flex;
+.row {
   gap: $spacer-mini;
-  overflow: hidden;
   width: 100%;
 }
 
@@ -23,19 +21,10 @@
   }
 }
 
-.mySwiper {
-  margin: 0;
-}
-
-.swiperSlide {
+.tagSlide {
   max-width: max-content;
-  width: 80%;
 
   &:first-child {
     margin-left: $spacer-small;
   }
-}
-
-.swiper-scrollbar {
-  display: none;
 }
