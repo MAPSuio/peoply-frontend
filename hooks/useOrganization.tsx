@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import {
   getOrganization,
   getOrganizationUsers,
@@ -26,7 +26,17 @@ interface UseOrganizationOptions {
   fetchMembers?: boolean;
 }
 
-/* Hook to fetch the members along with their roles for a given organization */
+/**
+ * An organization and, for a signed-in user, its members with their roles.
+ *
+ * Backed by SWR rather than useState and useEffect. The effect version cleared
+ * the organization and went back to loading on every mount, so a page that had
+ * already shown an organization blanked out and fetched it again when you
+ * navigated back to it - and anything keyed off `organization.id`, like the
+ * organization's event list, could not start until that round trip finished.
+ * SWR serves the cached organization on the next mount and revalidates behind
+ * the rendered page.
+ */
 export default function useOrganization(
   oid: string,
   options: UseOrganizationOptions = {},
@@ -34,64 +44,36 @@ export default function useOrganization(
   const { user, loading: userLoading } = useUser();
   const userId = user?.id;
   const { fetchMembers = true } = options;
-  const [organizationUsers, setOrganizationUsers] =
-    useState<UserOrganizationRoles[]>();
-  const [organization, setOrganization] = useState<Organization>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    let active = true;
+  const {
+    data: organization,
+    error: organizationError,
+    isLoading: organizationLoading,
+  } = useSWR<Organization>(oid ? `/organizations/${oid}` : null, () =>
+    getOrganization(oid),
+  );
 
-    async function fetchOrganization() {
-      setLoading(true);
-      setError(undefined);
-      setOrganization(undefined);
-      setOrganizationUsers(undefined);
+  /* Members are keyed off the organization's id while the organization itself
+     is keyed off whatever the URL used, slug or id. Both stay stable across
+     mounts, which is what makes the cache hit. */
+  const membersKey =
+    fetchMembers && userId && organization
+      ? `/organizations/${organization.id}/members`
+      : null;
 
-      try {
-        const organization = await getOrganization(oid);
+  const {
+    data: organizationUsers,
+    error: membersError,
+    isLoading: membersLoading,
+  } = useSWR<UserOrganizationRoles[]>(membersKey, () =>
+    getOrganizationUsers((organization as Organization).id),
+  );
 
-        if (!organization) {
-          throw new Error(
-            "Either the organization does not exist, or we could not fetch it",
-          );
-        }
-
-        if (!active) {
-          return;
-        }
-
-        setOrganization(organization);
-
-        if (fetchMembers && userId) {
-          const organizationUsers = await getOrganizationUsers(organization.id);
-
-          if (!active) {
-            return;
-          }
-
-          setOrganizationUsers(organizationUsers);
-        }
-      } catch {
-        if (active) {
-          setError("Something went wrong when fetching organization data");
-        }
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    if (oid && (!fetchMembers || !userLoading)) {
-      void fetchOrganization();
-    }
-
-    return () => {
-      active = false;
-    };
-  }, [fetchMembers, oid, userId, userLoading]);
+  /* Still loading while the user is being resolved and members are wanted:
+     callers gate the whole page on this, and letting it fall to false early
+     would flash the page without the admin-only controls. */
+  const loading =
+    organizationLoading || (fetchMembers && (userLoading || membersLoading));
 
   /* find the authenticated user in the organization */
   const organizationUser = organizationUsers?.find((u) => u.user.id === userId);
@@ -110,6 +92,9 @@ export default function useOrganization(
     isOwner,
     isAdminOrOwner,
     loading,
-    error,
+    error:
+      organizationError || membersError
+        ? "Something went wrong when fetching organization data"
+        : undefined,
   };
 }

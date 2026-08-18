@@ -35,6 +35,7 @@ import "swiper/css/free-mode";
 
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
+import { eventWindowBoundary, FRONT_PAGE_GRACE_MS } from "../utils/eventWindow";
 
 /* Swiper is lazy loaded. Every carousel below is gated on SWR data, so none of
    them can render until a fetch resolves - loading Swiper eagerly only moved
@@ -66,21 +67,13 @@ const FADDERUKE_HEADER = "Velkommen til fadderuken!";
 
 const Home: NextPage = () => {
   const { user } = useUser();
-  /* Computed once on mount rather than in an effect. The effect version set
-     this twice - `new Date()` on the first render, then two hours earlier once
-     the effect ran - and SWR keys off the value, so every load of the front
-     page fired two `/events` requests and threw the first answer away:
-
-       GET /events?afterDate=2026-08-16T09:40:33.701Z&orderBy=startDate
-       GET /events?afterDate=2026-08-16T07:40:33.714Z&orderBy=startDate
-
-     Nothing renders the value, so unlike `upcomingHeader` below it cannot
-     produce a hydration mismatch by being decided during render. */
-  const [todayString] = useState<string>(() => {
-    const today = new Date();
-    today.setHours(today.getHours() - 2);
-    return today.toISOString();
-  });
+  /* Floored to the hour, so the SWR key is the same one the last visit used and
+     leaving the front page and coming back reads from cache instead of
+     refetching. Computed during render rather than in an effect: the effect
+     version set it twice and fired two `/events` requests per load. Nothing
+     renders the value, so unlike `upcomingHeader` below it cannot produce a
+     hydration mismatch by being decided here. */
+  const todayString = eventWindowBoundary(FRONT_PAGE_GRACE_MS);
   const [upcomingHeader, setUpcomingHeader] = useState<string>(
     DEFAULT_UPCOMING_HEADER,
   );

@@ -2,7 +2,7 @@
 import useSWRInfinite from "swr/infinite";
 
 // React.
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 // Components.
 import EventList from "../../../components/EventList";
@@ -19,6 +19,7 @@ import TabSelection from "../../../components/TabSelection";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
 import styles from "../../../styles/OrgEvents.module.scss";
+import { eventWindowBoundary } from "../../../utils/eventWindow";
 import { getOrganizationStaticProps } from "../../../utils/organization";
 
 enum TabOption {
@@ -38,7 +39,7 @@ interface EventsProps {
 }
 
 const Events = ({ organization }: EventsProps) => {
-  const today = useRef(new Date().toISOString());
+  const boundary = eventWindowBoundary();
   const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
   const [isMorePastEvents, setIsMorePastEvents] = useState(true);
   const [selectedTab, setSelectedTab] = useState<TabOption>(
@@ -46,8 +47,8 @@ const Events = ({ organization }: EventsProps) => {
   );
   const goBack = useBack();
 
-  const futureQueryUrl = `/events?afterDate=${today.current}&organizationId=${organization.id}`;
-  const pastQueryUrl = `/events?beforeDate=${today.current}&organizationId=${organization.id}&orderDirection=desc`;
+  const futureQueryUrl = `/events?afterDate=${boundary}&organizationId=${organization.id}`;
+  const pastQueryUrl = `/events?beforeDate=${boundary}&organizationId=${organization.id}&orderDirection=desc`;
 
   const pageSize = 10;
   const getKeyFuture = getGetKey(futureQueryUrl, pageSize);
