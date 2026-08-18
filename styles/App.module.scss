@@ -1,6 +1,11 @@
 .wrapper {
   isolation: isolate;
-  min-height: 100vh;
+  /* dvh, not vh: on mobile 100vh is measured against the viewport with the URL
+     bar hidden, so the page is taller than what you can see and its height
+     changes as the bar collapses mid-scroll. InputPage already uses dvh. The
+     fixed background covers the viewport on its own, so nothing depends on
+     this being the larger of the two. */
+  min-height: 100dvh;
   position: relative;
   width: 100%;
 }
