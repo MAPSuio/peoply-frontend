@@ -3,7 +3,7 @@ import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 
 // Components.
 import TextInput from "../inputs/TextInput";
-import Dropdown from "../Dropdown";
+import ArrangerSelect from "./ArrangerSelect";
 import InputPage from "../InputPage";
 
 // Utils.
@@ -15,7 +15,10 @@ import {
 
 // Types.
 import { InputPages } from "../../types/types";
-import type { EventObjectProps } from "../../hooks/useCreateEventForm";
+import type {
+  ArrangerOption,
+  EventObjectProps,
+} from "../../hooks/useCreateEventForm";
 
 // Styles.
 import styles from "../../styles/CreateEvent.module.scss";
@@ -28,7 +31,7 @@ interface TitleStepProps {
   updateEventTitle: (e: ChangeEvent<HTMLInputElement>) => void;
   eventTitleValid: boolean;
   setEventTitleValid: Dispatch<SetStateAction<boolean>>;
-  validArrangersOptions: { value: string; label: string }[];
+  validArrangersOptions: ArrangerOption[];
   updateEventArrangerId: (arrangerId: string) => void;
   coOrganizerOptions: { id: string; label: string }[];
   visibleCoOrganizerOptions: { id: string; label: string }[];
@@ -79,6 +82,11 @@ const TitleStep = ({
       buttonOnClick={buttonOnClick}
     >
       <div className={styles.textContainer}>
+        <ArrangerSelect
+          options={validArrangersOptions}
+          value={eventObject.eventArrangerId}
+          onChange={updateEventArrangerId}
+        />
         <TextInput
           value={eventObject.eventTitle}
           inputId="title"
@@ -94,16 +102,6 @@ const TitleStep = ({
           valid={eventTitleValid}
           validate
         />
-        {validArrangersOptions.length > 0 && (
-          <Dropdown
-            label="Opprett arrangementet som: "
-            options={validArrangersOptions}
-            value={eventObject.eventArrangerId}
-            inputId="arrangerInput"
-            className={styles.arrangerInput}
-            setValue={updateEventArrangerId}
-          />
-        )}
         {coOrganizerOptions.length > 0 && (
           <div className={styles.coOrganizerCard} ref={coOrganizerCardRef}>
             <div className={styles.coOrganizerHeader}>

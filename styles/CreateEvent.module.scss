@@ -23,8 +23,99 @@
   }
 }
 
-.arrangerInput {
-  margin-top: $spacer-small;
+.arrangerSelect {
+  margin-bottom: $spacer-small;
+  position: relative;
+}
+
+.arrangerLabelContainer {
+  @include labelContainer();
+}
+
+.arrangerLabel {
+  @include label();
+}
+
+.arrangerTrigger {
+  @include resetButton();
+
+  align-items: center;
+  background-color: var(--background-color-input, $background-color-input);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  display: flex;
+  gap: $spacer-very-small;
+  min-height: 3rem;
+  padding: $spacer-mini $spacer-small;
+  width: 100%;
+}
+
+/* Avatar's smallest preset. It is a marker next to a name, not a portrait, so
+   it stays small enough that the trigger does not tower over the title field
+   below it - but not so small that the initials fallback stops being legible. */
+.arrangerAvatar {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.arrangerName {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrangerChevron {
+  flex-shrink: 0;
+  margin-left: auto;
+  transform: rotate(-90deg);
+
+  path {
+    stroke: var(--text-color-primary, $text-color-primary);
+  }
+}
+
+.arrangerOptionList {
+  background-color: var(--background-color-card, $background-color-card);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  flex-direction: column;
+  gap: $spacer-very-small;
+  left: 0;
+  max-height: 12rem;
+  overflow-y: auto;
+  padding: $spacer-very-small;
+  position: absolute;
+  right: 0;
+  top: calc(100% + $spacer-very-small);
+  // Above the sticky CTA bar (z-index 10), same as the location dropdown.
+  z-index: 20;
+}
+
+.arrangerOptionButton {
+  @include resetButton();
+
+  align-items: center;
+  background-color: var(--background-color-input, $background-color-input);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-primary, $text-color-primary);
+  display: flex;
+  gap: $spacer-very-small;
+  min-height: 3rem;
+  padding: $spacer-mini $spacer-small;
+  text-align: left;
+}
+
+.arrangerOptionSelected {
+  background-color: var(
+    --background-color-button-confirmed,
+    $background-color-button-confirmed
+  );
+  color: var(--text-color-button, $text-color-button);
 }
 
 .coOrganizerCard {
