@@ -34,6 +34,12 @@ const HeadComponent = ({
      against whatever origin it happened to find the page on. */
   const url = BASE_URL ? `${BASE_URL}${path ?? router.asPath}` : undefined;
 
+  /* Crawlers need an absolute image URL. Without a page-specific image, fall
+     back to the site default so every shared link gets a preview card
+     instead of a blank one. */
+  const resolvedImageUrl =
+    imageUrl ?? (BASE_URL ? `${BASE_URL}/og-default.png` : undefined);
+
   return (
     <Head>
       <title>{title}</title>
@@ -43,7 +49,10 @@ const HeadComponent = ({
       {noIndex && <meta name="robots" content="noindex" />}
 
       {/* Twitter specific */}
-      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:card" content="summary_large_image" />
+      {resolvedImageUrl && (
+        <meta name="twitter:image" content={resolvedImageUrl} />
+      )}
 
       {/* Open Graph Protocol */}
       <meta property="og:site_name" content="Peoply" />
@@ -51,7 +60,9 @@ const HeadComponent = ({
       <meta property="og:type" content="website" />
       <meta property="og:description" content={description} />
       {url && <meta property="og:url" content={url} />}
-      <meta property="og:image" content={imageUrl} />
+      {resolvedImageUrl && (
+        <meta property="og:image" content={resolvedImageUrl} />
+      )}
     </Head>
   );
 };
