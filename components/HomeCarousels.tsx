@@ -34,7 +34,7 @@ const CarouselHeader = ({ header, seeAllUrl }: CarouselHeaderProps) => (
   </div>
 );
 
-interface EventCarouselProps {
+export interface EventCarouselProps {
   header: string;
   seeAllUrl: string | UrlObject;
   events: Event[];
@@ -67,7 +67,7 @@ export const EventCarousel = ({
   );
 };
 
-interface OrganizationCarouselProps {
+export interface OrganizationCarouselProps {
   header: string;
   seeAllUrl: string | UrlObject;
   organizations: Organization[];
