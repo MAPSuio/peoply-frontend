@@ -1,16 +1,15 @@
 import type { NextPage } from "next";
 
-import Avatar from "../../components/Avatar";
-
-import ProfileMenu from "../../components/ProfileMenu";
+import ProfileOverview from "../../components/ProfileOverview";
 import useUser from "../../hooks/useUser";
 import styles from "../../styles/me.module.scss";
 import useRedirectToLogin from "../../hooks/useRedirectToLogin";
 import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
 import HeadComponent from "../../components/HeadComponent";
-import { injectLink } from "../../utils/functions";
 
+/* The avatar in the header opens the same content in a sheet. This route is
+   kept for deep links and for the app shortcut in the manifest. */
 const Me: NextPage = () => {
   const { user, loading } = useUser();
   const redirectToLogin = useRedirectToLogin();
@@ -34,16 +33,7 @@ const Me: NextPage = () => {
         />
         <div className={styles.container}>
           <BackButton onClick={goBack} />
-          <div className={styles.profile}>
-            <Avatar user={user} size="large" />
-            <h1
-              className={styles.name}
-            >{`${user.firstName} ${user.lastName}`}</h1>
-            <p className={styles.description}>
-              {injectLink(user.description ?? "")}
-            </p>
-          </div>
-          <ProfileMenu />
+          <ProfileOverview user={user} />
         </div>
       </>
     );

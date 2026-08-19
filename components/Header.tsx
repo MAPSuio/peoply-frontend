@@ -1,9 +1,14 @@
 // Next.js.
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "./Link";
 
 // Components.
 import Avatar from "./Avatar";
 import NotificationIndicator from "./NotificationIndicator";
+import NotificationsFeed from "./NotificationsFeed";
+import ProfileOverview from "./ProfileOverview";
+import Sheet from "./Sheet";
 import LinkButton from "./LinkButton";
 import LinkIcon from "./svgs/LinkIcon";
 import { IconPlacement } from "./Button";
@@ -18,9 +23,28 @@ import { ButtonType } from "../types/types";
 // Styles.
 import styles from "../styles/Header.module.scss";
 
+type OpenSheet = "notifications" | "profile" | null;
+
 export default function Header() {
   const { user } = useUser();
   const { hasUnreadNotifications } = useNotifications();
+  const [openSheet, setOpenSheet] = useState<OpenSheet>(null);
+  const router = useRouter();
+
+  /* Both sheets contain links. Without this the sheet stays up in front of the
+     page it just navigated to, since the header itself never unmounts. */
+  useEffect(() => {
+    const closeSheet = () => setOpenSheet(null);
+
+    router.events.on("routeChangeStart", closeSheet);
+
+    return () => {
+      router.events.off("routeChangeStart", closeSheet);
+    };
+  }, [router.events]);
+
+  const toggleSheet = (sheet: Exclude<OpenSheet, null>) =>
+    setOpenSheet((current) => (current === sheet ? null : sheet));
 
   return (
     <div className={styles.wrapper}>
@@ -56,11 +80,20 @@ export default function Header() {
           <div className={styles.loggedIn}>
             <NotificationIndicator
               hasUnreadNotifications={hasUnreadNotifications}
+              onClick={() => toggleSheet("notifications")}
+              isOpen={openSheet === "notifications"}
             />
 
-            <Link href="/me">
+            <button
+              type="button"
+              className={styles.avatarButton}
+              onClick={() => toggleSheet("profile")}
+              aria-label="Min profil"
+              aria-haspopup="dialog"
+              aria-expanded={openSheet === "profile"}
+            >
               <Avatar user={user} />
-            </Link>
+            </button>
           </div>
         ) : (
           <div className={styles.avatarContainer}>
@@ -68,6 +101,16 @@ export default function Header() {
           </div>
         )}
       </div>
+      {user && openSheet === "notifications" && (
+        <Sheet label="Varsler" onClose={() => setOpenSheet(null)}>
+          <NotificationsFeed />
+        </Sheet>
+      )}
+      {user && openSheet === "profile" && (
+        <Sheet label="Min profil" onClose={() => setOpenSheet(null)}>
+          <ProfileOverview user={user} />
+        </Sheet>
+      )}
     </div>
   );
 }

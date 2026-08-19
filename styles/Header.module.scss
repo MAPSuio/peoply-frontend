@@ -100,6 +100,12 @@
   }
 }
 
+/* The avatar opens the profile sheet, so it is a button now. Rounded so the
+   focus ring follows the picture rather than boxing it in. */
+.avatarButton {
+  border-radius: $border-radius-rounded;
+}
+
 .avatarContainer {
   align-items: center;
   display: flex;
