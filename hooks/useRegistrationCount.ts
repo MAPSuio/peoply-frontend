@@ -25,11 +25,18 @@ import { showsRegistrationCount } from "../utils/event";
  * `showsRegistrationCount`), so they neither seed nor fetch and `data` stays
  * `undefined`. Callers still hide their own count markup - this is the
  * backstop that keeps a caller which forgets from being handed a number.
+ *
+ * `forDisplay: false` opts out of that gate. It is for the caller that needs
+ * the number for something other than telling the user it: the edit page uses
+ * it as the floor under the capacity field, and dropping it there would let an
+ * arranger who switches an event to external registration set capacity below
+ * the people already signed up.
  */
 export default function useRegistrationCount(
   event?: Pick<Event, "id" | "goingCount" | "registrationMode">,
+  { forDisplay = true }: { forDisplay?: boolean } = {},
 ) {
-  const counted = showsRegistrationCount(event);
+  const counted = !forDisplay || showsRegistrationCount(event);
   const seeded = counted ? event?.goingCount : undefined;
 
   return useSWR<number>(

@@ -9,10 +9,12 @@ const fetcher = vi.fn();
 
 function Consumer({
   event,
+  forDisplay,
 }: {
   event?: Pick<Event, "id" | "goingCount" | "registrationMode">;
+  forDisplay?: boolean;
 }) {
-  const { data, mutate } = useRegistrationCount(event);
+  const { data, mutate } = useRegistrationCount(event, { forDisplay });
 
   return (
     <>
@@ -26,12 +28,13 @@ function Consumer({
 
 function renderHook(
   event?: Pick<Event, "id" | "goingCount" | "registrationMode">,
+  forDisplay?: boolean,
 ) {
   return render(
     /* `provider` gives each test its own cache, otherwise the first test's
        entry for an event id would satisfy the next one's render. */
     <SWRConfig value={{ fetcher, provider: () => new Map() }}>
-      <Consumer event={event} />
+      <Consumer event={event} forDisplay={forDisplay} />
     </SWRConfig>,
   );
 }
@@ -134,6 +137,23 @@ describe("useRegistrationCount", () => {
         expect(screen.getByTestId("count")).toHaveTextContent("-"),
       );
       expect(fetcher).not.toHaveBeenCalled();
+    });
+
+    /* The edit page needs the number to keep capacity above the people
+       already registered, and that floor must survive the switch to external
+       registration - it is not something we print, it is something we
+       enforce. */
+    it("still answers a caller that is not going to show it", async () => {
+      renderHook(
+        {
+          id: "event-1",
+          goingCount: 42,
+          registrationMode: EventRegistrationMode.EXTERNAL,
+        },
+        false,
+      );
+
+      expect(screen.getByTestId("count")).toHaveTextContent("42");
     });
   });
 

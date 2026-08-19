@@ -37,6 +37,7 @@ import useSWR from "swr";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Utils.
+import cx from "../../../utils/cx";
 import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 import {
@@ -85,13 +86,13 @@ const GoingCountRow = ({
   eventData,
   className,
 }: {
-  goingCount: number | undefined;
+  goingCount: number;
   eventData: Event;
   className?: string;
 }) => (
-  <div className={`${styles.infoTextContainer} ${className ?? ""}`}>
+  <div className={cx(styles.infoTextContainer, className)}>
     <div className={styles.iconContainer}>
-      <SmallCheckCircle className={`${styles.icon} ${styles.checkIcon}`} />
+      <SmallCheckCircle className={cx(styles.icon, styles.checkIcon)} />
     </div>
     <p className={styles.infoText}>
       <span className={styles.emphasis}>{`${goingCount}${
@@ -105,7 +106,8 @@ const GoingCountRow = ({
 /* Links to the participant list when the caller could read it - arrangers get
    the registrations, everyone else (or a failed read) gets the bare row.
    External events show neither: the number is not ours to state, so nothing
-   here renders at all. */
+   here renders at all. A count we never got renders nothing either, rather
+   than the "undefined påmeldte" it used to. */
 const GoingCountSection = ({
   goingCount,
   eventData,
@@ -114,21 +116,22 @@ const GoingCountSection = ({
   goingCount: number | undefined;
   eventData: Event;
   registrations: Registration[] | undefined;
-}) => (
-  <RegistrationCount event={eventData}>
-    {registrations ? (
-      <Link href={`/events/${eventData.urlId}/participants`}>
-        <GoingCountRow goingCount={goingCount} eventData={eventData} />
-      </Link>
-    ) : (
-      <GoingCountRow
-        goingCount={goingCount}
-        eventData={eventData}
-        className={styles.marginBottomSmall}
-      />
-    )}
-  </RegistrationCount>
-);
+}) =>
+  goingCount === undefined ? null : (
+    <RegistrationCount event={eventData}>
+      {registrations ? (
+        <Link href={`/events/${eventData.urlId}/participants`}>
+          <GoingCountRow goingCount={goingCount} eventData={eventData} />
+        </Link>
+      ) : (
+        <GoingCountRow
+          goingCount={goingCount}
+          eventData={eventData}
+          className={styles.marginBottomSmall}
+        />
+      )}
+    </RegistrationCount>
+  );
 
 /* Header image with the controls that float on top of it. The edit pencil is
    for arrangers, and never for an event mirrored from an .ics feed. */
