@@ -5,7 +5,7 @@ import NotificationsFeed from "../../components/NotificationsFeed";
 import useBack from "../../hooks/useBack";
 import styles from "../../styles/Notifications.module.scss";
 
-/* The bell icon in the header opens the same feed in a sheet. This route is
+/* The bell icon in the header opens the same feed in a panel. This route is
    kept for deep links and for anyone landing here from outside the app. */
 export default function Notifications() {
   const goBack = useBack();

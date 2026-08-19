@@ -8,7 +8,7 @@ import Avatar from "./Avatar";
 import NotificationIndicator from "./NotificationIndicator";
 import NotificationsFeed from "./NotificationsFeed";
 import ProfileOverview from "./ProfileOverview";
-import Sheet from "./Sheet";
+import Popover from "./Popover";
 import LinkButton from "./LinkButton";
 import LinkIcon from "./svgs/LinkIcon";
 import { IconPlacement } from "./Button";
@@ -23,28 +23,28 @@ import { ButtonType } from "../types/types";
 // Styles.
 import styles from "../styles/Header.module.scss";
 
-type OpenSheet = "notifications" | "profile" | null;
+type OpenPopover = "notifications" | "profile" | null;
 
 export default function Header() {
   const { user } = useUser();
   const { hasUnreadNotifications } = useNotifications();
-  const [openSheet, setOpenSheet] = useState<OpenSheet>(null);
+  const [openPopover, setOpenPopover] = useState<OpenPopover>(null);
   const router = useRouter();
 
-  /* Both sheets contain links. Without this the sheet stays up in front of the
-     page it just navigated to, since the header itself never unmounts. */
+  /* Both panels contain links. Without this the panel stays open over the page
+     it just navigated to, since the header itself never unmounts. */
   useEffect(() => {
-    const closeSheet = () => setOpenSheet(null);
+    const closePopover = () => setOpenPopover(null);
 
-    router.events.on("routeChangeStart", closeSheet);
+    router.events.on("routeChangeStart", closePopover);
 
     return () => {
-      router.events.off("routeChangeStart", closeSheet);
+      router.events.off("routeChangeStart", closePopover);
     };
   }, [router.events]);
 
-  const toggleSheet = (sheet: Exclude<OpenSheet, null>) =>
-    setOpenSheet((current) => (current === sheet ? null : sheet));
+  const togglePopover = (popover: Exclude<OpenPopover, null>) =>
+    setOpenPopover((current) => (current === popover ? null : popover));
 
   return (
     <div className={styles.wrapper}>
@@ -80,17 +80,17 @@ export default function Header() {
           <div className={styles.loggedIn}>
             <NotificationIndicator
               hasUnreadNotifications={hasUnreadNotifications}
-              onClick={() => toggleSheet("notifications")}
-              isOpen={openSheet === "notifications"}
+              onClick={() => togglePopover("notifications")}
+              isOpen={openPopover === "notifications"}
             />
 
             <button
               type="button"
               className={styles.avatarButton}
-              onClick={() => toggleSheet("profile")}
+              onClick={() => togglePopover("profile")}
               aria-label="Min profil"
               aria-haspopup="dialog"
-              aria-expanded={openSheet === "profile"}
+              aria-expanded={openPopover === "profile"}
             >
               <Avatar user={user} />
             </button>
@@ -101,15 +101,15 @@ export default function Header() {
           </div>
         )}
       </div>
-      {user && openSheet === "notifications" && (
-        <Sheet label="Varsler" onClose={() => setOpenSheet(null)}>
+      {user && openPopover === "notifications" && (
+        <Popover label="Varsler" onClose={() => setOpenPopover(null)}>
           <NotificationsFeed />
-        </Sheet>
+        </Popover>
       )}
-      {user && openSheet === "profile" && (
-        <Sheet label="Min profil" onClose={() => setOpenSheet(null)}>
+      {user && openPopover === "profile" && (
+        <Popover label="Min profil" onClose={() => setOpenPopover(null)}>
           <ProfileOverview user={user} />
-        </Sheet>
+        </Popover>
       )}
     </div>
   );
