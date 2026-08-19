@@ -4,6 +4,7 @@ import Image from "next/legacy/image";
 // Components.
 import ArrangerAvatar from "./ArrangerAvatar";
 import EventActions from "./EventActions";
+import { CALENDAR_ANCHOR_ATTRIBUTE } from "./CalendarLinksButton";
 import UserIconCard from "./svgs/UserIconCard";
 import PlaceIconCard from "./svgs/PlaceIconCard";
 import UsersIconCard from "./svgs/UsersIconCard";
@@ -50,7 +51,7 @@ const EventCard = ({ event }: EventCardProps) => {
   } = useRegistrationCount(event);
 
   return (
-    <div className={styles.eventCard}>
+    <div className={styles.eventCard} {...{ [CALENDAR_ANCHOR_ATTRIBUTE]: "" }}>
       <div className={styles.eventCardImageContainer}>
         <Image
           src={getEventImage(event) ?? eventPlaceholder}

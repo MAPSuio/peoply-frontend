@@ -17,6 +17,15 @@
   }
 }
 
+/* Anchored to the card it was opened from: no dimming, since only that one
+   card is being acted on, and the sheet is placed from JavaScript against the
+   trigger's viewport position. */
+.anchoredOverlay {
+  inset: 0;
+  position: fixed;
+  z-index: $z-index-modal;
+}
+
 .backdrop {
   background: none;
   border: none;
@@ -48,6 +57,15 @@
   @media (prefers-reduced-motion: no-preference) {
     animation-name: calendar-modal-enter-reduced-motion,
       calendar-modal-enter-full-motion;
+  }
+}
+
+.anchored {
+  position: fixed;
+  width: min(calc(100vw - #{$spacer-small} * 2), 320px);
+
+  @include desktop() {
+    width: 320px;
   }
 }
 

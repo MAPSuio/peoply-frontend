@@ -12,6 +12,9 @@ import CalendarLinksModal from "./CalendarLinksModal";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import styles from "../styles/AddToCalendarButton.module.scss";
 
+/** Marks the element a calendar sheet should cover - see EventCard. */
+export const CALENDAR_ANCHOR_ATTRIBUTE = "data-calendar-anchor";
+
 /** What the trigger button looks like; passed straight through to `Button`. */
 export interface CalendarButtonAppearance {
   className?: string;
@@ -51,13 +54,16 @@ export default function CalendarLinksButton({
   width,
   iconOnly = false,
 }: CalendarLinksButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  /* The sheet opens on top of the card the button sits in, so it needs the
+     button itself, not just the fact that it was pressed. */
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const isOpen = anchor !== null;
 
   useEffect(() => {
     if (!isOpen) return;
 
     const closeOnEscape = (ev: KeyboardEvent) => {
-      if (ev.key === "Escape") setIsOpen(false);
+      if (ev.key === "Escape") setAnchor(null);
     };
 
     window.addEventListener("keydown", closeOnEscape);
@@ -79,8 +85,17 @@ export default function CalendarLinksButton({
         size={size}
         width={width}
         onClick={(ev?: ReactMouseEvent) => {
+          const trigger = ev?.currentTarget as HTMLElement | undefined;
+          /* The card carries the marker, so the sheet can lie on top of the
+             whole card rather than hang off the small button in its corner.
+             Pages that open this outside a card fall back to the button. */
+          const card =
+            trigger?.closest<HTMLElement>(`[${CALENDAR_ANCHOR_ATTRIBUTE}]`) ??
+            trigger ??
+            null;
+
           stop(ev);
-          setIsOpen((current) => !current);
+          setAnchor((current) => (current ? null : card));
         }}
         noShadow
         icon={<CalendarIconCard className={styles.icon} />}
@@ -94,9 +109,10 @@ export default function CalendarLinksButton({
           title={title}
           dialogLabel={dialogLabel}
           footer={footer}
+          anchor={anchor}
           onClose={(ev?: ReactMouseEvent) => {
             stop(ev);
-            setIsOpen(false);
+            setAnchor(null);
           }}
         />
       )}
