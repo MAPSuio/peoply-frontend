@@ -7,6 +7,7 @@ import useUser from "../../hooks/useUser";
 import styles from "../../styles/Login.module.scss";
 import MobileLoginIllustration from "../../components/svgs/MobileLoginIllustration";
 import ContinueWithVippsButton from "../../components/svgs/ContinueWithVippsButton";
+import GoogleLogo from "../../components/svgs/GoogleLogo";
 import Link from "../../components/Link";
 import HeadComponent from "../../components/HeadComponent";
 import { API_URL } from "../../constants/urls";
@@ -58,7 +59,7 @@ const Login: NextPage = () => {
           <div className={styles.loginContainer}>
             <div className={styles.loginHeaderContainer}>
               <h1>Du er logget inn</h1>
-              <p>Vi har hentet dataene dine fra Vipps</p>
+              <p>Dette er brukeren din</p>
             </div>
             <div className={styles.card}>
               <div className={styles.cardSection}>
@@ -71,16 +72,22 @@ const Login: NextPage = () => {
                 <p className={styles.sectionName}>Email</p>
                 <p className={styles.sectionData}>{user.email}</p>
               </div>
-              <div className={styles.cardSection}>
-                <p className={styles.sectionName}>Telefonnummer</p>
-                <p className={styles.sectionData}>{user.phone}</p>
-              </div>
-              <div className={styles.cardSection}>
-                <p className={styles.sectionName}>Fødselsdato</p>
-                <p className={styles.sectionData}>
-                  {formatDate(new Date(user.birthDate))}
-                </p>
-              </div>
+              {/* Google supplies neither, so accounts created there leave
+                  both empty until a Vipps identity is linked. */}
+              {user.phone && (
+                <div className={styles.cardSection}>
+                  <p className={styles.sectionName}>Telefonnummer</p>
+                  <p className={styles.sectionData}>{user.phone}</p>
+                </div>
+              )}
+              {user.birthDate && (
+                <div className={styles.cardSection}>
+                  <p className={styles.sectionName}>Fødselsdato</p>
+                  <p className={styles.sectionData}>
+                    {formatDate(new Date(user.birthDate))}
+                  </p>
+                </div>
+              )}
               <div className={styles.checkContainer}>
                 <CheckCircle className={styles.checkIcon} />
               </div>
@@ -116,23 +123,21 @@ const Login: NextPage = () => {
               >
                 <ContinueWithVippsButton />
               </a>
-              <p className={styles.loginButtonText}>
-                Hvis du har logget inn før, vil du bli tatt til din gamle
-                bruker. Hvis ikke vil en ny bruker bli opprettet
-              </p>
-              <p className={styles.loginButtonText}>
-                <a
-                  href={`${API_URL}/auth/login/google`}
-                  onClick={() => {
-                    if (redirectURL) {
-                      localStorage.setItem("redirectURL", redirectURL);
-                    }
-                    return true;
-                  }}
-                >
-                  Har du ikke Vipps?
-                </a>
-              </p>
+              <a
+                className={styles.providerButton}
+                href={`${API_URL}/auth/login/google`}
+                onClick={() => {
+                  if (redirectURL) {
+                    localStorage.setItem("redirectURL", redirectURL);
+                  }
+                  return true;
+                }}
+              >
+                <GoogleLogo />
+                <span className={styles.providerButtonText}>
+                  Fortsett med Google
+                </span>
+              </a>
             </div>
           </div>
         </div>

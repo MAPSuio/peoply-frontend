@@ -1,3 +1,4 @@
+import type { LoginProvider } from "../types/types";
 import { getApiBaseUrl } from "./apiUrl";
 import { fetchFromPeoplyApi } from "./fetchers";
 
@@ -44,5 +45,12 @@ export async function refreshAccessToken() {
 
 export async function deleteMe() {
   const url = `/users/me`;
+  return fetchFromPeoplyApi(url, { method: "DELETE" });
+}
+
+/* Detaches a login provider from the account. The backend refuses to remove
+   the last one, so this can never lock the user out. */
+export async function unlinkProvider(provider: LoginProvider) {
+  const url = `/users/me/providers/${provider}`;
   return fetchFromPeoplyApi(url, { method: "DELETE" });
 }
