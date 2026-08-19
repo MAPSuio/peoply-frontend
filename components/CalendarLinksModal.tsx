@@ -25,6 +25,9 @@ const MIN_ANCHOR_WIDTH = 240;
 
 const MAX_SHEET_WIDTH = 420;
 
+/** How far the card may drift before it counts as having been scrolled away. */
+const SCROLL_TOLERANCE = 12;
+
 interface CalendarProviderLinkProps {
   link: CalendarLink;
   onNavigate: () => void;
@@ -68,10 +71,9 @@ const clamp = (value: number, size: number, viewport: number) =>
  * Lays the sheet on top of the card it was opened from: same centre, and the
  * card's width when the anchor is a card rather than a bare button.
  *
- * The card moves under the sheet whenever a carousel is flicked or the page is
- * scrolled, so this measures again on both - `capture` because a row scrolls
- * itself, and a scroll event on an element does not bubble. The panel is
- * observed too, since its own width feeds back into the placement.
+ * Scrolling closes the sheet rather than dragging it along, so the placement
+ * only has to survive a resize and the panel's own growth - its width feeds
+ * back into where it is put.
  */
 function useAnchoredPosition(
   anchor: HTMLElement | null | undefined,
@@ -121,12 +123,10 @@ function useAnchoredPosition(
     if (panelRef.current) observer.observe(panelRef.current);
 
     window.addEventListener("resize", place);
-    window.addEventListener("scroll", place, true);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", place);
-      window.removeEventListener("scroll", place, true);
     };
   }, [anchor, panelRef, mounted]);
 
@@ -134,30 +134,38 @@ function useAnchoredPosition(
 }
 
 /**
- * Closes the sheet once the card it belongs to has been scrolled away.
+ * Closes the sheet as soon as the card it belongs to is scrolled.
  *
- * Without this the sheet stays pinned to the viewport edge after its card has
- * left the row, pointing at whatever card happens to be there now. The
- * observer sees the row's clipping as well as the viewport's, so flicking the
- * carousel counts as scrolling the card away.
+ * Following the card instead reads as a panel stuck to the screen, and once
+ * the card has left the row the sheet points at whatever card took its place.
+ * The tolerance is there because momentum scrolling on iOS keeps nudging the
+ * page after a tap, and that must not count as scrolling away. `capture`
+ * because a row scrolls itself, and a scroll event on an element does not
+ * bubble.
  */
-function useCloseWhenAnchorLeaves(
+function useCloseOnScroll(
   anchor: HTMLElement | null | undefined,
   onClose: () => void,
 ) {
   useEffect(() => {
     if (!anchor) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) onClose();
-      },
-      { threshold: 0.5 },
-    );
+    const opened = anchor.getBoundingClientRect();
 
-    observer.observe(anchor);
+    const closeIfMoved = () => {
+      const now = anchor.getBoundingClientRect();
 
-    return () => observer.disconnect();
+      if (
+        Math.abs(now.top - opened.top) > SCROLL_TOLERANCE ||
+        Math.abs(now.left - opened.left) > SCROLL_TOLERANCE
+      ) {
+        onClose();
+      }
+    };
+
+    window.addEventListener("scroll", closeIfMoved, true);
+
+    return () => window.removeEventListener("scroll", closeIfMoved, true);
   }, [anchor, onClose]);
 }
 
@@ -247,7 +255,7 @@ export default function CalendarLinksModal({
 
   const position = useAnchoredPosition(anchor, panelRef, portalTarget !== null);
 
-  useCloseWhenAnchorLeaves(anchor, closeSheet);
+  useCloseOnScroll(anchor, closeSheet);
 
   if (!portalTarget) return null;
 
