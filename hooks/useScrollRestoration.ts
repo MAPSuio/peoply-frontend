@@ -31,12 +31,31 @@ export default function useScrollRestoration<T extends HTMLElement>(
       node.scrollLeft = storedPosition;
     }
 
+    // rAF-throttled: a fling fires far more `scroll` events than the display
+    // has frames, and writing to the map on every single one of them was
+    // competing with the browser's own scroll compositing for main-thread
+    // time. Collapsing it to at most once per frame is what made scrolling
+    // feel less smooth than before this hook existed.
+    let frame: number | null = null;
     const handleScroll = () => {
-      scrollPositions.set(key, node.scrollLeft);
+      if (frame !== null) return;
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        scrollPositions.set(key, node.scrollLeft);
+      });
     };
 
     node.addEventListener("scroll", handleScroll, { passive: true });
-    return () => node.removeEventListener("scroll", handleScroll);
+    return () => {
+      node.removeEventListener("scroll", handleScroll);
+      // Flush rather than drop: navigating away (the whole point of this
+      // hook) unmounts the row well within a frame of the last scroll event,
+      // so a bare cancel would throw away the one position that matters most.
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+        scrollPositions.set(key, node.scrollLeft);
+      }
+    };
   }, [key]);
 
   return ref;
