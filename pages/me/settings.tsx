@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 
 /* Components. */
 import BackButton from "../../components/BackButton";
+import ProviderLinkRow from "../../components/ProviderLinkRow";
 import SettingsButton from "../../components/SettingsButton";
 import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 
@@ -13,7 +14,20 @@ import NightIcon from "../../components/svgs/NightIcon";
 import SunIcon from "../../components/svgs/SunIcon";
 
 /* Types. */
-import { SettingTypes, SnackTypes, ButtonType } from "../../types/types";
+import {
+  SettingTypes,
+  SnackTypes,
+  ButtonType,
+  LoginProvider,
+} from "../../types/types";
+
+/* Services and constants. */
+import { unlinkProvider } from "../../services/auth";
+import {
+  isLoginProvider,
+  PROVIDER_LOGOS,
+  PROVIDER_NAMES,
+} from "../../constants/providers";
 
 /* Styles. */
 import styles from "../../styles/Settings.module.scss";
@@ -41,12 +55,40 @@ const Settings = () => {
   );
   const { theme, setTheme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
+  const [unlinkTarget, setUnlinkTarget] = useState<LoginProvider>();
   const [email, setEmail] = useState("");
   const { addSnack } = useSnack();
 
   const { user, loading, deleteMe, reload } = useUser();
   const goBack = useBack();
   const router = useRouter();
+
+  /* The OIDC link flows land back here with their outcome as query params
+     (set by the backend callback, forwarded by /login/callback). */
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const { linked, link_error: linkError, ...rest } = router.query;
+    if (typeof linked !== "string" && typeof linkError !== "string") return;
+
+    if (typeof linked === "string" && isLoginProvider(linked)) {
+      addSnack(`${PROVIDER_NAMES[linked]} er koblet til`, SnackTypes.SUCCESS);
+      reload();
+    } else if (typeof linkError === "string") {
+      const messages: Record<string, string> = {
+        in_use: "Kontoen er allerede koblet til en annen bruker",
+        wrong_user: "Innloggingen samsvarte ikke med brukeren din",
+        phone_in_use: "Telefonnummeret er allerede i bruk av en annen bruker",
+        email_in_use: "E-postadressen er allerede i bruk av en annen bruker",
+        expired: "Koblingen utløp. Prøv igjen",
+      };
+      addSnack(messages[linkError] ?? "Noe gikk galt", SnackTypes.ERROR);
+    }
+
+    router.replace({ pathname: router.pathname, query: rest }, undefined, {
+      shallow: true,
+    });
+  }, [router, addSnack, reload]);
 
   useEffect(() => {
     if (user) {
@@ -101,6 +143,25 @@ const Settings = () => {
     validAllowEmailFromArrangerEdit ||
     validAllowEmailPromotionsEdit ||
     email !== user?.email;
+
+  const linkedProviders = user?.providers?.map((link) => link.provider) ?? [];
+  const UnlinkLogo = unlinkTarget ? PROVIDER_LOGOS[unlinkTarget] : undefined;
+
+  const handleUnlink = async () => {
+    if (!unlinkTarget) return;
+
+    try {
+      await unlinkProvider(unlinkTarget);
+      addSnack(
+        `${PROVIDER_NAMES[unlinkTarget]} er koblet fra`,
+        SnackTypes.SUCCESS,
+      );
+      reload();
+    } catch {
+      addSnack("Kunne ikke koble fra", SnackTypes.ERROR);
+    }
+    setUnlinkTarget(undefined);
+  };
 
   const handleConfirm = async () => {
     try {
@@ -211,6 +272,23 @@ const Settings = () => {
               )}
             </div>
             <div className={styles.section}>
+              <h2 className={styles.inputHeader}>Innloggingsmetoder</h2>
+              <div className={styles.userContainer}>
+                {[LoginProvider.VIPPS, LoginProvider.GOOGLE].map((provider) => (
+                  <ProviderLinkRow
+                    key={provider}
+                    provider={provider}
+                    linked={linkedProviders.includes(provider)}
+                    canUnlink={
+                      linkedProviders.includes(provider) &&
+                      linkedProviders.length > 1
+                    }
+                    onUnlink={() => setUnlinkTarget(provider)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className={styles.section}>
               <h2 className={styles.inputHeader}>Min bruker</h2>
               <div className={styles.userContainer}>
                 <SettingsButton
@@ -231,6 +309,25 @@ const Settings = () => {
           )}
         </div>
       </div>
+      {unlinkTarget && (
+        <Modal
+          label={`Koble fra ${PROVIDER_NAMES[unlinkTarget]}?`}
+          description={`Du vil ikke lenger kunne logge inn med ${PROVIDER_NAMES[unlinkTarget]}. Du kan koble til igjen når som helst.`}
+          closeButtonOnClick={() => setUnlinkTarget(undefined)}
+        >
+          <ModalButton
+            text="Koble fra"
+            icon={UnlinkLogo && <UnlinkLogo />}
+            onClick={handleUnlink}
+            type={ButtonType.DANGER}
+          />
+          <ModalButton
+            text="Avbryt"
+            onClick={() => setUnlinkTarget(undefined)}
+            type={ButtonType.SECONDARY}
+          />
+        </Modal>
+      )}
       {modalOpen && (
         <Modal
           label={`Vil du slette ${user?.firstName} ${user?.lastName}?`}

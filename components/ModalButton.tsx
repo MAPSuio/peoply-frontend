@@ -8,6 +8,7 @@ interface ModalButtonProps {
   type?: ButtonType;
   noShadow?: boolean;
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 const ModalButton = ({
@@ -16,6 +17,7 @@ const ModalButton = ({
   type,
   noShadow = false,
   disabled = false,
+  icon,
 }: ModalButtonProps) => {
   return (
     <Button
@@ -25,6 +27,7 @@ const ModalButton = ({
       noShadow={noShadow}
       type={type}
       disabled={disabled}
+      icon={icon}
     />
   );
 };

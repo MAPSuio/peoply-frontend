@@ -1,0 +1,49 @@
+.row {
+  align-items: center;
+  background: var(
+    --background-color-button-secondary,
+    $background-color-button-secondary
+  );
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  gap: $spacer-very-small-plus;
+  outline: 1px solid
+    var(--border-color-secondary-button, $border-color-secondary-button);
+  padding: $spacer-very-small-plus $spacer-small;
+  width: 100%;
+}
+
+.logo {
+  align-items: center;
+  background: var(--background-color-primary, $background-color-primary);
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  flex-shrink: 0;
+  height: 2.75rem;
+  justify-content: center;
+  width: 2.75rem;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: $spacer-mini;
+  min-width: 0;
+}
+
+.name {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-weight: $font-weight-bold;
+}
+
+.status {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-secondary;
+}
+
+/* Button defaults to width: 100%, which would swallow the whole row. */
+.action {
+  flex-shrink: 0;
+  white-space: nowrap;
+}

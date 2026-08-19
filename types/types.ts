@@ -3,14 +3,26 @@ export enum OrganizationRole {
   MEMBER = "MEMBER",
   OWNER = "OWNER",
 }
+export enum LoginProvider {
+  VIPPS = "VIPPS",
+  GOOGLE = "GOOGLE",
+}
+
+export interface LinkedProvider {
+  provider: LoginProvider;
+  createdAt: string;
+}
+
 export interface User {
   firstName: string;
   lastName: string;
-  birthDate: string;
+  /* Google supplies neither phone nor birthDate, so accounts created there
+     have them empty until a Vipps identity is linked. */
+  birthDate?: string;
   id: string;
   email: string;
   arrangerId: string;
-  phone: string;
+  phone?: string;
   description: string;
   image?: string;
   foodPreference?: FoodPreference;
@@ -25,6 +37,8 @@ export interface User {
   userSeenUpdates?: {
     update: UserSeenUpdateType;
   }[];
+  /* Only present on the self view (/users/me), never on other users. */
+  providers?: LinkedProvider[];
 }
 
 export enum FoodPreference {

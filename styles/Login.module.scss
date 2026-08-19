@@ -44,16 +44,54 @@
     align-items: center;
     display: flex;
     flex-direction: column;
+    gap: $spacer-small;
     justify-content: center;
     margin-top: $spacer-large;
     width: 267px;
   }
 
-  .loginButtonText {
-    font-size: $font-size-tertiary;
-    line-height: $line-height-text;
-    margin-top: $spacer-very-small;
-    text-align: center;
+  /* Google as Vipps' equal: same 250×44 footprint and 8px rounding as the
+     Vipps SVG button above it, drawn as a card since Google's sign-in
+     branding wants the "G" on a neutral surface. */
+  .providerButton {
+    align-items: center;
+    background: var(
+      --background-color-button-secondary,
+      $background-color-button-secondary
+    );
+    border-radius: $border-radius-inside-card;
+    box-sizing: border-box;
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    display: flex;
+    gap: $spacer-very-small-plus;
+    justify-content: center;
+    min-height: 44px;
+    outline: 1px solid
+      var(--border-color-secondary-button, $border-color-secondary-button);
+    padding: $spacer-very-small $spacer-small;
+    text-decoration: none;
+    transition: background-color $animation-duration ease;
+    width: 250px;
+
+    /* The 1px outline doubles as the card border, so keyboard focus needs
+       its own visible indicator. */
+    &:focus-visible {
+      outline: 2px solid var(--primary-color-200, $primary-color-200);
+      outline-offset: 2px;
+    }
+
+    @include desktop() {
+      &:hover {
+        background: var(
+          --background-color-button-secondary-hover,
+          $background-color-button-secondary-hover
+        );
+      }
+    }
+  }
+
+  .providerButtonText {
+    font-weight: $font-weight-bold;
   }
 
   .card {
