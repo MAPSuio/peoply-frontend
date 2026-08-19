@@ -11,7 +11,7 @@ import { injectLink } from "../utils/functions";
 // Styles.
 import styles from "../styles/ProfileOverview.module.scss";
 
-interface ProfileOverviewProps {
+export interface ProfileOverviewProps {
   user: User;
 }
 

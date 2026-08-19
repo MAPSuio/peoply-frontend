@@ -1,7 +1,7 @@
 import BellIcon from "./svgs/BellIcon";
 import styles from "../styles/NotificationIndicator.module.scss";
 
-interface NotificationIndicatorProps {
+export interface NotificationIndicatorProps {
   hasUnreadNotifications: boolean;
   onClick: () => void;
   isOpen: boolean;
