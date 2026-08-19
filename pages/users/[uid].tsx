@@ -82,7 +82,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       revalidate: 60 * 30, // 30 minutes
     };
   } catch (error) {
-    console.error(`Failed to fetch user ${uid}:`, error);
+    console.error("Failed to fetch user %s:", uid, error);
     return {
       notFound: true,
     };

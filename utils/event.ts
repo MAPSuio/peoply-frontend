@@ -35,12 +35,16 @@ export function isEventFinished(event: Event): boolean {
 /* The external registration URL is arbitrary user input from the event form -
    only http(s) may reach an href or window.open (blocks javascript: etc.). */
 export function getSafeExternalUrl(event: Event): string | undefined {
-  if (!event.externalUrl) {
+  return getSafeHttpUrl(event.externalUrl);
+}
+
+export function getSafeHttpUrl(url: string | undefined): string | undefined {
+  if (!url) {
     return undefined;
   }
 
   try {
-    const parsed = new URL(event.externalUrl);
+    const parsed = new URL(url);
     if (parsed.protocol === "https:" || parsed.protocol === "http:") {
       return parsed.toString();
     }
