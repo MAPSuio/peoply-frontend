@@ -7,7 +7,7 @@ import useDialogFocus from "../hooks/useDialogFocus";
 import styles from "../styles/Sheet.module.scss";
 import ExitIcon from "./svgs/ExitIcon";
 
-export interface SheetProps {
+interface SheetProps {
   label: string;
   onClose: () => void;
   children?: ReactNode;
