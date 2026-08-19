@@ -43,12 +43,6 @@
       display: flex; // center icon
     }
 
-    /* The avatar opens the profile sheet, so it is a button now. Rounded so
-       the focus ring follows the picture rather than boxing it in. */
-    .avatarButton {
-      border-radius: $border-radius-rounded;
-    }
-
     svg {
       height: 18px;
       width: 18px;
@@ -104,6 +98,12 @@
       }
     }
   }
+}
+
+/* The avatar opens the profile sheet, so it is a button now. Rounded so the
+   focus ring follows the picture rather than boxing it in. */
+.avatarButton {
+  border-radius: $border-radius-rounded;
 }
 
 .avatarContainer {
