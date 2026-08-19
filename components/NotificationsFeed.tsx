@@ -116,109 +116,121 @@ export default function NotificationsFeed() {
     return "Noe gikk galt";
   }
 
+  /* Every invitation is answered the same way: a green snack when it was
+     accepted, a yellow one when it was turned down. */
+  function snackInvitationResult(
+    action: InvitationStatus,
+    acceptedText: string,
+    declinedText: string,
+  ) {
+    if (action === InvitationStatus.ACCEPTED) {
+      addSnack(acceptedText, SnackTypes.SUCCESS);
+    } else {
+      addSnack(declinedText, SnackTypes.WARNING);
+    }
+  }
+
+  async function answerOrganizationInvitation(
+    orgInvite: OrganizationInvitationNotification,
+    action: InvitationStatus,
+  ) {
+    await fetchFromPeoplyApiJson(
+      `/organizations/${orgInvite.organizationId}/invitations/${orgInvite.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({ status: action }),
+      },
+    );
+    snackInvitationResult(
+      action,
+      `Du godtok invitasjonen til ${orgInvite.organization.name}`,
+      `Du avviste invitasjonen til ${orgInvite.organization.name}`,
+    );
+  }
+
+  /* Returns false when the answer could not be sent because the event serves
+     food and the user has no food preference yet: the modal takes over. */
+  async function answerEventInvitation(
+    eventInvite: EventInvitationNotification,
+    action: InvitationStatus,
+  ) {
+    if (action === InvitationStatus.ACCEPTED) {
+      /* fetch event to check if event serves food */
+      const event: Event = await fetchFromPeoplyApiJson(
+        `/events/${eventInvite.eventId}`,
+      );
+      if (event.hasFood && !user?.foodPreference) {
+        setFoodPreferanceModalOpenModalOpen(true);
+        return false;
+      }
+    }
+
+    await fetchFromPeoplyApi(`/events/${eventInvite.eventId}/invitations`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ status: action }),
+    });
+    snackInvitationResult(
+      action,
+      `Du godtok invitasjonen til ${eventInvite.event?.title}`,
+      `Du avviste invitasjonen til ${eventInvite.event?.title}`,
+    );
+    return true;
+  }
+
+  async function answerCoOrganizerInvitation(
+    coOrganizerInvite: CoOrganizerInvitationNotification,
+    action: InvitationStatus,
+  ) {
+    await respondToCoOrganizerInvitation(
+      coOrganizerInvite.eventId,
+      coOrganizerInvite.id,
+      action,
+    );
+    snackInvitationResult(
+      action,
+      `${coOrganizerInvite.organization.name} er nå medarrangør for ${coOrganizerInvite.event?.title}`,
+      `Du avslo medarrangør-invitasjonen til ${coOrganizerInvite.event?.title}`,
+    );
+  }
+
   async function updateInvitation(
     notification: PeoplyNotification,
     action: InvitationStatus,
   ) {
-    switch (notification.type) {
-      case NotificationType.INVITATION_ORGANIZATION: {
-        const orgInvite = notification as OrganizationInvitationNotification;
-        try {
-          await fetchFromPeoplyApiJson(
-            `/organizations/${orgInvite.organizationId}/invitations/${orgInvite.id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json; charset=utf-8" },
-              body: JSON.stringify({
-                status: action,
-              }),
-            },
-          );
-          if (action === InvitationStatus.ACCEPTED) {
-            addSnack(
-              `Du godtok invitasjonen til ${orgInvite.organization.name}`,
-              SnackTypes.SUCCESS,
-            );
-          } else {
-            addSnack(
-              `Du avviste invitasjonen til ${orgInvite.organization.name}`,
-              SnackTypes.WARNING,
-            );
-          }
-        } catch (error) {
-          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
-        }
-        break;
-      }
-
-      case NotificationType.INVITATION_EVENT: {
-        const eventInvite = notification as EventInvitationNotification;
-        try {
-          if (action === InvitationStatus.ACCEPTED) {
-            /* fetch event to check if event serves food */
-            const event: Event = await fetchFromPeoplyApiJson(
-              `/events/${eventInvite.eventId}`,
-            );
-            if (event.hasFood && !user?.foodPreference) {
-              return setFoodPreferanceModalOpenModalOpen(true);
-            }
-          }
-
-          await fetchFromPeoplyApi(
-            `/events/${eventInvite.eventId}/invitations`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json; charset=utf-8" },
-              body: JSON.stringify({
-                status: action,
-              }),
-            },
-          );
-          if (action === InvitationStatus.ACCEPTED) {
-            addSnack(
-              `Du godtok invitasjonen til ${eventInvite.event?.title}`,
-              SnackTypes.SUCCESS,
-            );
-          } else {
-            addSnack(
-              `Du avviste invitasjonen til ${eventInvite.event?.title}`,
-              SnackTypes.WARNING,
-            );
-          }
-        } catch (error) {
-          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
-        }
-        break;
-      }
-
-      case NotificationType.INVITATION_EVENT_COORGANIZER: {
-        const coOrganizerInvite =
-          notification as CoOrganizerInvitationNotification;
-        try {
-          await respondToCoOrganizerInvitation(
-            coOrganizerInvite.eventId,
-            coOrganizerInvite.id,
+    try {
+      switch (notification.type) {
+        case NotificationType.INVITATION_ORGANIZATION:
+          await answerOrganizationInvitation(
+            notification as OrganizationInvitationNotification,
             action,
           );
-          if (action === InvitationStatus.ACCEPTED) {
-            addSnack(
-              `${coOrganizerInvite.organization.name} er nå medarrangør for ${coOrganizerInvite.event?.title}`,
-              SnackTypes.SUCCESS,
-            );
-          } else {
-            addSnack(
-              `Du avslo medarrangør-invitasjonen til ${coOrganizerInvite.event?.title}`,
-              SnackTypes.WARNING,
-            );
-          }
-        } catch (error) {
-          addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
-        }
-        break;
-      }
+          break;
 
-      default:
-        return;
+        case NotificationType.INVITATION_EVENT: {
+          const answered = await answerEventInvitation(
+            notification as EventInvitationNotification,
+            action,
+          );
+          if (!answered) {
+            return;
+          }
+          break;
+        }
+
+        case NotificationType.INVITATION_EVENT_COORGANIZER:
+          await answerCoOrganizerInvitation(
+            notification as CoOrganizerInvitationNotification,
+            action,
+          );
+          break;
+
+        default:
+          return;
+      }
+    } catch (error) {
+      addSnack(invitationErrorMessage(error), SnackTypes.ERROR);
     }
     mutateNotifications();
   }

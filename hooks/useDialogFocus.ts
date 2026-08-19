@@ -9,6 +9,31 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
+/* Trap Tab inside the dialog - without this, focus walks out into the page
+   behind the overlay, which is unreachable by mouse. */
+function trapTab(event: KeyboardEvent, container: HTMLElement) {
+  const focusable = Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  );
+
+  if (focusable.length === 0) {
+    event.preventDefault();
+    return;
+  }
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+
+  if (event.shiftKey && (active === first || active === container)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && active === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 /* Focus handling shared by Modal and Sheet: move focus into the dialog, trap
    Tab inside it, close on Escape, and hand focus back to whatever opened it. */
 export default function useDialogFocus(
@@ -41,28 +66,7 @@ export default function useDialogFocus(
         return;
       }
 
-      /* Trap Tab inside the dialog - without this, focus walks out into the
-         page behind the overlay, which is unreachable by mouse. */
-      const focusable = Array.from(
-        container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      );
-
-      if (focusable.length === 0) {
-        event.preventDefault();
-        return;
-      }
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      const active = document.activeElement;
-
-      if (event.shiftKey && (active === first || active === container)) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && active === last) {
-        event.preventDefault();
-        first.focus();
-      }
+      trapTab(event, container);
     };
 
     document.addEventListener("keydown", handleKeyDown);
