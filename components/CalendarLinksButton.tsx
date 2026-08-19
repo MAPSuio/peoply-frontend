@@ -51,13 +51,16 @@ export default function CalendarLinksButton({
   width,
   iconOnly = false,
 }: CalendarLinksButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  /* The sheet opens on top of the card the button sits in, so it needs the
+     button itself, not just the fact that it was pressed. */
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const isOpen = anchor !== null;
 
   useEffect(() => {
     if (!isOpen) return;
 
     const closeOnEscape = (ev: KeyboardEvent) => {
-      if (ev.key === "Escape") setIsOpen(false);
+      if (ev.key === "Escape") setAnchor(null);
     };
 
     window.addEventListener("keydown", closeOnEscape);
@@ -79,8 +82,10 @@ export default function CalendarLinksButton({
         size={size}
         width={width}
         onClick={(ev?: ReactMouseEvent) => {
+          const trigger = ev?.currentTarget as HTMLElement | undefined;
+
           stop(ev);
-          setIsOpen((current) => !current);
+          setAnchor((current) => (current ? null : (trigger ?? null)));
         }}
         noShadow
         icon={<CalendarIconCard className={styles.icon} />}
@@ -94,9 +99,10 @@ export default function CalendarLinksButton({
           title={title}
           dialogLabel={dialogLabel}
           footer={footer}
+          anchor={anchor}
           onClose={(ev?: ReactMouseEvent) => {
             stop(ev);
-            setIsOpen(false);
+            setAnchor(null);
           }}
         />
       )}

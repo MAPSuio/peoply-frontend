@@ -1,10 +1,22 @@
-import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
+import {
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 
 import type { CalendarLink } from "../utils/ics";
 import AppleLogo from "./svgs/AppleLogo";
 import ChevronRightIcon from "./svgs/ChevronRightIcon";
 import GoogleCalendarLogo from "./svgs/GoogleCalendarLogo";
 import styles from "../styles/AddToCalendarButton.module.scss";
+
+/** Breathing room between the sheet and both the trigger and the viewport. */
+const GAP = 8;
 
 interface CalendarProviderLinkProps {
   link: CalendarLink;
@@ -41,12 +53,71 @@ function CalendarProviderLink({ link, onNavigate }: CalendarProviderLinkProps) {
   );
 }
 
+/**
+ * Keeps the sheet on top of the card it was opened from.
+ *
+ * The trigger moves under the sheet whenever a carousel is flicked or the page
+ * is scrolled, so the position is measured again on both - `capture` because a
+ * row scrolls itself, and a scroll event on an element does not bubble.
+ */
+function useAnchoredPosition(
+  anchor: HTMLElement | null | undefined,
+  panelRef: { current: HTMLElement | null },
+  /* The panel only exists once the portal target does, and the first pass runs
+     before that - without this the measurement never happens. */
+  mounted: boolean,
+) {
+  const [position, setPosition] = useState<CSSProperties>();
+
+  useLayoutEffect(() => {
+    if (!anchor || !mounted) return;
+
+    const place = () => {
+      const panel = panelRef.current;
+
+      if (!panel) return;
+
+      const trigger = anchor.getBoundingClientRect();
+      const { height, width } = panel.getBoundingClientRect();
+
+      /* Above the trigger by preference - the button sits at the bottom of a
+         card, so the sheet then covers the card rather than what follows it. */
+      const above = trigger.top - GAP - height;
+
+      setPosition({
+        left: Math.min(
+          Math.max(GAP, trigger.left + trigger.width / 2 - width / 2),
+          Math.max(GAP, window.innerWidth - width - GAP),
+        ),
+        top:
+          above >= GAP
+            ? above
+            : Math.min(trigger.bottom + GAP, window.innerHeight - height - GAP),
+      });
+    };
+
+    place();
+
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [anchor, panelRef, mounted]);
+
+  return position;
+}
+
 export interface CalendarLinksModalProps {
   links: CalendarLink[];
   title: string;
   dialogLabel: string;
   /** Rendered under the provider list - used for the .ics fallback. */
   footer?: ReactNode;
+  /** The button the sheet was opened from; it opens on top of that card. */
+  anchor?: HTMLElement | null;
   onClose: (ev?: ReactMouseEvent) => void;
 }
 
@@ -56,10 +127,28 @@ export default function CalendarLinksModal({
   title,
   dialogLabel,
   footer,
+  anchor,
   onClose,
 }: CalendarLinksModalProps) {
-  return (
-    <div className={styles.overlay}>
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  /* A card inside ScrollRow cannot host this: the row sets `contain: paint`,
+     which makes it the containing block for fixed descendants and clips them
+     to itself, so the sheet landed in the middle of the row and dimmed every
+     card in it. Portalling to the body takes it out of the row - null until
+     mounted, since the body only exists in the browser. */
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => setPortalTarget(document.body), []);
+
+  const position = useAnchoredPosition(anchor, panelRef, portalTarget !== null);
+
+  if (!portalTarget) return null;
+
+  const anchored = Boolean(anchor);
+
+  return createPortal(
+    <div className={anchored ? styles.anchoredOverlay : styles.overlay}>
       {/* See Modal.tsx: click-outside as a real button, not a div handler. */}
       <button
         type="button"
@@ -69,7 +158,9 @@ export default function CalendarLinksModal({
         aria-hidden="true"
       />
       <div
-        className={styles.modal}
+        ref={panelRef}
+        className={`${styles.modal} ${anchored ? styles.anchored : ""}`}
+        style={anchored ? position : undefined}
         role="dialog"
         aria-modal="true"
         aria-label={dialogLabel}
@@ -98,6 +189,7 @@ export default function CalendarLinksModal({
         </div>
         {footer && <div className={styles.footer}>{footer}</div>}
       </div>
-    </div>
+    </div>,
+    portalTarget,
   );
 }
