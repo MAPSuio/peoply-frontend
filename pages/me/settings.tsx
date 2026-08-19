@@ -6,8 +6,6 @@ import { useTheme } from "next-themes";
 /* Components. */
 import BackButton from "../../components/BackButton";
 import ProviderLinkRow from "../../components/ProviderLinkRow";
-import GoogleLogo from "../../components/svgs/GoogleLogo";
-import VippsLogo from "../../components/svgs/VippsLogo";
 import SettingsButton from "../../components/SettingsButton";
 import RadioInputSmall from "../../components/inputs/RadioInputSmall";
 
@@ -25,7 +23,11 @@ import {
 
 /* Services and constants. */
 import { unlinkProvider } from "../../services/auth";
-import { isLoginProvider, PROVIDER_NAMES } from "../../constants/providers";
+import {
+  isLoginProvider,
+  PROVIDER_LOGOS,
+  PROVIDER_NAMES,
+} from "../../constants/providers";
 
 /* Styles. */
 import styles from "../../styles/Settings.module.scss";
@@ -142,6 +144,7 @@ const Settings = () => {
     email !== user?.email;
 
   const linkedProviders = user?.providers?.map((link) => link.provider) ?? [];
+  const UnlinkLogo = unlinkTarget ? PROVIDER_LOGOS[unlinkTarget] : undefined;
 
   const handleUnlink = async () => {
     if (!unlinkTarget) return;
@@ -313,13 +316,7 @@ const Settings = () => {
         >
           <ModalButton
             text="Koble fra"
-            icon={
-              unlinkTarget === LoginProvider.VIPPS ? (
-                <VippsLogo />
-              ) : (
-                <GoogleLogo />
-              )
-            }
+            icon={UnlinkLogo && <UnlinkLogo />}
             onClick={handleUnlink}
             type={ButtonType.DANGER}
           />

@@ -1,13 +1,15 @@
 /* Components. */
 import Button from "./Button";
-import GoogleLogo from "./svgs/GoogleLogo";
-import VippsLogo from "./svgs/VippsLogo";
 
 /* Types. */
-import { ButtonSize, ButtonType, LoginProvider } from "../types/types";
+import { ButtonSize, ButtonType, type LoginProvider } from "../types/types";
 
 /* Constants. */
-import { LINK_PATHS, PROVIDER_NAMES } from "../constants/providers";
+import {
+  LINK_PATHS,
+  PROVIDER_LOGOS,
+  PROVIDER_NAMES,
+} from "../constants/providers";
 import { API_URL } from "../constants/urls";
 
 /* Styles. */
@@ -33,6 +35,8 @@ const ProviderLinkRow = ({
   canUnlink,
   onUnlink,
 }: ProviderLinkRowProps) => {
+  const Logo = PROVIDER_LOGOS[provider];
+
   const startLinking = () => {
     // Bring the user back here once the link flow lands on /login/callback.
     localStorage.setItem("redirectURL", "/me/settings");
@@ -42,7 +46,7 @@ const ProviderLinkRow = ({
   return (
     <div className={styles.row}>
       <span className={styles.logo} aria-hidden="true">
-        {provider === LoginProvider.VIPPS ? <VippsLogo /> : <GoogleLogo />}
+        <Logo />
       </span>
       <span className={styles.text}>
         <span className={styles.name}>{PROVIDER_NAMES[provider]}</span>

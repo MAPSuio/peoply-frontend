@@ -3,11 +3,10 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Modal from "../../components/Modal";
 import ModalButton from "../../components/ModalButton";
-import GoogleLogo from "../../components/svgs/GoogleLogo";
-import VippsLogo from "../../components/svgs/VippsLogo";
 import {
   isLoginProvider,
   LOGIN_PATHS,
+  PROVIDER_LOGOS,
   PROVIDER_NAMES,
 } from "../../constants/providers";
 import { API_URL } from "../../constants/urls";
@@ -87,18 +86,19 @@ const LoginCallback: NextPage = () => {
       description={`E-postadressen fra ${PROVIDER_NAMES[linkPrompt]} er allerede knyttet til en bruker på Peoply.\nLogg inn med ${existingNames} for å koble kontoene, så kan du bruke begge til å logge inn.`}
       closeButtonOnClick={cancel}
     >
-      {linkWith.map((provider) => (
-        <ModalButton
-          key={provider}
-          text={`Logg inn med ${PROVIDER_NAMES[provider]}`}
-          icon={
-            provider === LoginProvider.VIPPS ? <VippsLogo /> : <GoogleLogo />
-          }
-          onClick={() => {
-            window.location.href = `${API_URL}${LOGIN_PATHS[provider]}`;
-          }}
-        />
-      ))}
+      {linkWith.map((provider) => {
+        const Logo = PROVIDER_LOGOS[provider];
+        return (
+          <ModalButton
+            key={provider}
+            text={`Logg inn med ${PROVIDER_NAMES[provider]}`}
+            icon={<Logo />}
+            onClick={() => {
+              window.location.href = `${API_URL}${LOGIN_PATHS[provider]}`;
+            }}
+          />
+        );
+      })}
       <ModalButton text="Avbryt" onClick={cancel} type={ButtonType.SECONDARY} />
     </Modal>
   );
