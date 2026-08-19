@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 
+import useScrollRestoration from "../hooks/useScrollRestoration";
 import styles from "../styles/ScrollRow.module.scss";
 
 export interface ScrollRowProps {
   children: ReactNode;
   className?: string;
+  /** Stable, unique id for this row. When set, its scroll position survives
+   *  navigating away and back (e.g. front page -> /events -> back). */
+  restoreKey?: string;
 }
 
 /**
@@ -22,9 +26,16 @@ export interface ScrollRowProps {
  * A plain overflow container also gets real platform momentum and rubber
  * banding for free, which is what a hand-rolled free mode was approximating.
  */
-export default function ScrollRow({ children, className }: ScrollRowProps) {
+export default function ScrollRow({
+  children,
+  className,
+  restoreKey,
+}: ScrollRowProps) {
+  const ref = useScrollRestoration<HTMLDivElement>(restoreKey);
+
   return (
     <div
+      ref={ref}
       className={`${styles.row} ${className ?? ""}`}
       /* Each row sits under its own heading, which is what names it; the
          tabindex is here because a scrollable area has to be reachable by
