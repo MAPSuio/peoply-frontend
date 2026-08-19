@@ -12,6 +12,9 @@ import CalendarLinksModal from "./CalendarLinksModal";
 import CalendarIconCard from "./svgs/CalendarIconCard";
 import styles from "../styles/AddToCalendarButton.module.scss";
 
+/** Marks the element a calendar sheet should cover - see EventCard. */
+export const CALENDAR_ANCHOR_ATTRIBUTE = "data-calendar-anchor";
+
 /** What the trigger button looks like; passed straight through to `Button`. */
 export interface CalendarButtonAppearance {
   className?: string;
@@ -83,9 +86,16 @@ export default function CalendarLinksButton({
         width={width}
         onClick={(ev?: ReactMouseEvent) => {
           const trigger = ev?.currentTarget as HTMLElement | undefined;
+          /* The card carries the marker, so the sheet can lie on top of the
+             whole card rather than hang off the small button in its corner.
+             Pages that open this outside a card fall back to the button. */
+          const card =
+            trigger?.closest<HTMLElement>(`[${CALENDAR_ANCHOR_ATTRIBUTE}]`) ??
+            trigger ??
+            null;
 
           stop(ev);
-          setAnchor((current) => (current ? null : (trigger ?? null)));
+          setAnchor((current) => (current ? null : card));
         }}
         noShadow
         icon={<CalendarIconCard className={styles.icon} />}
