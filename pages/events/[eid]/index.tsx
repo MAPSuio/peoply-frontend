@@ -73,6 +73,26 @@ interface EventProps {
   event: Event;
 }
 
+const GoingCountText = ({
+  goingCount,
+  eventData,
+}: {
+  goingCount: number | undefined;
+  eventData: Event;
+}) => {
+  if (eventData.registrationMode === EventRegistrationMode.EXTERNAL) {
+    return null;
+  }
+  return (
+    <p className={styles.infoText}>
+      <span className={styles.emphasis}>{`${goingCount}${
+        eventData.capacity ? `/${eventData.capacity}` : ""
+      }`}</span>{" "}
+      påmeldte
+    </p>
+  );
+};
+
 const Event = ({ event }: EventProps) => {
   const { user, orgs } = useUser();
   const goBack = useBack();
@@ -363,12 +383,10 @@ const Event = ({ event }: EventProps) => {
                         className={`${styles.icon} ${styles.checkIcon}`}
                       />
                     </div>
-                    <p className={styles.infoText}>
-                      <span className={styles.emphasis}>{`${goingCount}${
-                        eventData.capacity ? `/${eventData.capacity}` : ""
-                      }`}</span>{" "}
-                      påmeldte
-                    </p>
+                    <GoingCountText
+                      goingCount={goingCount}
+                      eventData={eventData}
+                    />
                   </div>
                 </Link>
               )}
@@ -381,12 +399,10 @@ const Event = ({ event }: EventProps) => {
                       className={`${styles.icon} ${styles.checkIcon}`}
                     />
                   </div>
-                  <p className={styles.infoText}>
-                    <span className={styles.emphasis}>{`${goingCount}${
-                      eventData.capacity ? `/${eventData.capacity}` : ""
-                    }`}</span>{" "}
-                    påmeldte
-                  </p>
+                  <GoingCountText
+                    goingCount={goingCount}
+                    eventData={eventData}
+                  />
                 </div>
               )}
             </div>
