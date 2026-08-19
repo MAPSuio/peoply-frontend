@@ -77,7 +77,7 @@ const GoingCountText = ({
   goingCount,
   eventData,
 }: {
-  goingCount: number;
+  goingCount: number | undefined;
   eventData: Event;
 }) => {
   if (eventData.registrationMode === EventRegistrationMode.EXTERNAL) {
