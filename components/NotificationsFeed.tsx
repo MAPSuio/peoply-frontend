@@ -47,7 +47,7 @@ import SleepImage from "../assets/images/undraw_sleeping.png";
 import styles from "../styles/NotificationsFeed.module.scss";
 
 /* The list of invitations and their accept/decline actions. Rendered both as
-   the /me/notifications page and inside the sheet the bell icon opens. */
+   the /me/notifications page and inside the panel the bell icon opens. */
 export default function NotificationsFeed() {
   const { user } = useUser();
   const { addSnack } = useSnack();

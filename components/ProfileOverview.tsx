@@ -16,7 +16,7 @@ export interface ProfileOverviewProps {
 }
 
 /* Profile picture, name, description and the profile menu. Rendered both as
-   the /me page and inside the sheet the avatar in the header opens. */
+   the /me page and inside the panel the avatar in the header opens. */
 export default function ProfileOverview({ user }: ProfileOverviewProps) {
   return (
     <div className={styles.container}>

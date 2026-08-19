@@ -1,0 +1,87 @@
+/* Covers the page so a click anywhere outside the panel closes it. No colour
+   and no blur - a popover leaves the page it hangs over alone. */
+.clickCatcher {
+  background: none;
+  border: none;
+  cursor: default;
+  inset: 0;
+  padding: 0;
+  position: fixed;
+  z-index: $z-index-modal;
+}
+
+.container {
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-name: popover-enter;
+  animation-timing-function: ease;
+  background-color: var(--background-color-modal, $background-color-modal);
+  border-radius: $border-radius-regular;
+  /* The page behind is not dimmed, so the panel needs its own edge to sit on
+     top of it rather than in it. */
+  box-shadow: $shadow-avatar-large;
+  display: flex;
+  flex-flow: column nowrap;
+  /* Hangs off the bottom of the header row, aligned with the icons at its
+     right edge, so it reads as belonging to the icon that opened it. */
+  left: $spacer-small;
+  /* dvh so the panel is not cut off behind the mobile browser chrome that vh
+     pretends is not there. The vh line stays as the fallback. */
+  max-height: 75vh;
+  max-height: 75dvh;
+  padding: $spacer-very-small $spacer-small;
+  position: absolute;
+  right: $spacer-small;
+  top: 100%;
+  z-index: $z-index-modal;
+
+  /* A wide screen has room beside it, so the panel stops spanning the header
+     and sits under the icons alone. */
+  @include desktop() {
+    left: auto;
+    width: 400px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 $spacer-very-small $spacer-very-small;
+}
+
+.title {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-small;
+  margin: 0;
+}
+
+.exitIcon {
+  @include resetButton();
+  display: flex;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+.content {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  padding: 0 $spacer-very-small $spacer-very-small;
+}
+
+/* Drops out of the icon rather than rising from the bottom edge: the panel
+   comes from the corner it is anchored to. */
+@keyframes popover-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

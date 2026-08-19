@@ -8,7 +8,7 @@ import BackButton from "../../components/BackButton";
 import useBack from "../../hooks/useBack";
 import HeadComponent from "../../components/HeadComponent";
 
-/* The avatar in the header opens the same content in a sheet. This route is
+/* The avatar in the header opens the same content in a panel. This route is
    kept for deep links and for the app shortcut in the manifest. */
 const Me: NextPage = () => {
   const { user, loading } = useUser();

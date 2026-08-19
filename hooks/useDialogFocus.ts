@@ -10,7 +10,8 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 /* Trap Tab inside the dialog - without this, focus walks out into the page
-   behind the overlay, which is unreachable by mouse. */
+   behind it and leaves the dialog open behind whatever it landed on. Escape
+   and the close button are the ways out. */
 function trapTab(event: KeyboardEvent, container: HTMLElement) {
   const focusable = Array.from(
     container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
@@ -34,7 +35,7 @@ function trapTab(event: KeyboardEvent, container: HTMLElement) {
   }
 }
 
-/* Focus handling shared by Modal and Sheet: move focus into the dialog, trap
+/* Focus handling shared by Modal and Popover: move focus into the dialog, trap
    Tab inside it, close on Escape, and hand focus back to whatever opened it. */
 export default function useDialogFocus(
   containerRef: RefObject<HTMLElement | null>,

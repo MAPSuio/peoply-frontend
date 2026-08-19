@@ -1,3 +1,11 @@
+/* The notification and profile popovers hang off the bottom of the header row
+   and are positioned against this. The header's own bottom margin collapses
+   through it, so `top: 100%` lands right under the row rather than under the
+   gap below it. */
+.wrapper {
+  position: relative;
+}
+
 .container {
   align-items: center;
   display: flex;
@@ -100,7 +108,7 @@
   }
 }
 
-/* The avatar opens the profile sheet, so it is a button now. Rounded so the
+/* The avatar opens the profile panel, so it is a button now. Rounded so the
    focus ring follows the picture rather than boxing it in. */
 .avatarButton {
   border-radius: $border-radius-rounded;
