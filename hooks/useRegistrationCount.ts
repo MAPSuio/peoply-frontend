@@ -1,6 +1,7 @@
 import useSWR from "swr";
 
 import { type Event, RegStatus } from "../types/types";
+import { showsRegistrationCount } from "../utils/event";
 
 /**
  * Number of people going to an event.
@@ -19,14 +20,27 @@ import { type Event, RegStatus } from "../types/types";
  * `mutate()` still revalidates against the API, which is what keeps the count
  * moving when someone joins or leaves from the card itself: the seeded value
  * is a starting point, not a ceiling.
+ *
+ * Events with external registration have no count to show (see
+ * `showsRegistrationCount`), so they neither seed nor fetch and `data` stays
+ * `undefined`. Callers still hide their own count markup - this is the
+ * backstop that keeps a caller which forgets from being handed a number.
+ *
+ * `forDisplay: false` opts out of that gate. It is for the caller that needs
+ * the number for something other than telling the user it: the edit page uses
+ * it as the floor under the capacity field, and dropping it there would let an
+ * arranger who switches an event to external registration set capacity below
+ * the people already signed up.
  */
 export default function useRegistrationCount(
-  event?: Pick<Event, "id" | "goingCount">,
+  event?: Pick<Event, "id" | "goingCount" | "registrationMode">,
+  { forDisplay = true }: { forDisplay?: boolean } = {},
 ) {
-  const seeded = event?.goingCount;
+  const counted = !forDisplay || showsRegistrationCount(event);
+  const seeded = counted ? event?.goingCount : undefined;
 
   return useSWR<number>(
-    event?.id
+    counted && event?.id
       ? `/events/${event.id}/registration-count?regStatus=${RegStatus.GOING}`
       : null,
     {

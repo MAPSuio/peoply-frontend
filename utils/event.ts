@@ -1,6 +1,17 @@
-import { type Event, EventSource } from "../types/types";
+import { type Event, EventRegistrationMode, EventSource } from "../types/types";
 import { getPrimaryEventArrangerOrganization } from "./eventArrangers";
 import { formatDateAndTime } from "./functions";
+
+/* An event that hands registration off to another site is not signed up for
+   in Peoply, so whatever registrations we hold for it are leftovers or noise -
+   never the turnout. Showing that number anywhere states something we do not
+   know, so no surface may render it: not a card, not the event page, not the
+   count request behind them. Every attendee count goes through this. */
+export function showsRegistrationCount(
+  event?: Pick<Event, "registrationMode">,
+): boolean {
+  return event?.registrationMode !== EventRegistrationMode.EXTERNAL;
+}
 
 /* Events imported from an .ics feed never carry an image: the calendar format
    has no field for one, and the events are read-only so nobody can upload one

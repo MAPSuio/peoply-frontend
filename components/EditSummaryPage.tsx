@@ -574,7 +574,11 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     "/organizations?orderBy=name",
     fetchAllFromPeoplyApiJson,
   );
-  const { data: goingCount } = useRegistrationCount(event);
+  /* The floor under the capacity field, not something we show off: an external
+     event still has its old registrations, and capacity must stay above them. */
+  const { data: goingCount } = useRegistrationCount(event, {
+    forDisplay: false,
+  });
 
   /* Get image source of either the supplied image or a placeholder. */
   const imageSource = tempEventObject.eventImage

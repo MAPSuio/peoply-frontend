@@ -29,6 +29,7 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 
 // Styles.
 import styles from "../styles/EventCard.module.scss";
+import RegistrationCount from "./RegistrationCount";
 import SmallCheckCircle from "./SmallCheckCircle";
 import { getEventImage, isEventFinished } from "../utils/event";
 
@@ -65,15 +66,17 @@ const EventCard = ({ event }: EventCardProps) => {
           <p className={styles.date}>{dateString}</p>
           <div className={styles.eventCardTitleContainer}>
             <h2 className={styles.title}>{event.title}</h2>
-            <div className={styles.usersIconContainer}>
-              <UsersIconCard className={styles.icon} />
-              <p className={styles.data}>
-                <span className={styles.emphasis}>
-                  {registrationsError ? "?" : (registrations ?? 0)}
-                </span>
-                {event.capacity !== null && `\u200A/\u200A${event.capacity}`}
-              </p>
-            </div>
+            <RegistrationCount event={event}>
+              <div className={styles.usersIconContainer}>
+                <UsersIconCard className={styles.icon} />
+                <p className={styles.data}>
+                  <span className={styles.emphasis}>
+                    {registrationsError ? "?" : (registrations ?? 0)}
+                  </span>
+                  {event.capacity !== null && `\u200A/\u200A${event.capacity}`}
+                </p>
+              </div>
+            </RegistrationCount>
           </div>
           <div className={styles.divider}></div>
           <div className={styles.eventCardInfoBody}>
