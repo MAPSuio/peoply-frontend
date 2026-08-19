@@ -1,5 +1,6 @@
 import {
   type CSSProperties,
+  useCallback,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   useEffect,
@@ -110,6 +111,34 @@ function useAnchoredPosition(
   return position;
 }
 
+/**
+ * Closes the sheet once the card it belongs to has been scrolled away.
+ *
+ * Without this the sheet stays pinned to the viewport edge after its card has
+ * left the row, pointing at whatever card happens to be there now. The
+ * observer sees the row's clipping as well as the viewport's, so flicking the
+ * carousel counts as scrolling the card away.
+ */
+function useCloseWhenAnchorLeaves(
+  anchor: HTMLElement | null | undefined,
+  onClose: () => void,
+) {
+  useEffect(() => {
+    if (!anchor) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) onClose();
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(anchor);
+
+    return () => observer.disconnect();
+  }, [anchor, onClose]);
+}
+
 export interface CalendarLinksModalProps {
   links: CalendarLink[];
   title: string;
@@ -131,6 +160,9 @@ export default function CalendarLinksModal({
   onClose,
 }: CalendarLinksModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  /* Stable identity: the observer below would otherwise be torn down and set
+     up again on every render. */
+  const closeSheet = useCallback(() => onClose(), [onClose]);
 
   /* A card inside ScrollRow cannot host this: the row sets `contain: paint`,
      which makes it the containing block for fixed descendants and clips them
@@ -142,6 +174,8 @@ export default function CalendarLinksModal({
   useEffect(() => setPortalTarget(document.body), []);
 
   const position = useAnchoredPosition(anchor, panelRef, portalTarget !== null);
+
+  useCloseWhenAnchorLeaves(anchor, closeSheet);
 
   if (!portalTarget) return null;
 
