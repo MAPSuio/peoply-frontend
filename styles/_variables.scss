@@ -277,7 +277,10 @@ $animation-duration: 0.3s;
 $animation-duration-longer: 0.6s;
 $z-index-modal: 9999;
 $z-index-snack: 9998;
-$event-image-height: calc(100vw / 1.78);
+// The ratio every event image is displayed at. Mirrored as
+// EVENT_IMAGE_ASPECT_RATIO in utils/imageCrop.ts, which crops uploads to match.
+$aspect-ratio-event-image: 1.78;
+$event-image-height: calc(100vw / $aspect-ratio-event-image);
 $event-image-height-desktop: 400px;
 $event-image-width-desktop: 712px;
 $avatar-size-large: 120px;

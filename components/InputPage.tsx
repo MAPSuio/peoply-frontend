@@ -26,6 +26,8 @@ interface InputPageProps {
   page: InputPages;
   setEventImageValid?: (eventImageValid: boolean) => void;
   setEventExtraInfoValid?: (eventExtraInfoValid: boolean) => void;
+  /** Blocks the step while work is still in flight, on top of `validDataMap`. */
+  nextDisabled?: boolean;
   firstPage?: boolean;
   buttonOnClick: (step: number) => void;
   children: React.ReactNode;
@@ -43,6 +45,7 @@ const InputPage = ({
   page,
   setEventImageValid,
   setEventExtraInfoValid,
+  nextDisabled,
   firstPage,
   buttonOnClick,
   children,
@@ -96,7 +99,7 @@ const InputPage = ({
               onClick={() => buttonOnClick(step + 1)}
               text={buttonText}
               className={styles.primaryButton}
-              disabled={!validData}
+              disabled={!validData || nextDisabled}
             />
           </div>
         </div>
