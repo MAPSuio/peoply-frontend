@@ -643,7 +643,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (error) {
-    console.error(`Failed to fetch event ${eid}:`, error);
+    console.error("Failed to fetch event %s:", eid, error);
     return {
       notFound: true,
     };

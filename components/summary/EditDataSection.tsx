@@ -19,6 +19,9 @@ import MinusIcon from "../svgs/MinusIcon";
 /* Types */
 import { EventRegistrationMode, Visibility } from "../../types/types";
 
+/* Utils */
+import { getSafeHttpUrl } from "../../utils/event";
+
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
 
@@ -72,6 +75,7 @@ const EditDataSection = ({
   displayRegistrationMode,
   displayExternalUrl,
 }: EditDataSectionProps) => {
+  const safeExternalUrl = getSafeHttpUrl(displayExternalUrl);
   return (
     <SummaryCard
       onCheck={onCheck}
@@ -197,14 +201,14 @@ const EditDataSection = ({
           </p>
         </div>
         {displayRegistrationMode === EventRegistrationMode.EXTERNAL &&
-          displayExternalUrl && (
+          safeExternalUrl && (
             <a
               className={styles.placeText}
-              href={displayExternalUrl}
+              href={safeExternalUrl}
               target="_blank"
               rel="noreferrer"
             >
-              {displayExternalUrl}
+              {safeExternalUrl}
             </a>
           )}
       </div>
