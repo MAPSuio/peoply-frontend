@@ -73,6 +73,13 @@
     transition: background-color $animation-duration ease;
     width: 250px;
 
+    /* The 1px outline doubles as the card border, so keyboard focus needs
+       its own visible indicator. */
+    &:focus-visible {
+      outline: 2px solid var(--primary-color-200, $primary-color-200);
+      outline-offset: 2px;
+    }
+
     @include desktop() {
       &:hover {
         background: var(

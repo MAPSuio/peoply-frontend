@@ -79,6 +79,7 @@ const Settings = () => {
         in_use: "Kontoen er allerede koblet til en annen bruker",
         wrong_user: "Innloggingen samsvarte ikke med brukeren din",
         phone_in_use: "Telefonnummeret er allerede i bruk av en annen bruker",
+        email_in_use: "E-postadressen er allerede i bruk av en annen bruker",
         expired: "Koblingen utløp. Prøv igjen",
       };
       addSnack(messages[linkError] ?? "Noe gikk galt", SnackTypes.ERROR);
