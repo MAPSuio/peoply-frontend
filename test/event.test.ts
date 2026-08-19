@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { Event } from "../types/types";
-import { isEventFinished } from "../utils/event";
+import { type Event, EventRegistrationMode } from "../types/types";
+import { isEventFinished, showsRegistrationCount } from "../utils/event";
 
 /* Local noon, so the "same day" cases are unaffected by the timezone the
    test runs in. */
@@ -71,5 +71,35 @@ describe("isEventFinished", () => {
         ),
       ).toBe(true);
     });
+  });
+});
+
+describe("showsRegistrationCount", () => {
+  it("hides the count for external registration", () => {
+    expect(
+      showsRegistrationCount({
+        registrationMode: EventRegistrationMode.EXTERNAL,
+      }),
+    ).toBe(false);
+  });
+
+  it("shows the count for registration in Peoply", () => {
+    expect(
+      showsRegistrationCount({
+        registrationMode: EventRegistrationMode.PEOPLY,
+      }),
+    ).toBe(true);
+  });
+
+  /* NONE means nobody registers through us either, but the count we hold for
+     such an event is still our own - only EXTERNAL is deliberately unknown. */
+  it("shows the count when registration is not handled", () => {
+    expect(
+      showsRegistrationCount({ registrationMode: EventRegistrationMode.NONE }),
+    ).toBe(true);
+  });
+
+  it("defaults to showing when there is no event yet", () => {
+    expect(showsRegistrationCount(undefined)).toBe(true);
   });
 });

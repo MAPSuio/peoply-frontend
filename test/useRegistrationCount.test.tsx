@@ -3,11 +3,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SWRConfig } from "swr";
 
 import useRegistrationCount from "../hooks/useRegistrationCount";
-import type { Event } from "../types/types";
+import { type Event, EventRegistrationMode } from "../types/types";
 
 const fetcher = vi.fn();
 
-function Consumer({ event }: { event?: Pick<Event, "id" | "goingCount"> }) {
+function Consumer({
+  event,
+}: {
+  event?: Pick<Event, "id" | "goingCount" | "registrationMode">;
+}) {
   const { data, mutate } = useRegistrationCount(event);
 
   return (
@@ -20,7 +24,9 @@ function Consumer({ event }: { event?: Pick<Event, "id" | "goingCount"> }) {
   );
 }
 
-function renderHook(event?: Pick<Event, "id" | "goingCount">) {
+function renderHook(
+  event?: Pick<Event, "id" | "goingCount" | "registrationMode">,
+) {
   return render(
     /* `provider` gives each test its own cache, otherwise the first test's
        entry for an event id would satisfy the next one's render. */
@@ -37,7 +43,10 @@ describe("useRegistrationCount", () => {
   });
 
   it("fetches when the event carries no goingCount", async () => {
-    renderHook({ id: "event-1" } as Pick<Event, "id" | "goingCount">);
+    renderHook({ id: "event-1" } as Pick<
+      Event,
+      "id" | "goingCount" | "registrationMode"
+    >);
 
     await waitFor(() =>
       expect(screen.getByTestId("count")).toHaveTextContent("7"),
@@ -81,6 +90,51 @@ describe("useRegistrationCount", () => {
     expect(screen.getByTestId("count")).toHaveTextContent("-");
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  /* External registration happens off Peoply, so whatever we hold is not the
+     turnout. The hook is the last line of defence: a caller that forgets to
+     hide its own markup must still have nothing to print. */
+  describe("with external registration", () => {
+    it("reports no count even when the event carries one", async () => {
+      renderHook({
+        id: "event-1",
+        goingCount: 42,
+        registrationMode: EventRegistrationMode.EXTERNAL,
+      });
+
+      expect(screen.getByTestId("count")).toHaveTextContent("-");
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(fetcher).not.toHaveBeenCalled();
+    });
+
+    it("does not fetch a count it would not show", async () => {
+      renderHook({
+        id: "event-1",
+        registrationMode: EventRegistrationMode.EXTERNAL,
+      } as Pick<Event, "id" | "goingCount" | "registrationMode">);
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(screen.getByTestId("count")).toHaveTextContent("-");
+      expect(fetcher).not.toHaveBeenCalled();
+    });
+
+    it("stays empty across a mutate", async () => {
+      renderHook({
+        id: "event-1",
+        goingCount: 42,
+        registrationMode: EventRegistrationMode.EXTERNAL,
+      });
+
+      await act(async () => {
+        screen.getByRole("button", { name: "refresh" }).click();
+      });
+
+      await waitFor(() =>
+        expect(screen.getByTestId("count")).toHaveTextContent("-"),
+      );
+      expect(fetcher).not.toHaveBeenCalled();
+    });
   });
 
   it("treats a zero count as an answer, not as missing", async () => {

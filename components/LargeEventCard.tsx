@@ -6,6 +6,7 @@ import Image from "next/image";
 import ArrangerAvatar from "./ArrangerAvatar";
 import EventActions from "./EventActions";
 import HeartIconGlass from "./HeartIconGlass";
+import RegistrationCount from "./RegistrationCount";
 
 // Hooks.
 import useEventFavorite from "../hooks/useEventFavorite";
@@ -71,6 +72,179 @@ const DataRow = ({ Icon, compact, circledIcon, children }: DataRowProps) => (
   </div>
 );
 
+const CardMedia = ({ event, compact }: { event: Event; compact: boolean }) => {
+  const {
+    favorited,
+    loading: favoriteLoading,
+    toggleFavorite,
+  } = useEventFavorite(event.id);
+
+  return (
+    <div
+      className={cx(
+        styles.imageContainer,
+        compact && styles.compactImageContainer,
+      )}
+    >
+      <Image
+        src={getEventImage(event) ?? placeholderImage}
+        alt="A very cute cat"
+        fill
+        style={{ objectFit: "cover", objectPosition: "center" }}
+        priority={true}
+      />
+      <HeartIconGlass
+        className={styles.favoriteIcon}
+        onClick={toggleFavorite}
+        favorited={favorited}
+        loading={favoriteLoading}
+      />
+    </div>
+  );
+};
+
+const CardTitle = ({
+  event,
+  compact,
+  count,
+}: {
+  event: Event;
+  compact: boolean;
+  count: number | undefined;
+}) => (
+  <div
+    className={cx(
+      styles.titleContainer,
+      compact && styles.compactTitleContainer,
+    )}
+  >
+    <h3 className={cx(styles.title, compact && styles.compactTitle)}>
+      {event.title}
+    </h3>
+    <RegistrationCount event={event}>
+      <div
+        className={cx(
+          styles.capacityContainer,
+          compact && styles.compactCapacityContainer,
+        )}
+      >
+        <UsersIcon
+          className={cx(
+            styles.icon,
+            compact && styles.compactIcon,
+            styles.marginRightVerySmall,
+          )}
+        />
+        <p className={cx(styles.data, compact && styles.compactData)}>
+          <span className={styles.emphasis}>{count}</span>
+          {event.capacity && `\u200A/\u200A${event.capacity}`}
+        </p>
+      </div>
+    </RegistrationCount>
+  </div>
+);
+
+const ArrangerRow = ({
+  event,
+  compact,
+}: {
+  event: Event;
+  compact: boolean;
+}) => (
+  <div className={styles.dataItemContainer}>
+    <ArrangerAvatar
+      event={event}
+      classNames={{
+        image: styles.arrangerImage,
+        iconContainer: styles.iconContainer,
+        icon: styles.icon,
+      }}
+      fallbackIcon={<UserIconCard className={styles.icon} />}
+    />
+    <div>
+      <span className={cx(styles.data, compact && styles.compactData)}>
+        {getCompactEventArrangerLabel(event, 2)}
+      </span>
+    </div>
+  </div>
+);
+
+const CardDetails = ({
+  event,
+  compact,
+  showArranger,
+  dateString,
+  timeString,
+}: {
+  event: Event;
+  compact: boolean;
+  showArranger: boolean;
+  dateString: string;
+  timeString: string;
+}) => (
+  <div
+    className={cx(styles.dataContainer, compact && styles.compactDataContainer)}
+  >
+    {showArranger && <ArrangerRow event={event} compact={compact} />}
+    <DataRow Icon={TimeIcon} compact={compact} circledIcon={showArranger}>
+      {dateString}, {timeString}
+    </DataRow>
+    <DataRow Icon={PlaceIcon} compact={compact} circledIcon={showArranger}>
+      {event.locationName}
+    </DataRow>
+  </div>
+);
+
+/* A finished event has nothing left to act on, so the whole row goes. */
+const CardActions = ({
+  event,
+  compact,
+  stackActionsOnDesktop,
+  updateRegistrations,
+}: {
+  event: Event;
+  compact: boolean;
+  stackActionsOnDesktop: boolean;
+  updateRegistrations: () => void;
+}) => {
+  if (isEventFinished(event)) {
+    return null;
+  }
+
+  return (
+    <div
+      className={cx(
+        styles.actionContainer,
+        compact && styles.compactActionContainer,
+        stackActionsOnDesktop && styles.stackedActions,
+      )}
+    >
+      <div
+        className={cx(
+          styles.primaryActions,
+          compact && styles.compactPrimaryActions,
+          stackActionsOnDesktop && styles.stackedPrimaryActions,
+        )}
+      >
+        <EventActions
+          event={event}
+          updateOnChange={[updateRegistrations]}
+          useUnregisterModal
+          calendarButtonText={compact ? "Kalender" : undefined}
+          joinButtonClassName={cx(
+            styles.primaryActionButton,
+            compact && styles.compactActionButton,
+          )}
+          calendarButtonClassName={cx(
+            styles.secondaryActionButton,
+            compact && styles.compactActionButton,
+          )}
+        />
+      </div>
+    </div>
+  );
+};
+
 const LargeEventCard = ({
   event,
   showArranger,
@@ -78,12 +252,6 @@ const LargeEventCard = ({
   compact = false,
   className,
 }: LargeEventCardProps) => {
-  const {
-    favorited,
-    loading: favoriteLoading,
-    toggleFavorite,
-  } = useEventFavorite(event.id);
-
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : null;
 
@@ -106,134 +274,28 @@ const LargeEventCard = ({
       )}
     >
       <div className={styles.cardContainer}>
-        <div
-          className={cx(
-            styles.imageContainer,
-            compact && styles.compactImageContainer,
-          )}
-        >
-          <Image
-            src={getEventImage(event) ?? placeholderImage}
-            alt="A very cute cat"
-            fill
-            style={{ objectFit: "cover", objectPosition: "center" }}
-            priority={true}
-          />
-          <HeartIconGlass
-            className={styles.favoriteIcon}
-            onClick={toggleFavorite}
-            favorited={favorited}
-            loading={favoriteLoading}
-          />
-        </div>
+        <CardMedia event={event} compact={compact} />
         <div
           className={cx(
             styles.contentContainer,
             compact && styles.compactContentContainer,
           )}
         >
-          <div
-            className={cx(
-              styles.titleContainer,
-              compact && styles.compactTitleContainer,
-            )}
-          >
-            <h3 className={cx(styles.title, compact && styles.compactTitle)}>
-              {event.title}
-            </h3>
-            <div
-              className={cx(
-                styles.capacityContainer,
-                compact && styles.compactCapacityContainer,
-              )}
-            >
-              <UsersIcon
-                className={cx(
-                  styles.icon,
-                  compact && styles.compactIcon,
-                  styles.marginRightVerySmall,
-                )}
-              />
-              <p className={cx(styles.data, compact && styles.compactData)}>
-                <span className={styles.emphasis}>{registrations}</span>
-                {event.capacity && `\u200A/\u200A${event.capacity}`}
-              </p>
-            </div>
-          </div>
+          <CardTitle event={event} compact={compact} count={registrations} />
           <span className={styles.divider} />
-          <div
-            className={cx(
-              styles.dataContainer,
-              compact && styles.compactDataContainer,
-            )}
-          >
-            {showArranger && (
-              <div className={styles.dataItemContainer}>
-                <ArrangerAvatar
-                  event={event}
-                  classNames={{
-                    image: styles.arrangerImage,
-                    iconContainer: styles.iconContainer,
-                    icon: styles.icon,
-                  }}
-                  fallbackIcon={<UserIconCard className={styles.icon} />}
-                />
-                <div>
-                  <span
-                    className={cx(styles.data, compact && styles.compactData)}
-                  >
-                    {getCompactEventArrangerLabel(event, 2)}
-                  </span>
-                </div>
-              </div>
-            )}
-            <DataRow
-              Icon={TimeIcon}
-              compact={compact}
-              circledIcon={!!showArranger}
-            >
-              {dateString}, {timeString}
-            </DataRow>
-            <DataRow
-              Icon={PlaceIcon}
-              compact={compact}
-              circledIcon={!!showArranger}
-            >
-              {event.locationName}
-            </DataRow>
-          </div>
-          {!isEventFinished(event) && (
-            <div
-              className={cx(
-                styles.actionContainer,
-                compact && styles.compactActionContainer,
-                stackActionsOnDesktop && styles.stackedActions,
-              )}
-            >
-              <div
-                className={cx(
-                  styles.primaryActions,
-                  compact && styles.compactPrimaryActions,
-                  stackActionsOnDesktop && styles.stackedPrimaryActions,
-                )}
-              >
-                <EventActions
-                  event={event}
-                  updateOnChange={[updateRegistrations]}
-                  useUnregisterModal
-                  calendarButtonText={compact ? "Kalender" : undefined}
-                  joinButtonClassName={cx(
-                    styles.primaryActionButton,
-                    compact && styles.compactActionButton,
-                  )}
-                  calendarButtonClassName={cx(
-                    styles.secondaryActionButton,
-                    compact && styles.compactActionButton,
-                  )}
-                />
-              </div>
-            </div>
-          )}
+          <CardDetails
+            event={event}
+            compact={compact}
+            showArranger={!!showArranger}
+            dateString={dateString}
+            timeString={timeString}
+          />
+          <CardActions
+            event={event}
+            compact={compact}
+            stackActionsOnDesktop={stackActionsOnDesktop}
+            updateRegistrations={updateRegistrations}
+          />
         </div>
       </div>
     </Link>

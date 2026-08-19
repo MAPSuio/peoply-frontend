@@ -12,6 +12,7 @@ import UserCircle from "../../../components/UserCircle";
 import ArrangerAvatar from "../../../components/ArrangerAvatar";
 import DateCircle from "../../../components/DateCircle";
 import PlaceCircle from "../../../components/PlaceCircle";
+import RegistrationCount from "../../../components/RegistrationCount";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import FoodCircle from "../../../components/svgs/FoodCircle";
 import { IconPlacement } from "../../../components/Button";
@@ -38,7 +39,11 @@ import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 // Utils.
 import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
-import { getEventImage, getSafeExternalUrl } from "../../../utils/event";
+import {
+  getEventImage,
+  getSafeExternalUrl,
+  showsRegistrationCount,
+} from "../../../utils/event";
 import { isValidEventId } from "../../../utils/eventId";
 
 // Types.
@@ -73,30 +78,403 @@ interface EventProps {
   event: Event;
 }
 
-const GoingCountText = ({
+/* The icon belongs to the row, not to the page: hiding only the text would
+   leave a bare check mark behind on events that have no count to show. */
+const GoingCountRow = ({
   goingCount,
   eventData,
+  className,
 }: {
   goingCount: number | undefined;
   eventData: Event;
-}) => {
-  if (eventData.registrationMode === EventRegistrationMode.EXTERNAL) {
-    return null;
-  }
-  return (
+  className?: string;
+}) => (
+  <div className={`${styles.infoTextContainer} ${className ?? ""}`}>
+    <div className={styles.iconContainer}>
+      <SmallCheckCircle className={`${styles.icon} ${styles.checkIcon}`} />
+    </div>
     <p className={styles.infoText}>
       <span className={styles.emphasis}>{`${goingCount}${
         eventData.capacity ? `/${eventData.capacity}` : ""
       }`}</span>{" "}
       påmeldte
     </p>
+  </div>
+);
+
+/* Links to the participant list when the caller could read it - arrangers get
+   the registrations, everyone else (or a failed read) gets the bare row.
+   External events show neither: the number is not ours to state, so nothing
+   here renders at all. */
+const GoingCountSection = ({
+  goingCount,
+  eventData,
+  registrations,
+}: {
+  goingCount: number | undefined;
+  eventData: Event;
+  registrations: Registration[] | undefined;
+}) => (
+  <RegistrationCount event={eventData}>
+    {registrations ? (
+      <Link href={`/events/${eventData.urlId}/participants`}>
+        <GoingCountRow goingCount={goingCount} eventData={eventData} />
+      </Link>
+    ) : (
+      <GoingCountRow
+        goingCount={goingCount}
+        eventData={eventData}
+        className={styles.marginBottomSmall}
+      />
+    )}
+  </RegistrationCount>
+);
+
+/* Header image with the controls that float on top of it. The edit pencil is
+   for arrangers, and never for an event mirrored from an .ics feed. */
+const EventHero = ({
+  eventData,
+  eventImage,
+  isArranger,
+  goBack,
+  favorited,
+  favoriteLoading,
+  toggleFavorite,
+}: {
+  eventData: Event;
+  eventImage: string | undefined;
+  isArranger: boolean;
+  goBack: () => void;
+  favorited: boolean;
+  favoriteLoading: boolean;
+  toggleFavorite: () => void;
+}) => (
+  <div className={styles.imageWrapper}>
+    <BackButtonGlass className={styles.backIcon} onClick={goBack} />
+    <HeartIconGlass
+      className={styles.favoriteIcon}
+      onClick={toggleFavorite}
+      favorited={favorited}
+      loading={favoriteLoading}
+    />
+    {isArranger && !eventData.readOnly && (
+      <EditIconGlass
+        className={styles.editIcon}
+        onClick={() => router.push(`/events/${eventData.urlId}/edit`)}
+      />
+    )}
+    <div className={styles.imageContainer}>
+      <Image
+        src={eventImage ?? placeholderImage}
+        fill
+        sizes="50vw"
+        style={{ objectFit: "cover" }}
+        alt="Et bilde som passer til arrangementet"
+        /* "blur" needs a blurDataURL, which only the bundled placeholder
+           has - a remote URL here would throw. */
+        placeholder={eventImage ? "empty" : "blur"}
+      />
+    </div>
+  </div>
+);
+
+const ArrangerLine = ({ eventData }: { eventData: Event }) => (
+  <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
+    <ArrangerAvatar
+      event={eventData}
+      classNames={{
+        image: styles.arrangerImage,
+        iconContainer: styles.iconContainer,
+        icon: styles.icon,
+      }}
+      fallbackIcon={<UserCircle className={styles.icon} />}
+      hideWhenNoArranger
+    />
+    <p className={`${styles.infoText} ${styles.emphasis}`}>
+      {getEventArrangerDisplayItems(eventData).map((arranger, index) => (
+        <span key={arranger.id} className={styles.arrangerLinkRow}>
+          {index > 0 && <span className={styles.arrangerSeparator}> · </span>}
+          <Link href={arranger.href} className={styles.arrangerLink}>
+            <span className={styles.orgLink}>
+              {arranger.label}
+              {arranger.isVerifiedOrganization && (
+                <SmallCheckCircle purple verySmall />
+              )}
+            </span>
+          </Link>
+        </span>
+      ))}
+    </p>
+  </div>
+);
+
+const DateTimeRow = ({ eventData }: { eventData: Event }) => {
+  const startDate = new Date(eventData.startDate);
+  const endDate =
+    eventData.endDate !== null ? new Date(eventData.endDate) : null;
+
+  return (
+    <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
+      <div className={styles.iconContainer}>
+        <DateCircle className={styles.icon} />
+      </div>
+      <div>
+        <p
+          className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+        >
+          {formatDateRange(startDate, endDate)}
+        </p>
+        <p className={styles.infoText}>{formatTimeRange(startDate, endDate)}</p>
+      </div>
+    </div>
   );
+};
+
+/* With an address the row links out to Maps; without one it is the same row
+   without the anchor. */
+const LocationRow = ({
+  eventData,
+  mapsUrl,
+}: {
+  eventData: Event;
+  mapsUrl: string | undefined;
+}) => {
+  const name = (
+    <p
+      className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+    >
+      {eventData.locationName}
+    </p>
+  );
+  const icon = (
+    <div className={styles.iconContainer}>
+      <PlaceCircle className={styles.icon} />
+    </div>
+  );
+
+  if (!eventData.freeformAddress) {
+    return (
+      <div
+        className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
+      >
+        {icon}
+        <div>{name}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
+      <a className={styles.row} href={mapsUrl} target="_blank" rel="noreferrer">
+        {icon}
+        <div>
+          {name}
+          <p className={`${styles.infoText} ${styles.primaryColor}`}>
+            {eventData.freeformAddress}
+          </p>
+        </div>
+      </a>
+    </div>
+  );
+};
+
+const FoodRow = ({ eventData }: { eventData: Event }) => {
+  if (!eventData.hasFood) {
+    return null;
+  }
+
+  return (
+    <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
+      {" "}
+      <div className={styles.iconContainer}>
+        <FoodCircle />
+      </div>
+      <div>
+        <p
+          className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
+        >
+          Matservering
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const ShareButtons = ({
+  eventData,
+  isArranger,
+}: {
+  eventData: Event;
+  isArranger: boolean;
+}) => (
+  <div className={styles.shareButtons}>
+    <AddToCalendarButton
+      event={eventData}
+      buttonText="Legg i kalender"
+      iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+    />
+    <ShareButton
+      buttonText="Del arrangement"
+      shareUrl={`${BASE_URL}/events/${eventData.urlId}`}
+      shareTitle={eventData.title}
+      iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+    />
+    <LinkButton
+      href={`/events/${eventData.urlId}/invite`}
+      small
+      text="Inviter brukere"
+      type={ButtonType.SECONDARY}
+      icon={<MailIcon />}
+      iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+      noShadow
+    />
+    {isArranger && (
+      <LinkButton
+        href={`/events/${eventData.urlId}/update`}
+        small
+        text="Lag oppdatering"
+        type={ButtonType.SECONDARY}
+        icon={<RSSIcon />}
+        iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+        noShadow
+      />
+    )}
+  </div>
+);
+
+const UpdatesSection = ({
+  updates,
+  isArranger,
+  mutateUpdates,
+}: {
+  updates: EventUpdate[] | undefined;
+  isArranger: boolean;
+  mutateUpdates: () => void;
+}) => {
+  if (!updates?.length) {
+    return null;
+  }
+
+  return (
+    <div className={styles.announcementsWrapper}>
+      <h2 className={styles.announcementsHeader}>Oppdateringer</h2>
+      <div className={styles.announcementCards}>
+        {updates.map((update) => (
+          <EventUpdateCard
+            key={update.id}
+            update={update}
+            isArranger={isArranger}
+            mutateUpdates={mutateUpdates}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* Registration either happens elsewhere, nowhere, or here. */
+const RegistrationAction = ({
+  eventData,
+  updateEvent,
+  mutateUpdates,
+}: {
+  eventData: Event;
+  updateEvent: () => void;
+  mutateUpdates: () => void;
+}) => {
+  const safeExternalUrl = getSafeExternalUrl(eventData);
+
+  if (
+    eventData.registrationMode === EventRegistrationMode.EXTERNAL &&
+    safeExternalUrl
+  ) {
+    return (
+      <LinkButton
+        text="Gå til ekstern påmelding"
+        href={safeExternalUrl}
+        className={styles.primaryButton}
+        type={ButtonType.PRIMARY}
+        icon={<LinkIcon />}
+        iconPlacement={IconPlacement.LEFT}
+        target="_blank"
+        rel="noopener noreferrer"
+      />
+    );
+  }
+
+  if (eventData.registrationMode === EventRegistrationMode.NONE) {
+    return (
+      <p className={styles.noRegistrationText}>
+        Påmelding håndteres ikke i Peoply for dette arrangementet.
+      </p>
+    );
+  }
+
+  return (
+    <JoinButton
+      event={eventData}
+      updateOnChange={[updateEvent, mutateUpdates]}
+      className={styles.primaryButton}
+    />
+  );
+};
+
+/* True when the viewer arranges this event in their own name, or is admin or
+   owner of an organization that does. */
+const isUserArranger = (
+  eventData: Event,
+  user: ReturnType<typeof useUser>["user"],
+  orgs: ReturnType<typeof useUser>["orgs"],
+) => {
+  /* arrangerIds for orgs where the user is ownerOrAdmin */
+  const organizationArrangerIdsForUser = orgs
+    ?.map((org) => ({
+      role: org.organizationRoles?.find((role) => role.userId === user?.id),
+      arrangerId: org.arrangerId,
+    }))
+    ?.filter(
+      ({ role }) =>
+        role &&
+        [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(role.role),
+    )
+    .map(({ arrangerId }) => arrangerId);
+
+  const arrangersIdsForEvent = eventData?.eventArrangers?.map(
+    (arranger) => arranger.arrangerId,
+  );
+
+  if (user && arrangersIdsForEvent?.includes(user.arrangerId)) {
+    return true;
+  }
+
+  return !!organizationArrangerIdsForUser?.some((id) =>
+    arrangersIdsForEvent?.includes(id),
+  );
+};
+
+/* Google Maps link for the event's address, rebuilt whenever the address
+   changes. Kept out of render because it reads `navigator`. */
+const useMapsUrl = (eventData: Event | undefined) => {
+  const [mapsUrl, setMapsUrl] = useState<string>();
+
+  useEffect(() => {
+    if (navigator && eventData?.freeformAddress) {
+      const url = `https://maps.google.com?q=`;
+      const query = eventData.poiName
+        ? encodeURIComponent(
+            `${eventData.poiName} ${eventData.freeformAddress}`,
+          )
+        : encodeURIComponent(eventData.freeformAddress);
+      setMapsUrl(url + query);
+    }
+  }, [eventData]);
+
+  return mapsUrl;
 };
 
 const Event = ({ event }: EventProps) => {
   const { user, orgs } = useUser();
   const goBack = useBack();
-  const [mapsUrl, setMapsUrl] = useState<string>();
   const {
     favorited,
     loading: favoriteLoading,
@@ -118,71 +496,25 @@ const Event = ({ event }: EventProps) => {
     eventData?.registrations?.filter((r) => r.regStatus === RegStatus.GOING)
       .length;
 
-  const { data: registrations, error: registrationsError } = useSWR<
-    Registration[]
-  >(() =>
-    event?.id ? `/events/${event.id}/registrations?includeUsers=true` : false,
+  /* Only the count row reads this, and that row is gone on external events -
+     so the request goes with it rather than pulling down a list nothing shows. */
+  const { data: registrations } = useSWR<Registration[]>(() =>
+    event?.id && showsRegistrationCount(eventData)
+      ? `/events/${event.id}/registrations?includeUsers=true`
+      : false,
   );
 
   const { data: updates, mutate: mutateUpdates } = useSWR<EventUpdate[]>(() =>
     event?.id ? `/events/${event.id}/updates` : false,
   );
 
-  useEffect(() => {
-    if (navigator && eventData?.freeformAddress) {
-      const url = `https://maps.google.com?q=`;
-      let query: string;
-      if (eventData.poiName) {
-        query = encodeURIComponent(
-          `${eventData.poiName} ${eventData.freeformAddress}`,
-        );
-      } else {
-        query = encodeURIComponent(eventData.freeformAddress);
-      }
-      setMapsUrl(url + query);
-    }
-  }, [eventData]);
+  const mapsUrl = useMapsUrl(eventData);
 
   if (!eventData) {
     return <div>Loading...</div>;
   }
 
-  const editEventFunc = () => {
-    router.push(`/events/${eventData.urlId}/edit`);
-  };
-
-  const eventArrangerDisplayItems = getEventArrangerDisplayItems(eventData);
-  const safeExternalUrl = getSafeExternalUrl(eventData);
-
-  const isArranger = (() => {
-    /* arrangerIds for orgs where the user is ownerOrAdmin */
-    const organizationArrangerIdsForUser = orgs
-      ?.map((org) => ({
-        role: org.organizationRoles?.find((role) => role.userId === user?.id),
-        arrangerId: org.arrangerId,
-      }))
-      ?.filter(
-        ({ role }) =>
-          role &&
-          [OrganizationRole.ADMIN, OrganizationRole.OWNER].includes(role.role),
-      )
-      .map(({ arrangerId }) => arrangerId);
-
-    const arrangersIdsForEvent = eventData?.eventArrangers?.map(
-      (arranger) => arranger.arrangerId,
-    );
-
-    if (user && arrangersIdsForEvent?.includes(user.arrangerId)) {
-      return true;
-    } else if (
-      organizationArrangerIdsForUser?.some((id) =>
-        arrangersIdsForEvent?.includes(id),
-      )
-    ) {
-      return true;
-    }
-    return false;
-  })();
+  const isArranger = isUserArranger(eventData, user, orgs);
 
   const eventImage = getEventImage(eventData);
 
@@ -199,33 +531,15 @@ const Event = ({ event }: EventProps) => {
         }
       />
       <div className={styles.eventWrapper}>
-        <div className={styles.imageWrapper}>
-          <BackButtonGlass className={styles.backIcon} onClick={goBack} />
-          <HeartIconGlass
-            className={styles.favoriteIcon}
-            onClick={toggleFavorite}
-            favorited={favorited}
-            loading={favoriteLoading}
-          />
-          {isArranger && !eventData.readOnly && (
-            <EditIconGlass
-              className={styles.editIcon}
-              onClick={editEventFunc}
-            />
-          )}
-          <div className={styles.imageContainer}>
-            <Image
-              src={eventImage ?? placeholderImage}
-              fill
-              sizes="50vw"
-              style={{ objectFit: "cover" }}
-              alt="Et bilde som passer til arrangementet"
-              /* "blur" needs a blurDataURL, which only the bundled placeholder
-                 has - a remote URL here would throw. */
-              placeholder={eventImage ? "empty" : "blur"}
-            />
-          </div>
-        </div>
+        <EventHero
+          eventData={eventData}
+          eventImage={eventImage}
+          isArranger={isArranger}
+          goBack={goBack}
+          favorited={favorited}
+          favoriteLoading={favoriteLoading}
+          toggleFavorite={toggleFavorite}
+        />
         <div className={styles.eventContainer}>
           <div className={styles.eventCalendarTagWrapper}>
             <div className={styles.eventCalendarTag}>
@@ -253,195 +567,20 @@ const Event = ({ event }: EventProps) => {
             </p>
             <h1 className={styles.title}>{eventData.title}</h1>
             <div className={styles.eventInfoCard}>
-              <div
-                className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-              >
-                <ArrangerAvatar
-                  event={eventData}
-                  classNames={{
-                    image: styles.arrangerImage,
-                    iconContainer: styles.iconContainer,
-                    icon: styles.icon,
-                  }}
-                  fallbackIcon={<UserCircle className={styles.icon} />}
-                  hideWhenNoArranger
-                />
-                <p className={`${styles.infoText} ${styles.emphasis}`}>
-                  {eventArrangerDisplayItems.map((arranger, index) => (
-                    <span key={arranger.id} className={styles.arrangerLinkRow}>
-                      {index > 0 && (
-                        <span className={styles.arrangerSeparator}> · </span>
-                      )}
-                      <Link
-                        href={arranger.href}
-                        className={styles.arrangerLink}
-                      >
-                        <span className={styles.orgLink}>
-                          {arranger.label}
-                          {arranger.isVerifiedOrganization && (
-                            <SmallCheckCircle purple verySmall />
-                          )}
-                        </span>
-                      </Link>
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <div
-                className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-              >
-                <div className={styles.iconContainer}>
-                  <DateCircle className={styles.icon} />
-                </div>
-                <div>
-                  <p
-                    className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                  >
-                    {formatDateRange(
-                      new Date(eventData.startDate),
-                      eventData.endDate !== null
-                        ? new Date(eventData.endDate)
-                        : null,
-                    )}
-                  </p>
-                  <p className={styles.infoText}>
-                    {formatTimeRange(
-                      new Date(eventData.startDate),
-                      eventData.endDate !== null
-                        ? new Date(eventData.endDate)
-                        : null,
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div
-                className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-              >
-                {eventData.freeformAddress ? (
-                  <a
-                    className={styles.row}
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className={styles.iconContainer}>
-                      <PlaceCircle className={styles.icon} />
-                    </div>
-                    <div>
-                      <p
-                        className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                      >
-                        {eventData.locationName}
-                      </p>
-                      {eventData.freeformAddress && (
-                        <p
-                          className={`${styles.infoText} ${styles.primaryColor}`}
-                        >
-                          {eventData.freeformAddress}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                ) : (
-                  <>
-                    <div className={styles.iconContainer}>
-                      <PlaceCircle className={styles.icon} />
-                    </div>
-
-                    <div>
-                      <p
-                        className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                      >
-                        {eventData.locationName}
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-              {eventData.hasFood && (
-                <div
-                  className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-                >
-                  {" "}
-                  <div className={styles.iconContainer}>
-                    <FoodCircle />
-                  </div>
-                  <div>
-                    <p
-                      className={`${styles.infoText} ${styles.emphasis} ${styles.marginBottomMini}`}
-                    >
-                      Matservering
-                    </p>
-                  </div>
-                </div>
-              )}
-              {registrations && (
-                <Link href={`/events/${eventData.urlId}/participants`}>
-                  <div className={`${styles.infoTextContainer}`}>
-                    <div className={styles.iconContainer}>
-                      <SmallCheckCircle
-                        className={`${styles.icon} ${styles.checkIcon}`}
-                      />
-                    </div>
-                    <GoingCountText
-                      goingCount={goingCount}
-                      eventData={eventData}
-                    />
-                  </div>
-                </Link>
-              )}
-              {(registrationsError || !registrations) && (
-                <div
-                  className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}
-                >
-                  <div className={styles.iconContainer}>
-                    <SmallCheckCircle
-                      className={`${styles.icon} ${styles.checkIcon}`}
-                    />
-                  </div>
-                  <GoingCountText
-                    goingCount={goingCount}
-                    eventData={eventData}
-                  />
-                </div>
-              )}
+              <ArrangerLine eventData={eventData} />
+              <DateTimeRow eventData={eventData} />
+              <LocationRow eventData={eventData} mapsUrl={mapsUrl} />
+              <FoodRow eventData={eventData} />
+              <GoingCountSection
+                goingCount={goingCount}
+                eventData={eventData}
+                registrations={registrations}
+              />
             </div>
           </div>
           <div className={styles.descWrapper}>
             <div className={styles.descHeaderWrapper}>
-              <div className={styles.shareButtons}>
-                <AddToCalendarButton
-                  event={eventData}
-                  buttonText="Legg i kalender"
-                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
-                />
-                <ShareButton
-                  buttonText="Del arrangement"
-                  shareUrl={`${BASE_URL}/events/${eventData.urlId}`}
-                  shareTitle={eventData.title}
-                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
-                />
-                <LinkButton
-                  href={`/events/${eventData.urlId}/invite`}
-                  small
-                  text="Inviter brukere"
-                  type={ButtonType.SECONDARY}
-                  icon={<MailIcon />}
-                  iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
-                  noShadow
-                />
-                {isArranger && (
-                  <LinkButton
-                    href={`/events/${eventData.urlId}/update`}
-                    small
-                    text="Lag oppdatering"
-                    type={ButtonType.SECONDARY}
-                    icon={<RSSIcon />}
-                    iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
-                    noShadow
-                  />
-                )}
-              </div>
+              <ShareButtons eventData={eventData} isArranger={isArranger} />
               <h2 className={styles.descHeader}>Informasjon</h2>
             </div>
             <DescriptionText
@@ -450,44 +589,16 @@ const Event = ({ event }: EventProps) => {
               paragraphClassName={styles.descText}
             />
           </div>
-          {updates && updates.length > 0 && (
-            <div className={styles.announcementsWrapper}>
-              <h2 className={styles.announcementsHeader}>Oppdateringer</h2>
-              <div className={styles.announcementCards}>
-                {updates?.map((update) => (
-                  <EventUpdateCard
-                    key={update.id}
-                    update={update}
-                    isArranger={isArranger}
-                    mutateUpdates={mutateUpdates}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-          {eventData.registrationMode === EventRegistrationMode.EXTERNAL &&
-          safeExternalUrl ? (
-            <LinkButton
-              text="Gå til ekstern påmelding"
-              href={safeExternalUrl}
-              className={styles.primaryButton}
-              type={ButtonType.PRIMARY}
-              icon={<LinkIcon />}
-              iconPlacement={IconPlacement.LEFT}
-              target="_blank"
-              rel="noopener noreferrer"
-            />
-          ) : eventData.registrationMode === EventRegistrationMode.NONE ? (
-            <p className={styles.noRegistrationText}>
-              Påmelding håndteres ikke i Peoply for dette arrangementet.
-            </p>
-          ) : (
-            <JoinButton
-              event={eventData}
-              updateOnChange={[updateEvent, mutateUpdates]}
-              className={styles.primaryButton}
-            />
-          )}
+          <UpdatesSection
+            updates={updates}
+            isArranger={isArranger}
+            mutateUpdates={mutateUpdates}
+          />
+          <RegistrationAction
+            eventData={eventData}
+            updateEvent={updateEvent}
+            mutateUpdates={mutateUpdates}
+          />
         </div>
       </div>
     </>
