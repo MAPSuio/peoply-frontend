@@ -1,0 +1,129 @@
+.wrapper {
+  backdrop-filter: blur($background-blur-soft);
+  background-color: var(--background-color-modal-transparent, $background-color-modal-transparent);
+  bottom: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: $z-index-modal;
+
+  /* On a wide screen the sheet stops being a sheet and becomes a panel hanging
+     from the top right corner, next to the icon that opened it. */
+  @include desktop() {
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: $spacer-medium-plus $spacer-small 0 0;
+  }
+}
+
+.backdrop {
+  background: none;
+  border: none;
+  bottom: 0;
+  cursor: default;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.container {
+  animation-duration: $animation-duration;
+  animation-fill-mode: both;
+  animation-name: sheet-enter-reduced-motion;
+  animation-timing-function: ease;
+  background-color: var(--background-color-modal, $background-color-modal);
+  border-radius: $border-radius-regular $border-radius-regular 0 0;
+  display: flex;
+  flex-flow: column nowrap;
+  /* dvh so the sheet is not cut off behind the mobile browser chrome that vh
+     pretends is not there. The vh line stays as the fallback. */
+  max-height: 85vh;
+  max-height: 85dvh;
+  padding: $spacer-very-small $spacer-small;
+  padding-bottom: calc(#{$spacer-small} + env(safe-area-inset-bottom));
+  position: relative;
+  width: 100%;
+
+  @include desktop() {
+    border-radius: $border-radius-regular;
+    max-height: 80vh;
+    max-width: 440px;
+    padding-bottom: $spacer-small;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation-name: sheet-enter-reduced-motion, sheet-enter-full-motion;
+  }
+}
+
+/* The grab handle every mobile sheet has. Decorative only - dragging is left
+   to the scroll container below it. */
+.grabber {
+  background-color: var(--text-color-primary, $text-color-primary);
+  border-radius: $border-radius-round;
+  height: 4px;
+  margin: 0 auto $spacer-very-small;
+  opacity: 0.4;
+  width: 40px;
+
+  @include desktop() {
+    display: none;
+  }
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 $spacer-very-small $spacer-very-small;
+}
+
+.title {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-size: $font-size-heading-medium;
+  margin: 0;
+
+  @include desktop() {
+    font-size: $font-size-heading-medium-desktop;
+  }
+}
+
+.exitIcon {
+  @include resetButton();
+  display: flex;
+  stroke: var(--text-color-emphasis, $text-color-emphasis);
+}
+
+.content {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  padding: 0 $spacer-very-small $spacer-very-small;
+}
+
+/* The reduced motion version of the animation. */
+@keyframes sheet-enter-reduced-motion {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* The full motion version of the animation. */
+@keyframes sheet-enter-full-motion {
+  from {
+    transform: translateY(16px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
