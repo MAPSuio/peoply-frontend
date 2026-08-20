@@ -36,6 +36,15 @@ export function formatCount(value: number | null): string {
 }
 
 const WEEKDAY_LABELS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
+const WEEKDAY_LABELS_LONG = [
+  "Mandag",
+  "Tirsdag",
+  "Onsdag",
+  "Torsdag",
+  "Fredag",
+  "Lørdag",
+  "Søndag",
+];
 const TIME_OF_DAY_LABELS = {
   MORNING: "morgen",
   AFTERNOON: "ettermiddag",
@@ -44,6 +53,10 @@ const TIME_OF_DAY_LABELS = {
 
 export function weekdayLabel(weekday: number): string {
   return WEEKDAY_LABELS[weekday] ?? EM_DASH;
+}
+
+export function weekdayLabelLong(weekday: number): string {
+  return WEEKDAY_LABELS_LONG[weekday] ?? EM_DASH;
 }
 
 /** "Tor kveld" — the weekday and time of day with the highest turnout. */
