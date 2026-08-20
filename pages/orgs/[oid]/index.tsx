@@ -36,21 +36,79 @@ import {
   getOrganizationStaticProps,
   organizationPath,
 } from "../../../utils/organization";
+import styles from "../../../styles/Organization.module.scss";
 
 interface OrganizationProps {
   organization: Organization;
 }
 
 enum OrgTab {
-  OVERSIKT = "OVERSIKT",
-  STATISTIKK = "STATISTIKK",
+  OVERVIEW = "OVERVIEW",
+  STATISTICS = "STATISTICS",
 }
+
+interface OrganizationViewProps {
+  org: Organization;
+  isMemberOfOrg: boolean;
+  isAdminOrOwner?: boolean;
+  memberCount?: number;
+  events?: Event[];
+}
+
+/* Any role in the org counts - `isMember` is strictly role === MEMBER, so
+   the gate is the membership row itself. Outsiders get the page exactly as
+   before, and the analytics component (and its members-only request) never
+   mounts. */
+const OrganizationView = ({
+  org,
+  isMemberOfOrg,
+  isAdminOrOwner,
+  memberCount,
+  events,
+}: OrganizationViewProps) => {
+  const [selectedTab, setSelectedTab] = useState(OrgTab.OVERVIEW);
+
+  return (
+    <Layout>
+      <OrganizationHeading organization={org} isAdminOrOwner={isAdminOrOwner} />
+      {isMemberOfOrg && (
+        <div className={styles.tabs}>
+          <TabSelection
+            options={[
+              { label: "Oversikt", value: OrgTab.OVERVIEW, icon: <HomeIcon /> },
+              {
+                label: "Statistikk",
+                value: OrgTab.STATISTICS,
+                icon: <DataIconSummary />,
+              },
+            ]}
+            selected={selectedTab}
+            setSelected={setSelectedTab}
+          />
+        </div>
+      )}
+      <OrganizationProfile organization={org} />
+      {isMemberOfOrg && selectedTab === OrgTab.STATISTICS ? (
+        <OrganizationAnalytics organization={org} />
+      ) : (
+        <>
+          <OrganizationStats
+            organization={org}
+            isAdminOrOwner={isAdminOrOwner}
+            memberCount={memberCount}
+            eventCount={events?.length}
+          />
+          <OrganizationUpcomingEvents organization={org} events={events} />
+        </>
+      )}
+    </Layout>
+  );
+};
 
 const Organization = ({ organization }: OrganizationProps) => {
   const { addSnack } = useSnack();
   const router = useRouter();
   const { oid } = router.query;
-  const [selectedTab, setSelectedTab] = useState(OrgTab.OVERSIKT);
 
   const {
     organization: orgData,
@@ -96,48 +154,13 @@ const Organization = ({ organization }: OrganizationProps) => {
         path={organizationPath(org)}
         imageUrl={org.image}
       />
-      <Layout>
-        <OrganizationHeading
-          organization={org}
-          isAdminOrOwner={isAdminOrOwner}
-        />
-        {/* Any role in the org counts - `isMember` is strictly role ===
-            MEMBER, so the gate is the membership row itself. Outsiders get
-            the page exactly as before, and the analytics component (and its
-            members-only request) never mounts. */}
-        {organizationUser && (
-          <TabSelection
-            options={[
-              {
-                label: "Oversikt",
-                value: OrgTab.OVERSIKT,
-                icon: <HomeIcon />,
-              },
-              {
-                label: "Statistikk",
-                value: OrgTab.STATISTIKK,
-                icon: <DataIconSummary />,
-              },
-            ]}
-            selected={selectedTab}
-            setSelected={setSelectedTab}
-          />
-        )}
-        <OrganizationProfile organization={org} />
-        {organizationUser && selectedTab === OrgTab.STATISTIKK ? (
-          <OrganizationAnalytics organization={org} />
-        ) : (
-          <>
-            <OrganizationStats
-              organization={org}
-              isAdminOrOwner={isAdminOrOwner}
-              memberCount={orgMembers?.length}
-              eventCount={orgEvents?.length}
-            />
-            <OrganizationUpcomingEvents organization={org} events={orgEvents} />
-          </>
-        )}
-      </Layout>
+      <OrganizationView
+        org={org}
+        isMemberOfOrg={Boolean(organizationUser)}
+        isAdminOrOwner={isAdminOrOwner}
+        memberCount={orgMembers?.length}
+        events={orgEvents}
+      />
     </>
   );
 };

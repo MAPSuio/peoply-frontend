@@ -122,11 +122,14 @@ describe("OrganizationAnalytics", () => {
 
     expect(await screen.findByText("120")).toBeDefined();
     expect(fetcher).toHaveBeenCalledWith("/organizations/org-1/analytics");
+    expect(screen.getByText("Siste 12 måneder")).toBeDefined();
     expect(screen.getByText("Følgere")).toBeDefined();
     expect(screen.getByText("+5")).toBeDefined();
     expect(screen.getByText("Medlemmer")).toBeDefined();
-    expect(screen.getByText("90 %")).toBeDefined();
-    expect(screen.getByText("7 d")).toBeDefined();
+    // soldOutRate 0.5 under a label anyone understands.
+    expect(screen.getByText("Arrangementer som ble fulle")).toBeDefined();
+    expect(screen.getByText("50 %")).toBeDefined();
+    expect(screen.getByText("7 d før")).toBeDefined();
     expect(screen.getByText("Tor kveld")).toBeDefined();
   });
 

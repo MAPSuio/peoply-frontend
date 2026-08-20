@@ -241,3 +241,11 @@
     margin-bottom: $spacer-medium;
   }
 }
+
+.tabs {
+  margin-bottom: $spacer-medium;
+
+  @include desktop() {
+    margin-bottom: $spacer-medium-plus;
+  }
+}

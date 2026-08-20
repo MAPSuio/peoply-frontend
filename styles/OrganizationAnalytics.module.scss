@@ -5,6 +5,17 @@
   margin-bottom: $spacer-medium-plus;
 }
 
+.scope {
+  font-size: $font-size-tertiary;
+  text-align: center;
+  @include monoFont();
+  @include uppercase();
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
 .grid {
   column-gap: $spacer-small;
   display: grid;

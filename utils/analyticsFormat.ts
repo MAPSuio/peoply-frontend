@@ -3,7 +3,7 @@ import type {
   OrganizationAnalyticsWeekday,
 } from "../types/types";
 
-export const EM_DASH = "—";
+const EM_DASH = "—";
 
 const formatter = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 1 });
 
@@ -24,6 +24,11 @@ export function formatPercent(rate: number | null): string {
 
 export function formatDays(days: number | null): string {
   return days === null ? EM_DASH : `${decimal.format(days)} d`;
+}
+
+/** "10 d før" — median lead time ahead of the event start. */
+export function formatDaysBefore(days: number | null): string {
+  return days === null ? EM_DASH : `${decimal.format(days)} d før`;
 }
 
 export function formatCount(value: number | null): string {

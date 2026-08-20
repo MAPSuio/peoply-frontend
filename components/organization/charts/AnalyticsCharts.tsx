@@ -127,7 +127,7 @@ function WeekdayChart({ analytics }: { analytics: OrganizationAnalytics }) {
   );
 }
 
-interface AnalyticsChartsProps {
+export interface AnalyticsChartsProps {
   analytics: OrganizationAnalytics;
 }
 

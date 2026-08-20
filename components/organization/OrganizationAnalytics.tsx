@@ -9,7 +9,7 @@ import type {
 import {
   bestTimeLabel,
   formatCount,
-  formatDays,
+  formatDaysBefore,
   formatDelta,
   formatPercent,
 } from "../../utils/analyticsFormat";
@@ -45,7 +45,7 @@ function StatValue({ value, label, delta }: StatValueProps) {
   );
 }
 
-interface OrganizationAnalyticsProps {
+export interface OrganizationAnalyticsProps {
   organization: Organization;
 }
 
@@ -67,6 +67,7 @@ export default function OrganizationAnalytics({
 
         return (
           <div className={styles.container}>
+            <p className={styles.scope}>Siste 12 måneder</p>
             <div className={styles.grid}>
               <StatValue
                 value={formatCount(followers.total)}
@@ -80,43 +81,35 @@ export default function OrganizationAnalytics({
               />
               <StatValue
                 value={formatCount(events.averageGoing)}
-                label="Snittoppmøte"
-              />
-              <StatValue
-                value={formatPercent(events.averageFillRate)}
-                label="Fyllingsgrad"
+                label="Påmeldte per arrangement"
               />
               <StatValue
                 value={formatPercent(events.soldOutRate)}
-                label="Utsolgt"
+                label="Arrangementer som ble fulle"
               />
               <StatValue
-                value={formatCount(events.totalWaitlisted)}
-                label="Venteliste"
-              />
-              <StatValue
-                value={formatDays(events.medianSignupLeadDays)}
-                label="Påmeldingstid"
+                value={formatDaysBefore(events.medianSignupLeadDays)}
+                label="Folk melder seg på"
               />
               <StatValue
                 value={formatPercent(events.dropoutRate)}
-                label="Frafall"
+                label="Melder seg av"
               />
               <StatValue
                 value={formatPercent(audience.returningAttendeeRate)}
-                label="Gjengangere"
+                label="Kommer igjen"
               />
               <StatValue
                 value={formatCount(audience.coreAudienceCount)}
-                label="Kjernepublikum"
+                label="Faste deltakere"
               />
               <StatValue
                 value={formatPercent(audience.attendeeFollowerRate)}
-                label="Konvertering"
+                label="Deltakere som følger dere"
               />
               <StatValue
                 value={bestTimeLabel(events.byWeekday, events.byTimeOfDay)}
-                label="Beste dag"
+                label="Beste tidspunkt"
               />
             </div>
             {isDesktop && <AnalyticsCharts analytics={analytics} />}
