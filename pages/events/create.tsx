@@ -52,7 +52,6 @@ const CreateEvent = () => {
     updateEventCategories,
     updateEventDateStart,
     updateEventTimeStart,
-    applyRecommendedStart,
     setEventHasDateEnd,
     updateEventDateEnd,
     updateEventTimeEnd,
@@ -130,7 +129,6 @@ const CreateEvent = () => {
             stepCount={stepCount}
             validDataMap={validDataMap}
             buttonOnClick={inputPageOnClick}
-            applyRecommendedStart={applyRecommendedStart}
             eventDateStartValid={eventDateStartValid}
             eventTimeStartValid={eventTimeStartValid}
             eventDateEndValid={eventDateEndValid}

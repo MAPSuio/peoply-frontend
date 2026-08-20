@@ -23,7 +23,6 @@ interface DateStepProps {
   stepCount: number;
   validDataMap: Map<InputPages, boolean>;
   buttonOnClick: (step: number) => void;
-  applyRecommendedStart: (date: string, time: string) => void;
   eventDateStartValid: boolean;
   eventTimeStartValid: boolean;
   eventDateEndValid: boolean;
@@ -50,7 +49,6 @@ const DateStep = ({
   stepCount,
   validDataMap,
   buttonOnClick,
-  applyRecommendedStart,
   eventDateStartValid,
   eventTimeStartValid,
   eventDateEndValid,
@@ -89,7 +87,18 @@ const DateStep = ({
     >
       <TimeRecommendation
         arrangerId={eventObject.eventArrangerId}
-        onSelect={applyRecommendedStart}
+        onSelect={(date, time) => {
+          /* The update handlers only read target.value. Each also persists
+             the draft from its own render's eventObject, so right after the
+             second call localStorage briefly lacks the first field - any
+             later edit in the wizard re-persists the full object. */
+          updateEventDateStart({
+            target: { value: date },
+          } as React.ChangeEvent<HTMLInputElement>);
+          updateEventTimeStart({
+            target: { value: time },
+          } as React.ChangeEvent<HTMLInputElement>);
+        }}
       />
       <div className={styles.dateContainer}>
         <div className={styles.dateColumn}>
