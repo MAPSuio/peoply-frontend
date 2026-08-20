@@ -3,14 +3,19 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
+import { useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import Layout from "../../../components/Layout";
+import TabSelection from "../../../components/TabSelection";
+import OrganizationAnalytics from "../../../components/organization/OrganizationAnalytics";
 import OrganizationHeading from "../../../components/organization/OrganizationHeading";
 import OrganizationProfile from "../../../components/organization/OrganizationProfile";
 import OrganizationStats from "../../../components/organization/OrganizationStats";
 import OrganizationUpcomingEvents from "../../../components/organization/OrganizationUpcomingEvents";
+import DataIconSummary from "../../../components/svgs/DataIconSummary";
+import HomeIcon from "../../../components/svgs/HomeIcon";
 
 // Hooks.
 import useSnack from "../../../hooks/useSnack";
@@ -36,14 +41,21 @@ interface OrganizationProps {
   organization: Organization;
 }
 
+enum OrgTab {
+  OVERSIKT = "OVERSIKT",
+  STATISTIKK = "STATISTIKK",
+}
+
 const Organization = ({ organization }: OrganizationProps) => {
   const { addSnack } = useSnack();
   const router = useRouter();
   const { oid } = router.query;
+  const [selectedTab, setSelectedTab] = useState(OrgTab.OVERSIKT);
 
   const {
     organization: orgData,
     organizationUsers: orgMembers,
+    organizationUser,
     isAdminOrOwner,
     loading: orgLoading,
     error: orgError,
@@ -89,14 +101,42 @@ const Organization = ({ organization }: OrganizationProps) => {
           organization={org}
           isAdminOrOwner={isAdminOrOwner}
         />
+        {/* Any role in the org counts - `isMember` is strictly role ===
+            MEMBER, so the gate is the membership row itself. Outsiders get
+            the page exactly as before, and the analytics component (and its
+            members-only request) never mounts. */}
+        {organizationUser && (
+          <TabSelection
+            options={[
+              {
+                label: "Oversikt",
+                value: OrgTab.OVERSIKT,
+                icon: <HomeIcon />,
+              },
+              {
+                label: "Statistikk",
+                value: OrgTab.STATISTIKK,
+                icon: <DataIconSummary />,
+              },
+            ]}
+            selected={selectedTab}
+            setSelected={setSelectedTab}
+          />
+        )}
         <OrganizationProfile organization={org} />
-        <OrganizationStats
-          organization={org}
-          isAdminOrOwner={isAdminOrOwner}
-          memberCount={orgMembers?.length}
-          eventCount={orgEvents?.length}
-        />
-        <OrganizationUpcomingEvents organization={org} events={orgEvents} />
+        {organizationUser && selectedTab === OrgTab.STATISTIKK ? (
+          <OrganizationAnalytics organization={org} />
+        ) : (
+          <>
+            <OrganizationStats
+              organization={org}
+              isAdminOrOwner={isAdminOrOwner}
+              memberCount={orgMembers?.length}
+              eventCount={orgEvents?.length}
+            />
+            <OrganizationUpcomingEvents organization={org} events={orgEvents} />
+          </>
+        )}
       </Layout>
     </>
   );
