@@ -29,15 +29,17 @@ const organization = { id: "org-1", name: "MAPS" } as Organization;
 
 const payload: OrganizationAnalyticsPayload = {
   generatedAt: "2026-08-20T12:00:00.000Z",
+  period: "1y",
   followers: {
     total: 120,
     net24h: 1,
     net7d: 5,
     net30d: 12,
+    netPeriod: 5,
     gross30d: 14,
     dailyNet: [{ date: "2026-08-20", net: 1 }],
   },
-  members: { total: 30, new30d: 3 },
+  members: { total: 30, newInPeriod: 3 },
   events: {
     items: [
       {
@@ -121,8 +123,9 @@ describe("OrganizationAnalytics", () => {
     renderWithSwr(<OrganizationAnalytics organization={organization} />);
 
     expect(await screen.findByText("120")).toBeDefined();
-    expect(fetcher).toHaveBeenCalledWith("/organizations/org-1/analytics");
-    expect(screen.getByText("Siste 12 måneder")).toBeDefined();
+    expect(fetcher).toHaveBeenCalledWith(
+      "/organizations/org-1/analytics?period=1y",
+    );
     expect(screen.getByText("Følgere")).toBeDefined();
     expect(screen.getByText("+5")).toBeDefined();
     expect(screen.getByText("Medlemmer")).toBeDefined();
@@ -133,11 +136,32 @@ describe("OrganizationAnalytics", () => {
     expect(screen.getByText("Tor kveld")).toBeDefined();
   });
 
-  it("renders the top events by attendance", async () => {
+  it("renders the top events by attendance with signup counts", async () => {
     renderWithSwr(<OrganizationAnalytics organization={organization} />);
 
     expect(await screen.findByText("Kveldskurs")).toBeDefined();
     expect(screen.getByText("Morgentrening")).toBeDefined();
+    expect(screen.getByText("Mest populære")).toBeDefined();
+    expect(screen.getByText("8 påmeldte")).toBeDefined();
+  });
+
+  it("refetches with the chosen period from the dropdown", async () => {
+    const { userEvent } = await import("@testing-library/user-event").then(
+      (module) => ({ userEvent: module.default }),
+    );
+    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    await screen.findByText("120");
+
+    await userEvent.selectOptions(
+      screen.getByRole("combobox"),
+      "Siste 7 dager",
+    );
+
+    await waitFor(() => {
+      expect(fetcher).toHaveBeenCalledWith(
+        "/organizations/org-1/analytics?period=7d",
+      );
+    });
   });
 
   it("does not render charts on mobile", async () => {

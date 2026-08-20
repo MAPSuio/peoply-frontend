@@ -586,18 +586,22 @@ export interface OrganizationAnalyticsTimeOfDay {
   eventCount: number;
 }
 
+export type AnalyticsPeriod = "24h" | "7d" | "30d" | "90d" | "1y";
+
 /** Mirrors the backend's OrganizationAnalyticsResponse: aggregates only. */
 export interface OrganizationAnalytics {
   generatedAt: string;
+  period: AnalyticsPeriod;
   followers: {
     total: number;
     net24h: number;
     net7d: number;
     net30d: number;
+    netPeriod: number;
     gross30d: number;
     dailyNet: { date: string; net: number }[];
   };
-  members: { total: number; new30d: number };
+  members: { total: number; newInPeriod: number };
   events: {
     items: OrganizationAnalyticsEventItem[];
     totalGoing: number;

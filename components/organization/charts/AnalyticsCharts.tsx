@@ -43,8 +43,16 @@ function AttendanceChart({ analytics }: { analytics: OrganizationAnalytics }) {
           layout: stack({ order: [GOING_SERIES, WAITLIST_SERIES] }),
         }),
       ],
-      x: { scale: () => scaleBand<string>().padding(0.25) },
-      y: { scale: scaleLinear, nice: true, grid: true },
+      x: {
+        scale: () => scaleBand<string>().padding(0.25),
+        axis: { label: "Dato" },
+      },
+      y: {
+        scale: scaleLinear,
+        nice: true,
+        grid: true,
+        axis: { label: "Påmeldte på arrangementer" },
+      },
       color: { domain: [GOING_SERIES, WAITLIST_SERIES] },
       tooltip,
     });
@@ -56,7 +64,7 @@ function AttendanceChart({ analytics }: { analytics: OrganizationAnalytics }) {
       <Chart
         definition={definition}
         height={220}
-        ariaLabel="Påmeldte og venteliste per arrangement siste tolv måneder"
+        ariaLabel="Påmeldte og venteliste per arrangement i valgt periode"
       />
     </figure>
   );
@@ -77,19 +85,27 @@ function FollowerChart({ analytics }: { analytics: OrganizationAnalytics }) {
 
     return defineChart({
       marks: [lineY(rows, { x: "date", y: "total", strokeWidth: 2 })],
-      x: { scale: () => scalePoint<string>().padding(0.1) },
-      y: { scale: scaleLinear, nice: true, grid: true },
+      x: {
+        scale: () => scalePoint<string>().padding(0.1),
+        axis: { label: "Dato" },
+      },
+      y: {
+        scale: scaleLinear,
+        nice: true,
+        grid: true,
+        axis: { label: "Nye følgere (netto)" },
+      },
       tooltip,
     });
   }, [analytics]);
 
   return (
     <figure className={styles.chartCard}>
-      <h2 className={styles.chartTitle}>Følgere · 30 d</h2>
+      <h2 className={styles.chartTitle}>Følgere</h2>
       <Chart
         definition={definition}
         height={220}
-        ariaLabel="Netto følgerutvikling siste tretti dager"
+        ariaLabel="Netto følgerutvikling i valgt periode"
       />
     </figure>
   );
@@ -109,8 +125,16 @@ function WeekdayChart({ analytics }: { analytics: OrganizationAnalytics }) {
 
     return defineChart({
       marks: [barY(rows, { x: "day", y: "average" })],
-      x: { scale: () => scaleBand<string>().padding(0.25) },
-      y: { scale: scaleLinear, nice: true, grid: true },
+      x: {
+        scale: () => scaleBand<string>().padding(0.25),
+        axis: { label: "Ukedag" },
+      },
+      y: {
+        scale: scaleLinear,
+        nice: true,
+        grid: true,
+        axis: { label: "Snitt påmeldte" },
+      },
       tooltip,
     });
   }, [analytics]);
