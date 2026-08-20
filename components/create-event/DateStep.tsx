@@ -1,3 +1,6 @@
+// React.
+import { useRef } from "react";
+
 // Components.
 import DateInput from "../inputs/DateInput";
 import TimeInput from "../inputs/TimeInput";
@@ -69,6 +72,12 @@ const DateStep = ({
   updateEventRegEndDate,
   updateEventRegEndTime,
 }: DateStepProps) => {
+  /* Always the latest render's handler: the recommendation flow updates the
+     date first, lets React re-render, and only then sets the time - so the
+     time handler persists a draft that already contains the new date. */
+  const updateTimeRef = useRef(updateEventTimeStart);
+  updateTimeRef.current = updateEventTimeStart;
+
   const step = 1;
   const { title, subTitle, buttonText } = getInputPageData(step);
 
@@ -88,16 +97,15 @@ const DateStep = ({
       <TimeRecommendation
         arrangerId={eventObject.eventArrangerId}
         onSelect={(date, time) => {
-          /* The update handlers only read target.value. Each also persists
-             the draft from its own render's eventObject, so right after the
-             second call localStorage briefly lacks the first field - any
-             later edit in the wizard re-persists the full object. */
+          /* The update handlers only read target.value. */
           updateEventDateStart({
             target: { value: date },
           } as React.ChangeEvent<HTMLInputElement>);
-          updateEventTimeStart({
-            target: { value: time },
-          } as React.ChangeEvent<HTMLInputElement>);
+          setTimeout(() => {
+            updateTimeRef.current({
+              target: { value: time },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }, 0);
         }}
       />
       <div className={styles.dateContainer}>
