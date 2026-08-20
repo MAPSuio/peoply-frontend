@@ -61,17 +61,16 @@
   margin-left: $spacer-very-small;
 }
 
+// Matches the ratio the event page and event cards display at, so the
+// placeholder frames the same area the cropper does.
 .imageContainer {
+  aspect-ratio: $aspect-ratio-event-image;
   border-radius: $border-radius-regular;
-  height: 250px;
   margin-bottom: $spacer-very-small-plus;
   max-width: $max-width-input;
   overflow: hidden;
   position: relative;
-
-  @include desktop() {
-    height: 350px;
-  }
+  width: 100%;
 }
 
 .errorContainer {
