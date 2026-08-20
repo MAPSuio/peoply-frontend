@@ -161,17 +161,11 @@ const DateStep = ({
           </div>
         )}
         <EventCollisionWarning
-          dateStart={eventObject.eventDateStart}
-          timeStart={eventObject.eventTimeStart}
-          dateEnd={eventObject.eventDateEnd}
-          timeEnd={eventObject.eventTimeEnd}
-          hasDateEnd={eventObject.eventHasDateEnd}
-          timesAreValid={
-            eventDateStartValid &&
-            eventTimeStartValid &&
-            eventDateEndValid &&
-            eventTimeEndValid
-          }
+          eventObject={eventObject}
+          dateStartValid={eventDateStartValid}
+          timeStartValid={eventTimeStartValid}
+          dateEndValid={eventDateEndValid}
+          timeEndValid={eventTimeEndValid}
         />
         <div className={styles.scheduledRegContainer}>
           {!eventObject.eventHasRegStart && (

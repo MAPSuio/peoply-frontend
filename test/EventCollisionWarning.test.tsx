@@ -4,7 +4,18 @@ import { SWRConfig } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCollisionWarning from "../components/create-event/EventCollisionWarning";
+import type { EventObjectProps } from "../hooks/useCreateEventForm";
 import type { Event } from "../types/types";
+
+const eventObjectWith = (fields: Partial<EventObjectProps>): EventObjectProps =>
+  ({
+    eventDateStart: "",
+    eventTimeStart: "",
+    eventDateEnd: null,
+    eventTimeEnd: null,
+    eventHasDateEnd: false,
+    ...fields,
+  }) as EventObjectProps;
 
 const fetcher = vi.fn();
 
@@ -48,12 +59,17 @@ describe("EventCollisionWarning", () => {
 
     renderWithSwr(
       <EventCollisionWarning
-        dateStart="2026-09-10"
-        timeStart="19:00"
-        dateEnd="2026-09-10"
-        timeEnd="21:00"
-        hasDateEnd
-        timesAreValid
+        eventObject={eventObjectWith({
+          eventDateStart: "2026-09-10",
+          eventTimeStart: "19:00",
+          eventDateEnd: "2026-09-10",
+          eventTimeEnd: "21:00",
+          eventHasDateEnd: true,
+        })}
+        dateStartValid
+        timeStartValid
+        dateEndValid
+        timeEndValid
       />,
     );
 
@@ -66,12 +82,17 @@ describe("EventCollisionWarning", () => {
 
     const { container } = renderWithSwr(
       <EventCollisionWarning
-        dateStart="2026-09-10"
-        timeStart="19:00"
-        dateEnd="2026-09-10"
-        timeEnd="21:00"
-        hasDateEnd
-        timesAreValid
+        eventObject={eventObjectWith({
+          eventDateStart: "2026-09-10",
+          eventTimeStart: "19:00",
+          eventDateEnd: "2026-09-10",
+          eventTimeEnd: "21:00",
+          eventHasDateEnd: true,
+        })}
+        dateStartValid
+        timeStartValid
+        dateEndValid
+        timeEndValid
       />,
     );
 
@@ -85,12 +106,14 @@ describe("EventCollisionWarning", () => {
 
     renderWithSwr(
       <EventCollisionWarning
-        dateStart="2026-09-10"
-        timeStart="19:00"
-        dateEnd={null}
-        timeEnd={null}
-        hasDateEnd={false}
-        timesAreValid
+        eventObject={eventObjectWith({
+          eventDateStart: "2026-09-10",
+          eventTimeStart: "19:00",
+        })}
+        dateStartValid
+        timeStartValid
+        dateEndValid
+        timeEndValid
       />,
     );
 
@@ -100,12 +123,11 @@ describe("EventCollisionWarning", () => {
   it("does not fetch until the chosen times are valid", () => {
     renderWithSwr(
       <EventCollisionWarning
-        dateStart=""
-        timeStart=""
-        dateEnd={null}
-        timeEnd={null}
-        hasDateEnd={false}
-        timesAreValid={false}
+        eventObject={eventObjectWith({})}
+        dateStartValid={false}
+        timeStartValid={false}
+        dateEndValid
+        timeEndValid
       />,
     );
 
