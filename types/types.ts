@@ -561,3 +561,66 @@ export enum EventDateFormat {
 export enum UserSeenUpdateType {
   HAS_SET_ALLERGENS = "HAS_SET_ALLERGENS",
 }
+
+export interface OrganizationAnalyticsEventItem {
+  id: string;
+  urlId: string;
+  title: string;
+  startDate: string;
+  capacity: number | null;
+  goingCount: number;
+  waitlistedCount: number;
+  fillRate: number | null;
+}
+
+export interface OrganizationAnalyticsWeekday {
+  /** 0 = mandag .. 6 = søndag, Europe/Oslo. */
+  weekday: number;
+  averageGoing: number;
+  eventCount: number;
+}
+
+export interface OrganizationAnalyticsTimeOfDay {
+  bucket: "MORNING" | "AFTERNOON" | "EVENING";
+  averageGoing: number;
+  eventCount: number;
+}
+
+export type AnalyticsPeriod = "24h" | "7d" | "30d" | "90d" | "1y";
+
+/** Mirrors the backend's OrganizationAnalyticsResponse: aggregates only. */
+export interface OrganizationAnalytics {
+  generatedAt: string;
+  period: AnalyticsPeriod;
+  followers: {
+    total: number;
+    net24h: number;
+    net7d: number;
+    net30d: number;
+    netPeriod: number;
+    gross30d: number;
+    dailyNet: { date: string; net: number }[];
+  };
+  members: { total: number; newInPeriod: number };
+  events: {
+    items: OrganizationAnalyticsEventItem[];
+    totalGoing: number;
+    totalWaitlisted: number;
+    averageGoing: number | null;
+    averageFillRate: number | null;
+    soldOutRate: number | null;
+    medianDemand: number | null;
+    medianSignupLeadDays: number | null;
+    lastMinuteShare: number | null;
+    medianPublishLeadDays: number | null;
+    dropoutRate: number | null;
+    byWeekday: OrganizationAnalyticsWeekday[];
+    byTimeOfDay: OrganizationAnalyticsTimeOfDay[];
+  };
+  audience: {
+    uniqueAttendees: number;
+    returningAttendeeRate: number | null;
+    coreAudienceCount: number;
+    attendeeFollowerRate: number | null;
+  };
+}

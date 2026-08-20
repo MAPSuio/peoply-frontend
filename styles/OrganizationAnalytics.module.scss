@@ -1,0 +1,144 @@
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-medium;
+  margin-bottom: $spacer-medium-plus;
+}
+
+.grid {
+  column-gap: $spacer-small;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  row-gap: $spacer-medium;
+
+  @include desktop() {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-mini;
+  text-align: center;
+}
+
+.value {
+  align-items: baseline;
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  display: flex;
+  font-size: $font-size-data;
+  font-weight: $font-weight-bold;
+  gap: $spacer-mini;
+  @include monoFont();
+
+  @include desktop() {
+    font-size: $font-size-data-desktop;
+  }
+}
+
+.deltaUp,
+.deltaDown {
+  font-size: $font-size-tertiary;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.deltaUp {
+  color: var(--success-color, $success-color);
+}
+
+.deltaDown {
+  color: var(--danger-color, $danger-color);
+}
+
+.label {
+  font-size: $font-size-tertiary;
+  @include monoFont();
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.charts {
+  display: grid;
+  gap: $spacer-medium;
+
+  @include desktop() {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The charts inherit `currentColor` for text/grids and paint series with the
+   --ts-chart-N palette tokens, so every theme restyles them from here alone. */
+.chartCard {
+  color: var(--text-color-primary, $text-color-primary);
+  margin: 0;
+  min-width: 0;
+  --ts-chart-1: var(--primary-color-400, $primary-color-400);
+  --ts-chart-2: var(--warning-color, $warning-color);
+  --ts-chart-3: var(--info-color, $info-color);
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+.chartCard:first-child {
+  @include desktop() {
+    grid-column: span 2;
+  }
+}
+
+.chartTitle {
+  font-size: $font-size-secondary;
+  margin-bottom: $spacer-very-small;
+  @include monoFont();
+
+  @include desktop() {
+    font-size: $font-size-secondary-desktop;
+  }
+}
+
+.topEvents {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-very-small;
+  @include resetList();
+}
+
+.topEvent {
+  align-items: center;
+  border-radius: $border-radius-inside-card;
+  display: flex;
+  justify-content: space-between;
+  min-height: $min-tap-target;
+  padding: $spacer-very-small $spacer-small;
+  @include card();
+}
+
+.topEventTitle {
+  font-size: $font-size-secondary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topEventCount {
+  color: var(--text-color-emphasis, $text-color-emphasis);
+  font-weight: $font-weight-bold;
+  @include monoFont();
+}
+
+.periodPicker {
+  align-self: center;
+  max-width: 16rem;
+  width: 100%;
+}

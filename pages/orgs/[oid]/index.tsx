@@ -3,14 +3,19 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 
 // React.
+import { useState } from "react";
 
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import Layout from "../../../components/Layout";
+import TabSelection from "../../../components/TabSelection";
+import OrganizationAnalytics from "../../../components/organization/OrganizationAnalytics";
 import OrganizationHeading from "../../../components/organization/OrganizationHeading";
 import OrganizationProfile from "../../../components/organization/OrganizationProfile";
 import OrganizationStats from "../../../components/organization/OrganizationStats";
 import OrganizationUpcomingEvents from "../../../components/organization/OrganizationUpcomingEvents";
+import DataIconSummary from "../../../components/svgs/DataIconSummary";
+import HomeIcon from "../../../components/svgs/HomeIcon";
 
 // Hooks.
 import useSnack from "../../../hooks/useSnack";
@@ -31,10 +36,74 @@ import {
   getOrganizationStaticProps,
   organizationPath,
 } from "../../../utils/organization";
+import styles from "../../../styles/Organization.module.scss";
 
 interface OrganizationProps {
   organization: Organization;
 }
+
+enum OrgTab {
+  OVERVIEW = "OVERVIEW",
+  STATISTICS = "STATISTICS",
+}
+
+interface OrganizationViewProps {
+  org: Organization;
+  isMemberOfOrg: boolean;
+  isAdminOrOwner?: boolean;
+  memberCount?: number;
+  events?: Event[];
+}
+
+/* Any role in the org counts - `isMember` is strictly role === MEMBER, so
+   the gate is the membership row itself. Outsiders get the page exactly as
+   before, and the analytics component (and its members-only request) never
+   mounts. */
+const OrganizationView = ({
+  org,
+  isMemberOfOrg,
+  isAdminOrOwner,
+  memberCount,
+  events,
+}: OrganizationViewProps) => {
+  const [selectedTab, setSelectedTab] = useState(OrgTab.OVERVIEW);
+
+  return (
+    <Layout>
+      <OrganizationHeading organization={org} isAdminOrOwner={isAdminOrOwner} />
+      {isMemberOfOrg && (
+        <div className={styles.tabs}>
+          <TabSelection
+            options={[
+              { label: "Oversikt", value: OrgTab.OVERVIEW, icon: <HomeIcon /> },
+              {
+                label: "Statistikk",
+                value: OrgTab.STATISTICS,
+                icon: <DataIconSummary />,
+              },
+            ]}
+            selected={selectedTab}
+            setSelected={setSelectedTab}
+          />
+        </div>
+      )}
+      <OrganizationProfile organization={org} />
+      {isMemberOfOrg && selectedTab === OrgTab.STATISTICS ? (
+        <OrganizationAnalytics organization={org} />
+      ) : (
+        <>
+          <OrganizationStats
+            organization={org}
+            isAdminOrOwner={isAdminOrOwner}
+            memberCount={memberCount}
+            eventCount={events?.length}
+          />
+          <OrganizationUpcomingEvents organization={org} events={events} />
+        </>
+      )}
+    </Layout>
+  );
+};
 
 const Organization = ({ organization }: OrganizationProps) => {
   const { addSnack } = useSnack();
@@ -44,6 +113,7 @@ const Organization = ({ organization }: OrganizationProps) => {
   const {
     organization: orgData,
     organizationUsers: orgMembers,
+    organizationUser,
     isAdminOrOwner,
     loading: orgLoading,
     error: orgError,
@@ -84,20 +154,13 @@ const Organization = ({ organization }: OrganizationProps) => {
         path={organizationPath(org)}
         imageUrl={org.image}
       />
-      <Layout>
-        <OrganizationHeading
-          organization={org}
-          isAdminOrOwner={isAdminOrOwner}
-        />
-        <OrganizationProfile organization={org} />
-        <OrganizationStats
-          organization={org}
-          isAdminOrOwner={isAdminOrOwner}
-          memberCount={orgMembers?.length}
-          eventCount={orgEvents?.length}
-        />
-        <OrganizationUpcomingEvents organization={org} events={orgEvents} />
-      </Layout>
+      <OrganizationView
+        org={org}
+        isMemberOfOrg={Boolean(organizationUser)}
+        isAdminOrOwner={isAdminOrOwner}
+        memberCount={orgMembers?.length}
+        events={orgEvents}
+      />
     </>
   );
 };
