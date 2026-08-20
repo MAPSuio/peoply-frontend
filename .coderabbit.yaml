@@ -1,0 +1,191 @@
+# yaml-language-server: $schema=https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json
+language: en-US
+tone_instructions: >-
+  Be direct and concise. Skip praise and preamble. State the problem, why it
+  matters, and the fix. Do not repeat what the diff already shows.
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
+  poem: false
+  in_progress_fortune: false
+  assess_linked_issues: true
+  related_prs: true
+  suggested_labels: true
+  auto_apply_labels: false
+
+  auto_review:
+    # Off by design. Reviews are opt-in through the `review-ready` label, which
+    # only .github/workflows/coderabbit-gate.yml adds: immediately for members
+    # and collaborators, and for everyone else once a maintainer approves the
+    # `coderabbit-review` environment. A drive-by pull request therefore costs
+    # nothing until someone decides it is worth looking at. Removing the label
+    # stops further reviews.
+    #
+    # `description_keyword` is deliberately left unset — it would let the
+    # author of the pull request trigger a review from the description, which
+    # is exactly what this gate exists to prevent.
+    enabled: false
+    labels:
+      - review-ready
+    auto_incremental_review: true
+    # Stop re-reviewing after five commits so a labelled pull request cannot
+    # burn the quota by pushing in a loop. Re-label to resume.
+    auto_pause_after_reviewed_commits: 5
+    drafts: false
+    base_branches:
+      - master
+    ignore_title_keywords:
+      - wip
+      - "do not merge"
+
+  path_filters:
+    - "!**/package-lock.json"
+    - "!.next/**"
+    - "!out/**"
+    - "!coverage/**"
+    - "!graphify-out/**"
+    - "!.claude/worktrees/**"
+    - "!public/sw.js"
+    - "!public/workbox-*.js"
+    - "!**/*.png"
+    - "!next-env.d.ts"
+
+  path_instructions:
+    - path: "{pages,components}/**/*.{ts,tsx}"
+      instructions: >-
+        This UI is mobile-first and feed-shaped. Flag layouts that only hold
+        together on desktop: fixed pixel widths, horizontal overflow at 390px,
+        tap targets under 44px, and text that clips or wraps badly on a narrow
+        screen. Interactive elements must be real buttons or links with
+        accessible names, keyboard focus, and a loading/disabled state while a
+        mutation is in flight.
+    - path: "pages/**/*.tsx"
+      instructions: >-
+        Check data fetching for the unhappy path: loading, empty, and error
+        states must all render something sensible, and a failed request must
+        not leave the page blank or stuck in a spinner. Anything requiring
+        login must handle the logged-out case rather than assuming a user
+        exists. Flag secrets or backend-only configuration reaching client
+        code.
+    - path: "components/**/*.tsx"
+      instructions: >-
+        Prefer reusing an existing component over adding a near-duplicate;
+        point at the existing one by path when you see duplication. Flag props
+        typed as `any`, unkeyed lists, and effects that fire on every render.
+        User-facing strings are Norwegian and must be plain language a visitor
+        understands; identifiers, types, and comments stay English. Every
+        number shown to a user needs a label saying what it counts.
+    - path: "services/**/*.ts"
+      instructions: >-
+        Every request needs error handling and must not swallow a failure into
+        a silent empty state. Check that the request and response types match
+        what the backend actually returns, that user input is encoded into
+        URLs, and that no token or personal data ends up in a query string or
+        a log line.
+    - path: "**/*.{css,scss}"
+      instructions: >-
+        Mobile-first: base styles for narrow screens, media queries widening
+        from there. Flag hardcoded colours where a design token exists, and
+        any rule that assumes a viewport wider than 390px.
+    - path: "{test,**/__tests__}/**/*.{ts,tsx}"
+      instructions: >-
+        Tests must assert user-visible behaviour, not implementation detail.
+        Flag tests that would still pass if the feature were removed, and
+        mocks so broad that nothing real is exercised.
+    - path: ".github/workflows/**"
+      instructions: >-
+        Pin actions to a version. Flag any workflow that exposes secrets to
+        code from a fork, uses `pull_request_target` with a checkout of the
+        PR head, or interpolates untrusted input directly into a `run` block.
+    - path: "**/*.md"
+      instructions: >-
+        Prose only. Do not comment on formatting or wording preferences unless
+        the text is factually wrong or contradicts the code in the same PR.
+
+  pre_merge_checks:
+    title:
+      mode: warning
+      requirements: >-
+        The title must be a Conventional Commit: `type(scope): subject`, with
+        type one of build, chore, ci, docs, feat, fix, perf, refactor, revert,
+        style, test. Subject case is not enforced. It must say what changed for
+        a user or a caller, not which file was touched.
+    description:
+      mode: warning
+    docstrings:
+      mode: off
+    custom_checks:
+      - name: Before/after screenshots
+        mode: warning
+        instructions: >-
+          If the PR changes anything with a visible effect in the UI (files
+          under `pages/`, `components/`, `styles/`, or `assets/`), the
+          description must contain a table of before/after screenshots at both
+          390x844 and 1440x900 for each affected page. A PR with no visual
+          effect must say "Ingen visuelle endringer." instead. Fail if neither
+          is present.
+      - name: PR description style
+        mode: warning
+        instructions: >-
+          Fail if the PR description contains headings, bullet lists,
+          checkboxes, emojis, or sections named Summary / Test plan /
+          Verification; if the prose is longer than five sentences; if it
+          contains an en dash or em dash; or if it reports test results,
+          benchmarks, commands run, or alternatives considered. The
+          before/after screenshot table is the one permitted exception and
+          does not count against these rules.
+
+  tools:
+    biome:
+      enabled: true
+    stylelint:
+      enabled: true
+    eslint:
+      enabled: false
+    oxc:
+      enabled: false
+    gitleaks:
+      enabled: true
+    semgrep:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    osvScanner:
+      enabled: true
+    reactDoctor:
+      enabled: true
+    markdownlint:
+      enabled: false
+    languagetool:
+      enabled: false
+
+chat:
+  auto_reply: true
+  # Non-members cannot summon CodeRabbit with `@coderabbitai review`
+  # either, so the label is the only way in.
+  allow_non_org_members: false
+
+knowledge_base:
+  learnings:
+    scope: local
+  issues:
+    scope: local
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "**/CLAUDE.md"
+      - "CONTRIBUTING.md"
+      - "SECURITY.md"
+      - "docs/**/*.md"
+
+code_generation:
+  docstrings:
+    language: en-US
+  unit_tests:
+    language: en-US
