@@ -1,7 +1,9 @@
 // Components.
 import DateInput from "../inputs/DateInput";
 import TimeInput from "../inputs/TimeInput";
+import EventCollisionWarning from "./EventCollisionWarning";
 import InputPage from "../InputPage";
+import TimeRecommendation from "./TimeRecommendation";
 
 import PlusIcon from "../svgs/PlusIcon";
 import MinusIcon from "../svgs/MinusIcon";
@@ -21,6 +23,7 @@ interface DateStepProps {
   stepCount: number;
   validDataMap: Map<InputPages, boolean>;
   buttonOnClick: (step: number) => void;
+  applyRecommendedStart: (date: string, time: string) => void;
   eventDateStartValid: boolean;
   eventTimeStartValid: boolean;
   eventDateEndValid: boolean;
@@ -47,6 +50,7 @@ const DateStep = ({
   stepCount,
   validDataMap,
   buttonOnClick,
+  applyRecommendedStart,
   eventDateStartValid,
   eventTimeStartValid,
   eventDateEndValid,
@@ -83,6 +87,10 @@ const DateStep = ({
       page={InputPages.DATE_PAGE}
       buttonOnClick={buttonOnClick}
     >
+      <TimeRecommendation
+        arrangerId={eventObject.eventArrangerId}
+        onSelect={applyRecommendedStart}
+      />
       <div className={styles.dateContainer}>
         <div className={styles.dateColumn}>
           <DateInput
@@ -152,6 +160,19 @@ const DateStep = ({
             </div>
           </div>
         )}
+        <EventCollisionWarning
+          dateStart={eventObject.eventDateStart}
+          timeStart={eventObject.eventTimeStart}
+          dateEnd={eventObject.eventDateEnd}
+          timeEnd={eventObject.eventTimeEnd}
+          hasDateEnd={eventObject.eventHasDateEnd}
+          timesAreValid={
+            eventDateStartValid &&
+            eventTimeStartValid &&
+            eventDateEndValid &&
+            eventTimeEndValid
+          }
+        />
         <div className={styles.scheduledRegContainer}>
           {!eventObject.eventHasRegStart && (
             <button

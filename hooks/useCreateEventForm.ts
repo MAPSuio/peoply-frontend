@@ -283,6 +283,22 @@ export default function useCreateEventForm() {
     });
   };
 
+  /* One update for both fields: two sequential update* calls would each
+     persist the draft from the same stale closure and drop one of the two
+     values from localStorage. */
+  const applyRecommendedStart = (date: string, time: string) => {
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventDateStart: date,
+      eventTimeStart: time,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventDateStart: date,
+      eventTimeStart: time,
+    });
+  };
+
   const updateEventTimeStart = (e: ChangeEvent<HTMLInputElement>) => {
     setEventObject((prevEventObject) => ({
       ...prevEventObject,
@@ -1003,6 +1019,7 @@ export default function useCreateEventForm() {
     updateEventCategories,
     updateEventDateStart,
     updateEventTimeStart,
+    applyRecommendedStart,
     setEventHasDateEnd,
     updateEventDateEnd,
     updateEventTimeEnd,
