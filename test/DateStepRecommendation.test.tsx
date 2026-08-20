@@ -83,7 +83,12 @@ describe("DateStep recommendation wiring", () => {
   it("applies the date immediately and the time after the re-render tick", async () => {
     renderStep();
 
-    await userEvent.click(screen.getByRole("button", { name: "Mandag 18:00" }));
+    const clicked = userEvent.click(
+      screen.getByRole("button", { name: "Mandag 18:00" }),
+    );
+    // The time update is deferred until after the date's re-render.
+    expect(updateEventTimeStart).not.toHaveBeenCalled();
+    await clicked;
 
     expect(updateEventDateStart).toHaveBeenCalledWith(
       expect.objectContaining({ target: { value: "2026-08-24" } }),
