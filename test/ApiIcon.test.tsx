@@ -7,7 +7,14 @@ describe("ApiIcon", () => {
   it("draws the angle-bracket glyph", () => {
     const { container } = render(<ApiIcon />);
 
-    expect(container.querySelectorAll("path")).toHaveLength(3);
+    const outlines = Array.from(container.querySelectorAll("path"), (path) =>
+      path.getAttribute("d"),
+    );
+
+    expect(outlines).toHaveLength(3);
+    expect(outlines.every((outline) => outline && outline.length > 0)).toBe(
+      true,
+    );
   });
 
   it("takes its colour from whatever renders it", () => {
