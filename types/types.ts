@@ -226,6 +226,7 @@ export interface Organization {
   tiktokUrl?: string;
   linkedinUrl?: string;
   youtubeUrl?: string;
+  memberCount?: number;
   organizationRoles: UserOrganizationRoles[];
 }
 
