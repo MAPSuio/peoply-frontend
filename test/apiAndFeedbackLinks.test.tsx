@@ -42,7 +42,7 @@ describe("API and feedback entry points", () => {
   it("sends feedback from the FAQ contact section", () => {
     render(<FAQ />);
 
-    expect(hrefOf(/Send oss en tilbakemelding/i)).toBe("/feedback");
+    expect(hrefOf(/^Feedback$/)).toBe("/feedback");
   });
 
   it("no longer crowds the header with those links", () => {

@@ -1,5 +1,6 @@
 import BackButton from "../components/BackButton";
 import LinkButton from "../components/LinkButton";
+import MailIcon from "../components/svgs/MailIcon";
 import { IconPlacement } from "../components/Button";
 import { ButtonType } from "../types/types";
 import ExpandableCard from "../components/ExpandableCard";
@@ -207,12 +208,14 @@ const FAQ = () => {
                   kontaktinformasjonen nedenfor.
                 </p>
                 <LinkButton
-                  text="Send oss en tilbakemelding"
+                  text="Feedback"
                   href="/feedback"
                   type={ButtonType.SECONDARY}
                   className={styles.feedbackButton}
+                  icon={<MailIcon />}
                   iconPlacement={IconPlacement.LEFT}
                   width="fit-content"
+                  noShadow
                 />
               </div>
             </div>

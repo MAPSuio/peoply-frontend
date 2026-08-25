@@ -102,10 +102,13 @@
   }
 }
 
-/* Venstrestilt som teksten over, ikke sentrert av .cardContainer. */
+/* Venstrestilt som teksten over, ikke sentrert av .cardContainer.
+   .button har null horisontal padding, så teksten trenger sin egen. */
 .feedbackButton {
   align-self: flex-start;
   margin-top: $spacer-very-small;
+  padding-left: $spacer-medium;
+  padding-right: $spacer-medium;
 }
 
 .emailLink {
