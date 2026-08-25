@@ -45,7 +45,7 @@ import {
   getSafeExternalUrl,
   showsRegistrationCount,
 } from "../../../utils/event";
-import { isValidEventId } from "../../../utils/eventId";
+import { isValidEventId, normalizeEventIdForApi } from "../../../utils/eventId";
 
 // Types.
 import {
@@ -686,7 +686,7 @@ async function fetchEventForRequest(
   /* eid is validated with isValidEventId before we get here; encoding keeps
      the value inside a single path segment regardless. */
   const eventUrl = `${baseApiUrl}/events/${encodeURIComponent(
-    eid.toUpperCase(),
+    normalizeEventIdForApi(eid),
   )}`;
 
   const requestHeaders = cookieHeader ? { cookie: cookieHeader } : undefined;
