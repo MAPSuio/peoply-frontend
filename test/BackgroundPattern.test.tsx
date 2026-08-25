@@ -1,4 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
+import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import BackgroundPattern from "../components/BackgroundPattern";
@@ -15,6 +16,22 @@ describe("BackgroundPattern", () => {
     render(<BackgroundPattern />);
 
     expect(screen.queryByTestId(patternTestId)).not.toBeInTheDocument();
+  });
+
+  /* The server has no localStorage, so it always renders nothing. A first
+     client render that disagrees is a hydration mismatch. */
+  it("renders nothing on the first pass even when the preference is on", () => {
+    setBackgroundPatternEnabled(true);
+
+    expect(renderToString(<BackgroundPattern />)).toBe("");
+  });
+
+  it("appears after mount when the preference is already on", () => {
+    setBackgroundPatternEnabled(true);
+
+    render(<BackgroundPattern />);
+
+    expect(screen.getByTestId(patternTestId)).toBeInTheDocument();
   });
 
   it("appears once the preference is turned on", () => {

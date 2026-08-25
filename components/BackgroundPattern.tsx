@@ -1,9 +1,4 @@
-import { useEffect, useState } from "react";
-
-import {
-  BACKGROUND_PATTERN_EVENT,
-  getBackgroundPatternEnabled,
-} from "../utils/backgroundPattern";
+import useBackgroundPatternPreference from "../hooks/useBackgroundPatternPreference";
 
 import styles from "../styles/App.module.scss";
 
@@ -27,34 +22,7 @@ const STEP_Y = 13;
 /* The decorative dot field behind the page. Opt-in: it renders nothing until
    the user turns it on under Innstillinger. */
 export default function BackgroundPattern() {
-  const [enabled, setEnabled] = useState(() => getBackgroundPatternEnabled());
-
-  useEffect(() => {
-    const readPreference = () => setEnabled(getBackgroundPatternEnabled());
-
-    const handlePreferenceChange = (event: Event) => {
-      if (event instanceof CustomEvent && typeof event.detail === "boolean") {
-        setEnabled(event.detail);
-        return;
-      }
-
-      readPreference();
-    };
-
-    /* The server rendered `false`, so a user who has it on needs the client to
-       catch up on mount. */
-    readPreference();
-    window.addEventListener(BACKGROUND_PATTERN_EVENT, handlePreferenceChange);
-    window.addEventListener("storage", readPreference);
-
-    return () => {
-      window.removeEventListener(
-        BACKGROUND_PATTERN_EVENT,
-        handlePreferenceChange,
-      );
-      window.removeEventListener("storage", readPreference);
-    };
-  }, []);
+  const [enabled] = useBackgroundPatternPreference();
 
   if (!enabled) {
     return null;
