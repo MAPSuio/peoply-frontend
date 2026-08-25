@@ -24,7 +24,6 @@ interface OrganizationCardProps {
 const OrganizationCard = ({ organizationID }: OrganizationCardProps) => {
   const {
     organization: org,
-    organizationUsers: orgUsers,
     loading,
     error,
   } = useOrganization(organizationID, { fetchMembers: false });
@@ -61,7 +60,7 @@ const OrganizationCard = ({ organizationID }: OrganizationCardProps) => {
         <div className={styles.dataContainer}>
           <div className={styles.iconContainer}>
             <UserIconCard className={styles.icon} />
-            <p className={styles.data}>{orgUsers?.length}</p>
+            <p className={styles.data}>{org?.memberCount}</p>
             <p className={styles.dataDescription}>Medlemmer</p>
           </div>
           <div className={styles.iconContainer}>
