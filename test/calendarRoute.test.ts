@@ -29,6 +29,20 @@ function createResponse() {
   return res;
 }
 
+function eventResponse() {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => ({
+      id: "3f2b8c1a-4d5e-4f6a-8b9c-0d1e2f3a4b5c",
+      urlId: "ABCDEFGH",
+      title: "Test",
+      startDate: "2026-08-15T10:00:00.000Z",
+      endDate: "2026-08-15T12:00:00.000Z",
+    }),
+  } as Response;
+}
+
 async function callHandler(eid: string | string[]) {
   const res = createResponse();
 
@@ -81,5 +95,27 @@ describe("GET /api/calendar/[eid]", () => {
     );
     expect(res.statusCode).toBe(200);
     expect(res.headers["Content-Type"]).toBe("text/calendar; charset=utf-8");
+  });
+
+  it("uppercases a lowercase urlId before calling the API", async () => {
+    vi.mocked(fetch).mockResolvedValue(eventResponse());
+
+    await callHandler("abcdefgh");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://api.internal/events/ABCDEFGH",
+      expect.anything(),
+    );
+  });
+
+  it("lowercases an uppercase UUID before calling the API", async () => {
+    vi.mocked(fetch).mockResolvedValue(eventResponse());
+
+    await callHandler("3F2B8C1A-4D5E-4F6A-8B9C-0D1E2F3A4B5C");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://api.internal/events/3f2b8c1a-4d5e-4f6a-8b9c-0d1e2f3a4b5c",
+      expect.anything(),
+    );
   });
 });
