@@ -10,3 +10,9 @@ const EVENT_ID_PATTERN =
 export function isValidEventId(value: string): boolean {
   return EVENT_ID_PATTERN.test(value);
 }
+
+const URL_ID_PATTERN = /^[A-Za-z]{8}$/;
+
+export function normalizeEventIdForApi(value: string): string {
+  return URL_ID_PATTERN.test(value) ? value.toUpperCase() : value.toLowerCase();
+}

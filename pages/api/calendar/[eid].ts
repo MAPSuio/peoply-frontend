@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import type { Event } from "../../../types/types";
-import { isValidEventId } from "../../../utils/eventId";
+import { isValidEventId, normalizeEventIdForApi } from "../../../utils/eventId";
 import { createEventIcs } from "../../../utils/ics";
 
 function sanitizeFileName(value: string) {
@@ -29,7 +29,7 @@ export default async function handler(
 
   try {
     const response = await fetch(
-      `${apiBaseUrl}/events/${encodeURIComponent(eventId)}`,
+      `${apiBaseUrl}/events/${encodeURIComponent(normalizeEventIdForApi(eventId))}`,
       {
         signal: controller.signal,
       },
