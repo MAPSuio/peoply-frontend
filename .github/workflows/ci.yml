@@ -91,7 +91,7 @@ jobs:
         run: |
           node node_modules/next/dist/bin/next start --port 3999 &
           SERVER_PID=$!
-          for attempt in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -sf -o /dev/null http://127.0.0.1:3999/; then
               kill $SERVER_PID
               exit 0
