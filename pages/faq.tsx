@@ -1,4 +1,5 @@
 import BackButton from "../components/BackButton";
+import Link from "../components/Link";
 import ExpandableCard from "../components/ExpandableCard";
 import HeadComponent from "../components/HeadComponent";
 import MapsLogo from "../components/svgs/MapsLogo";
@@ -202,6 +203,13 @@ const FAQ = () => {
                   besvart ovenfor, eller et forslag til en potensiell forbedring
                   av tjenesten? Ta gjerne kontakt med oss på ved hjelp av
                   kontaktinformasjonen nedenfor.
+                </p>
+                <p className={styles.contactText}>
+                  Du kan også{" "}
+                  <Link href="/feedback" className={styles.emailLink}>
+                    sende oss en tilbakemelding
+                  </Link>{" "}
+                  direkte i appen.
                 </p>
               </div>
             </div>

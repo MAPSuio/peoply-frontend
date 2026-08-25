@@ -34,7 +34,17 @@
     }
   }
 
-  .githubIcon {
+  /* To lenker side om side på mobil; wrapper hvis skjermen er for smal. */
+  .links {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    gap: $spacer-very-small-plus $spacer-medium;
+    justify-content: center;
+  }
+
+  .githubIcon,
+  .apiIcon {
     height: 18px;
     width: 18px;
 

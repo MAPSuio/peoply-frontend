@@ -15,6 +15,7 @@ import LogoutIcon from "./svgs/LogoutIcon";
 import CloseIcon from "./svgs/CloseIcon";
 import UsersIcon from "./svgs/UsersIcon";
 import CalendarIconCard from "./svgs/CalendarIconCard";
+import ApiIcon from "./svgs/ApiIcon";
 
 // Styles.
 import styles from "../styles/ProfileMenu.module.scss";
@@ -70,6 +71,12 @@ export default function ProfileMenu() {
         Icon={MailIcon}
         ActionIcon={ChevronRightIcon}
         linkOrOnClick="/faq"
+      />
+      <ProfileMenuItem
+        text="API"
+        Icon={ApiIcon}
+        ActionIcon={ChevronRightIcon}
+        linkOrOnClick="/integrasjoner"
       />
       <ProfileMenuItem
         text="Logg ut"

@@ -3,15 +3,15 @@ export const BACKGROUND_PATTERN_EVENT = "background-pattern-preference-change";
 
 export function getBackgroundPatternEnabled() {
   if (typeof window === "undefined") {
-    return true;
+    return false;
   }
 
   try {
     return (
-      window.localStorage.getItem(BACKGROUND_PATTERN_STORAGE_KEY) !== "false"
+      window.localStorage.getItem(BACKGROUND_PATTERN_STORAGE_KEY) === "true"
     );
   } catch {
-    return true;
+    return false;
   }
 }
 
