@@ -74,11 +74,29 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      # build:prod prunes devDependencies after the build, and booting the
+      # pruned tree is what proves the runtime needs none of them - a dev
+      # package that next start loads fails this job instead of the deploy.
+      - run: npm run build:prod
         env:
           NEXT_PUBLIC_BASE_URL: https://example.com
           NEXT_PUBLIC_API_URL: https://example.com/api
           BLOB_DOMAIN: example.com
+
+      - name: Boot the pruned build
+        run: |
+          node node_modules/next/dist/bin/next start --port 3999 &
+          SERVER_PID=$!
+          for attempt in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:3999/; then
+              kill $SERVER_PID
+              exit 0
+            fi
+            sleep 1
+          done
+          kill $SERVER_PID 2>/dev/null
+          echo "next start never answered on the pruned tree"
+          exit 1
 
   # Deploys prod only after every check above is green. The App Platform app is
   # referenced by name, so the spec stays in DigitalOcean rather than in this
