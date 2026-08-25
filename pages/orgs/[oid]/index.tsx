@@ -158,7 +158,7 @@ const Organization = ({ organization }: OrganizationProps) => {
         org={org}
         isMemberOfOrg={Boolean(organizationUser)}
         isAdminOrOwner={isAdminOrOwner}
-        memberCount={orgMembers?.length}
+        memberCount={orgMembers?.length ?? org.memberCount}
         events={orgEvents}
       />
     </>
