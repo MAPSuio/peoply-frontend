@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build && serwist build serwist.config.mjs",
+    "build:prod": "npm run build && npm prune --omit=dev",
     "start": "next start",
     "typecheck": "tsc --noEmit && tsc --noEmit -p service-worker",
     "test": "vitest run",
