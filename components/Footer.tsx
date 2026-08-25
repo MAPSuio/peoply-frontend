@@ -1,6 +1,8 @@
 // Components.
+import ApiIcon from "./svgs/ApiIcon";
 import GithubIcon from "./svgs/GithubIcon";
 import MapsLogo from "./svgs/MapsLogo";
+import Link from "./Link";
 
 // Utils.
 import { mapsUrl, sourceCodeUrl } from "../utils/constants";
@@ -25,15 +27,21 @@ export default function Footer() {
         <span>Drevet av</span>
         <MapsLogo className={styles.mapsLogo} />
       </a>
-      <a
-        href={sourceCodeUrl}
-        className={styles.sourceLink}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <GithubIcon className={styles.githubIcon} />
-        <span>Kildekode på GitHub</span>
-      </a>
+      <div className={styles.links}>
+        <a
+          href={sourceCodeUrl}
+          className={styles.sourceLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GithubIcon className={styles.githubIcon} />
+          <span>Kildekode på GitHub</span>
+        </a>
+        <Link href="/integrasjoner" className={styles.sourceLink}>
+          <ApiIcon className={styles.apiIcon} />
+          <span>API for utviklere</span>
+        </Link>
+      </div>
     </footer>
   );
 }

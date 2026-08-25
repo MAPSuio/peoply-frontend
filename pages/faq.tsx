@@ -1,4 +1,8 @@
 import BackButton from "../components/BackButton";
+import LinkButton from "../components/LinkButton";
+import MailIcon from "../components/svgs/MailIcon";
+import { IconPlacement } from "../components/Button";
+import { ButtonType } from "../types/types";
 import ExpandableCard from "../components/ExpandableCard";
 import HeadComponent from "../components/HeadComponent";
 import MapsLogo from "../components/svgs/MapsLogo";
@@ -203,6 +207,16 @@ const FAQ = () => {
                   av tjenesten? Ta gjerne kontakt med oss på ved hjelp av
                   kontaktinformasjonen nedenfor.
                 </p>
+                <LinkButton
+                  text="Feedback"
+                  href="/feedback"
+                  type={ButtonType.SECONDARY}
+                  className={styles.feedbackButton}
+                  icon={<MailIcon />}
+                  iconPlacement={IconPlacement.LEFT}
+                  width="fit-content"
+                  noShadow
+                />
               </div>
             </div>
             <div className={styles.section}>

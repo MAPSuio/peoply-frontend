@@ -41,18 +41,14 @@ import Button from "../../components/Button";
 import CheckboxInput from "../../components/inputs/CheckboxInput";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
-import {
-  getBackgroundPatternEnabled,
-  setBackgroundPatternEnabled,
-} from "../../utils/backgroundPattern";
+import useBackgroundPatternPreference from "../../hooks/useBackgroundPatternPreference";
 
 const Settings = () => {
   const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
   const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
   const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
-  const [backgroundPatternEnabled, setBackgroundPatternPreference] = useState(
-    () => getBackgroundPatternEnabled(),
-  );
+  const [backgroundPatternEnabled, setBackgroundPatternEnabled] =
+    useBackgroundPatternPreference();
   const { theme, setTheme } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
   const [unlinkTarget, setUnlinkTarget] = useState<LoginProvider>();
@@ -126,13 +122,6 @@ const Settings = () => {
     } else if (id === 3) {
       setTheme("light");
     }
-  };
-
-  const toggleBackgroundPattern = () => {
-    const nextValue = !backgroundPatternEnabled;
-
-    setBackgroundPatternPreference(nextValue);
-    setBackgroundPatternEnabled(nextValue);
   };
 
   const validAllowEmailFromArrangerEdit =
@@ -229,7 +218,9 @@ const Settings = () => {
               <SwitchInput
                 label="Vis bakgrunnsmønster"
                 checked={backgroundPatternEnabled}
-                onClick={toggleBackgroundPattern}
+                onClick={() =>
+                  setBackgroundPatternEnabled(!backgroundPatternEnabled)
+                }
               />
             </div>
             <div className={styles.section}>

@@ -63,51 +63,6 @@
   }
 }
 
-.navLinks {
-  align-items: center;
-  display: flex;
-  gap: $spacer-very-small-plus;
-  margin-left: auto;
-  margin-right: $spacer-small;
-
-  /* Plain nav links only. Without the :not(), this would out-specify
-     .secondaryButton's own colour and weight and flatten the buttons back into
-     looking like text links. */
-  a:not(.navButton) {
-    color: var(--text-color-primary, $text-color-primary);
-    font-weight: $font-weight-medium;
-  }
-
-  .navButton {
-    font-size: $font-size-tertiary;
-    padding: $spacer-mini $spacer-very-small-plus;
-    white-space: nowrap;
-
-    @include desktop() {
-      font-size: $font-size-tertiary-desktop;
-      padding: $spacer-very-small $spacer-small;
-    }
-
-    /* .button sizes every icon at 24px, which dwarfs the text at this scale. */
-    svg {
-      height: 14px;
-      width: 14px;
-    }
-
-    /* Hidden on mobile, as the link it replaces was - the header runs out of
-       room next to the logo and the avatar. Nested rather than a sibling rule
-       so it out-specifies .button.iconRight's `display: flex` regardless of
-       which stylesheet the bundler emits first. */
-    &.apiButton {
-      display: none;
-
-      @include desktop() {
-        display: flex;
-      }
-    }
-  }
-}
-
 /* The avatar opens the profile panel, so it is a button now. Rounded so the
    focus ring follows the picture rather than boxing it in. */
 .avatarButton {
