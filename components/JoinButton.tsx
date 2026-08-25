@@ -72,20 +72,30 @@ export default function JoinButton({
     data: myRegistration,
     isLoading: registrationLoading,
     mutate: updateRegistration,
-  } = useSWR<Registration>(() =>
-    user?.id && event.id
-      ? `/users/${user.id}/registrations/${event.id}`
-      : false,
+  } = useSWR<Registration>(
+    () =>
+      user?.id && event.id
+        ? `/users/${user.id}/registrations/${event.id}`
+        : false,
+    /* One of these mounts per card in a feed, and my own registration only
+       changes through this button's mutate() - focus revalidation just
+       refired every card on every app switch. */
+    { revalidateOnFocus: false },
   );
 
-  const { data: waitlistPosition } = useSWR<number>(() =>
-    user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
-      ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
-      : false,
+  const { data: waitlistPosition } = useSWR<number>(
+    () =>
+      user?.id && event.id && myRegistration?.regStatus === RegStatus.WAITLISTED
+        ? `/users/${user.id}/registrations/${event.id}/waitlist-position`
+        : false,
+    { revalidateOnFocus: false },
   );
 
-  const { data: allergens } =
-    useSWR<{ id: number; name: string }[]>("/allergens");
+  const { data: allergens } = useSWR<{ id: number; name: string }[]>(
+    "/allergens",
+    /* Reference data that changes by deploy, not by the minute. */
+    { revalidateOnFocus: false, revalidateIfStale: false },
+  );
 
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);
   const [foodPreference, setFoodPreference] = useState<FoodPreference>();

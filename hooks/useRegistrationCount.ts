@@ -21,6 +21,13 @@ import { showsRegistrationCount } from "../utils/event";
  * moving when someone joins or leaves from the card itself: the seeded value
  * is a starting point, not a ceiling.
  *
+ * Focus revalidation is off. A feed holds one of these per card, and SWR's
+ * default refires every mounted key each time the app regains focus - on
+ * mobile that is every app switch, and it made this endpoint alone a seventh
+ * of all backend traffic. The count still updates on mount, on mutate() and
+ * on navigation; it no longer updates because the user glanced at another
+ * app.
+ *
  * Events with external registration have no count to show (see
  * `showsRegistrationCount`), so they neither seed nor fetch and `data` stays
  * `undefined`. Callers still hide their own count markup - this is the
@@ -46,6 +53,7 @@ export default function useRegistrationCount(
     {
       fallbackData: seeded,
       revalidateOnMount: seeded === undefined,
+      revalidateOnFocus: false,
     },
   );
 }

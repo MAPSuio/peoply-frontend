@@ -33,7 +33,12 @@ function renderHook(
   return render(
     /* `provider` gives each test its own cache, otherwise the first test's
        entry for an event id would satisfy the next one's render. */
-    <SWRConfig value={{ fetcher, provider: () => new Map() }}>
+    /* focusThrottleInterval 0: SWR's 5s focus throttle would otherwise
+       swallow the dispatched focus events and let the focus tests pass
+       whether or not the hook opts out of focus revalidation. */
+    <SWRConfig
+      value={{ fetcher, provider: () => new Map(), focusThrottleInterval: 0 }}
+    >
       <Consumer event={event} forDisplay={forDisplay} />
     </SWRConfig>,
   );
@@ -84,6 +89,41 @@ describe("useRegistrationCount", () => {
     await waitFor(() =>
       expect(screen.getByTestId("count")).toHaveTextContent("7"),
     );
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  /* A feed holds one of these per card, and SWR's default refetches every
+     mounted key each time the app regains focus. On mobile that is every
+     app switch, so the seeded number must stay quiet on focus and move only
+     through mutate(). */
+  it("does not refetch when the window regains focus", async () => {
+    renderHook({ id: "event-1", goingCount: 3 });
+
+    expect(screen.getByTestId("count")).toHaveTextContent("3");
+    await act(async () => {
+      window.dispatchEvent(new Event("focus"));
+      document.dispatchEvent(new Event("visibilitychange"));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it("fetches once for an unseeded event, focus or not", async () => {
+    renderHook({ id: "event-1" } as Pick<
+      Event,
+      "id" | "goingCount" | "registrationMode"
+    >);
+
+    await waitFor(() =>
+      expect(screen.getByTestId("count")).toHaveTextContent("7"),
+    );
+    await act(async () => {
+      window.dispatchEvent(new Event("focus"));
+      document.dispatchEvent(new Event("visibilitychange"));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
