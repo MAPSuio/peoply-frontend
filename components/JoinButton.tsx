@@ -93,8 +93,10 @@ export default function JoinButton({
 
   const { data: allergens } = useSWR<{ id: number; name: string }[]>(
     "/allergens",
-    /* Reference data that changes by deploy, not by the minute. */
-    { revalidateOnFocus: false, revalidateIfStale: false },
+    /* Reference data that changes by deploy, not by the minute. Mount
+       revalidation stays on so a deploy's new allergen still arrives; only
+       the refetch-per-app-switch goes. */
+    { revalidateOnFocus: false },
   );
 
   const [foodPreferenceModalOpen, setFoodPreferenceModalOpen] = useState(false);

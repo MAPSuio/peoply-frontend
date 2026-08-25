@@ -24,9 +24,9 @@ import { showsRegistrationCount } from "../utils/event";
  * Focus revalidation is off. A feed holds one of these per card, and SWR's
  * default refires every mounted key each time the app regains focus - on
  * mobile that is every app switch, and it made this endpoint alone a seventh
- * of all backend traffic. The count still updates on mount, on mutate() and
- * on navigation; it no longer updates because the user glanced at another
- * app.
+ * of all backend traffic. An unseeded count still fetches on mount, and a
+ * seeded one still moves through mutate(); neither updates any more just
+ * because the user glanced at another app.
  *
  * Events with external registration have no count to show (see
  * `showsRegistrationCount`), so they neither seed nor fetch and `data` stays
