@@ -19,14 +19,20 @@ describe("production build", () => {
       path.resolve(__dirname, "..", "next.config.js"),
       "utf8",
     );
+    const packagesLoadedByNextStart = ["next", "react", "react-dom"];
     const requiredPackages = [
-      ...nextConfigSource.matchAll(/require\(["']([^"'.][^"']*)["']\)/g),
-    ].map(([, specifier]) => {
-      const segments = specifier.split("/");
-      return specifier.startsWith("@")
-        ? segments.slice(0, 2).join("/")
-        : segments[0];
-    });
+      ...packagesLoadedByNextStart,
+      ...[
+        ...nextConfigSource.matchAll(/require\(["']([^"'.][^"']*)["']\)/g),
+      ].map(([, specifier]) => {
+        const segments = specifier.split("/");
+        return specifier.startsWith("@")
+          ? segments.slice(0, 2).join("/")
+          : segments[0];
+      }),
+    ];
+
+    expect(requiredPackages.length).toBeGreaterThan(0);
 
     for (const packageName of requiredPackages) {
       expect(
