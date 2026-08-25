@@ -84,6 +84,10 @@ jobs:
           BLOB_DOMAIN: example.com
 
       - name: Boot the pruned build
+        env:
+          NEXT_PUBLIC_BASE_URL: https://example.com
+          NEXT_PUBLIC_API_URL: https://example.com/api
+          BLOB_DOMAIN: example.com
         run: |
           node node_modules/next/dist/bin/next start --port 3999 &
           SERVER_PID=$!
