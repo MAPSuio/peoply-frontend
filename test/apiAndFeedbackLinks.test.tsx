@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import FAQ from "../pages/faq";
+import Integrasjoner from "../pages/integrasjoner";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProfileMenu from "../components/ProfileMenu";
@@ -37,6 +39,44 @@ describe("API and feedback entry points", () => {
     render(<ProfileMenu />);
 
     expect(hrefOf(/^API$/)).toBe("/integrasjoner");
+  });
+
+  it("gives coding agents copyable, contract-first prompts", async () => {
+    const user = userEvent.setup();
+    const writeText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValueOnce(undefined)
+      .mockRejectedValueOnce(new Error("clipboard unavailable"));
+    render(<Integrasjoner />);
+
+    expect(
+      screen.getByRole("heading", { name: /Bygg med Peoply API-et/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", { name: /Kopier prompt/i }),
+    ).toHaveLength(4);
+    expect(hrefOf(/llms\.txt/i)).toBe("/llms.txt");
+    expect(screen.getAllByText(/openapi\.json/i)).not.toHaveLength(0);
+
+    const eventPrompt = screen.getByRole("button", {
+      name: /Kopier prompt: Bygg en arrangement-feed/i,
+    });
+    const organizationPrompt = screen.getByRole("button", {
+      name: /Kopier prompt: Legg til foreningssøk/i,
+    });
+    await user.click(eventPrompt);
+    expect(
+      await screen.findByRole("button", { name: /Prompt kopiert/i }),
+    ).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining("GET https://api.peoply.app/events"),
+    );
+
+    await user.click(organizationPrompt);
+    expect(
+      await screen.findByRole("button", { name: /Kunne ikke kopiere/i }),
+    ).toBeInTheDocument();
+    expect(await screen.findByRole("status")).toHaveTextContent("Prøv igjen");
   });
 
   it("sends feedback from the FAQ contact section", () => {

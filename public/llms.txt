@@ -1,0 +1,28 @@
+# Peoply
+
+> Peoply is a platform for student events and organizations. This file gives AI agents the shortest safe path to the public Peoply API.
+
+Important instructions:
+
+- Use the OpenAPI document as the authoritative source for endpoints, parameters, and schemas. Do not rely on model memory.
+- Start with public read-only operations for events and organizations.
+- Protected operations use browser-based cookie authentication and are not suitable for autonomous agents without a separate approved authentication flow.
+- Never request, print, log, or commit passwords, cookies, authorization headers, or personal data.
+- Use stable resource IDs, handle pagination and dates explicitly, and test generated integrations.
+
+## API
+
+- [OpenAPI document](https://api.peoply.app/api/openapi.json): Machine-readable source of truth for the Peoply HTTP API.
+- [API docs](https://api.peoply.app/api): Interactive Scalar documentation for humans.
+- [AI-assisted integration guide](https://peoply.app/integrasjoner): Copyable prompts and security guidance for coding agents.
+
+## Public workflows
+
+- [Events](https://api.peoply.app/events): Public event collection. Consult OpenAPI before choosing query parameters.
+- [Organizations](https://api.peoply.app/organizations): Public organization collection.
+- [Categories](https://api.peoply.app/categories): Public event categories.
+
+## Optional
+
+- [Peoply](https://peoply.app): Public product website.
+- [FAQ](https://peoply.app/faq): Product questions and contact paths.
