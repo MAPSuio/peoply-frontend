@@ -76,6 +76,7 @@ describe("API and feedback entry points", () => {
     expect(
       await screen.findByRole("button", { name: /Kunne ikke kopiere/i }),
     ).toBeInTheDocument();
+    expect(await screen.findByRole("status")).toHaveTextContent("Prøv igjen");
   });
 
   it("sends feedback from the FAQ contact section", () => {

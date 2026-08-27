@@ -156,23 +156,30 @@ const CopyPromptButton = ({ prompt }: { prompt: Prompt }) => {
           : `Kopier prompt: ${prompt.title}`;
 
   return (
-    <button
-      aria-label={label}
-      aria-live="polite"
-      className={styles.copyButton}
-      disabled={status === "copying"}
-      title={label}
-      type="button"
-      onClick={copyPrompt}
-    >
-      <CopyIcon copied={status === "copied"} />
-    </button>
+    <div className={styles.copyControl}>
+      <button
+        aria-label={label}
+        aria-live="polite"
+        className={styles.copyButton}
+        disabled={status === "copying"}
+        title={label}
+        type="button"
+        onClick={copyPrompt}
+      >
+        <CopyIcon copied={status === "copied"} />
+      </button>
+      {status === "error" && (
+        <span className={styles.copyError} role="status">
+          Prøv igjen
+        </span>
+      )}
+    </div>
   );
 };
 
 const Integrasjoner = () => {
   const goBack = useBack();
-  const apiBaseUrl = API_URL || "https://api.peoply.app";
+  const apiBaseUrl = (API_URL || "https://api.peoply.app").replace(/\/+$/, "");
   const docsUrl = `${apiBaseUrl}/api`;
   const openApiUrl = `${apiBaseUrl}/api/openapi.json`;
   const prompts = createPrompts(apiBaseUrl, openApiUrl);

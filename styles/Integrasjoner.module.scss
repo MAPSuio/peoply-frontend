@@ -168,6 +168,18 @@
   }
 }
 
+.copyControl {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: $spacer-very-small-plus;
+}
+
+.copyError {
+  color: var(--error-color, $error-color);
+  font-size: $font-size-secondary;
+}
+
 .promptCode {
   background-color: var(--background-color-input, $background-color-input);
   border: 1px solid var(--border-color-input, $border-color-input);
