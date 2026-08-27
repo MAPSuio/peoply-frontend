@@ -2,14 +2,14 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  padding-bottom: 6rem;
+  padding-bottom: 7rem;
   width: 100%;
 }
 
 .container {
   display: flex;
   flex-flow: column nowrap;
-  gap: $spacer-medium-plus;
+  gap: $spacer-large;
   padding-bottom: $spacer-large;
   width: $page-width-mobile;
 
@@ -22,117 +22,200 @@
   margin-top: $spacer-small;
 }
 
-.hero,
-.card,
-.noteCard {
-  background-color: var(--background-color-card, $background-color-card);
-  border-radius: $border-radius-regular;
-  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
-}
-
-.hero {
+.header {
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-small;
-  padding: $spacer-medium;
-}
 
-.eyebrow {
-  @include uppercase();
-  color: var(--text-color-primary, $text-color-primary);
-}
+  h1 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-title;
+    line-height: 1.1;
+    text-wrap: balance;
 
-.title {
-  color: var(--text-color-emphasis, $text-color-emphasis);
-  font-size: $font-size-title;
-
-  @include desktop() {
-    font-size: $font-size-title-desktop;
+    @include desktop() {
+      font-size: $font-size-title-desktop;
+    }
   }
 }
 
-.lead,
-.apiBase,
-.card p,
-.noteCard p {
+.intention p {
   color: var(--text-color-primary, $text-color-primary);
   line-height: $line-height-text;
 }
 
-.ctaRow {
+.headerLinks {
   display: flex;
   flex-flow: column nowrap;
   gap: $spacer-very-small-plus;
 
+  a {
+    align-items: center;
+    border: 1px solid var(--border-color, $border-color);
+    border-radius: $border-radius-round;
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    display: inline-flex;
+    font-weight: 700;
+    gap: $spacer-mini;
+    justify-content: center;
+    min-height: 44px;
+    padding: $spacer-very-small-plus $spacer-medium;
+    text-decoration: none;
+
+    &:first-child {
+      background-color: var(--primary-color-400, $primary-color-400);
+      border-color: var(--primary-color-400, $primary-color-400);
+      color: $text-color-button;
+    }
+
+    &:hover {
+      border-color: var(--primary-color-200, $primary-color-200);
+    }
+  }
+
   @include desktop() {
     align-items: center;
     flex-flow: row wrap;
+
+    a {
+      justify-content: flex-start;
+    }
   }
 }
 
-.primaryLink {
-  align-self: flex-start;
-  background-color: var(--text-color-emphasis, $text-color-emphasis);
-  border-radius: $border-radius-round;
-  color: var(--background-color-primary, $background-color-primary);
-  padding: $spacer-very-small-plus $spacer-medium;
-  text-decoration: none;
-}
-
-.apiBase {
-  font-family: monospace;
+.intention {
+  background-color: var(--background-color-card, $background-color-card);
+  border-left: 4px solid var(--primary-color-400, $primary-color-400);
+  border-radius: $border-radius-regular;
+  padding: $spacer-medium;
 }
 
 .section {
   display: flex;
   flex-flow: column nowrap;
-  gap: $spacer-small;
+  gap: $spacer-medium;
 }
 
-.sectionTitle {
-  @include uppercase();
-  color: var(--text-color-primary, $text-color-primary);
+.sectionHeading {
+  h2 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-heading-medium;
+    text-wrap: balance;
+  }
+
 }
 
-.cardGrid {
+.promptList {
   display: grid;
   gap: $spacer-small;
-
-  @include desktop() {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
-.authCardGrid {
-  grid-template-columns: minmax(0, 1fr) !important;
-}
-
-.card,
-.endpointCard,
-.exampleCard,
-.noteCard {
+.promptCard {
+  background-color: var(--background-color-card, $background-color-card);
+  border-radius: $border-radius-regular;
+  box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
+  min-width: 0;
   padding: $spacer-medium;
 }
 
-.card {
-  overflow-wrap: anywhere;
+.promptHeader {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: $spacer-small;
 
-  code {
-    display: inline-block;
-    font-family: monospace;
-    overflow-wrap: anywhere;
+  h3 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-heading-small;
+    margin-bottom: $spacer-mini;
+  }
+
+  @include desktop() {
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 }
 
-.cardTitle {
-  color: var(--text-color-emphasis, $text-color-emphasis);
-  margin-bottom: $spacer-very-small-plus;
+.copyButton {
+  align-items: center;
+  background-color: var(--primary-color-400, $primary-color-400);
+  border: 0;
+  border-radius: $border-radius-round;
+  color: $text-color-button;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+
+  &:hover {
+    background-color: var(--primary-color-400-hover, $primary-color-400-hover);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--primary-color-200, $primary-color-200);
+    outline-offset: 2px;
+  }
 }
 
-.noteList {
-  padding-left: $spacer-small-plus;
+.promptCode {
+  background-color: var(--background-color-input, $background-color-input);
+  border: 1px solid var(--border-color-input, $border-color-input);
+  border-radius: calc($border-radius-regular / 2);
+  color: var(--text-color-input, $text-color-input);
+  font-family: "Space Mono", monospace;
+  font-size: $font-size-tertiary;
+  line-height: 1.6;
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding: $spacer-small;
+  white-space: pre-wrap;
+}
 
-  li:not(:last-child) {
-    margin-bottom: $spacer-mini;
+.resourceList {
+  display: grid;
+  gap: $spacer-small;
+
+  a {
+    align-items: center;
+    background-color: var(--background-color-card, $background-color-card);
+    border-radius: $border-radius-regular;
+    box-shadow: var(--shadow-event-card, $shadow-event-card-light);
+    display: flex;
+    min-height: 64px;
+    padding: $spacer-medium;
+    text-decoration: none;
+
+    &:hover strong {
+      color: var(--text-color-link, $text-color-link);
+    }
+
+    strong {
+      color: var(--text-color-emphasis, $text-color-emphasis);
+    }
+  }
+}
+
+.guidelines {
+  color: var(--text-color-primary, $text-color-primary);
+  display: grid;
+  gap: $spacer-small;
+  line-height: 1.55;
+  padding-left: $spacer-medium;
+
+  code {
+    color: var(--text-color-emphasis, $text-color-emphasis);
   }
 }
