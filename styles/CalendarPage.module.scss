@@ -140,10 +140,7 @@
 }
 
 .calendarPopover {
-  background-color: var(--background-color-modal, $background-color-modal);
-  border: 1px solid var(--divider-color, $divider-color);
-  border-radius: $border-radius-inside-card;
-  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  @include floatingSurface();
   z-index: 998;
 }
 
@@ -184,8 +181,35 @@
   }
 }
 
-.listEventDot {
-  border-color: var(--calendar-event-accent);
+.hiddenListDot {
+  display: none;
+}
+
+.listEventIcon {
+  align-items: center;
+  background-color: var(--calendar-event-background);
+  border: 1px solid var(--calendar-event-accent);
+  border-radius: 50%;
+  display: flex;
+  flex: 0 0 auto;
+  height: 1.5rem;
+  justify-content: center;
+  margin-top: 2px;
+  overflow: hidden;
+  width: 1.5rem;
+}
+
+.listEventIconImage {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.listEventIconInitial {
+  color: var(--calendar-event-accent);
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-bold;
+  line-height: 1;
 }
 
 .listEventTime {
@@ -233,10 +257,17 @@
 }
 
 .listEvent {
+  align-items: flex-start;
+  display: flex;
+  gap: $spacer-very-small;
+  text-decoration: none;
+}
+
+.listEventText {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  text-decoration: none;
+  min-width: 0;
 }
 
 .listEventTitle {
@@ -255,10 +286,7 @@
 }
 
 .eventPreview {
-  background-color: var(--background-color-modal, $background-color-modal);
-  border: 1px solid var(--divider-color, $divider-color);
-  border-radius: $border-radius-inside-card;
-  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  @include floatingSurface();
   max-width: min(22rem, calc(100vw - #{$spacer-small-plus}));
   padding: $spacer-small;
   position: fixed;

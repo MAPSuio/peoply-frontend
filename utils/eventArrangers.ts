@@ -37,6 +37,17 @@ export function getPrimaryEventArrangerColorKey(event: Event): string {
   return arranger?.organization?.id ?? arranger?.user?.id ?? "peoply";
 }
 
+export function getPrimaryEventArrangerImage(event: Event) {
+  const arranger = getPrimaryEventArranger(event);
+  return arranger?.organization?.image ?? arranger?.user?.image;
+}
+
+export function getPrimaryEventArrangerInitial(event: Event) {
+  const eventArranger = event.eventArrangers?.[0];
+  const name = eventArranger ? getArrangerLabel(eventArranger) : "Peoply";
+  return name.charAt(0).toUpperCase();
+}
+
 export function getEventArrangerDisplayItems(
   event: Event,
 ): EventArrangerDisplayItem[] {
@@ -66,8 +77,13 @@ export function getCompactEventArrangerLabel(event: Event, maxVisible = 1) {
     return items.map((item) => item.label).join(" · ");
   }
 
-  return `${items
+  const hidden = items.length - maxVisible;
+  const visible = items
     .slice(0, maxVisible)
     .map((item) => item.label)
-    .join(" · ")} +${items.length - maxVisible}`;
+    .join(" · ");
+
+  return hidden === 1
+    ? `${visible} og 1 annen arrangør`
+    : `${visible} og ${hidden} andre arrangører`;
 }
