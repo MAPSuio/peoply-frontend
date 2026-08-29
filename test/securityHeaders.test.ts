@@ -7,6 +7,10 @@ const UNRECOGNISED_PERMISSIONS_POLICY_FEATURES = [
 ];
 
 async function headersForEveryRoute() {
+  if (!nextConfig.headers) {
+    throw new Error("next.config.js sends no headers at all");
+  }
+
   const rules = await nextConfig.headers();
   const catchAllRule = rules.find((rule) => rule.source === "/:path*");
 
