@@ -17,7 +17,6 @@ export interface Hsl {
 const READABLE_SATURATION_RANGE = { min: 0.35, max: 0.85 };
 const READABLE_LIGHTNESS_RANGE = { min: 0.4, max: 0.62 };
 const DISTINCT_HUE_DEGREES = 30;
-const MONOCHROME_LIGHTNESS_SHIFT = 0.16;
 const EVENT_BACKGROUND_ALPHA = 0.16;
 const HASHED_FALLBACK_SATURATION = 0.6;
 const HASHED_FALLBACK_LIGHTNESS = 0.5;
@@ -174,15 +173,14 @@ function averageColorOf(bucket: ColorBucket): Hsl {
   );
 }
 
-function shiftedVariantOf(readableColor: Hsl): Hsl {
-  const lighter = readableColor.lightness + MONOCHROME_LIGHTNESS_SHIFT;
-  const staysReadable = lighter <= READABLE_LIGHTNESS_RANGE.max;
+function atFarthestReadableLightness(readableColor: Hsl): Hsl {
+  const { min, max } = READABLE_LIGHTNESS_RANGE;
+  const roomToLighten = max - readableColor.lightness;
+  const roomToDarken = readableColor.lightness - min;
 
   return {
     ...readableColor,
-    lightness: staysReadable
-      ? lighter
-      : readableColor.lightness - MONOCHROME_LIGHTNESS_SHIFT,
+    lightness: roomToLighten >= roomToDarken ? max : min,
   };
 }
 
@@ -211,7 +209,7 @@ export function getPaletteFromPixels(
   const readablePrimary = toReadableOnBothThemes(primary);
   const readableSecondary = distinctlyDifferent
     ? toReadableOnBothThemes(averageColorOf(distinctlyDifferent))
-    : shiftedVariantOf(readablePrimary);
+    : atFarthestReadableLightness(readablePrimary);
 
   return {
     primary: formatHsl(readablePrimary),

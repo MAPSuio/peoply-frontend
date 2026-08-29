@@ -111,6 +111,19 @@ describe("getPaletteFromPixels", () => {
     expect(secondary.lightness).toBeLessThanOrEqual(0.62);
   });
 
+  it("keeps the two colors apart when a one-color logo sits mid-band, where neither shift fits", () => {
+    const palette = getPaletteFromPixels(
+      pixelsOf(...repeat([128, 64, 191, 255], 12)),
+    );
+    const primary = toHsl(palette?.primary ?? "");
+    const secondary = toHsl(palette?.secondary ?? "");
+
+    expect(primary.lightness).toBeCloseTo(0.5, 2);
+    expect(secondary.lightness).not.toBeCloseTo(primary.lightness, 2);
+    expect(secondary.lightness).toBeGreaterThanOrEqual(0.4);
+    expect(secondary.lightness).toBeLessThanOrEqual(0.62);
+  });
+
   it("skips transparent pixels rather than counting them as black", () => {
     const palette = getPaletteFromPixels(
       pixelsOf(
