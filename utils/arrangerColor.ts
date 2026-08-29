@@ -174,8 +174,16 @@ function averageColorOf(bucket: ColorBucket): Hsl {
   );
 }
 
-function lighterVariantOf(color: Hsl): Hsl {
-  return { ...color, lightness: color.lightness + MONOCHROME_LIGHTNESS_SHIFT };
+function shiftedVariantOf(readableColor: Hsl): Hsl {
+  const lighter = readableColor.lightness + MONOCHROME_LIGHTNESS_SHIFT;
+  const staysReadable = lighter <= READABLE_LIGHTNESS_RANGE.max;
+
+  return {
+    ...readableColor,
+    lightness: staysReadable
+      ? lighter
+      : readableColor.lightness - MONOCHROME_LIGHTNESS_SHIFT,
+  };
 }
 
 export function getPaletteFromPixels(
@@ -200,13 +208,14 @@ export function getPaletteFromPixels(
         DISTINCT_HUE_DEGREES,
     );
 
-  const secondary = distinctlyDifferent
-    ? averageColorOf(distinctlyDifferent)
-    : lighterVariantOf(primary);
+  const readablePrimary = toReadableOnBothThemes(primary);
+  const readableSecondary = distinctlyDifferent
+    ? toReadableOnBothThemes(averageColorOf(distinctlyDifferent))
+    : shiftedVariantOf(readablePrimary);
 
   return {
-    primary: formatHsl(toReadableOnBothThemes(primary)),
-    secondary: formatHsl(toReadableOnBothThemes(secondary)),
+    primary: formatHsl(readablePrimary),
+    secondary: formatHsl(readableSecondary),
   };
 }
 

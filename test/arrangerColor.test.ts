@@ -97,6 +97,20 @@ describe("getPaletteFromPixels", () => {
     expect(secondary.lightness).not.toBeCloseTo(primary.lightness, 2);
   });
 
+  it("keeps the two colors apart when a one-color logo is already at its lightest readable", () => {
+    const palette = getPaletteFromPixels(
+      pixelsOf(...repeat([180, 210, 255, 255], 12)),
+    );
+    const primary = toHsl(palette?.primary ?? "");
+    const secondary = toHsl(palette?.secondary ?? "");
+
+    expect(Math.abs(secondary.lightness - primary.lightness)).toBeGreaterThan(
+      0.1,
+    );
+    expect(secondary.lightness).toBeGreaterThanOrEqual(0.4);
+    expect(secondary.lightness).toBeLessThanOrEqual(0.62);
+  });
+
   it("skips transparent pixels rather than counting them as black", () => {
     const palette = getPaletteFromPixels(
       pixelsOf(

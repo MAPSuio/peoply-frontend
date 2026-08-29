@@ -230,18 +230,19 @@ describe("EventCalendar", () => {
     expect(container).toHaveTextContent("M");
   });
 
-  it("hands every arranger a color pair through one custom property per arranger", () => {
+  it("paints an event in the colors its own arranger contributed", () => {
     const { container } = render(
       <EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />,
     );
     const calendar = container.firstElementChild as HTMLElement;
-    const key = calendarProps.events[0].extendedProps.paletteKey;
+    const event = screen.getByRole("link", { name: "Kodekveld" });
 
-    expect(calendar.style.getPropertyValue(`--arranger-wash-${key}`)).not.toBe(
-      "",
-    );
-    expect(
-      calendar.style.getPropertyValue(`--arranger-accent-${key}`),
-    ).not.toBe("");
+    const colorsOn = (property: string) =>
+      calendar.style.getPropertyValue(
+        event.style.getPropertyValue(property).replace(/^var\(|\)$/g, ""),
+      );
+
+    expect(colorsOn("--calendar-event-accent")).toMatch(/^hsl\(/);
+    expect(colorsOn("--calendar-event-background")).toMatch(/^hsl\(/);
   });
 });
