@@ -158,6 +158,8 @@
   padding: $spacer-very-small;
 }
 
+$max-grid-title-lines: 3;
+
 .monthView {
   overflow-x: auto;
 
@@ -293,12 +295,17 @@
 }
 
 .gridEventTitle {
+  -webkit-box-orient: vertical;
   color: var(--text-color-emphasis, $text-color-emphasis);
+  display: -webkit-box;
   font-size: 0.625rem;
   font-weight: $font-weight-medium;
   grid-area: title;
   justify-self: stretch;
+  -webkit-line-clamp: $max-grid-title-lines;
+  line-clamp: $max-grid-title-lines;
   line-height: $line-height-card-title;
+  overflow: hidden;
   overflow-wrap: anywhere;
 
   @include desktop() {
