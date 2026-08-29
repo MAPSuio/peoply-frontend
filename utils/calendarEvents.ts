@@ -58,14 +58,14 @@ export function toCalendarEvents(events: Event[]): CalendarEvent[] {
 export function toArrangerColorsByKey(
   calendarEvents: CalendarEvent[],
 ): Record<string, ArrangerColor> {
-  const colorsByKey: Record<string, ArrangerColor> = {};
+  const colorsByKey: Record<string, ArrangerColor> = Object.create(null);
 
   for (const { extendedProps } of calendarEvents) {
     const { paletteKey, arrangerPalette } = extendedProps;
     if (colorsByKey[paletteKey] && !arrangerPalette) continue;
 
     colorsByKey[paletteKey] = arrangerPalette
-      ? toArrangerColor(arrangerPalette)
+      ? toArrangerColor(arrangerPalette, paletteKey)
       : getArrangerColor(paletteKey);
   }
 

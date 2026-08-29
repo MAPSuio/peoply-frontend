@@ -60,8 +60,15 @@ function toHsl(hexColor: string): Hsl {
   return { hue: ((red - green) / span + 4) * 60, saturation, lightness };
 }
 
-function formatHsl({ hue, saturation, lightness }: Hsl) {
-  return `hsl(${Math.round(hue)} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%)`;
+function formatHsl({ hue, saturation, lightness }: Hsl, alpha = 1) {
+  const channels = `${Math.round(hue)} ${Math.round(saturation * 100)}% ${Math.round(lightness * 100)}%`;
+  return alpha === 1
+    ? `hsl(${channels})`
+    : `hsl(${channels} / ${Math.round(alpha * 100)}%)`;
+}
+
+function isSixDigitHex(color: string | null): color is string {
+  return color !== null && /^#[0-9a-fA-F]{6}$/.test(color);
 }
 
 function withAlpha(hexColor: string, alpha: number) {
@@ -86,8 +93,15 @@ function intoReadableBand(color: Hsl): Hsl {
   };
 }
 
-export function toArrangerColor(palette: ArrangerPalette): ArrangerColor {
-  const accentSource = palette.accent ?? palette.primary;
+export function toArrangerColor(
+  palette: ArrangerPalette,
+  fallbackKey: string,
+): ArrangerColor {
+  if (!isSixDigitHex(palette.primary)) return getArrangerColor(fallbackKey);
+
+  const accentSource = isSixDigitHex(palette.accent)
+    ? palette.accent
+    : palette.primary;
   const accent = toHsl(accentSource);
 
   return {
@@ -122,6 +136,6 @@ export function getArrangerColor(key: string): ArrangerColor {
 
   return {
     accent: formatHsl(hashedHue),
-    background: `${formatHsl(hashedHue).replace(")", "")} / ${Math.round(EVENT_BACKGROUND_ALPHA * 100)}%)`,
+    background: formatHsl(hashedHue, EVENT_BACKGROUND_ALPHA),
   };
 }

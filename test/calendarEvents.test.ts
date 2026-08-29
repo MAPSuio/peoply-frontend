@@ -90,6 +90,18 @@ describe("toArrangerColorsByKey", () => {
     expect(colors[toArrangerColorKey(MAPS.id)].background).toBe("#fd7b0329");
   });
 
+  it("falls back for an arranger whose id collides with a name on Object.prototype", () => {
+    const CONSTRUCTOR = { id: "constructor", name: "Konstruktør" };
+
+    const colors = toArrangerColorsByKey(
+      toCalendarEvents([eventArrangedBy(CONSTRUCTOR)]),
+    );
+
+    expect(colors[toArrangerColorKey(CONSTRUCTOR.id)]).toEqual(
+      getArrangerColor(toArrangerColorKey(CONSTRUCTOR.id)),
+    );
+  });
+
   it("falls back to a color derived from the id when the logo had none", () => {
     const colors = toArrangerColorsByKey(
       toCalendarEvents([eventArrangedBy(MIKRO)]),
