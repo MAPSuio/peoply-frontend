@@ -12,7 +12,6 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
-import useArrangerColorVariables from "../hooks/useArrangerColorVariables";
 import useEventPreview from "../hooks/useEventPreview";
 import styles from "../styles/CalendarPage.module.scss";
 import type { Event } from "../types/types";
@@ -22,9 +21,10 @@ import {
 } from "../utils/arrangerColor";
 import {
   boundedNavigationRange,
-  toArrangerImageSources,
+  toArrangerColorsByKey,
   toCalendarEvents,
 } from "../utils/calendarEvents";
+import { toArrangerColorVariables } from "../utils/arrangerColorVariables";
 import EventPreviewCard, { EVENT_PREVIEW_ID } from "./EventPreviewCard";
 
 export interface EventCalendarProps {
@@ -184,11 +184,10 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   const validRange = useMemo(() => boundedNavigationRange(new Date()), []);
 
   const calendarEvents = useMemo(() => toCalendarEvents(events), [events]);
-  const arrangerSources = useMemo(
-    () => toArrangerImageSources(calendarEvents),
+  const arrangerColorVariables = useMemo(
+    () => toArrangerColorVariables(toArrangerColorsByKey(calendarEvents)),
     [calendarEvents],
   );
-  const arrangerColorVariables = useArrangerColorVariables(arrangerSources);
 
   const showPreviewFor = (info: {
     el: HTMLElement;

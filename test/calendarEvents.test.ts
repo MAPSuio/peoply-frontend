@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import type { Event } from "../types/types";
-import { toArrangerColorKey } from "../utils/arrangerColor";
+import { getArrangerColor, toArrangerColorKey } from "../utils/arrangerColor";
 import {
   boundedNavigationRange,
-  toArrangerImageSources,
+  toArrangerColorsByKey,
   toCalendarEvents,
 } from "../utils/calendarEvents";
 
@@ -12,6 +12,8 @@ function eventArrangedBy(organization: {
   id: string;
   name: string;
   image?: string;
+  imagePrimaryColor?: string | null;
+  imageAccentColor?: string | null;
 }) {
   return {
     id: `event-${organization.id}`,
@@ -27,7 +29,13 @@ function eventArrangedBy(organization: {
   } as unknown as Event;
 }
 
-const MAPS = { id: "org-1", name: "MAPS", image: "https://blob.test/maps.png" };
+const MAPS = {
+  id: "org-1",
+  name: "MAPS",
+  image: "https://blob.test/maps.png",
+  imagePrimaryColor: "#fd7b03",
+  imageAccentColor: "#0051f1",
+};
 const MIKRO = { id: "org-2", name: "Mikro" };
 
 describe("boundedNavigationRange", () => {
@@ -51,37 +59,44 @@ describe("boundedNavigationRange", () => {
   });
 });
 
-describe("toArrangerImageSources", () => {
+describe("toArrangerColorsByKey", () => {
+  it("colors an arranger from the colors stored with its logo", () => {
+    const colors = toArrangerColorsByKey(
+      toCalendarEvents([eventArrangedBy(MAPS)]),
+    );
+
+    expect(colors[toArrangerColorKey(MAPS.id)]).toEqual({
+      accent: "#0051f1",
+      background: "#fd7b0329",
+    });
+  });
+
   it("lists each arranger once, however many events it has", () => {
-    const sources = toArrangerImageSources(
+    const colors = toArrangerColorsByKey(
       toCalendarEvents([eventArrangedBy(MAPS), eventArrangedBy(MAPS)]),
     );
 
-    expect(sources).toEqual([
-      { key: toArrangerColorKey(MAPS.id), imageUrl: MAPS.image },
-    ]);
+    expect(Object.keys(colors)).toEqual([toArrangerColorKey(MAPS.id)]);
   });
 
-  it("keeps the picture when another event carries the same arranger without one", () => {
-    const sources = toArrangerImageSources(
+  it("keeps the stored colors when another event carries the same arranger without them", () => {
+    const colors = toArrangerColorsByKey(
       toCalendarEvents([
         eventArrangedBy(MAPS),
-        eventArrangedBy({ ...MAPS, image: undefined }),
+        eventArrangedBy({ ...MAPS, imagePrimaryColor: null }),
       ]),
     );
 
-    expect(sources).toEqual([
-      { key: toArrangerColorKey(MAPS.id), imageUrl: MAPS.image },
-    ]);
+    expect(colors[toArrangerColorKey(MAPS.id)].background).toBe("#fd7b0329");
   });
 
-  it("keeps arrangers without a picture, so they still get a fallback color", () => {
-    const sources = toArrangerImageSources(
+  it("falls back to a color derived from the id when the logo had none", () => {
+    const colors = toArrangerColorsByKey(
       toCalendarEvents([eventArrangedBy(MIKRO)]),
     );
 
-    expect(sources).toEqual([
-      { key: toArrangerColorKey(MIKRO.id), imageUrl: undefined },
-    ]);
+    expect(colors[toArrangerColorKey(MIKRO.id)]).toEqual(
+      getArrangerColor(toArrangerColorKey(MIKRO.id)),
+    );
   });
 });

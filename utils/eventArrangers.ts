@@ -1,3 +1,4 @@
+import type { ArrangerPalette } from "./arrangerColor";
 import type { Event, EventArranger, Organization } from "../types/types";
 
 export interface EventArrangerDisplayItem {
@@ -40,6 +41,18 @@ export function getPrimaryEventArrangerColorKey(event: Event): string {
 export function getPrimaryEventArrangerImage(event: Event) {
   const arranger = getPrimaryEventArranger(event);
   return arranger?.organization?.image ?? arranger?.user?.image;
+}
+
+export function getPrimaryEventArrangerPalette(
+  event: Event,
+): ArrangerPalette | undefined {
+  const organization = getPrimaryEventArrangerOrganization(event);
+  if (!organization?.imagePrimaryColor) return undefined;
+
+  return {
+    primary: organization.imagePrimaryColor,
+    accent: organization.imageAccentColor ?? null,
+  };
 }
 
 export function getPrimaryEventArrangerInitial(event: Event) {
