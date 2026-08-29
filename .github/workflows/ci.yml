@@ -98,7 +98,8 @@ jobs:
 
           booted=""
           for _ in $(seq 1 30); do
-            if curl -sf -o /dev/null http://127.0.0.1:3999/; then
+            if curl -sf --connect-timeout 5 --max-time 10 \
+              -o /dev/null http://127.0.0.1:3999/; then
               booted="yes"
               break
             fi
@@ -110,17 +111,7 @@ jobs:
             exit 1
           fi
 
-          for path in / /kalender /a/nested/path/that/does/not/exist; do
-            response_headers=$(curl -s -o /dev/null -D - "http://127.0.0.1:3999$path")
-            for header in Strict-Transport-Security X-Content-Type-Options \
-              Referrer-Policy X-Frame-Options Content-Security-Policy \
-              Permissions-Policy; do
-              if ! printf '%s' "$response_headers" | grep -qi "^$header:"; then
-                echo "$path answered without $header"
-                exit 1
-              fi
-            done
-          done
+          node scripts/assert-security-headers.mjs http://127.0.0.1:3999
 
   # Deploys prod only after every check above is green. The App Platform app is
   # referenced by name, so the spec stays in DigitalOcean rather than in this
