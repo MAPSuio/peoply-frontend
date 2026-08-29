@@ -253,14 +253,13 @@ $max-grid-title-lines: 3;
   align-items: center;
   column-gap: $spacer-mini;
   display: grid;
-  grid-template-areas: "icon" "time" "title";
+  grid-template-areas: "icon time" "title title";
+  grid-template-columns: auto minmax(0, 1fr);
   justify-items: start;
   padding: $spacer-mini 3px;
   row-gap: 1px;
 
   @include desktop() {
-    grid-template-areas: "icon time" "title title";
-    grid-template-columns: auto minmax(0, 1fr);
     padding: $spacer-very-small;
   }
 }
