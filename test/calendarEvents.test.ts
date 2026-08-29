@@ -59,6 +59,17 @@ describe("toArrangerImageSources", () => {
     expect(sources).toEqual([{ key: MAPS.id, imageUrl: MAPS.image }]);
   });
 
+  it("keeps the picture when another event carries the same arranger without one", () => {
+    const sources = toArrangerImageSources(
+      toCalendarEvents([
+        eventArrangedBy(MAPS),
+        eventArrangedBy({ ...MAPS, image: undefined }),
+      ]),
+    );
+
+    expect(sources).toEqual([{ key: MAPS.id, imageUrl: MAPS.image }]);
+  });
+
   it("keeps arrangers without a picture, so they still get a fallback color", () => {
     const sources = toArrangerImageSources(
       toCalendarEvents([eventArrangedBy(MIKRO)]),

@@ -9,6 +9,8 @@ import {
 
 const TRANSPARENT = [0, 0, 0, 0];
 
+const MIN_LIGHTNESS_SEPARATION = 0.1;
+
 function pixelsOf(...colors: number[][]) {
   return Uint8ClampedArray.from(colors.flat());
 }
@@ -94,7 +96,9 @@ describe("getPaletteFromPixels", () => {
     const secondary = toHsl(palette?.secondary ?? "");
 
     expect(hueDistance(primary.hue, secondary.hue)).toBeLessThan(1);
-    expect(secondary.lightness).not.toBeCloseTo(primary.lightness, 2);
+    expect(Math.abs(secondary.lightness - primary.lightness)).toBeGreaterThan(
+      MIN_LIGHTNESS_SEPARATION,
+    );
   });
 
   it("keeps the two colors apart when a one-color logo is already at its lightest readable", () => {
@@ -119,7 +123,9 @@ describe("getPaletteFromPixels", () => {
     const secondary = toHsl(palette?.secondary ?? "");
 
     expect(primary.lightness).toBeCloseTo(0.5, 2);
-    expect(secondary.lightness).not.toBeCloseTo(primary.lightness, 2);
+    expect(Math.abs(secondary.lightness - primary.lightness)).toBeGreaterThan(
+      MIN_LIGHTNESS_SEPARATION,
+    );
     expect(secondary.lightness).toBeGreaterThanOrEqual(0.4);
     expect(secondary.lightness).toBeLessThanOrEqual(0.62);
   });

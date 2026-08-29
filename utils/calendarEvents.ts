@@ -53,9 +53,10 @@ export function toArrangerImageSources(
   const byKey = new Map<string, ArrangerImageSource>();
 
   for (const { extendedProps } of calendarEvents) {
+    const known = byKey.get(extendedProps.paletteKey);
     byKey.set(extendedProps.paletteKey, {
       key: extendedProps.paletteKey,
-      imageUrl: extendedProps.arrangerImageUrl,
+      imageUrl: known?.imageUrl ?? extendedProps.arrangerImageUrl,
     });
   }
 
