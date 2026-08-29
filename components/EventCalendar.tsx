@@ -9,16 +9,26 @@ import dayGridPlugin from "@fullcalendar/react/daygrid";
 import listPlugin from "@fullcalendar/react/list";
 import nbLocale from "@fullcalendar/react/locales/nb";
 import classicThemePlugin from "@fullcalendar/react/themes/classic";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useMemo, useRef, useState } from "react";
+import { type CSSProperties, useMemo, useRef, useState } from "react";
 
+import useArrangerPalettes, {
+  type ArrangerImageSource,
+} from "../hooks/useArrangerPalettes";
 import styles from "../styles/CalendarPage.module.scss";
 import type { Event } from "../types/types";
-import { getArrangerColor } from "../utils/arrangerColor";
+import {
+  arrangerAccentVariable,
+  arrangerBackgroundVariable,
+  toArrangerColorKey,
+} from "../utils/arrangerColor";
 import { formatDateRange, formatTimeRange } from "../utils/functions";
 import {
   getCompactEventArrangerLabel,
   getPrimaryEventArrangerColorKey,
+  getPrimaryEventArrangerImage,
+  getPrimaryEventArrangerInitial,
 } from "../utils/eventArrangers";
 
 interface EventCalendarProps {
@@ -34,6 +44,32 @@ interface EventPreview {
 // always available here.
 const DESKTOP_QUERY = "(min-width: 600px)";
 
+const ARRANGER_ICON_SIZE_PX = 24;
+
+function ArrangerIcon({
+  imageUrl,
+  initial,
+}: {
+  imageUrl?: string;
+  initial: string;
+}) {
+  return (
+    <span className={styles.listEventIcon}>
+      {imageUrl ? (
+        <Image
+          alt=""
+          className={styles.listEventIconImage}
+          height={ARRANGER_ICON_SIZE_PX}
+          src={imageUrl}
+          width={ARRANGER_ICON_SIZE_PX}
+        />
+      ) : (
+        <span className={styles.listEventIconInitial}>{initial}</span>
+      )}
+    </span>
+  );
+}
+
 function renderEventContent(arg: EventDisplayInfo) {
   if (arg.view.type === "listUpcoming") {
     // The list view expects an anchor inside the row when the event has a
@@ -41,15 +77,21 @@ function renderEventContent(arg: EventDisplayInfo) {
     // click handling.
     return (
       <a href={arg.event.url} className={styles.listEvent}>
-        {arg.timeText ? (
-          <span className={styles.listEventTime}>{arg.timeText}</span>
-        ) : undefined}
-        <span className={styles.listEventTitle}>{arg.event.title}</span>
-        {arg.event.extendedProps.arranger ? (
-          <span className={styles.listEventArranger}>
-            {arg.event.extendedProps.arranger}
-          </span>
-        ) : undefined}
+        <ArrangerIcon
+          imageUrl={arg.event.extendedProps.arrangerImageUrl}
+          initial={arg.event.extendedProps.arrangerInitial}
+        />
+        <span className={styles.listEventText}>
+          {arg.timeText ? (
+            <span className={styles.listEventTime}>{arg.timeText}</span>
+          ) : undefined}
+          <span className={styles.listEventTitle}>{arg.event.title}</span>
+          {arg.event.extendedProps.arranger ? (
+            <span className={styles.listEventArranger}>
+              {arg.event.extendedProps.arranger}
+            </span>
+          ) : undefined}
+        </span>
       </a>
     );
   }
@@ -87,24 +129,50 @@ export default function EventCalendar({ events }: EventCalendarProps) {
 
   const calendarEvents = useMemo(
     () =>
-      events.map((event) => {
-        const color = getArrangerColor(getPrimaryEventArrangerColorKey(event));
-        return {
-          id: event.id,
-          title: event.title,
-          start: new Date(event.startDate),
-          end: event.endDate ? new Date(event.endDate) : undefined,
-          url: `/events/${event.urlId}`,
-          color: color.accent,
-          extendedProps: {
-            arranger: getCompactEventArrangerLabel(event, 1),
-            backgroundColor: color.background,
-            sourceEvent: event,
-          },
-        };
-      }),
+      events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        start: new Date(event.startDate),
+        end: event.endDate ? new Date(event.endDate) : undefined,
+        url: `/events/${event.urlId}`,
+        extendedProps: {
+          arranger: getCompactEventArrangerLabel(event, 1),
+          arrangerImageUrl: getPrimaryEventArrangerImage(event),
+          arrangerInitial: getPrimaryEventArrangerInitial(event),
+          paletteKey: toArrangerColorKey(
+            getPrimaryEventArrangerColorKey(event),
+          ),
+          sourceEvent: event,
+        },
+      })),
     [events],
   );
+
+  const arrangerSources = useMemo<ArrangerImageSource[]>(() => {
+    const byKey = new Map<string, ArrangerImageSource>();
+
+    for (const { extendedProps } of calendarEvents) {
+      byKey.set(extendedProps.paletteKey, {
+        key: extendedProps.paletteKey,
+        imageUrl: extendedProps.arrangerImageUrl,
+      });
+    }
+
+    return [...byKey.values()];
+  }, [calendarEvents]);
+
+  const arrangerColors = useArrangerPalettes(arrangerSources);
+
+  const arrangerColorVariables = useMemo(() => {
+    const variables: Record<string, string> = {};
+
+    for (const [key, colors] of Object.entries(arrangerColors)) {
+      variables[arrangerAccentVariable(key)] = colors.accent;
+      variables[arrangerBackgroundVariable(key)] = colors.background;
+    }
+
+    return variables as CSSProperties;
+  }, [arrangerColors]);
 
   const handleEventClick = (info: EventClickInfo) => {
     info.jsEvent.preventDefault();
@@ -143,11 +211,15 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   };
 
   const handleEventDidMount = (info: MountInfo<EventDisplayInfo>) => {
+    const { paletteKey } = info.event.extendedProps;
     info.el.style.setProperty(
       "--calendar-event-background",
-      info.event.extendedProps.backgroundColor,
+      `var(${arrangerBackgroundVariable(paletteKey)})`,
     );
-    info.el.style.setProperty("--calendar-event-accent", info.color);
+    info.el.style.setProperty(
+      "--calendar-event-accent",
+      `var(${arrangerAccentVariable(paletteKey)})`,
+    );
     info.el.addEventListener("focusin", () => showPreview(info));
     info.el.addEventListener("focusout", schedulePreviewClose);
     info.el.setAttribute("aria-describedby", "calendar-event-preview");
@@ -204,7 +276,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   };
 
   return (
-    <div className={styles.calendar}>
+    <div className={styles.calendar} style={arrangerColorVariables}>
       <FullCalendar
         plugins={[classicThemePlugin, dayGridPlugin, listPlugin]}
         initialView={initialView}
@@ -252,7 +324,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
             duration: { months: 3 },
             className: styles.listView,
             listItemEventClass: styles.listCalendarEvent,
-            listItemEventBeforeClass: styles.listEventDot,
+            listItemEventBeforeClass: styles.hiddenListDot,
             listItemEventTimeClass: styles.listEventTime,
           },
           dayGrid: {

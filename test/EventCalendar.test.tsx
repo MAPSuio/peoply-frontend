@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCalendar from "../components/EventCalendar";
@@ -11,14 +12,26 @@ interface MockCalendarEvent {
   color: string;
   title: string;
   url: string;
-  extendedProps: { backgroundColor: string; sourceEvent: Event };
+  extendedProps: {
+    arranger: string;
+    arrangerImageUrl?: string;
+    arrangerInitial: string;
+    paletteKey: string;
+    sourceEvent: Event;
+  };
 }
+
+type EventContentRenderer = (arg: {
+  event: MockCalendarEvent;
+  timeText: string;
+  view: { type: string };
+}) => ReactNode;
 
 interface MockCalendarProps {
   buttons: { listUpcoming: { text: string } };
   dayCellClass: unknown;
   dayHeaderInnerClass: unknown;
-  eventContent: unknown;
+  eventContent: EventContentRenderer;
   eventClick: (info: {
     event: MockCalendarEvent;
     jsEvent: { preventDefault: () => void };
@@ -42,6 +55,13 @@ let calendarProps: MockCalendarProps;
 
 vi.mock("next/router", () => ({
   useRouter: () => ({ push: routerPush }),
+}));
+
+vi.mock("next/image", () => ({
+  default: ({ alt, src }: { alt: string; src: string }) => (
+    // biome-ignore lint/performance/noImgElement: the mock stands in for next/image
+    <img alt={alt} src={src} />
+  ),
 }));
 
 vi.mock("@fullcalendar/react", () => ({
@@ -77,6 +97,14 @@ vi.mock("@fullcalendar/react", () => ({
   },
 }));
 
+const ORGANIZATION = {
+  id: "org-1",
+  urlId: "maps",
+  name: "MAPS",
+  image: "https://blob.test/maps.png",
+  orgNr: "123456789",
+};
+
 const EVENT = {
   id: "event-1",
   urlId: "kodekveld",
@@ -91,6 +119,22 @@ const EVENT = {
   visibility: "PUBLIC",
   eventArrangers: [],
 } as Event;
+
+function eventArrangedBy(organization: {
+  id: string;
+  name: string;
+  image?: string;
+}) {
+  return {
+    ...EVENT,
+    eventArrangers: [
+      {
+        arrangerId: "arranger-1",
+        arranger: { id: "arranger-1", isBusiness: true, organization },
+      },
+    ],
+  } as unknown as Event;
+}
 
 describe("EventCalendar", () => {
   beforeEach(() => {
@@ -144,10 +188,60 @@ describe("EventCalendar", () => {
       "listUpcoming.listItemEventClass",
     );
     expect(calendarProps.events[0]).toMatchObject({
-      color: expect.any(String),
-      extendedProps: { backgroundColor: expect.any(String) },
+      extendedProps: { paletteKey: expect.any(String) },
     });
     expect(calendarProps.events[0]).not.toHaveProperty("backgroundColor");
     expect(calendarProps.events[0]).not.toHaveProperty("borderColor");
+  });
+
+  it("shows the arranger's picture in the agenda instead of a colored dot", () => {
+    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "18:00",
+        view: { type: "listUpcoming" },
+      }),
+    );
+
+    expect(container.querySelector("img")).toHaveAttribute(
+      "src",
+      ORGANIZATION.image,
+    );
+  });
+
+  it("falls back to the arranger's initial when there is no picture", () => {
+    render(
+      <EventCalendar
+        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
+      />,
+    );
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "18:00",
+        view: { type: "listUpcoming" },
+      }),
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(container).toHaveTextContent("M");
+  });
+
+  it("hands every arranger a color pair through one custom property per arranger", () => {
+    const { container } = render(
+      <EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />,
+    );
+    const calendar = container.firstElementChild as HTMLElement;
+    const key = calendarProps.events[0].extendedProps.paletteKey;
+
+    expect(calendar.style.getPropertyValue(`--arranger-wash-${key}`)).not.toBe(
+      "",
+    );
+    expect(
+      calendar.style.getPropertyValue(`--arranger-accent-${key}`),
+    ).not.toBe("");
   });
 });
