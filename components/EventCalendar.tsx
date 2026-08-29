@@ -100,7 +100,10 @@ const CALENDAR_CHROME = {
       listItemEventBeforeClass: styles.hiddenListDot,
       listItemEventTimeClass: styles.listEventTime,
     },
-    dayGrid: { eventClass: styles.gridCalendarEvent },
+    dayGrid: {
+      className: styles.monthView,
+      eventClass: styles.gridCalendarEvent,
+    },
   },
   dayMaxEvents: MAX_EVENTS_PER_DAY_CELL,
   height: "auto",
@@ -115,14 +118,16 @@ const CALENDAR_CHROME = {
 };
 
 function ArrangerIcon({
+  className,
   imageUrl,
   initial,
 }: {
+  className: string;
   imageUrl?: string;
   initial: string;
 }) {
   return (
-    <span aria-hidden="true" className={styles.listEventIcon}>
+    <span aria-hidden="true" className={className}>
       {imageUrl ? (
         <Image
           alt=""
@@ -146,6 +151,7 @@ function renderEventContent(arg: EventDisplayInfo) {
     return (
       <a href={arg.event.url} className={styles.listEvent}>
         <ArrangerIcon
+          className={styles.listEventIcon}
           imageUrl={arg.event.extendedProps.arrangerImageUrl}
           initial={arg.event.extendedProps.arrangerInitial}
         />
@@ -166,9 +172,14 @@ function renderEventContent(arg: EventDisplayInfo) {
 
   return (
     <div className={styles.gridEvent}>
-      {arg.timeText ? (
-        <span className={styles.gridEventTime}>{arg.timeText}</span>
-      ) : undefined}
+      <ArrangerIcon
+        className={styles.gridEventIcon}
+        imageUrl={arg.event.extendedProps.arrangerImageUrl}
+        initial={arg.event.extendedProps.arrangerInitial}
+      />
+      <span className={styles.gridEventTime}>
+        {arg.timeText || arg.event.extendedProps.startTime}
+      </span>
       <span className={styles.gridEventTitle}>{arg.event.title}</span>
     </div>
   );
