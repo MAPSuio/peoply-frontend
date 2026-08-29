@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getArrangerColor,
+  toArrangerColorKey,
   getPaletteFromPixels,
   hueDistance,
   toHsl,
@@ -140,6 +141,22 @@ describe("getPaletteFromPixels", () => {
     );
 
     expect(toHsl(palette?.primary ?? "").hue).toBeCloseTo(0, -1);
+  });
+});
+
+describe("toArrangerColorKey", () => {
+  it("leaves an id that is already safe in a custom property alone", () => {
+    expect(toArrangerColorKey("c997beea620f")).toBe("c997beea620f");
+  });
+
+  it("gives ids that differ only in punctuation different keys", () => {
+    expect(toArrangerColorKey("org_a")).not.toBe(toArrangerColorKey("org a"));
+  });
+
+  it("cannot be spoofed by an id that spells out an escape sequence", () => {
+    expect(toArrangerColorKey("org-32-a")).not.toBe(
+      toArrangerColorKey("org a"),
+    );
   });
 });
 

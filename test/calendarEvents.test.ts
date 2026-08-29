@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Event } from "../types/types";
+import { toArrangerColorKey } from "../utils/arrangerColor";
 import {
   boundedNavigationRange,
   toArrangerImageSources,
@@ -56,7 +57,9 @@ describe("toArrangerImageSources", () => {
       toCalendarEvents([eventArrangedBy(MAPS), eventArrangedBy(MAPS)]),
     );
 
-    expect(sources).toEqual([{ key: MAPS.id, imageUrl: MAPS.image }]);
+    expect(sources).toEqual([
+      { key: toArrangerColorKey(MAPS.id), imageUrl: MAPS.image },
+    ]);
   });
 
   it("keeps the picture when another event carries the same arranger without one", () => {
@@ -67,7 +70,9 @@ describe("toArrangerImageSources", () => {
       ]),
     );
 
-    expect(sources).toEqual([{ key: MAPS.id, imageUrl: MAPS.image }]);
+    expect(sources).toEqual([
+      { key: toArrangerColorKey(MAPS.id), imageUrl: MAPS.image },
+    ]);
   });
 
   it("keeps arrangers without a picture, so they still get a fallback color", () => {
@@ -75,6 +80,8 @@ describe("toArrangerImageSources", () => {
       toCalendarEvents([eventArrangedBy(MIKRO)]),
     );
 
-    expect(sources).toEqual([{ key: MIKRO.id, imageUrl: undefined }]);
+    expect(sources).toEqual([
+      { key: toArrangerColorKey(MIKRO.id), imageUrl: undefined },
+    ]);
   });
 });

@@ -15,6 +15,11 @@ export interface ArrangerImageSource {
 
 export type PixelLoader = (imageUrl: string) => Promise<Uint8ClampedArray>;
 
+interface ColorsReadFromImage {
+  imageUrl: string;
+  colors: ArrangerColor;
+}
+
 const colorsByImageUrl = new Map<string, Promise<ArrangerColor | undefined>>();
 
 function readColorsFromImage(imageUrl: string, loadPixels: PixelLoader) {
@@ -42,8 +47,8 @@ export default function useArrangerPalettes(
   sources: ArrangerImageSource[],
   loadPixels: PixelLoader = loadImagePixels,
 ): Record<string, ArrangerColor> {
-  const [colorsFromPictures, setColorsFromPictures] = useState<
-    Record<string, ArrangerColor>
+  const [readFromPictures, setReadFromPictures] = useState<
+    Record<string, ColorsReadFromImage>
   >({});
 
   useEffect(() => {
@@ -53,10 +58,13 @@ export default function useArrangerPalettes(
       readColorsFromImage(source.imageUrl, loadPixels).then((colors) => {
         if (!colors || !stillMounted) return;
 
-        setColorsFromPictures((previous) =>
-          previous[source.key] === colors
+        setReadFromPictures((previous) =>
+          previous[source.key]?.colors === colors
             ? previous
-            : { ...previous, [source.key]: colors },
+            : {
+                ...previous,
+                [source.key]: { imageUrl: source.imageUrl, colors },
+              },
         );
       });
     }
@@ -69,10 +77,14 @@ export default function useArrangerPalettes(
   return useMemo(() => {
     const colorsByKey: Record<string, ArrangerColor> = {};
 
-    for (const { key } of sources) {
-      colorsByKey[key] = colorsFromPictures[key] ?? getArrangerColor(key);
+    for (const { key, imageUrl } of sources) {
+      const read = readFromPictures[key];
+      colorsByKey[key] =
+        read && read.imageUrl === imageUrl
+          ? read.colors
+          : getArrangerColor(key);
     }
 
     return colorsByKey;
-  }, [sources, colorsFromPictures]);
+  }, [sources, readFromPictures]);
 }

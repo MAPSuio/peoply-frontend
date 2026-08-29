@@ -68,6 +68,37 @@ describe("useArrangerPalettes", () => {
     expect(result.current["org-d"]).toEqual(getArrangerColor("org-d"));
   });
 
+  it("drops the colors when the arranger takes its picture down", async () => {
+    let sources = [{ key: "org-f", imageUrl: "https://blob.test/f.png" }];
+    const { result, rerender } = renderHook(() =>
+      useArrangerPalettes(sources, async () => RED_PIXELS),
+    );
+
+    await waitFor(() =>
+      expect(result.current["org-f"]).not.toEqual(getArrangerColor("org-f")),
+    );
+
+    sources = [{ key: "org-f", imageUrl: undefined as unknown as string }];
+    rerender();
+
+    expect(result.current["org-f"]).toEqual(getArrangerColor("org-f"));
+  });
+
+  it("re-reads the colors when the arranger swaps its picture", async () => {
+    let sources = [{ key: "org-g", imageUrl: "https://blob.test/g1.png" }];
+    const loadPixels = vi.fn(async () => RED_PIXELS);
+    const { rerender } = renderHook(() =>
+      useArrangerPalettes(sources, loadPixels),
+    );
+
+    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(1));
+
+    sources = [{ key: "org-g", imageUrl: "https://blob.test/g2.png" }];
+    rerender();
+
+    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(2));
+  });
+
   it("falls back without reaching for an image when the arranger has none", () => {
     const loadPixels = vi.fn(async () => RED_PIXELS);
     const { result } = renderHook(() =>

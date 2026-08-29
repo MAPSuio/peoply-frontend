@@ -225,7 +225,10 @@ export function toArrangerColor(palette: ArrangerPalette): ArrangerColor {
 }
 
 export function toArrangerColorKey(key: string) {
-  return key.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+  return key.replace(
+    /[^a-zA-Z0-9]/g,
+    (character) => `-${character.charCodeAt(0)}-`,
+  );
 }
 
 export function arrangerAccentVariable(key: string) {
