@@ -25,7 +25,13 @@ function renderAt(left: number, viewportWidth: number) {
   window.innerWidth = viewportWidth;
 
   const preview: EventPreview = { event: EVENT, position: { left, top: 120 } };
-  render(<EventPreviewCard onMount={vi.fn()} preview={preview} />);
+  render(
+    <EventPreviewCard
+      onPointerEnter={vi.fn()}
+      onPointerLeave={vi.fn()}
+      preview={preview}
+    />,
+  );
 
   return screen.getByRole("tooltip");
 }

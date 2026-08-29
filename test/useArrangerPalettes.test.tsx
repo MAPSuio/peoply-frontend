@@ -10,6 +10,10 @@ const RED_PIXELS = Uint8ClampedArray.from([
   200, 30, 30, 255, 200, 30, 30, 255, 30, 60, 200, 255,
 ]);
 
+const GREEN_PIXELS = Uint8ClampedArray.from([
+  30, 190, 60, 255, 30, 190, 60, 255, 200, 40, 160, 255,
+]);
+
 describe("useArrangerPalettes", () => {
   it("starts on the fallback color so the calendar paints before any image loads", () => {
     const { result } = renderHook(() =>
@@ -84,19 +88,26 @@ describe("useArrangerPalettes", () => {
     expect(result.current["org-f"]).toEqual(getArrangerColor("org-f"));
   });
 
-  it("re-reads the colors when the arranger swaps its picture", async () => {
-    let sources = [{ key: "org-g", imageUrl: "https://blob.test/g1.png" }];
-    const loadPixels = vi.fn(async () => RED_PIXELS);
-    const { rerender } = renderHook(() =>
-      useArrangerPalettes(sources, loadPixels),
+  it("shows the colors of the picture the arranger swapped to", async () => {
+    const RED_IMAGE = "https://blob.test/g-red.png";
+    const GREEN_IMAGE = "https://blob.test/g-green.png";
+    let sources = [{ key: "org-g", imageUrl: RED_IMAGE }];
+    const { result, rerender } = renderHook(() =>
+      useArrangerPalettes(sources, async (imageUrl) =>
+        imageUrl === RED_IMAGE ? RED_PIXELS : GREEN_PIXELS,
+      ),
     );
 
-    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(result.current["org-g"]).not.toEqual(getArrangerColor("org-g")),
+    );
+    const fromRed = result.current["org-g"];
 
-    sources = [{ key: "org-g", imageUrl: "https://blob.test/g2.png" }];
+    sources = [{ key: "org-g", imageUrl: GREEN_IMAGE }];
     rerender();
 
-    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(result.current["org-g"]).not.toEqual(fromRed));
+    expect(result.current["org-g"].accent).toContain("hsl(");
   });
 
   it("falls back without reaching for an image when the arranger has none", () => {

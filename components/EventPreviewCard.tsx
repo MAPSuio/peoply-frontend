@@ -12,12 +12,14 @@ const VIEWPORT_MARGIN_PX = 8;
 
 export interface EventPreviewCardProps {
   preview: EventPreview;
-  onMount: (element: HTMLElement | null) => void;
+  onPointerEnter: () => void;
+  onPointerLeave: () => void;
 }
 
 export default function EventPreviewCard({
   preview,
-  onMount,
+  onPointerEnter,
+  onPointerLeave,
 }: EventPreviewCardProps) {
   const { event, position } = preview;
   const card = useRef<HTMLElement | null>(null);
@@ -29,21 +31,19 @@ export default function EventPreviewCard({
     setLeft(Math.max(VIEWPORT_MARGIN_PX, Math.min(position.left, rightmost)));
   }, [position.left]);
 
-  const attachCard = (element: HTMLElement | null) => {
-    card.current = element;
-    onMount(element);
-  };
-
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : null;
   const arranger = getCompactEventArrangerLabel(event, MAX_VISIBLE_ARRANGERS);
 
   return (
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: the handlers only keep an already-visible tooltip open while the pointer rests on it; the keyboard path runs through focus on the event link.
     <aside
       aria-live="polite"
       className={styles.eventPreview}
       id={EVENT_PREVIEW_ID}
-      ref={attachCard}
+      onMouseEnter={onPointerEnter}
+      onMouseLeave={onPointerLeave}
+      ref={card}
       role="tooltip"
       style={{ left, top: position.top }}
     >

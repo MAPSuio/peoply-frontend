@@ -176,8 +176,7 @@ function renderEventContent(arg: EventDisplayInfo) {
 
 export default function EventCalendar({ events }: EventCalendarProps) {
   const router = useRouter();
-  const { preview, showFor, scheduleClose, keepOpenWhilePointerIsInside } =
-    useEventPreview();
+  const { preview, showFor, cancelClose, scheduleClose } = useEventPreview();
   const [initialView] = useState(() =>
     window.matchMedia(DESKTOP_QUERY).matches ? "dayGridMonth" : "listUpcoming",
   );
@@ -228,7 +227,8 @@ export default function EventCalendar({ events }: EventCalendarProps) {
       />
       {preview ? (
         <EventPreviewCard
-          onMount={keepOpenWhilePointerIsInside}
+          onPointerEnter={cancelClose}
+          onPointerLeave={scheduleClose}
           preview={preview}
         />
       ) : null}

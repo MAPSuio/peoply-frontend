@@ -39,16 +39,10 @@ export default function useEventPreview() {
     });
   };
 
-  const keepOpenWhilePointerIsInside = (element: HTMLElement | null) => {
-    if (!element) return;
-    element.addEventListener("mouseenter", cancelClose);
-    element.addEventListener("mouseleave", scheduleClose);
-  };
-
   return {
     preview,
     showFor,
+    cancelClose,
     scheduleClose,
-    keepOpenWhilePointerIsInside,
   };
 }
