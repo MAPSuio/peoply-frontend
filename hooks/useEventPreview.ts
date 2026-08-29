@@ -2,13 +2,18 @@ import { useRef, useState } from "react";
 
 import type { Event } from "../types/types";
 
+export interface AnchorRect {
+  left: number;
+  top: number;
+  bottom: number;
+}
+
 export interface EventPreview {
   event: Event;
-  position: { left: number; top: number };
+  anchor: AnchorRect;
 }
 
 const CLOSE_GRACE_MS = 150;
-const ANCHOR_GAP_PX = 8;
 
 export default function useEventPreview() {
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -32,11 +37,8 @@ export default function useEventPreview() {
 
   const showFor = (anchor: HTMLElement, event: Event) => {
     cancelClose();
-    const rect = anchor.getBoundingClientRect();
-    setPreview({
-      event,
-      position: { left: rect.left, top: rect.bottom + ANCHOR_GAP_PX },
-    });
+    const { left, top, bottom } = anchor.getBoundingClientRect();
+    setPreview({ event, anchor: { left, top, bottom } });
   };
 
   return {

@@ -122,7 +122,7 @@ function ArrangerIcon({
   initial: string;
 }) {
   return (
-    <span className={styles.listEventIcon}>
+    <span aria-hidden="true" className={styles.listEventIcon}>
       {imageUrl ? (
         <Image
           alt=""

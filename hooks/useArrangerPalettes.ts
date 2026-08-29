@@ -31,7 +31,10 @@ function readColorsFromImage(imageUrl: string, loadPixels: PixelLoader) {
       const palette = getPaletteFromPixels(pixels);
       return palette ? toArrangerColor(palette) : undefined;
     })
-    .catch(() => undefined);
+    .catch(() => {
+      colorsByImageUrl.delete(imageUrl);
+      return undefined;
+    });
 
   colorsByImageUrl.set(imageUrl, reading);
   return reading;

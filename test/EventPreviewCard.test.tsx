@@ -6,6 +6,7 @@ import type { EventPreview } from "../hooks/useEventPreview";
 import type { Event } from "../types/types";
 
 const CARD_WIDTH_PX = 320;
+const CARD_HEIGHT_PX = 200;
 
 const EVENT = {
   id: "event-1",
@@ -17,30 +18,46 @@ const EVENT = {
   eventArrangers: [],
 } as unknown as Event;
 
-function renderAt(left: number, viewportWidth: number) {
+function measureCardAs(width: number, height: number) {
   Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
     configurable: true,
-    value: CARD_WIDTH_PX,
+    value: width,
   });
-  window.innerWidth = viewportWidth;
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    value: height,
+  });
+}
 
-  const preview: EventPreview = { event: EVENT, position: { left, top: 120 } };
+function renderAnchoredAt(
+  anchor: EventPreview["anchor"],
+  viewport: { width: number; height: number },
+) {
+  window.innerWidth = viewport.width;
+  window.innerHeight = viewport.height;
+
   render(
     <EventPreviewCard
       onPointerEnter={vi.fn()}
       onPointerLeave={vi.fn()}
-      preview={preview}
+      preview={{ event: EVENT, anchor }}
     />,
   );
 
   return screen.getByRole("tooltip");
 }
 
+function renderAt(left: number, viewportWidth: number) {
+  measureCardAs(CARD_WIDTH_PX, CARD_HEIGHT_PX);
+
+  return renderAnchoredAt(
+    { left, top: 100, bottom: 120 },
+    { width: viewportWidth, height: 900 },
+  );
+}
+
 afterEach(() => {
-  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-    configurable: true,
-    value: 0,
-  });
+  measureCardAs(0, 0);
 });
 
 describe("EventPreviewCard", () => {
@@ -60,5 +77,38 @@ describe("EventPreviewCard", () => {
     const card = renderAt(400, 1440);
 
     expect(card.style.left).toBe("400px");
+  });
+
+  it("hangs under the event when there is room below it", () => {
+    measureCardAs(CARD_WIDTH_PX, CARD_HEIGHT_PX);
+
+    const card = renderAnchoredAt(
+      { left: 400, top: 100, bottom: 130 },
+      { width: 1440, height: 900 },
+    );
+
+    expect(card.style.top).toBe("138px");
+  });
+
+  it("flips above the event when the bottom of the screen is too close", () => {
+    measureCardAs(CARD_WIDTH_PX, CARD_HEIGHT_PX);
+
+    const card = renderAnchoredAt(
+      { left: 40, top: 700, bottom: 730 },
+      { width: 390, height: 844 },
+    );
+
+    expect(card.style.top).toBe("492px");
+  });
+
+  it("sits as far down as it fits when the card is too tall for either side", () => {
+    measureCardAs(CARD_WIDTH_PX, 800);
+
+    const card = renderAnchoredAt(
+      { left: 40, top: 400, bottom: 430 },
+      { width: 390, height: 844 },
+    );
+
+    expect(card.style.top).toBe("36px");
   });
 });

@@ -59,17 +59,49 @@ describe("useArrangerPalettes", () => {
   });
 
   it("keeps the fallback when the picture cannot be read", async () => {
+    const loadPixels = vi.fn(async () => {
+      throw new Error("network down");
+    });
     const { result } = renderHook(() =>
       useArrangerPalettes(
         [{ key: "org-d", imageUrl: "https://blob.test/d.png" }],
-        async () => {
-          throw new Error("network down");
-        },
+        loadPixels,
       ),
     );
 
-    await waitFor(() => expect(result.current["org-d"]).toBeDefined());
+    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(1));
+    await expect(loadPixels.mock.results[0].value).rejects.toThrow(
+      "network down",
+    );
+
     expect(result.current["org-d"]).toEqual(getArrangerColor("org-d"));
+  });
+
+  it("reaches for the picture again after a read that failed", async () => {
+    let attempt = 0;
+    const loadPixels = vi.fn(async () => {
+      attempt += 1;
+      if (attempt === 1) throw new Error("network down");
+      return RED_PIXELS;
+    });
+    const { result, rerender } = renderHook(() =>
+      useArrangerPalettes(
+        [{ key: "org-i", imageUrl: "https://blob.test/i.png" }],
+        loadPixels,
+      ),
+    );
+
+    await waitFor(() => expect(loadPixels).toHaveBeenCalledTimes(1));
+    await expect(loadPixels.mock.results[0].value).rejects.toThrow(
+      "network down",
+    );
+    expect(result.current["org-i"]).toEqual(getArrangerColor("org-i"));
+
+    rerender();
+
+    await waitFor(() =>
+      expect(result.current["org-i"]).not.toEqual(getArrangerColor("org-i")),
+    );
   });
 
   it("drops the colors when the arranger takes its picture down", async () => {

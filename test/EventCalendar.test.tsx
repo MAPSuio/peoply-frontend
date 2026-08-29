@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -228,6 +228,26 @@ describe("EventCalendar", () => {
 
     expect(container.querySelector("img")).toBeNull();
     expect(container).toHaveTextContent("M");
+  });
+
+  it("keeps the arranger icon out of what a screen reader reads on the event", () => {
+    render(
+      <EventCalendar
+        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
+      />,
+    );
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "18:00",
+        view: { type: "listUpcoming" },
+      }),
+    );
+
+    const initial = within(container).getByText("M");
+
+    expect(initial.closest("[aria-hidden='true']")).not.toBeNull();
   });
 
   it("paints an event in the colors its own arranger contributed", () => {
