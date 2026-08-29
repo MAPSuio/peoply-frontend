@@ -83,7 +83,10 @@ jobs:
           NEXT_PUBLIC_API_URL: https://example.com/api
           BLOB_DOMAIN: example.com
 
-      - name: Boot the pruned build
+      # Also the only place the security headers are seen the way a browser
+      # sees them: next.config.js can list a header that no response carries if
+      # the source pattern stops matching.
+      - name: Boot the pruned build and read its security headers
         env:
           NEXT_PUBLIC_BASE_URL: https://example.com
           NEXT_PUBLIC_API_URL: https://example.com/api
@@ -91,16 +94,33 @@ jobs:
         run: |
           node node_modules/next/dist/bin/next start --port 3999 &
           SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null' EXIT
+
+          booted=""
           for _ in $(seq 1 30); do
             if curl -sf -o /dev/null http://127.0.0.1:3999/; then
-              kill $SERVER_PID
-              exit 0
+              booted="yes"
+              break
             fi
             sleep 1
           done
-          kill $SERVER_PID 2>/dev/null
-          echo "next start never answered on the pruned tree"
-          exit 1
+
+          if [ -z "$booted" ]; then
+            echo "next start never answered on the pruned tree"
+            exit 1
+          fi
+
+          for path in / /kalender /a/nested/path/that/does/not/exist; do
+            response_headers=$(curl -s -o /dev/null -D - "http://127.0.0.1:3999$path")
+            for header in Strict-Transport-Security X-Content-Type-Options \
+              Referrer-Policy X-Frame-Options Content-Security-Policy \
+              Permissions-Policy; do
+              if ! printf '%s' "$response_headers" | grep -qi "^$header:"; then
+                echo "$path answered without $header"
+                exit 1
+              fi
+            done
+          done
 
   # Deploys prod only after every check above is green. The App Platform app is
   # referenced by name, so the spec stays in DigitalOcean rather than in this
