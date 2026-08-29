@@ -140,10 +140,7 @@
 }
 
 .calendarPopover {
-  background-color: var(--background-color-modal, $background-color-modal);
-  border: 1px solid var(--divider-color, $divider-color);
-  border-radius: $border-radius-inside-card;
-  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  @include floatingSurface();
   z-index: 998;
 }
 
@@ -289,10 +286,7 @@
 }
 
 .eventPreview {
-  background-color: var(--background-color-modal, $background-color-modal);
-  border: 1px solid var(--divider-color, $divider-color);
-  border-radius: $border-radius-inside-card;
-  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+  @include floatingSurface();
   max-width: min(22rem, calc(100vw - #{$spacer-small-plus}));
   padding: $spacer-small;
   position: fixed;

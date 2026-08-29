@@ -2,7 +2,7 @@ const THUMBNAIL_SIZE = 48;
 const THUMBNAIL_QUALITY = 75;
 const IMAGE_LOAD_TIMEOUT_MS = 5000;
 
-export function toSameOriginThumbnailUrl(imageUrl: string) {
+function toSameOriginThumbnailUrl(imageUrl: string) {
   const parameters = new URLSearchParams({
     url: imageUrl,
     w: String(THUMBNAIL_SIZE),

@@ -87,6 +87,13 @@
   border-radius: $border-radius-regular;
 }
 
+@mixin floatingSurface() {
+  background-color: var(--background-color-modal, $background-color-modal);
+  border: 1px solid var(--divider-color, $divider-color);
+  border-radius: $border-radius-inside-card;
+  box-shadow: var(--shadow-small-event-card, $shadow-small-event-card);
+}
+
 @mixin divider($thickness: 1px) {
   background-color: var(--divider-color, $divider-color);
   height: 1px;

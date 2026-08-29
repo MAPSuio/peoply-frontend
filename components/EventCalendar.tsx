@@ -31,7 +31,7 @@ import {
   getPrimaryEventArrangerInitial,
 } from "../utils/eventArrangers";
 
-interface EventCalendarProps {
+export interface EventCalendarProps {
   events: Event[];
 }
 
