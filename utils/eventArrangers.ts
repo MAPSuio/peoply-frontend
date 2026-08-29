@@ -77,8 +77,13 @@ export function getCompactEventArrangerLabel(event: Event, maxVisible = 1) {
     return items.map((item) => item.label).join(" · ");
   }
 
-  return `${items
+  const hidden = items.length - maxVisible;
+  const visible = items
     .slice(0, maxVisible)
     .map((item) => item.label)
-    .join(" · ")} +${items.length - maxVisible}`;
+    .join(" · ");
+
+  return hidden === 1
+    ? `${visible} og 1 annen arrangør`
+    : `${visible} og ${hidden} andre arrangører`;
 }
