@@ -1,11 +1,17 @@
-import type { ArrangerImageSource } from "../hooks/useArrangerPalettes";
 import type { Event } from "../types/types";
-import { toArrangerColorKey } from "./arrangerColor";
+import {
+  type ArrangerColor,
+  type ArrangerPalette,
+  getArrangerColor,
+  toArrangerColor,
+  toArrangerColorKey,
+} from "./arrangerColor";
 import {
   getCompactEventArrangerLabel,
   getPrimaryEventArrangerColorKey,
   getPrimaryEventArrangerImage,
   getPrimaryEventArrangerInitial,
+  getPrimaryEventArrangerPalette,
 } from "./eventArrangers";
 
 export interface CalendarEvent {
@@ -18,6 +24,7 @@ export interface CalendarEvent {
     arranger: string;
     arrangerImageUrl?: string;
     arrangerInitial: string;
+    arrangerPalette?: ArrangerPalette;
     paletteKey: string;
     sourceEvent: Event;
   };
@@ -41,24 +48,26 @@ export function toCalendarEvents(events: Event[]): CalendarEvent[] {
       arranger: getCompactEventArrangerLabel(event, 1),
       arrangerImageUrl: getPrimaryEventArrangerImage(event),
       arrangerInitial: getPrimaryEventArrangerInitial(event),
+      arrangerPalette: getPrimaryEventArrangerPalette(event),
       paletteKey: toArrangerColorKey(getPrimaryEventArrangerColorKey(event)),
       sourceEvent: event,
     },
   }));
 }
 
-export function toArrangerImageSources(
+export function toArrangerColorsByKey(
   calendarEvents: CalendarEvent[],
-): ArrangerImageSource[] {
-  const byKey = new Map<string, ArrangerImageSource>();
+): Record<string, ArrangerColor> {
+  const colorsByKey: Record<string, ArrangerColor> = Object.create(null);
 
   for (const { extendedProps } of calendarEvents) {
-    const known = byKey.get(extendedProps.paletteKey);
-    byKey.set(extendedProps.paletteKey, {
-      key: extendedProps.paletteKey,
-      imageUrl: known?.imageUrl ?? extendedProps.arrangerImageUrl,
-    });
+    const { paletteKey, arrangerPalette } = extendedProps;
+    if (colorsByKey[paletteKey] && !arrangerPalette) continue;
+
+    colorsByKey[paletteKey] = arrangerPalette
+      ? toArrangerColor(arrangerPalette, paletteKey)
+      : getArrangerColor(paletteKey);
   }
 
-  return [...byKey.values()];
+  return colorsByKey;
 }

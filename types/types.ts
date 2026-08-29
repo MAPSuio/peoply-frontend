@@ -220,6 +220,8 @@ export interface Organization {
   name: string;
   orgNr: string;
   image?: string;
+  imagePrimaryColor?: string | null;
+  imageAccentColor?: string | null;
   websiteUrl?: string;
   instagramUrl?: string;
   facebookUrl?: string;

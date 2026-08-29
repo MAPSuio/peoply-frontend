@@ -124,6 +124,8 @@ function eventArrangedBy(organization: {
   id: string;
   name: string;
   image?: string;
+  imagePrimaryColor?: string;
+  imageAccentColor?: string;
 }) {
   return {
     ...EVENT,
@@ -250,19 +252,47 @@ describe("EventCalendar", () => {
     expect(initial.closest("[aria-hidden='true']")).not.toBeNull();
   });
 
-  it("paints an event in the colors its own arranger contributed", () => {
+  const colorsPaintedOn = (
+    calendar: HTMLElement,
+    event: HTMLElement,
+    property: string,
+  ) =>
+    calendar.style.getPropertyValue(
+      event.style.getPropertyValue(property).replace(/^var\(|\)$/g, ""),
+    );
+
+  it("paints an event in the colors stored with its arranger's logo", () => {
+    const { container } = render(
+      <EventCalendar
+        events={[
+          eventArrangedBy({
+            ...ORGANIZATION,
+            imagePrimaryColor: "#fd7b03",
+            imageAccentColor: "#0051f1",
+          }),
+        ]}
+      />,
+    );
+    const calendar = container.firstElementChild as HTMLElement;
+    const event = screen.getByRole("link", { name: "Kodekveld" });
+
+    expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toBe(
+      "#0051f1",
+    );
+    expect(
+      colorsPaintedOn(calendar, event, "--calendar-event-background"),
+    ).toBe("#fd7b0329");
+  });
+
+  it("falls back to a color of its own when the logo yielded none", () => {
     const { container } = render(
       <EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />,
     );
     const calendar = container.firstElementChild as HTMLElement;
     const event = screen.getByRole("link", { name: "Kodekveld" });
 
-    const colorsOn = (property: string) =>
-      calendar.style.getPropertyValue(
-        event.style.getPropertyValue(property).replace(/^var\(|\)$/g, ""),
-      );
-
-    expect(colorsOn("--calendar-event-accent")).toMatch(/^hsl\(/);
-    expect(colorsOn("--calendar-event-background")).toMatch(/^hsl\(/);
+    expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toMatch(
+      /^hsl\(/,
+    );
   });
 });
