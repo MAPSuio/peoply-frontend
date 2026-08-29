@@ -12,6 +12,7 @@ import { ApiError } from "../services/apiError";
 import { deleteMe, logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { fetchIpInfo } from "../services/ip";
+import { hasSessionMarker } from "../utils/session";
 import type {
   IpInfo,
   Organization,
@@ -107,7 +108,13 @@ export function UserProvider({
       setLoading(false);
     };
 
-    checkAuth();
+    if (hasSessionMarker()) {
+      checkAuth();
+    } else {
+      setUser(undefined);
+      setError("Unauthorized");
+      setLoading(false);
+    }
 
     return () => {
       active = false;
