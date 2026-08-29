@@ -112,3 +112,26 @@ describe("toArrangerColorsByKey", () => {
     );
   });
 });
+
+describe("toCalendarEvents start time", () => {
+  it("carries the start time so a narrow month cell can still show it", () => {
+    const [calendarEvent] = toCalendarEvents([eventArrangedBy(MAPS)]);
+
+    expect(calendarEvent.extendedProps.startTime).toBe(
+      new Date("2026-09-03T16:00:00.000Z").toLocaleTimeString("no-NO", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+    );
+  });
+
+  it("pads the hour so every cell lines up", () => {
+    const event = eventArrangedBy(MIKRO);
+    event.startDate = "2026-09-03T04:05:00.000Z";
+
+    const [calendarEvent] = toCalendarEvents([event]);
+
+    expect(calendarEvent.extendedProps.startTime).toMatch(/^\d{2}:\d{2}$/);
+  });
+});

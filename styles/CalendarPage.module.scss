@@ -120,7 +120,7 @@
   border-inline-start: 3px solid var(--calendar-event-accent);
   border-radius: $border-radius-inside-card;
   cursor: pointer;
-  margin-top: 2px;
+  margin-top: 3px;
   overflow: hidden;
   text-decoration: none;
 
@@ -156,6 +156,24 @@
 
 .calendarPopoverBody {
   padding: $spacer-very-small;
+}
+
+$max-grid-title-lines: 3;
+
+.monthView {
+  overflow-x: auto;
+
+  > div {
+    min-width: 30rem;
+  }
+
+  @include desktop() {
+    overflow-x: visible;
+
+    > div {
+      min-width: 0;
+    }
+  }
 }
 
 .listView {
@@ -232,27 +250,67 @@
 }
 
 .gridEvent {
+  align-items: center;
+  column-gap: $spacer-mini;
+  display: grid;
+  grid-template-areas: "icon" "time" "title";
+  justify-items: start;
+  padding: $spacer-mini 3px;
+  row-gap: 1px;
+
+  @include desktop() {
+    grid-template-areas: "icon time" "title title";
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: $spacer-very-small;
+  }
+}
+
+.gridEventIcon {
+  align-items: center;
+  background-color: var(--calendar-event-background);
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  padding: $spacer-mini $spacer-very-small;
+  flex: 0 0 auto;
+  grid-area: icon;
+  height: 0.875rem;
+  justify-content: center;
+  overflow: hidden;
+  width: 0.875rem;
+
+  @include desktop() {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
 }
 
 .gridEventTime {
   @include monoFont();
   color: var(--text-color-primary, $text-color-primary);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
+  grid-area: time;
+
+  @include desktop() {
+    font-size: 0.6875rem;
+  }
 }
 
 .gridEventTitle {
+  -webkit-box-orient: vertical;
   color: var(--text-color-emphasis, $text-color-emphasis);
-  font-size: $font-size-tertiary;
+  display: -webkit-box;
+  font-size: 0.625rem;
   font-weight: $font-weight-medium;
+  grid-area: title;
+  justify-self: stretch;
+  -webkit-line-clamp: $max-grid-title-lines;
+  line-clamp: $max-grid-title-lines;
   line-height: $line-height-card-title;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+
+  @include desktop() {
+    font-size: $font-size-tertiary;
+  }
 }
 
 .listEvent {

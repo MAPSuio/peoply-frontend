@@ -14,6 +14,18 @@ import {
   getPrimaryEventArrangerPalette,
 } from "./eventArrangers";
 
+const DISPLAY_LOCALE = "no-NO";
+
+const START_TIME_FORMAT = {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+} as const;
+
+function formatStartTime(start: Date) {
+  return start.toLocaleTimeString(DISPLAY_LOCALE, START_TIME_FORMAT);
+}
+
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -27,6 +39,7 @@ export interface CalendarEvent {
     arrangerPalette?: ArrangerPalette;
     paletteKey: string;
     sourceEvent: Event;
+    startTime: string;
   };
 }
 
@@ -38,21 +51,26 @@ export function boundedNavigationRange(now: Date) {
 }
 
 export function toCalendarEvents(events: Event[]): CalendarEvent[] {
-  return events.map((event) => ({
-    id: event.id,
-    title: event.title,
-    start: new Date(event.startDate),
-    end: event.endDate ? new Date(event.endDate) : undefined,
-    url: `/events/${event.urlId}`,
-    extendedProps: {
-      arranger: getCompactEventArrangerLabel(event, 1),
-      arrangerImageUrl: getPrimaryEventArrangerImage(event),
-      arrangerInitial: getPrimaryEventArrangerInitial(event),
-      arrangerPalette: getPrimaryEventArrangerPalette(event),
-      paletteKey: toArrangerColorKey(getPrimaryEventArrangerColorKey(event)),
-      sourceEvent: event,
-    },
-  }));
+  return events.map((event) => {
+    const start = new Date(event.startDate);
+
+    return {
+      id: event.id,
+      title: event.title,
+      start,
+      end: event.endDate ? new Date(event.endDate) : undefined,
+      url: `/events/${event.urlId}`,
+      extendedProps: {
+        arranger: getCompactEventArrangerLabel(event, 1),
+        arrangerImageUrl: getPrimaryEventArrangerImage(event),
+        arrangerInitial: getPrimaryEventArrangerInitial(event),
+        arrangerPalette: getPrimaryEventArrangerPalette(event),
+        paletteKey: toArrangerColorKey(getPrimaryEventArrangerColorKey(event)),
+        sourceEvent: event,
+        startTime: formatStartTime(start),
+      },
+    };
+  });
 }
 
 export function toArrangerColorsByKey(

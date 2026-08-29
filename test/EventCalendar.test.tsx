@@ -17,6 +17,7 @@ interface MockCalendarEvent {
     arrangerImageUrl?: string;
     arrangerInitial: string;
     paletteKey: string;
+    startTime: string;
     sourceEvent: Event;
   };
 }
@@ -230,6 +231,58 @@ describe("EventCalendar", () => {
 
     expect(container.querySelector("img")).toBeNull();
     expect(container).toHaveTextContent("M");
+  });
+
+  it("shows the arranger's logo in the month grid too", () => {
+    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "18:00",
+        view: { type: "dayGridMonth" },
+      }),
+    );
+
+    expect(container.querySelector("img")).toHaveAttribute(
+      "src",
+      ORGANIZATION.image,
+    );
+  });
+
+  it("keeps the start time in the month grid when the cell is too narrow for FullCalendar to render one", () => {
+    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "",
+        view: { type: "dayGridMonth" },
+      }),
+    );
+
+    expect(container).toHaveTextContent(
+      calendarProps.events[0].extendedProps.startTime,
+    );
+  });
+
+  it("falls back to the initial in the month grid when there is no logo", () => {
+    render(
+      <EventCalendar
+        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
+      />,
+    );
+
+    const { container } = render(
+      calendarProps.eventContent({
+        event: calendarProps.events[0],
+        timeText: "18:00",
+        view: { type: "dayGridMonth" },
+      }),
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(within(container).getByText("M")).toBeInTheDocument();
   });
 
   it("keeps the arranger icon out of what a screen reader reads on the event", () => {
