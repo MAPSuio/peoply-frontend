@@ -29,7 +29,11 @@ type EventContentRenderer = (arg: {
 }) => ReactNode;
 
 interface MockCalendarProps {
-  buttons: { listUpcoming: { text: string } };
+  buttons: { dayGridRolling: { text: string }; listUpcoming: { text: string } };
+  headerToolbar: { right: string };
+  initialDate: Date;
+  initialView: string;
+  validRange: { start: Date; end: Date };
   dayCellClass: unknown;
   dayHeaderInnerClass: unknown;
   eventContent: EventContentRenderer;
@@ -177,6 +181,33 @@ describe("EventCalendar", () => {
     expect(routerPush).toHaveBeenCalledWith("/events/kodekveld");
   });
 
+  it("opens on a rolling five-week window that starts today, not on the first of the month", () => {
+    const now = new Date();
+    const midnightToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+
+    render(<EventCalendar events={[EVENT]} />);
+
+    expect(calendarProps.initialView).toBe("dayGridRolling");
+    expect(calendarProps.initialDate).toEqual(midnightToday);
+    expect(calendarProps.validRange.start).toEqual(midnightToday);
+    expect(calendarProps.views).toHaveProperty("dayGridRolling.duration", {
+      weeks: 5,
+    });
+  });
+
+  it("pages the grid by the rolling window instead of month by month", () => {
+    render(<EventCalendar events={[EVENT]} />);
+
+    expect(calendarProps.headerToolbar.right).toBe(
+      "dayGridRolling,listUpcoming",
+    );
+    expect(calendarProps.buttons.dayGridRolling.text).toBe("Kalender");
+  });
+
   it("uses the coordinated v7 configuration and event color fields", () => {
     render(<EventCalendar events={[EVENT]} />);
 
@@ -187,6 +218,10 @@ describe("EventCalendar", () => {
     expect(calendarProps.dayHeaderInnerClass).toBeTypeOf("function");
     expect(calendarProps.eventContent).toBeTypeOf("function");
     expect(calendarProps.views).toHaveProperty("dayGrid.eventClass");
+    expect(calendarProps.views).toHaveProperty(
+      "dayGridRolling.type",
+      "dayGrid",
+    );
     expect(calendarProps.views).toHaveProperty(
       "listUpcoming.listItemEventClass",
     );
@@ -240,7 +275,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 
@@ -257,7 +292,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 
@@ -277,7 +312,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 

@@ -43,10 +43,24 @@ export interface CalendarEvent {
   };
 }
 
-export function boundedNavigationRange(now: Date) {
+export const ROLLING_WINDOW_IN_WEEKS = 5;
+
+const WINDOWS_IN_HORIZON = 5;
+
+const HORIZON_IN_WEEKS = ROLLING_WINDOW_IN_WEEKS * WINDOWS_IN_HORIZON;
+
+const DAYS_IN_WEEK = 7;
+
+export function rollingCalendarRange(now: Date) {
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
   return {
-    start: new Date(now.getFullYear(), now.getMonth(), 1),
-    end: new Date(now.getFullYear() + 1, now.getMonth() + 1, 1),
+    start,
+    end: new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate() + HORIZON_IN_WEEKS * DAYS_IN_WEEK,
+    ),
   };
 }
 

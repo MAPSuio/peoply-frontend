@@ -20,7 +20,8 @@ import {
   arrangerBackgroundVariable,
 } from "../utils/arrangerColor";
 import {
-  boundedNavigationRange,
+  ROLLING_WINDOW_IN_WEEKS,
+  rollingCalendarRange,
   toArrangerColorsByKey,
   toCalendarEvents,
 } from "../utils/calendarEvents";
@@ -38,6 +39,8 @@ const DESKTOP_QUERY = "(min-width: 600px)";
 const ARRANGER_ICON_SIZE_PX = 24;
 
 const MAX_EVENTS_PER_DAY_CELL = 3;
+
+const ROLLING_GRID_VIEW = "dayGridRolling";
 
 function paintWithArrangerColors(element: HTMLElement, paletteKey: string) {
   element.style.setProperty(
@@ -66,9 +69,12 @@ const CALENDAR_CHROME = {
   headerToolbar: {
     left: "prev,next",
     center: "title",
-    right: "dayGridMonth,listUpcoming",
+    right: `${ROLLING_GRID_VIEW},listUpcoming`,
   },
-  buttons: { listUpcoming: { text: "Agenda" } },
+  buttons: {
+    [ROLLING_GRID_VIEW]: { text: "Kalender" },
+    listUpcoming: { text: "Agenda" },
+  },
   headerToolbarClass: styles.calendarToolbar,
   toolbarTitleClass: styles.calendarToolbarTitle,
   buttonClass: (info: { isSelected: boolean }) =>
@@ -103,6 +109,10 @@ const CALENDAR_CHROME = {
     dayGrid: {
       className: styles.monthView,
       eventClass: styles.gridCalendarEvent,
+    },
+    [ROLLING_GRID_VIEW]: {
+      type: "dayGrid" as const,
+      duration: { weeks: ROLLING_WINDOW_IN_WEEKS },
     },
   },
   dayMaxEvents: MAX_EVENTS_PER_DAY_CELL,
@@ -189,10 +199,12 @@ export default function EventCalendar({ events }: EventCalendarProps) {
   const router = useRouter();
   const { preview, showFor, cancelClose, scheduleClose } = useEventPreview();
   const [initialView] = useState(() =>
-    window.matchMedia(DESKTOP_QUERY).matches ? "dayGridMonth" : "listUpcoming",
+    window.matchMedia(DESKTOP_QUERY).matches
+      ? ROLLING_GRID_VIEW
+      : "listUpcoming",
   );
 
-  const validRange = useMemo(() => boundedNavigationRange(new Date()), []);
+  const validRange = useMemo(() => rollingCalendarRange(new Date()), []);
 
   const calendarEvents = useMemo(() => toCalendarEvents(events), [events]);
   const arrangerColorVariables = useMemo(
@@ -227,6 +239,7 @@ export default function EventCalendar({ events }: EventCalendarProps) {
       <FullCalendar
         {...CALENDAR_CHROME}
         initialView={initialView}
+        initialDate={validRange.start}
         events={calendarEvents}
         eventContent={renderEventContent}
         eventClick={handleEventClick}

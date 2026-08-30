@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { Event } from "../types/types";
 import { getArrangerColor, toArrangerColorKey } from "../utils/arrangerColor";
 import {
-  boundedNavigationRange,
+  ROLLING_WINDOW_IN_WEEKS,
+  rollingCalendarRange,
   toArrangerColorsByKey,
   toCalendarEvents,
 } from "../utils/calendarEvents";
@@ -38,24 +39,41 @@ const MAPS = {
 };
 const MIKRO = { id: "org-2", name: "Mikro" };
 
-describe("boundedNavigationRange", () => {
-  it("opens on the first of the month the clock is in, so the current month is a full grid", () => {
-    const { start } = boundedNavigationRange(new Date(2026, 7, 29, 13, 45));
+describe("rollingCalendarRange", () => {
+  it("opens on today, so the days already spent this month are out of range", () => {
+    const { start } = rollingCalendarRange(new Date(2026, 7, 29, 13, 45));
 
-    expect(start).toEqual(new Date(2026, 7, 1));
+    expect(start).toEqual(new Date(2026, 7, 29));
   });
 
-  it("closes one year ahead", () => {
-    const { end } = boundedNavigationRange(new Date(2026, 7, 29));
+  it("keeps events earlier today in range", () => {
+    const { start } = rollingCalendarRange(new Date(2026, 7, 29, 23, 59));
 
-    expect(end).toEqual(new Date(2027, 8, 1));
+    expect(start.getHours()).toBe(0);
+  });
+
+  it("closes about half a year ahead", () => {
+    const { end } = rollingCalendarRange(new Date(2026, 7, 29));
+
+    expect(end).toEqual(new Date(2027, 1, 20));
   });
 
   it("rolls the year over at the end of December", () => {
-    const { start, end } = boundedNavigationRange(new Date(2026, 11, 31));
+    const { start, end } = rollingCalendarRange(new Date(2026, 11, 31));
 
-    expect(start).toEqual(new Date(2026, 11, 1));
-    expect(end).toEqual(new Date(2028, 0, 1));
+    expect(start).toEqual(new Date(2026, 11, 31));
+    expect(end).toEqual(new Date(2027, 5, 24));
+  });
+
+  it("spans a whole number of windows, so the last page is a full grid", () => {
+    const { start, end } = rollingCalendarRange(new Date(2026, 7, 29));
+    const dayInMilliseconds = 24 * 60 * 60 * 1000;
+    const windowInDays = ROLLING_WINDOW_IN_WEEKS * 7;
+
+    expect(
+      Math.round((end.getTime() - start.getTime()) / dayInMilliseconds) %
+        windowInDays,
+    ).toBe(0);
   });
 });
 

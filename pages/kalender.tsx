@@ -12,6 +12,7 @@ import useBack from "../hooks/useBack";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, type Event } from "../types/types";
+import { rollingCalendarRange } from "../utils/calendarEvents";
 import { queryToString } from "../utils/functions";
 
 const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
@@ -22,14 +23,11 @@ const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
 export default function CalendarPage() {
   const goBack = useBack();
   const eventsQuery = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    const rangeEnd = new Date(rangeStart);
-    rangeEnd.setFullYear(rangeEnd.getFullYear() + 1);
+    const { start, end } = rollingCalendarRange(new Date());
 
     return {
-      afterDate: rangeStart.toISOString(),
-      beforeDate: rangeEnd.toISOString(),
+      afterDate: start.toISOString(),
+      beforeDate: end.toISOString(),
       orderBy: "startDate",
       orderDirection: "asc",
     };
