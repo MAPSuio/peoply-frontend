@@ -241,6 +241,12 @@ describe("API and feedback entry points", () => {
     expect(
       screen.queryByText(/Kunne ikke opprette API-nøkkelen/i),
     ).not.toBeInTheDocument();
+    expect(
+      await screen.findByText("Nøkkel med treg liste"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Kunne ikke hente API-nøkler/i),
+    ).toBeInTheDocument();
   });
 
   it("says that the number in the fallback message is an HTTP status code", async () => {

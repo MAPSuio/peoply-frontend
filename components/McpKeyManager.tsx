@@ -141,15 +141,8 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
       return next.length ? next : ["READ"];
     });
 
-  const addKeyToList = async (storedKey: McpApiKey) => {
-    try {
-      await mutate((current = []) => [storedKey, ...current]);
-    } catch {
-      setError(
-        "Nøkkelen er opprettet, men listen under er ikke oppdatert. Last siden på nytt.",
-      );
-    }
-  };
+  const addKeyToCachedList = (storedKey: McpApiKey) =>
+    mutate((current = []) => [storedKey, ...current]).catch(() => undefined);
 
   const createKey = async () => {
     const trimmedName = name.trim();
@@ -162,7 +155,7 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
       const { token: secretToken, ...storedKey } = created;
       setToken(secretToken);
       setName("");
-      await addKeyToList(storedKey);
+      await addKeyToCachedList(storedKey);
     } catch (error) {
       setError(createErrorMessage(error));
     } finally {
@@ -247,10 +240,10 @@ const KeyLoadState = ({
   onRevoke: (key: McpApiKey) => void;
 }) => {
   if (loading) return <p className={styles.keyStatus}>Henter API-nøkler…</p>;
+  if (keys?.length)
+    return <KeyList busy={busy} keys={keys} onRevoke={onRevoke} />;
   if (error) return null;
-  if (!keys?.length)
-    return <p className={styles.keyStatus}>Du har ingen API-nøkler ennå.</p>;
-  return <KeyList busy={busy} keys={keys} onRevoke={onRevoke} />;
+  return <p className={styles.keyStatus}>Du har ingen API-nøkler ennå.</p>;
 };
 
 const McpKeyManager = () => {
