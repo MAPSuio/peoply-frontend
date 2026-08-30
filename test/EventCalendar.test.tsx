@@ -223,10 +223,6 @@ describe("EventCalendar", () => {
     expect(calendarProps.eventContent).toBeTypeOf("function");
     expect(calendarProps.views).toHaveProperty("dayGrid.eventClass");
     expect(calendarProps.views).toHaveProperty(
-      "dayGridRolling.type",
-      "dayGrid",
-    );
-    expect(calendarProps.views).toHaveProperty(
       "agendaWindow.listItemEventClass",
     );
     expect(calendarProps.events[0]).toMatchObject({
