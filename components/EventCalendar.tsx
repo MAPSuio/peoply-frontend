@@ -13,31 +13,39 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 
 import useEventPreview from "../hooks/useEventPreview";
+import { useIsDesktop } from "../hooks/useMediaQuery";
 import styles from "../styles/CalendarPage.module.scss";
-import type { Event } from "../types/types";
+import { ButtonSize, ButtonType, type Event } from "../types/types";
 import {
   arrangerAccentVariable,
   arrangerBackgroundVariable,
 } from "../utils/arrangerColor";
 import {
-  boundedNavigationRange,
+  type CalendarRange,
+  ROLLING_WINDOW_IN_WEEKS,
+  WINDOWS_IN_HORIZON,
+  WINDOWS_SHOWN_AT_FIRST,
+  calendarWindows,
   toArrangerColorsByKey,
   toCalendarEvents,
+  windowRangeLabel,
 } from "../utils/calendarEvents";
 import { toArrangerColorVariables } from "../utils/arrangerColorVariables";
+import Button from "./Button";
 import EventPreviewCard, { EVENT_PREVIEW_ID } from "./EventPreviewCard";
 
 export interface EventCalendarProps {
   events: Event[];
+  range: CalendarRange;
 }
-
-// Rendered client-side only (next/dynamic with ssr: false), so window is
-// always available here.
-const DESKTOP_QUERY = "(min-width: 600px)";
 
 const ARRANGER_ICON_SIZE_PX = 24;
 
 const MAX_EVENTS_PER_DAY_CELL = 3;
+
+const ROLLING_GRID_VIEW = "dayGridRolling";
+
+const AGENDA_VIEW = "agendaWindow";
 
 function paintWithArrangerColors(element: HTMLElement, paletteKey: string) {
   element.style.setProperty(
@@ -63,18 +71,7 @@ function getDayCellClass(info: DayCellInfo) {
 const CALENDAR_CHROME = {
   plugins: [classicThemePlugin, dayGridPlugin, listPlugin],
   locale: nbLocale,
-  headerToolbar: {
-    left: "prev,next",
-    center: "title",
-    right: "dayGridMonth,listUpcoming",
-  },
-  buttons: { listUpcoming: { text: "Agenda" } },
-  headerToolbarClass: styles.calendarToolbar,
-  toolbarTitleClass: styles.calendarToolbarTitle,
-  buttonClass: (info: { isSelected: boolean }) =>
-    [styles.calendarButton, info.isSelected && styles.calendarButtonActive]
-      .filter(Boolean)
-      .join(" "),
+  headerToolbar: false as const,
   dayCellTopInnerClass: styles.dayNumber,
   dayCellBottomClass: styles.dayCellBottom,
   moreLinkClass: styles.moreLink,
@@ -92,9 +89,8 @@ const CALENDAR_CHROME = {
   views: {
     // Agenda spanning three months so the landing view always has
     // upcoming events in it, even late in the current month.
-    listUpcoming: {
+    [AGENDA_VIEW]: {
       type: "list" as const,
-      duration: { months: 3 },
       className: styles.listView,
       listItemEventClass: styles.listCalendarEvent,
       listItemEventBeforeClass: styles.hiddenListDot,
@@ -103,6 +99,10 @@ const CALENDAR_CHROME = {
     dayGrid: {
       className: styles.monthView,
       eventClass: styles.gridCalendarEvent,
+    },
+    [ROLLING_GRID_VIEW]: {
+      type: "dayGrid" as const,
+      duration: { weeks: ROLLING_WINDOW_IN_WEEKS },
     },
   },
   dayMaxEvents: MAX_EVENTS_PER_DAY_CELL,
@@ -144,7 +144,7 @@ function ArrangerIcon({
 }
 
 function renderEventContent(arg: EventDisplayInfo) {
-  if (arg.view.type === "listUpcoming") {
+  if (arg.view.type === AGENDA_VIEW) {
     // The list view expects an anchor inside the row when the event has a
     // url - replacing the default content without one breaks FullCalendar's
     // click handling.
@@ -185,14 +185,39 @@ function renderEventContent(arg: EventDisplayInfo) {
   );
 }
 
-export default function EventCalendar({ events }: EventCalendarProps) {
+function ShowMoreWindows({
+  hiddenWindowCount,
+  onShowMore,
+}: {
+  hiddenWindowCount: number;
+  onShowMore: () => void;
+}) {
+  if (hiddenWindowCount === 0) return null;
+
+  return (
+    <div className={styles.showMore}>
+      <Button
+        onClick={onShowMore}
+        size={ButtonSize.SMALL}
+        text="Se mer"
+        type={ButtonType.SECONDARY}
+      />
+    </div>
+  );
+}
+
+export default function EventCalendar({ events, range }: EventCalendarProps) {
   const router = useRouter();
   const { preview, showFor, cancelClose, scheduleClose } = useEventPreview();
-  const [initialView] = useState(() =>
-    window.matchMedia(DESKTOP_QUERY).matches ? "dayGridMonth" : "listUpcoming",
+  const isDesktop = useIsDesktop();
+  const [shownWindowCount, setShownWindowCount] = useState(
+    WINDOWS_SHOWN_AT_FIRST,
   );
 
-  const validRange = useMemo(() => boundedNavigationRange(new Date()), []);
+  const shownWindows = useMemo(
+    () => calendarWindows(range.start, shownWindowCount),
+    [range.start, shownWindowCount],
+  );
 
   const calendarEvents = useMemo(() => toCalendarEvents(events), [events]);
   const arrangerColorVariables = useMemo(
@@ -222,18 +247,46 @@ export default function EventCalendar({ events }: EventCalendarProps) {
     info.el.setAttribute("aria-describedby", EVENT_PREVIEW_ID);
   };
 
+  const sharedCalendarProps = {
+    ...CALENDAR_CHROME,
+    events: calendarEvents,
+    eventContent: renderEventContent,
+    eventClick: handleEventClick,
+    eventMouseEnter: showPreviewFor,
+    eventMouseLeave: scheduleClose,
+    eventDidMount: handleEventDidMount,
+    validRange: range,
+  };
+
   return (
     <div className={styles.calendar} style={arrangerColorVariables}>
-      <FullCalendar
-        {...CALENDAR_CHROME}
-        initialView={initialView}
-        events={calendarEvents}
-        eventContent={renderEventContent}
-        eventClick={handleEventClick}
-        eventMouseEnter={showPreviewFor}
-        eventMouseLeave={scheduleClose}
-        eventDidMount={handleEventDidMount}
-        validRange={validRange}
+      {isDesktop ? (
+        shownWindows.map((shownWindow) => (
+          <section
+            className={styles.calendarWindow}
+            key={shownWindow.start.toISOString()}
+          >
+            <h2 className={styles.calendarWindowHeading}>
+              {windowRangeLabel(shownWindow)}
+            </h2>
+            <FullCalendar
+              {...sharedCalendarProps}
+              initialDate={shownWindow.start}
+              initialView={ROLLING_GRID_VIEW}
+            />
+          </section>
+        ))
+      ) : (
+        <FullCalendar
+          {...sharedCalendarProps}
+          duration={{ weeks: ROLLING_WINDOW_IN_WEEKS * shownWindowCount }}
+          initialDate={range.start}
+          initialView={AGENDA_VIEW}
+        />
+      )}
+      <ShowMoreWindows
+        hiddenWindowCount={WINDOWS_IN_HORIZON - shownWindowCount}
+        onShowMore={() => setShownWindowCount(WINDOWS_IN_HORIZON)}
       />
       {preview ? (
         <EventPreviewCard

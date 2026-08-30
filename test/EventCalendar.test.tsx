@@ -5,6 +5,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCalendar from "../components/EventCalendar";
 import type { Event } from "../types/types";
+import {
+  WINDOWS_IN_HORIZON,
+  rollingCalendarRange,
+} from "../utils/calendarEvents";
+
+function renderCalendar(events: Event[]) {
+  return render(
+    <EventCalendar events={events} range={rollingCalendarRange(new Date())} />,
+  );
+}
 
 const routerPush = vi.fn();
 
@@ -29,7 +39,6 @@ type EventContentRenderer = (arg: {
 }) => ReactNode;
 
 interface MockCalendarProps {
-  buttons: { listUpcoming: { text: string } };
   dayCellClass: unknown;
   dayHeaderInnerClass: unknown;
   eventContent: EventContentRenderer;
@@ -80,20 +89,22 @@ vi.mock("@fullcalendar/react", () => ({
       extendedProps: events[0].extendedProps,
     };
     return (
-      <a
-        href={event.url}
-        onBlur={() => eventMouseLeave()}
-        onClick={(jsEvent) => eventClick({ event, jsEvent })}
-        onMouseEnter={(mouseEvent) =>
-          eventMouseEnter({ el: mouseEvent.currentTarget, event })
-        }
-        onMouseLeave={() => eventMouseLeave()}
-        ref={(element) => {
-          if (element) eventDidMount({ el: element, event });
-        }}
-      >
-        {event.title}
-      </a>
+      <div data-testid="calendar-instance">
+        <a
+          href={event.url}
+          onBlur={() => eventMouseLeave()}
+          onClick={(jsEvent) => eventClick({ event, jsEvent })}
+          onMouseEnter={(mouseEvent) =>
+            eventMouseEnter({ el: mouseEvent.currentTarget, event })
+          }
+          onMouseLeave={() => eventMouseLeave()}
+          ref={(element) => {
+            if (element) eventDidMount({ el: element, event });
+          }}
+        >
+          {event.title}
+        </a>
+      </div>
     );
   },
 }));
@@ -139,16 +150,28 @@ function eventArrangedBy(organization: {
   } as unknown as Event;
 }
 
+function stubViewport({ isDesktop }: { isDesktop: boolean }) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn((query: string) => ({
+      matches: isDesktop,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  );
+}
+
 describe("EventCalendar", () => {
   beforeEach(() => {
     routerPush.mockReset();
-    window.matchMedia = vi.fn().mockReturnValue({ matches: true });
+    stubViewport({ isDesktop: true });
   });
 
   it("shows event information on hover and keeps it open while entering the preview", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    render(<EventCalendar events={[EVENT]} />);
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    renderCalendar([EVENT]);
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     await userEvent.hover(event);
     const preview = screen.getByRole("tooltip");
@@ -167,8 +190,8 @@ describe("EventCalendar", () => {
 
   it("shows the preview on keyboard focus without changing event navigation", async () => {
     const user = userEvent.setup();
-    render(<EventCalendar events={[EVENT]} />);
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    renderCalendar([EVENT]);
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     await user.tab();
     expect(screen.getByRole("tooltip")).toHaveTextContent("Kodekveld");
@@ -177,18 +200,30 @@ describe("EventCalendar", () => {
     expect(routerPush).toHaveBeenCalledWith("/events/kodekveld");
   });
 
+  it("reaches a year ahead once the reader asks to see more", async () => {
+    renderCalendar([EVENT]);
+
+    await userEvent.click(screen.getByRole("button", { name: "Se mer" }));
+
+    expect(screen.getAllByTestId("calendar-instance")).toHaveLength(
+      WINDOWS_IN_HORIZON,
+    );
+    expect(
+      screen.queryByRole("button", { name: "Se mer" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("uses the coordinated v7 configuration and event color fields", () => {
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
 
     expect(calendarProps.plugins).toHaveLength(3);
-    expect(calendarProps.buttons.listUpcoming.text).toBe("Agenda");
     expect(calendarProps.tableHeaderSticky).toBe(false);
     expect(calendarProps.dayCellClass).toBeTypeOf("function");
     expect(calendarProps.dayHeaderInnerClass).toBeTypeOf("function");
     expect(calendarProps.eventContent).toBeTypeOf("function");
     expect(calendarProps.views).toHaveProperty("dayGrid.eventClass");
     expect(calendarProps.views).toHaveProperty(
-      "listUpcoming.listItemEventClass",
+      "agendaWindow.listItemEventClass",
     );
     expect(calendarProps.events[0]).toMatchObject({
       extendedProps: { paletteKey: expect.any(String) },
@@ -198,13 +233,13 @@ describe("EventCalendar", () => {
   });
 
   it("shows the arranger's picture in the agenda instead of a colored dot", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -215,17 +250,13 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to the arranger's initial when there is no picture", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -234,13 +265,13 @@ describe("EventCalendar", () => {
   });
 
   it("shows the arranger's logo in the month grid too", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 
@@ -251,13 +282,13 @@ describe("EventCalendar", () => {
   });
 
   it("keeps the start time in the month grid when the cell is too narrow for FullCalendar to render one", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 
@@ -267,17 +298,13 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to the initial in the month grid when there is no logo", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "dayGridMonth" },
+        view: { type: "dayGridRolling" },
       }),
     );
 
@@ -286,17 +313,13 @@ describe("EventCalendar", () => {
   });
 
   it("keeps the arranger icon out of what a screen reader reads on the event", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -315,19 +338,15 @@ describe("EventCalendar", () => {
     );
 
   it("paints an event in the colors stored with its arranger's logo", () => {
-    const { container } = render(
-      <EventCalendar
-        events={[
-          eventArrangedBy({
-            ...ORGANIZATION,
-            imagePrimaryColor: "#fd7b03",
-            imageAccentColor: "#0051f1",
-          }),
-        ]}
-      />,
-    );
+    const { container } = renderCalendar([
+      eventArrangedBy({
+        ...ORGANIZATION,
+        imagePrimaryColor: "#fd7b03",
+        imageAccentColor: "#0051f1",
+      }),
+    ]);
     const calendar = container.firstElementChild as HTMLElement;
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toBe(
       "#0051f1",
@@ -338,11 +357,9 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to a color of its own when the logo yielded none", () => {
-    const { container } = render(
-      <EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />,
-    );
+    const { container } = renderCalendar([eventArrangedBy(ORGANIZATION)]);
     const calendar = container.firstElementChild as HTMLElement;
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toMatch(
       /^hsl\(/,

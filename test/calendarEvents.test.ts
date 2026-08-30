@@ -3,9 +3,12 @@ import { describe, expect, it } from "vitest";
 import type { Event } from "../types/types";
 import { getArrangerColor, toArrangerColorKey } from "../utils/arrangerColor";
 import {
-  boundedNavigationRange,
+  WINDOWS_IN_HORIZON,
+  calendarWindows,
+  rollingCalendarRange,
   toArrangerColorsByKey,
   toCalendarEvents,
+  windowRangeLabel,
 } from "../utils/calendarEvents";
 
 function eventArrangedBy(organization: {
@@ -38,24 +41,90 @@ const MAPS = {
 };
 const MIKRO = { id: "org-2", name: "Mikro" };
 
-describe("boundedNavigationRange", () => {
-  it("opens on the first of the month the clock is in, so the current month is a full grid", () => {
-    const { start } = boundedNavigationRange(new Date(2026, 7, 29, 13, 45));
+describe("rollingCalendarRange", () => {
+  it("opens on today, so the days already spent this month are out of range", () => {
+    const { start } = rollingCalendarRange(new Date(2026, 7, 29, 13, 45));
 
-    expect(start).toEqual(new Date(2026, 7, 1));
+    expect(start).toEqual(new Date(2026, 7, 29));
   });
 
-  it("closes one year ahead", () => {
-    const { end } = boundedNavigationRange(new Date(2026, 7, 29));
+  it("keeps events earlier today in range", () => {
+    const { start } = rollingCalendarRange(new Date(2026, 7, 29, 23, 59));
 
-    expect(end).toEqual(new Date(2027, 8, 1));
+    expect(start.getHours()).toBe(0);
   });
 
-  it("rolls the year over at the end of December", () => {
-    const { start, end } = boundedNavigationRange(new Date(2026, 11, 31));
+  it("reaches a year ahead, which is where the last window ends", () => {
+    const now = new Date(2026, 7, 29);
+    const windows = calendarWindows(now, WINDOWS_IN_HORIZON);
 
-    expect(start).toEqual(new Date(2026, 11, 1));
-    expect(end).toEqual(new Date(2028, 0, 1));
+    expect(rollingCalendarRange(now).end).toEqual(windows.at(-1)?.end);
+  });
+});
+
+describe("calendarWindows", () => {
+  it("opens on this week rather than the first of the month", () => {
+    const saturday = new Date(2026, 7, 29, 13, 45);
+    const [firstWindow] = calendarWindows(saturday, 1);
+
+    expect(firstWindow).toEqual({
+      start: new Date(2026, 7, 24),
+      end: new Date(2026, 8, 28),
+    });
+  });
+
+  it("starts on Monday even when the week is almost over, so the grid rows line up", () => {
+    const sunday = new Date(2026, 7, 30);
+    const [firstWindow] = calendarWindows(sunday, 1);
+
+    expect(firstWindow.start).toEqual(new Date(2026, 7, 24));
+    expect(firstWindow.start.getDay()).toBe(1);
+  });
+
+  it("starts on the day itself when the day is a Monday", () => {
+    const monday = new Date(2026, 7, 24, 9, 30);
+    const [firstWindow] = calendarWindows(monday, 1);
+
+    expect(firstWindow.start).toEqual(new Date(2026, 7, 24));
+  });
+
+  it("leaves no gap between the windows it stacks", () => {
+    const windows = calendarWindows(new Date(2026, 7, 29), 3);
+
+    expect(windows).toHaveLength(3);
+    expect(windows[1].start).toEqual(windows[0].end);
+    expect(windows[2].start).toEqual(windows[1].end);
+  });
+
+  it("stops at the horizon however many windows the caller asks for", () => {
+    const windows = calendarWindows(
+      new Date(2026, 7, 29),
+      WINDOWS_IN_HORIZON + 4,
+    );
+
+    expect(windows).toHaveLength(WINDOWS_IN_HORIZON);
+  });
+
+  it("stacks nothing when asked for fewer than one window", () => {
+    expect(calendarWindows(new Date(2026, 7, 29), 0)).toEqual([]);
+    expect(calendarWindows(new Date(2026, 7, 29), -2)).toEqual([]);
+  });
+
+  it("keeps both ends on midnight across the autumn clock change", () => {
+    const [windowOverClockChange] = calendarWindows(new Date(2026, 9, 14), 1);
+    const { start, end } = windowOverClockChange;
+
+    expect(start.getTimezoneOffset()).not.toBe(end.getTimezoneOffset());
+    expect(start.getHours()).toBe(0);
+    expect(end.getHours()).toBe(0);
+  });
+});
+
+describe("windowRangeLabel", () => {
+  it("names the first and last day the window actually shows", () => {
+    const [firstWindow] = calendarWindows(new Date(2026, 7, 29), 1);
+
+    expect(windowRangeLabel(firstWindow)).toBe("24. aug.–27. sep.");
   });
 });
 

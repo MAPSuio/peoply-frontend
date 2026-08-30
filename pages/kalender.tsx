@@ -12,6 +12,7 @@ import useBack from "../hooks/useBack";
 import { fetchAllFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/CalendarPage.module.scss";
 import { Alignment, type Event } from "../types/types";
+import { rollingCalendarRange } from "../utils/calendarEvents";
 import { queryToString } from "../utils/functions";
 
 const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
@@ -21,19 +22,16 @@ const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
 
 export default function CalendarPage() {
   const goBack = useBack();
-  const eventsQuery = useMemo(() => {
-    const rangeStart = new Date();
-    rangeStart.setHours(0, 0, 0, 0);
-    const rangeEnd = new Date(rangeStart);
-    rangeEnd.setFullYear(rangeEnd.getFullYear() + 1);
-
-    return {
-      afterDate: rangeStart.toISOString(),
-      beforeDate: rangeEnd.toISOString(),
+  const range = useMemo(() => rollingCalendarRange(new Date()), []);
+  const eventsQuery = useMemo(
+    () => ({
+      afterDate: range.start.toISOString(),
+      beforeDate: range.end.toISOString(),
       orderBy: "startDate",
       orderDirection: "asc",
-    };
-  }, []);
+    }),
+    [range],
+  );
 
   const eventsQueryResult = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
@@ -60,7 +58,7 @@ export default function CalendarPage() {
         >
           {(events) => (
             <section className={styles.calendarCard}>
-              <EventCalendar events={events} />
+              <EventCalendar events={events} range={range} />
             </section>
           )}
         </QueryState>

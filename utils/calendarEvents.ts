@@ -43,11 +43,65 @@ export interface CalendarEvent {
   };
 }
 
-export function boundedNavigationRange(now: Date) {
+export const ROLLING_WINDOW_IN_WEEKS = 5;
+
+export const WINDOWS_SHOWN_AT_FIRST = 6;
+
+export const WINDOWS_IN_HORIZON = 10;
+
+const DAYS_IN_WEEK = 7;
+
+const WINDOW_IN_DAYS = ROLLING_WINDOW_IN_WEEKS * DAYS_IN_WEEK;
+
+const rangeFormatter = new Intl.DateTimeFormat("nb-NO", {
+  day: "numeric",
+  month: "short",
+});
+
+export interface CalendarRange {
+  start: Date;
+  end: Date;
+}
+
+function midnightAfter(date: Date, dayCount: number) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + dayCount,
+  );
+}
+
+function startOfWeekContaining(date: Date) {
+  const daysSinceMonday = (date.getDay() + 6) % DAYS_IN_WEEK;
+
+  return midnightAfter(date, -daysSinceMonday);
+}
+
+export function rollingCalendarRange(now: Date): CalendarRange {
   return {
-    start: new Date(now.getFullYear(), now.getMonth(), 1),
-    end: new Date(now.getFullYear() + 1, now.getMonth() + 1, 1),
+    start: midnightAfter(now, 0),
+    end: midnightAfter(
+      startOfWeekContaining(now),
+      WINDOW_IN_DAYS * WINDOWS_IN_HORIZON,
+    ),
   };
+}
+
+export function calendarWindows(
+  now: Date,
+  windowCount: number,
+): CalendarRange[] {
+  const shownCount = Math.min(Math.max(windowCount, 0), WINDOWS_IN_HORIZON);
+  const firstWindowStart = startOfWeekContaining(now);
+
+  return Array.from({ length: shownCount }, (_, index) => ({
+    start: midnightAfter(firstWindowStart, index * WINDOW_IN_DAYS),
+    end: midnightAfter(firstWindowStart, (index + 1) * WINDOW_IN_DAYS),
+  }));
+}
+
+export function windowRangeLabel({ start, end }: CalendarRange): string {
+  return rangeFormatter.formatRange(start, midnightAfter(end, -1));
 }
 
 export function toCalendarEvents(events: Event[]): CalendarEvent[] {
