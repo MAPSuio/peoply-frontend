@@ -1,4 +1,32 @@
-// fallow-ignore-file code-duplication -- theme-safe surfaces and buttons intentionally repeat the page's existing visual primitives
+@mixin primary-button {
+  background-color: var(--primary-color-400, $primary-color-400);
+  border: 0;
+  border-radius: $border-radius-round;
+  color: $text-color-button;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+
+  &:hover {
+    background-color: var(--primary-color-400-hover, $primary-color-400-hover);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--primary-color-200, $primary-color-200);
+    outline-offset: 2px;
+  }
+}
+
+@mixin code-panel {
+  background-color: var(--background-color-input, $background-color-input);
+  display: grid;
+
+  code {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    overflow-wrap: anywhere;
+  }
+}
+
 .wrapper {
   align-items: center;
   display: flex;
@@ -135,9 +163,9 @@
 }
 
 .endpoint {
-  background-color: var(--background-color-input, $background-color-input);
+  @include code-panel;
+
   border-left: 4px solid var(--primary-color-400, $primary-color-400);
-  display: grid;
   gap: $spacer-mini;
   padding: $spacer-small;
 
@@ -146,11 +174,6 @@
     font-size: $font-size-tertiary;
     font-weight: 700;
     text-transform: uppercase;
-  }
-
-  code {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    overflow-wrap: anywhere;
   }
 }
 
@@ -218,14 +241,9 @@
   }
 
   > button {
-    background-color: var(--primary-color-400, $primary-color-400);
-    border: 0;
-    border-radius: $border-radius-round;
-    color: $text-color-button;
-    cursor: pointer;
-    font-weight: 700;
+    @include primary-button;
+
     justify-self: start;
-    min-height: 44px;
     padding: 0 $spacer-medium;
 
     &:disabled {
@@ -257,26 +275,16 @@
 }
 
 .newKey {
-  background-color: var(--background-color-input, $background-color-input);
+  @include code-panel;
+
   border: 2px solid var(--primary-color-400, $primary-color-400);
-  display: grid;
   gap: $spacer-small;
   padding: $spacer-medium;
 
-  code {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    overflow-wrap: anywhere;
-  }
-
   button {
-    background-color: var(--primary-color-400, $primary-color-400);
-    border: 0;
-    border-radius: $border-radius-round;
-    color: $text-color-button;
-    cursor: pointer;
-    font-weight: 700;
+    @include primary-button;
+
     justify-self: start;
-    min-height: 44px;
     padding: 0 $spacer-medium;
   }
 }
@@ -301,6 +309,7 @@
   span {
     display: grid;
     min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   small {
@@ -351,31 +360,18 @@
 }
 
 .copyButton {
+  @include primary-button;
+
   align-items: center;
-  background-color: var(--primary-color-400, $primary-color-400);
-  border: 0;
-  border-radius: $border-radius-round;
-  color: $text-color-button;
-  cursor: pointer;
   display: inline-flex;
   flex: 0 0 auto;
   justify-content: center;
-  min-height: 44px;
   min-width: 44px;
   padding: 0;
-
-  &:hover {
-    background-color: var(--primary-color-400-hover, $primary-color-400-hover);
-  }
 
   &:disabled {
     cursor: wait;
     opacity: 0.7;
-  }
-
-  &:focus-visible {
-    outline: 3px solid var(--primary-color-200, $primary-color-200);
-    outline-offset: 2px;
   }
 }
 

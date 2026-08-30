@@ -125,6 +125,7 @@ describe("API and feedback entry points", () => {
     mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
     mockCreateKey.mockResolvedValue(key);
     mockRevokeKey.mockResolvedValue(undefined);
+    mockListKeys.mockResolvedValueOnce([]).mockResolvedValue([key]);
     renderWithSwr(<Integrasjoner />);
 
     await user.type(
@@ -142,6 +143,48 @@ describe("API and feedback entry points", () => {
     await user.click(screen.getByRole("button", { name: "Tilbakekall" }));
     expect(mockRevokeKey).toHaveBeenCalledWith(key.id);
     expect(await screen.findByText("Tilbakekalt")).toBeInTheDocument();
+  });
+
+  it("keeps a key created while the initial list is still loading", async () => {
+    const user = userEvent.setup();
+    const created = {
+      id: "9c1d2f6e-4a0b-4a3f-9d0a-6a2f7b4c1e55",
+      name: "Nøkkel fra race-testen",
+      scopes: ["READ"],
+      expiresAt: "2026-12-01T00:00:00.000Z",
+      createdAt: "2026-09-01T00:00:00.000Z",
+      revokedAt: null,
+      token: "ppl_mcp_secret",
+    };
+    const preExisting = {
+      id: "1b2c3d4e-5f60-4718-8a9b-0c1d2e3f4a5b",
+      name: "Nøkkel som fantes fra før",
+      scopes: ["READ"],
+      expiresAt: "2026-12-01T00:00:00.000Z",
+      createdAt: "2026-08-01T00:00:00.000Z",
+      revokedAt: null,
+    };
+    let resolveInitialList: (keys: unknown[]) => void = () => undefined;
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockListKeys
+      .mockImplementationOnce(
+        () => new Promise((resolve) => (resolveInitialList = resolve)),
+      )
+      .mockResolvedValue([created, preExisting]);
+    mockCreateKey.mockResolvedValue(created);
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(
+      screen.getByLabelText("Navn på nøkkelen"),
+      "Nøkkel fra race-testen",
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+    resolveInitialList([preExisting]);
+
+    expect(
+      await screen.findByText("Nøkkel fra race-testen"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Nøkkel som fantes fra før")).toBeInTheDocument();
   });
 
   it("displays an error message when key creation fails", async () => {

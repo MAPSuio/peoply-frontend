@@ -130,9 +130,7 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     try {
       const created = await createMcpApiKey(trimmedName, scopes);
       const { token: secretToken, ...storedKey } = created;
-      await mutate((current = []) => [storedKey, ...current], {
-        revalidate: false,
-      });
+      await mutate((current = []) => [storedKey, ...current]);
       setToken(secretToken);
       setName("");
     } catch {

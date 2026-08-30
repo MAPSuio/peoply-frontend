@@ -248,6 +248,7 @@ const Integrasjoner = () => {
     "peoply": {
       "type": "remote",
       "url": "${mcpUrl}",
+      "oauth": false,
       "headers": { "Authorization": "Bearer <token>" }
     }
   }
