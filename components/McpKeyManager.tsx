@@ -9,6 +9,12 @@ import {
   revokeMcpApiKey,
 } from "../services/mcpKeys";
 import { ApiError } from "../services/apiError";
+import {
+  DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  MCP_KEY_LIFETIME_OPTIONS,
+  type McpKeyLifetimeDays,
+  toMcpKeyLifetimeDays,
+} from "../constants/mcpKeyLifetimes";
 import styles from "../styles/Integrasjoner.module.scss";
 
 const scopeOptions: { value: McpScope; label: string; description: string }[] =
@@ -30,18 +36,22 @@ type KeyFormProps = {
   busy: boolean;
   name: string;
   scopes: McpScope[];
+  lifetimeDays: McpKeyLifetimeDays;
   onCreate: () => void;
   onNameChange: (name: string) => void;
   onScopeToggle: (scope: McpScope) => void;
+  onLifetimeChange: (days: McpKeyLifetimeDays) => void;
 };
 
 const KeyForm = ({
   busy,
   name,
   scopes,
+  lifetimeDays,
   onCreate,
   onNameChange,
   onScopeToggle,
+  onLifetimeChange,
 }: KeyFormProps) => (
   <div className={styles.keyForm}>
     <label htmlFor="mcp-key-name">Navn på nøkkelen</label>
@@ -68,6 +78,25 @@ const KeyForm = ({
         </label>
       ))}
     </fieldset>
+    <label htmlFor="mcp-key-lifetime">Levetid</label>
+    <select
+      aria-describedby="mcp-key-lifetime-note"
+      id="mcp-key-lifetime"
+      value={String(lifetimeDays)}
+      onChange={(event) =>
+        onLifetimeChange(toMcpKeyLifetimeDays(Number(event.target.value)))
+      }
+    >
+      {MCP_KEY_LIFETIME_OPTIONS.map((option) => (
+        <option key={option.days} value={String(option.days)}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+    <small className={styles.lifetimeNote} id="mcp-key-lifetime-note">
+      Nøkkelen slutter å virke når levetiden er ute, og fornyes ikke automatisk.
+      Da lager du en ny.
+    </small>
     <button disabled={busy || !name.trim()} type="button" onClick={onCreate}>
       Opprett nøkkel
     </button>
@@ -129,6 +158,9 @@ const KeyList = ({
 const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
   const [name, setName] = useState("");
   const [scopes, setScopes] = useState<McpScope[]>(["READ"]);
+  const [lifetimeDays, setLifetimeDays] = useState<McpKeyLifetimeDays>(
+    DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  );
   const [token, setToken] = useState<string>();
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -151,7 +183,7 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     setError(undefined);
     setToken(undefined);
     try {
-      const created = await createMcpApiKey(trimmedName, scopes);
+      const created = await createMcpApiKey(trimmedName, scopes, lifetimeDays);
       const { token: secretToken, ...storedKey } = created;
       setToken(secretToken);
       setName("");
@@ -197,9 +229,11 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     copyToken,
     createKey,
     error,
+    lifetimeDays,
     name,
     revokeKey,
     scopes,
+    setLifetimeDays,
     setName,
     token,
     toggleScope,
@@ -268,9 +302,11 @@ const McpKeyManager = () => {
     <div className={styles.keyManager}>
       <KeyForm
         busy={actions.busy}
+        lifetimeDays={actions.lifetimeDays}
         name={actions.name}
         scopes={actions.scopes}
         onCreate={actions.createKey}
+        onLifetimeChange={actions.setLifetimeDays}
         onNameChange={actions.setName}
         onScopeToggle={actions.toggleScope}
       />
