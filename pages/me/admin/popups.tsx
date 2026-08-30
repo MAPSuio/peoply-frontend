@@ -1,9 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { DayPicker, type DateRange } from "react-day-picker";
-import { nb } from "react-day-picker/locale";
 
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
@@ -11,8 +9,10 @@ import HeadComponent from "../../../components/HeadComponent";
 import Modal from "../../../components/Modal";
 import ModalButton from "../../../components/ModalButton";
 import QueryState from "../../../components/QueryState";
+import PopupDateRangeButton, {
+  type PopupInterval,
+} from "../../../components/PopupDateRangeButton";
 import EditIcon from "../../../components/svgs/EditIcon";
-import CalendarIconCard from "../../../components/svgs/CalendarIconCard";
 import PlusIcon from "../../../components/svgs/PlusIcon";
 import TrashIcon from "../../../components/svgs/TrashIcon";
 import useBack from "../../../hooks/useBack";
@@ -193,9 +193,7 @@ function PopupCard({
   popup: Popup;
   variant: "active" | "upcoming" | "past";
   onEdit: () => void;
-  onChangeDates: (
-    payload: Pick<PopupPayload, "startsAt" | "endsAt">,
-  ) => Promise<void>;
+  onChangeDates: (interval: PopupInterval) => Promise<void>;
   onDelete: () => void;
 }) {
   return (
@@ -218,7 +216,7 @@ function PopupCard({
           >
             <EditIcon />
           </button>
-          <DateRangeButton
+          <PopupDateRangeButton
             popup={popup}
             disabled={variant === "past"}
             onChange={onChangeDates}
@@ -235,84 +233,6 @@ function PopupCard({
         </div>
       </div>
     </article>
-  );
-}
-
-function withTime(date: Date, timestamp: string) {
-  const time = new Date(timestamp);
-  const next = new Date(date);
-  next.setHours(time.getHours(), time.getMinutes(), 0, 0);
-  return next.toISOString();
-}
-
-function DateRangeButton({
-  popup,
-  disabled,
-  onChange,
-}: {
-  popup: Popup;
-  disabled: boolean;
-  onChange: (
-    payload: Pick<PopupPayload, "startsAt" | "endsAt">,
-  ) => Promise<void>;
-}) {
-  const [open, setOpen] = useState(false);
-  const [range, setRange] = useState<DateRange>();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const close = (event: PointerEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    document.addEventListener("pointerdown", close);
-    return () => document.removeEventListener("pointerdown", close);
-  }, [open]);
-
-  const selectRange = async (nextRange: DateRange | undefined) => {
-    setRange(nextRange);
-    if (!nextRange?.from || !nextRange.to) return;
-
-    try {
-      await onChange({
-        startsAt: withTime(nextRange.from, popup.startsAt),
-        endsAt: withTime(nextRange.to, popup.endsAt),
-      });
-      setOpen(false);
-      setRange(undefined);
-    } catch {
-      setRange(undefined);
-    }
-  };
-
-  return (
-    <div className={styles.rangePicker} ref={containerRef}>
-      <button
-        type="button"
-        onClick={() => {
-          setRange(undefined);
-          setOpen((value) => !value);
-        }}
-        disabled={disabled}
-        aria-expanded={open}
-        aria-label="Endre datoer"
-      >
-        <CalendarIconCard />
-      </button>
-      {open && (
-        <div className={styles.calendarPopover}>
-          <DayPicker
-            className={styles.dayPicker}
-            mode="range"
-            locale={nb}
-            defaultMonth={new Date(popup.startsAt)}
-            selected={range}
-            onSelect={selectRange}
-            min={0}
-          />
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -379,12 +299,9 @@ const PopupScheduler: NextPage = () => {
     refresh();
   };
 
-  const updateDates = async (
-    popupId: string,
-    payload: Pick<PopupPayload, "startsAt" | "endsAt">,
-  ) => {
+  const updateDates = async (popupId: string, interval: PopupInterval) => {
     try {
-      await updatePopup(popupId, payload);
+      await updatePopup(popupId, interval);
     } catch (error) {
       addSnack(
         apiErrorMessage(error) ?? "Kunne ikke endre tidsrommet",
@@ -479,7 +396,7 @@ const PopupScheduler: NextPage = () => {
                 popup={popup}
                 variant={variant}
                 onEdit={() => setEditorPopup(popup)}
-                onChangeDates={(payload) => updateDates(popup.id, payload)}
+                onChangeDates={(interval) => updateDates(popup.id, interval)}
                 onDelete={() => setDeletePopup(popup)}
               />
             );

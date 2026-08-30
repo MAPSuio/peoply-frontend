@@ -99,14 +99,11 @@
   white-space: pre-line;
 }
 
-.rangePicker {
-  position: relative;
-}
-
 .cardFooter {
   align-items: center;
   display: flex;
   justify-content: space-between;
+  position: relative;
 }
 
 .dateRange {
@@ -135,6 +132,39 @@
   --rdp-day-width: 36px;
 
   margin: 0;
+}
+
+.calendarFooter {
+  align-items: center;
+  border-top: 1px solid var(--divider-color, $divider-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer-very-small;
+  justify-content: space-between;
+  margin-top: $spacer-very-small;
+  padding-top: $spacer-very-small;
+}
+
+.pendingRange {
+  @include monoFont();
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+}
+
+.saveRange {
+  @include resetButton();
+  background: var(--primary-color-200, $primary-color-200);
+  border-radius: $border-radius-regular;
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+  min-height: 44px;
+  padding: 0 $spacer-very-small;
+  white-space: nowrap;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
 }
 
 .actions {
