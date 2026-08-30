@@ -63,13 +63,13 @@ export default function PopupDateRangeButton({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || saving) return;
     const close = (event: PointerEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
     };
     document.addEventListener("pointerdown", close);
     return () => document.removeEventListener("pointerdown", close);
-  }, [open]);
+  }, [open, saving]);
 
   const scheduled = scheduledInterval(popup);
 

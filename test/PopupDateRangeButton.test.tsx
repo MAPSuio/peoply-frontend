@@ -134,6 +134,22 @@ describe("PopupDateRangeButton", () => {
     expect(dayInSeptember(21)).toBeDisabled();
   });
 
+  it("stays open on an outside click while the interval is being saved", async () => {
+    const admin = userEvent.setup();
+    const neverSettles = new Promise<void>(() => undefined);
+    const onChange = renderPicker(vi.fn().mockReturnValue(neverSettles));
+
+    await admin.click(screen.getByRole("button", { name: "Endre datoer" }));
+    await admin.click(dayInSeptember(14));
+    await admin.click(dayInSeptember(18));
+    await admin.click(screen.getByRole("button", { name: "Lagre datoer" }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+
+    await admin.click(document.body);
+
+    expect(screen.getByRole("button", { name: "Lagrer …" })).toBeVisible();
+  });
+
   it("refuses to open on a pop-up whose dates cannot be read", async () => {
     const admin = userEvent.setup();
     renderPicker(vi.fn(), { ...popup, endsAt: "ikke en dato" } as Popup);
