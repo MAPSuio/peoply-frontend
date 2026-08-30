@@ -62,18 +62,21 @@ const toolCatalogue = [
     name: "search_events",
     title: "Search public events",
     description: "Search public Peoply events.",
+    summary: "Søk i offentlige arrangementer.",
     scope: "peoply:read",
   },
   {
     name: "register_for_event",
     title: "Register for event",
     description: "Register the connected user for an event.",
+    summary: "Meld deg på et offentlig arrangement.",
     scope: "peoply:write",
   },
   {
     name: "create_event",
     title: "Create event",
     description: "Create an event for an organization you manage.",
+    summary: "Opprett et arrangement, uten bilde.",
     scope: "peoply:organize",
   },
 ];
@@ -154,26 +157,40 @@ describe("API and feedback entry points", () => {
     await user.click(summary);
     const catalogue = summary.closest("details") as HTMLElement;
 
+    await within(catalogue).findByText("search_events");
+
+    const groupOf = (heading: RegExp) =>
+      within(catalogue)
+        .getByRole("heading", { name: heading })
+        .closest("div") as HTMLElement;
+    const read = groupOf(/^Les/);
+    const write = groupOf(/^Skriv/);
+    const organize = groupOf(/^Arranger/);
+
+    expect(within(read).getByText("search_events")).toBeInTheDocument();
     expect(
-      await within(catalogue).findByText("search_events"),
+      within(read).getByText("Søk i offentlige arrangementer."),
     ).toBeInTheDocument();
-    expect(
-      within(catalogue).getByText("register_for_event"),
-    ).toBeInTheDocument();
-    expect(within(catalogue).getByText("create_event")).toBeInTheDocument();
-    expect(
-      within(catalogue).getByText("Search public Peoply events."),
-    ).toBeInTheDocument();
-    expect(
-      within(catalogue).getByRole("heading", { name: /^Les/ }),
-    ).toBeInTheDocument();
-    expect(
-      within(catalogue).getByRole("heading", { name: /^Skriv/ }),
-    ).toBeInTheDocument();
-    expect(
-      within(catalogue).getByRole("heading", { name: /^Arranger/ }),
-    ).toBeInTheDocument();
+    expect(within(read).queryByText("register_for_event")).toBeNull();
+    expect(within(write).getByText("register_for_event")).toBeInTheDocument();
+    expect(within(write).queryByText("create_event")).toBeNull();
+    expect(within(organize).getByText("create_event")).toBeInTheDocument();
     expect(within(catalogue).getAllByText("1 verktøy")).toHaveLength(3);
+    expect(
+      within(catalogue).queryByText("Search public Peoply events."),
+    ).toBeNull();
+  });
+
+  it("says so when the catalogue comes back empty", async () => {
+    const user = userEvent.setup();
+    mockListTools.mockResolvedValue([]);
+    renderWithSwr(<Integrasjoner />);
+
+    await user.click(screen.getByText(/Hva kan agenten gjøre/i));
+
+    expect(
+      await screen.findByText(/API-et oppgir ingen verktøy/i),
+    ).toBeInTheDocument();
   });
 
   it("says so when the tool catalogue cannot be fetched", async () => {

@@ -23,7 +23,7 @@ const ToolGroup = ({ label, tools }: { label: string; tools: McpTool[] }) => {
         {tools.map((tool) => (
           <div className={styles.toolRow} key={tool.name}>
             <dt>{tool.name}</dt>
-            <dd>{tool.description}</dd>
+            <dd>{tool.summary}</dd>
           </div>
         ))}
       </dl>
@@ -41,6 +41,11 @@ const McpToolCatalog = () => {
       {error && (
         <p className={styles.copyError} role="alert">
           Kunne ikke hente verktøylista fra API-et.
+        </p>
+      )}
+      {tools?.length === 0 && (
+        <p className={styles.keyStatus}>
+          API-et oppgir ingen verktøy akkurat nå.
         </p>
       )}
       {tools &&

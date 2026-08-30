@@ -6,6 +6,7 @@ export type McpTool = {
   name: string;
   title: string;
   description: string;
+  summary: string;
   scope: McpToolScope;
 };
 
