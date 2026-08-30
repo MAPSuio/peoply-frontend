@@ -89,7 +89,7 @@ const createErrorMessage = (error: unknown) => {
     return "Fikk ikke kontakt med Peoply-API-et. Prøv igjen.";
   }
   return status
-    ? `Kunne ikke opprette API-nøkkelen (feil ${status}).`
+    ? `Kunne ikke opprette API-nøkkelen (HTTP-statuskode ${status}).`
     : "Kunne ikke opprette API-nøkkelen.";
 };
 
@@ -141,6 +141,16 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
       return next.length ? next : ["READ"];
     });
 
+  const addKeyToList = async (storedKey: McpApiKey) => {
+    try {
+      await mutate((current = []) => [storedKey, ...current]);
+    } catch {
+      setError(
+        "Nøkkelen er opprettet, men listen under er ikke oppdatert. Last siden på nytt.",
+      );
+    }
+  };
+
   const createKey = async () => {
     const trimmedName = name.trim();
     if (!trimmedName) return;
@@ -150,9 +160,9 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     try {
       const created = await createMcpApiKey(trimmedName, scopes);
       const { token: secretToken, ...storedKey } = created;
-      await mutate((current = []) => [storedKey, ...current]);
       setToken(secretToken);
       setName("");
+      await addKeyToList(storedKey);
     } catch (error) {
       setError(createErrorMessage(error));
     } finally {

@@ -214,6 +214,49 @@ describe("API and feedback entry points", () => {
     expect(await screen.findByText(/logge inn/i)).toBeInTheDocument();
   });
 
+  it("keeps showing the new key when refreshing the list fails", async () => {
+    const user = userEvent.setup();
+    const created = {
+      id: "3f2a1b0c-9d8e-4f7a-8b6c-5d4e3f2a1b0c",
+      name: "Nøkkel med treg liste",
+      scopes: ["READ"],
+      expiresAt: "2026-12-01T00:00:00.000Z",
+      createdAt: "2026-09-01T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    };
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue(created);
+    mockListKeys
+      .mockResolvedValueOnce([])
+      .mockRejectedValue(new Error("list failed"));
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(
+      screen.getByLabelText("Navn på nøkkelen"),
+      "Nøkkel med treg liste",
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText("ppl_mcp_secret")).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Kunne ikke opprette API-nøkkelen/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("says that the number in the fallback message is an HTTP status code", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(
+      new ApiError("Server error", 500, "/mcp/keys"),
+    );
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Serverfeil");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/HTTP-statuskode 500/i)).toBeInTheDocument();
+  });
+
   it("displays an error message when key creation fails", async () => {
     const user = userEvent.setup();
     mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
