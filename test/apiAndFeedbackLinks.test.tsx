@@ -14,6 +14,7 @@ import {
   DEFAULT_MCP_KEY_LIFETIME_DAYS,
   MCP_KEY_LIFETIME_OPTIONS,
   MAX_MCP_KEY_LIFETIME_DAYS,
+  toMcpKeyLifetimeDays,
 } from "../constants/mcpKeyLifetimes";
 
 vi.mock("next/router", () => ({
@@ -230,14 +231,31 @@ describe("API and feedback entry points", () => {
     );
   });
 
-  it("offers only lifetimes the backend accepts", () => {
+  it("offers only lifetimes within the range the API documents", () => {
     expect(MCP_KEY_LIFETIME_OPTIONS.length).toBeGreaterThan(1);
     for (const option of MCP_KEY_LIFETIME_OPTIONS) {
       expect(option.days).toBeGreaterThanOrEqual(1);
       expect(option.days).toBeLessThanOrEqual(MAX_MCP_KEY_LIFETIME_DAYS);
+      expect(option.label).toMatch(/dager/);
     }
     expect(MCP_KEY_LIFETIME_OPTIONS.map((option) => option.days)).toContain(
       DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
+  });
+
+  it("falls back to the default when the select reports an unknown value", () => {
+    expect(toMcpKeyLifetimeDays(4711)).toBe(DEFAULT_MCP_KEY_LIFETIME_DAYS);
+    expect(toMcpKeyLifetimeDays(Number.NaN)).toBe(
+      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
+  });
+
+  it("describes the lifetime select with the note about expiry", () => {
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    expect(screen.getByLabelText("Levetid")).toHaveAccessibleDescription(
+      /fornyes ikke automatisk/i,
     );
   });
 

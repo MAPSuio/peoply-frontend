@@ -1,3 +1,4 @@
+import type { McpKeyLifetimeDays } from "../constants/mcpKeyLifetimes";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
 export type McpScope = "READ" | "WRITE" | "ORGANIZE";
@@ -22,7 +23,7 @@ export const listMcpApiKeys = async (): Promise<McpApiKey[]> => {
 export const createMcpApiKey = async (
   name: string,
   scopes: McpScope[],
-  expiresInDays: number,
+  expiresInDays: McpKeyLifetimeDays,
 ): Promise<CreatedMcpApiKey> => {
   const data = (await fetchFromPeoplyApiJson("/mcp/keys", {
     method: "POST",

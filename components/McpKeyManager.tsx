@@ -12,6 +12,8 @@ import { ApiError } from "../services/apiError";
 import {
   DEFAULT_MCP_KEY_LIFETIME_DAYS,
   MCP_KEY_LIFETIME_OPTIONS,
+  type McpKeyLifetimeDays,
+  toMcpKeyLifetimeDays,
 } from "../constants/mcpKeyLifetimes";
 import styles from "../styles/Integrasjoner.module.scss";
 
@@ -34,11 +36,11 @@ type KeyFormProps = {
   busy: boolean;
   name: string;
   scopes: McpScope[];
-  lifetimeDays: number;
+  lifetimeDays: McpKeyLifetimeDays;
   onCreate: () => void;
   onNameChange: (name: string) => void;
   onScopeToggle: (scope: McpScope) => void;
-  onLifetimeChange: (days: number) => void;
+  onLifetimeChange: (days: McpKeyLifetimeDays) => void;
 };
 
 const KeyForm = ({
@@ -78,9 +80,12 @@ const KeyForm = ({
     </fieldset>
     <label htmlFor="mcp-key-lifetime">Levetid</label>
     <select
+      aria-describedby="mcp-key-lifetime-note"
       id="mcp-key-lifetime"
       value={String(lifetimeDays)}
-      onChange={(event) => onLifetimeChange(Number(event.target.value))}
+      onChange={(event) =>
+        onLifetimeChange(toMcpKeyLifetimeDays(Number(event.target.value)))
+      }
     >
       {MCP_KEY_LIFETIME_OPTIONS.map((option) => (
         <option key={option.days} value={String(option.days)}>
@@ -88,7 +93,7 @@ const KeyForm = ({
         </option>
       ))}
     </select>
-    <small className={styles.lifetimeNote}>
+    <small className={styles.lifetimeNote} id="mcp-key-lifetime-note">
       Nøkkelen slutter å virke når levetiden er ute, og fornyes ikke automatisk.
       Da lager du en ny.
     </small>
@@ -153,7 +158,7 @@ const KeyList = ({
 const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
   const [name, setName] = useState("");
   const [scopes, setScopes] = useState<McpScope[]>(["READ"]);
-  const [lifetimeDays, setLifetimeDays] = useState(
+  const [lifetimeDays, setLifetimeDays] = useState<McpKeyLifetimeDays>(
     DEFAULT_MCP_KEY_LIFETIME_DAYS,
   );
   const [token, setToken] = useState<string>();
