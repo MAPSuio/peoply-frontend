@@ -54,8 +54,12 @@ export default function PopupDateRangeButton({
   }, [open]);
 
   const togglePicker = () => {
+    if (open) {
+      setOpen(false);
+      return;
+    }
     setRange({ from: new Date(popup.startsAt), to: new Date(popup.endsAt) });
-    setOpen((wasOpen) => !wasOpen);
+    setOpen(true);
   };
 
   const pendingInterval = intervalFromRange(range, popup);
