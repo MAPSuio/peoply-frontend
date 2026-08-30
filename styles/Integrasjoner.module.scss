@@ -150,6 +150,23 @@
   @include desktop() {
     padding: $spacer-large;
   }
+
+  > summary {
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    h2::before {
+      content: "▸ ";
+    }
+  }
+
+  &[open] > summary h2::before {
+    content: "▾ ";
+  }
 }
 
 .eyebrow {
@@ -442,5 +459,40 @@
 
   code {
     color: var(--text-color-emphasis, $text-color-emphasis);
+  }
+}
+
+.toolGroup {
+  margin-top: $spacer-medium;
+
+  h4 {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    margin: 0 0 $spacer-very-small;
+
+    small {
+      color: var(--text-color-primary, $text-color-primary);
+      font-weight: 400;
+    }
+  }
+
+  dl {
+    display: grid;
+    gap: $spacer-small;
+    margin: 0;
+  }
+}
+
+.toolRow {
+  display: grid;
+  gap: $spacer-very-small;
+
+  dt {
+    font-family: monospace;
+    overflow-wrap: anywhere;
+  }
+
+  dd {
+    color: var(--text-color-primary, $text-color-primary);
+    margin: 0;
   }
 }
