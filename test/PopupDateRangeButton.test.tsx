@@ -13,15 +13,24 @@ const popup = {
   endsAt: new Date(2026, 8, 9, 20, 0).toISOString(),
 } as Popup;
 
+const overnightPopup = {
+  ...popup,
+  startsAt: new Date(2026, 8, 7, 20, 0).toISOString(),
+  endsAt: new Date(2026, 8, 8, 9, 0).toISOString(),
+} as Popup;
+
 function dayInSeptember(dayOfMonth: number) {
   return screen.getByRole("button", {
     name: new RegExp(`(^|[\\s,])${dayOfMonth}\\. september 2026`),
   });
 }
 
-function renderPicker(onChange = vi.fn().mockResolvedValue(undefined)) {
+function renderPicker(
+  onChange = vi.fn().mockResolvedValue(undefined),
+  shown: Popup = popup,
+) {
   render(
-    <PopupDateRangeButton popup={popup} disabled={false} onChange={onChange} />,
+    <PopupDateRangeButton popup={shown} disabled={false} onChange={onChange} />,
   );
   return onChange;
 }
@@ -88,6 +97,25 @@ describe("PopupDateRangeButton", () => {
     expect(onChange).toHaveBeenCalledWith({
       startsAt: new Date(2026, 8, 21, 9, 0).toISOString(),
       endsAt: new Date(2026, 8, 23, 20, 0).toISOString(),
+    });
+  });
+
+  it("ends an overnight pop-up the morning after the day it was given", async () => {
+    const admin = userEvent.setup();
+    const onChange = renderPicker(
+      vi.fn().mockResolvedValue(undefined),
+      overnightPopup,
+    );
+
+    await admin.click(screen.getByRole("button", { name: "Endre datoer" }));
+    await admin.click(dayInSeptember(14));
+    await admin.click(dayInSeptember(14));
+    await admin.click(screen.getByRole("button", { name: "Lagre datoer" }));
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+    expect(onChange).toHaveBeenCalledWith({
+      startsAt: new Date(2026, 8, 14, 20, 0).toISOString(),
+      endsAt: new Date(2026, 8, 15, 9, 0).toISOString(),
     });
   });
 

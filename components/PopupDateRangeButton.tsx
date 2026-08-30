@@ -19,14 +19,27 @@ function atTimeOfDay(day: Date, timestamp: string) {
   return moment.toISOString();
 }
 
+function theDayAfter(day: Date) {
+  const next = new Date(day);
+  next.setDate(next.getDate() + 1);
+  return next;
+}
+
 function intervalFromRange(
   range: DateRange | undefined,
   popup: Popup,
 ): PopupInterval | undefined {
   if (!range?.from || !range.to) return undefined;
+
+  const startsAt = atTimeOfDay(range.from, popup.startsAt);
+  const endsOnTheChosenDay = atTimeOfDay(range.to, popup.endsAt);
+  const endsOvernight = endsOnTheChosenDay <= startsAt;
+
   return {
-    startsAt: atTimeOfDay(range.from, popup.startsAt),
-    endsAt: atTimeOfDay(range.to, popup.endsAt),
+    startsAt,
+    endsAt: endsOvernight
+      ? atTimeOfDay(theDayAfter(range.to), popup.endsAt)
+      : endsOnTheChosenDay,
   };
 }
 
