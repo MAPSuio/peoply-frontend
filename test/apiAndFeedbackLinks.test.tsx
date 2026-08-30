@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProfileMenu from "../components/ProfileMenu";
 import { API_URL } from "../constants/urls";
+import { ApiError } from "../services/apiError";
 
 vi.mock("next/router", () => ({
   useRouter: () => ({
@@ -185,6 +186,32 @@ describe("API and feedback entry points", () => {
       await screen.findByText("Nøkkel fra race-testen"),
     ).toBeInTheDocument();
     expect(screen.getByText("Nøkkel som fantes fra før")).toBeInTheDocument();
+  });
+
+  it("names the reason when the key limit is reached", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(new ApiError("Conflict", 409, "/mcp/keys"));
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "For mange");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/aktive nøkler/i)).toBeInTheDocument();
+  });
+
+  it("asks the user to log in again when the session has expired", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(
+      new ApiError("Unauthorized", 401, "/mcp/keys"),
+    );
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Utlogget");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/logge inn/i)).toBeInTheDocument();
   });
 
   it("displays an error message when key creation fails", async () => {

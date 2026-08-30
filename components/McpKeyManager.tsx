@@ -8,6 +8,7 @@ import {
   type McpScope,
   revokeMcpApiKey,
 } from "../services/mcpKeys";
+import { ApiError } from "../services/apiError";
 import styles from "../styles/Integrasjoner.module.scss";
 
 const scopeOptions: { value: McpScope; label: string; description: string }[] =
@@ -73,6 +74,25 @@ const KeyForm = ({
   </div>
 );
 
+const CREATE_ERROR_BY_STATUS: Record<number, string> = {
+  401: "Sesjonen er utløpt. Du må logge inn på nytt.",
+  409: "Du har allerede så mange aktive nøkler som er tillatt. Tilbakekall en før du lager en ny.",
+  429: "For mange forsøk. Prøv igjen om et minutt.",
+};
+
+const createErrorMessage = (error: unknown) => {
+  const status = error instanceof ApiError ? error.status : undefined;
+  if (status && CREATE_ERROR_BY_STATUS[status]) {
+    return CREATE_ERROR_BY_STATUS[status];
+  }
+  if (status === 0) {
+    return "Fikk ikke kontakt med Peoply-API-et. Prøv igjen.";
+  }
+  return status
+    ? `Kunne ikke opprette API-nøkkelen (feil ${status}).`
+    : "Kunne ikke opprette API-nøkkelen.";
+};
+
 const KeyList = ({
   keys,
   busy,
@@ -133,8 +153,8 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
       await mutate((current = []) => [storedKey, ...current]);
       setToken(secretToken);
       setName("");
-    } catch {
-      setError("Kunne ikke opprette API-nøkkelen.");
+    } catch (error) {
+      setError(createErrorMessage(error));
     } finally {
       setBusy(false);
     }
