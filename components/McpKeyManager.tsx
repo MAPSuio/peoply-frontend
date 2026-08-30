@@ -8,6 +8,13 @@ import {
   type McpScope,
   revokeMcpApiKey,
 } from "../services/mcpKeys";
+import { ApiError } from "../services/apiError";
+import {
+  DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  MCP_KEY_LIFETIME_OPTIONS,
+  type McpKeyLifetimeDays,
+  toMcpKeyLifetimeDays,
+} from "../constants/mcpKeyLifetimes";
 import styles from "../styles/Integrasjoner.module.scss";
 
 const scopeOptions: { value: McpScope; label: string; description: string }[] =
@@ -29,18 +36,22 @@ type KeyFormProps = {
   busy: boolean;
   name: string;
   scopes: McpScope[];
+  lifetimeDays: McpKeyLifetimeDays;
   onCreate: () => void;
   onNameChange: (name: string) => void;
   onScopeToggle: (scope: McpScope) => void;
+  onLifetimeChange: (days: McpKeyLifetimeDays) => void;
 };
 
 const KeyForm = ({
   busy,
   name,
   scopes,
+  lifetimeDays,
   onCreate,
   onNameChange,
   onScopeToggle,
+  onLifetimeChange,
 }: KeyFormProps) => (
   <div className={styles.keyForm}>
     <label htmlFor="mcp-key-name">Navn på nøkkelen</label>
@@ -67,11 +78,49 @@ const KeyForm = ({
         </label>
       ))}
     </fieldset>
+    <label htmlFor="mcp-key-lifetime">Levetid</label>
+    <select
+      aria-describedby="mcp-key-lifetime-note"
+      id="mcp-key-lifetime"
+      value={String(lifetimeDays)}
+      onChange={(event) =>
+        onLifetimeChange(toMcpKeyLifetimeDays(Number(event.target.value)))
+      }
+    >
+      {MCP_KEY_LIFETIME_OPTIONS.map((option) => (
+        <option key={option.days} value={String(option.days)}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+    <small className={styles.lifetimeNote} id="mcp-key-lifetime-note">
+      Nøkkelen slutter å virke når levetiden er ute, og fornyes ikke automatisk.
+      Da lager du en ny.
+    </small>
     <button disabled={busy || !name.trim()} type="button" onClick={onCreate}>
       Opprett nøkkel
     </button>
   </div>
 );
+
+const CREATE_ERROR_BY_STATUS: Record<number, string> = {
+  401: "Sesjonen er utløpt. Du må logge inn på nytt.",
+  409: "Du har allerede så mange aktive nøkler som er tillatt. Tilbakekall en før du lager en ny.",
+  429: "For mange forsøk. Prøv igjen om et minutt.",
+};
+
+const createErrorMessage = (error: unknown) => {
+  const status = error instanceof ApiError ? error.status : undefined;
+  if (status && CREATE_ERROR_BY_STATUS[status]) {
+    return CREATE_ERROR_BY_STATUS[status];
+  }
+  if (status === 0) {
+    return "Fikk ikke kontakt med Peoply-API-et. Prøv igjen.";
+  }
+  return status
+    ? `Kunne ikke opprette API-nøkkelen (HTTP-statuskode ${status}).`
+    : "Kunne ikke opprette API-nøkkelen.";
+};
 
 const KeyList = ({
   keys,
@@ -109,6 +158,9 @@ const KeyList = ({
 const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
   const [name, setName] = useState("");
   const [scopes, setScopes] = useState<McpScope[]>(["READ"]);
+  const [lifetimeDays, setLifetimeDays] = useState<McpKeyLifetimeDays>(
+    DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  );
   const [token, setToken] = useState<string>();
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -121,6 +173,9 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
       return next.length ? next : ["READ"];
     });
 
+  const addKeyToCachedList = (storedKey: McpApiKey) =>
+    mutate((current = []) => [storedKey, ...current]).catch(() => undefined);
+
   const createKey = async () => {
     const trimmedName = name.trim();
     if (!trimmedName) return;
@@ -128,13 +183,13 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     setError(undefined);
     setToken(undefined);
     try {
-      const created = await createMcpApiKey(trimmedName, scopes);
+      const created = await createMcpApiKey(trimmedName, scopes, lifetimeDays);
       const { token: secretToken, ...storedKey } = created;
-      await mutate((current = []) => [storedKey, ...current]);
       setToken(secretToken);
       setName("");
-    } catch {
-      setError("Kunne ikke opprette API-nøkkelen.");
+      await addKeyToCachedList(storedKey);
+    } catch (error) {
+      setError(createErrorMessage(error));
     } finally {
       setBusy(false);
     }
@@ -174,9 +229,11 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     copyToken,
     createKey,
     error,
+    lifetimeDays,
     name,
     revokeKey,
     scopes,
+    setLifetimeDays,
     setName,
     token,
     toggleScope,
@@ -217,10 +274,10 @@ const KeyLoadState = ({
   onRevoke: (key: McpApiKey) => void;
 }) => {
   if (loading) return <p className={styles.keyStatus}>Henter API-nøkler…</p>;
+  if (keys?.length)
+    return <KeyList busy={busy} keys={keys} onRevoke={onRevoke} />;
   if (error) return null;
-  if (!keys?.length)
-    return <p className={styles.keyStatus}>Du har ingen API-nøkler ennå.</p>;
-  return <KeyList busy={busy} keys={keys} onRevoke={onRevoke} />;
+  return <p className={styles.keyStatus}>Du har ingen API-nøkler ennå.</p>;
 };
 
 const McpKeyManager = () => {
@@ -245,9 +302,11 @@ const McpKeyManager = () => {
     <div className={styles.keyManager}>
       <KeyForm
         busy={actions.busy}
+        lifetimeDays={actions.lifetimeDays}
         name={actions.name}
         scopes={actions.scopes}
         onCreate={actions.createKey}
+        onLifetimeChange={actions.setLifetimeDays}
         onNameChange={actions.setName}
         onScopeToggle={actions.toggleScope}
       />

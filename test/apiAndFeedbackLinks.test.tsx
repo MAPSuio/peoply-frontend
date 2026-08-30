@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,6 +9,12 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ProfileMenu from "../components/ProfileMenu";
 import { API_URL } from "../constants/urls";
+import { ApiError } from "../services/apiError";
+import {
+  DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  MCP_KEY_LIFETIME_OPTIONS,
+  MAX_MCP_KEY_LIFETIME_DAYS,
+} from "../constants/mcpKeyLifetimes";
 
 vi.mock("next/router", () => ({
   useRouter: () => ({
@@ -135,10 +141,11 @@ describe("API and feedback entry points", () => {
     await user.click(screen.getByRole("checkbox", { name: /Skriv/i }));
     await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
 
-    expect(mockCreateKey).toHaveBeenCalledWith("Claude Code", [
-      "READ",
-      "WRITE",
-    ]);
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Claude Code",
+      ["READ", "WRITE"],
+      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
     expect(await screen.findByText("ppl_mcp_secret")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Tilbakekall" }));
     expect(mockRevokeKey).toHaveBeenCalledWith(key.id);
@@ -185,6 +192,180 @@ describe("API and feedback entry points", () => {
       await screen.findByText("Nøkkel fra race-testen"),
     ).toBeInTheDocument();
     expect(screen.getByText("Nøkkel som fantes fra før")).toBeInTheDocument();
+  });
+
+  it("lets the user choose how long the key stays valid", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue({
+      id: "0d3a2b1c-6e5f-4a7b-8c9d-0e1f2a3b4c5d",
+      name: "Kortlevd",
+      scopes: ["READ"],
+      expiresAt: "2026-09-29T00:00:00.000Z",
+      createdAt: "2026-08-30T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    });
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Kortlevd");
+    await user.selectOptions(
+      screen.getByLabelText("Levetid"),
+      String(MCP_KEY_LIFETIME_OPTIONS[0].days),
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Kortlevd",
+      ["READ"],
+      MCP_KEY_LIFETIME_OPTIONS[0].days,
+    );
+  });
+
+  it("preselects the default lifetime the backend also uses", () => {
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    expect(screen.getByLabelText("Levetid")).toHaveValue(
+      String(DEFAULT_MCP_KEY_LIFETIME_DAYS),
+    );
+  });
+
+  it("offers only lifetimes within the range the API documents", () => {
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    const options = within(screen.getByLabelText("Levetid")).getAllByRole(
+      "option",
+    );
+
+    expect(options.length).toBeGreaterThan(1);
+    expect(options.map((option) => option.textContent)).toEqual(
+      MCP_KEY_LIFETIME_OPTIONS.map((option) => option.label),
+    );
+    for (const option of options) {
+      const days = Number(option.getAttribute("value"));
+      expect(days).toBeGreaterThanOrEqual(1);
+      expect(days).toBeLessThanOrEqual(MAX_MCP_KEY_LIFETIME_DAYS);
+      expect(option.textContent).toMatch(/dager/);
+    }
+    expect(options.map((option) => option.getAttribute("value"))).toContain(
+      String(DEFAULT_MCP_KEY_LIFETIME_DAYS),
+    );
+  });
+
+  it("falls back to the default when the select reports an unknown value", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue({
+      id: "5b6c7d8e-9f00-4a1b-8c2d-3e4f5a6b7c8d",
+      name: "Ukjent levetid",
+      scopes: ["READ"],
+      expiresAt: "2026-11-28T00:00:00.000Z",
+      createdAt: "2026-08-30T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    });
+    renderWithSwr(<Integrasjoner />);
+
+    const lifetime = screen.getByLabelText("Levetid");
+    fireEvent.change(lifetime, { target: { value: "4711" } });
+
+    expect(lifetime).toHaveValue(String(DEFAULT_MCP_KEY_LIFETIME_DAYS));
+
+    await user.type(
+      screen.getByLabelText("Navn på nøkkelen"),
+      "Ukjent levetid",
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Ukjent levetid",
+      ["READ"],
+      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
+  });
+
+  it("describes the lifetime select with the note about expiry", () => {
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    expect(screen.getByLabelText("Levetid")).toHaveAccessibleDescription(
+      /fornyes ikke automatisk/i,
+    );
+  });
+
+  it("names the reason when the key limit is reached", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(new ApiError("Conflict", 409, "/mcp/keys"));
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "For mange");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/aktive nøkler/i)).toBeInTheDocument();
+  });
+
+  it("asks the user to log in again when the session has expired", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(
+      new ApiError("Unauthorized", 401, "/mcp/keys"),
+    );
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Utlogget");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/logge inn/i)).toBeInTheDocument();
+  });
+
+  it("keeps showing the new key when refreshing the list fails", async () => {
+    const user = userEvent.setup();
+    const created = {
+      id: "3f2a1b0c-9d8e-4f7a-8b6c-5d4e3f2a1b0c",
+      name: "Nøkkel med treg liste",
+      scopes: ["READ"],
+      expiresAt: "2026-12-01T00:00:00.000Z",
+      createdAt: "2026-09-01T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    };
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue(created);
+    mockListKeys
+      .mockResolvedValueOnce([])
+      .mockRejectedValue(new Error("list failed"));
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(
+      screen.getByLabelText("Navn på nøkkelen"),
+      "Nøkkel med treg liste",
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText("ppl_mcp_secret")).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Kunne ikke opprette API-nøkkelen/i),
+    ).not.toBeInTheDocument();
+    expect(
+      await screen.findByText("Nøkkel med treg liste"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Kunne ikke hente API-nøkler/i),
+    ).toBeInTheDocument();
+  });
+
+  it("says that the number in the fallback message is an HTTP status code", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockRejectedValue(
+      new ApiError("Server error", 500, "/mcp/keys"),
+    );
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Serverfeil");
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(await screen.findByText(/HTTP-statuskode 500/i)).toBeInTheDocument();
   });
 
   it("displays an error message when key creation fails", async () => {
