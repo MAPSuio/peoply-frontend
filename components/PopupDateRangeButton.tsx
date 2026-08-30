@@ -12,11 +12,10 @@ export interface PopupInterval {
   endsAt: string;
 }
 
-function atTimeOfDay(day: Date, timestamp: string) {
-  const timeOfDay = new Date(timestamp);
+function atTimeOfDay(day: Date, timeOfDay: Date) {
   const moment = new Date(day);
   moment.setHours(timeOfDay.getHours(), timeOfDay.getMinutes(), 0, 0);
-  return moment.toISOString();
+  return moment;
 }
 
 function theDayAfter(day: Date) {
@@ -25,22 +24,28 @@ function theDayAfter(day: Date) {
   return next;
 }
 
+function scheduledInterval(popup: Popup) {
+  const from = new Date(popup.startsAt);
+  const to = new Date(popup.endsAt);
+  const isReadable =
+    !Number.isNaN(from.getTime()) && !Number.isNaN(to.getTime());
+  return isReadable ? { from, to } : undefined;
+}
+
 function intervalFromRange(
   range: DateRange | undefined,
-  popup: Popup,
+  scheduled: { from: Date; to: Date },
 ): PopupInterval | undefined {
   if (!range?.from || !range.to) return undefined;
 
-  const startsAt = atTimeOfDay(range.from, popup.startsAt);
-  const endsOnTheChosenDay = atTimeOfDay(range.to, popup.endsAt);
-  const endsOvernight = endsOnTheChosenDay <= startsAt;
+  const startsAt = atTimeOfDay(range.from, scheduled.from);
+  const endsOnTheChosenDay = atTimeOfDay(range.to, scheduled.to);
+  const endsAt =
+    endsOnTheChosenDay > startsAt
+      ? endsOnTheChosenDay
+      : atTimeOfDay(theDayAfter(range.to), scheduled.to);
 
-  return {
-    startsAt,
-    endsAt: endsOvernight
-      ? atTimeOfDay(theDayAfter(range.to), popup.endsAt)
-      : endsOnTheChosenDay,
-  };
+  return { startsAt: startsAt.toISOString(), endsAt: endsAt.toISOString() };
 }
 
 export default function PopupDateRangeButton({
@@ -66,16 +71,19 @@ export default function PopupDateRangeButton({
     return () => document.removeEventListener("pointerdown", close);
   }, [open]);
 
+  const scheduled = scheduledInterval(popup);
+
   const togglePicker = () => {
+    if (!scheduled) return;
     if (open) {
       setOpen(false);
       return;
     }
-    setRange({ from: new Date(popup.startsAt), to: new Date(popup.endsAt) });
+    setRange(scheduled);
     setOpen(true);
   };
 
-  const pendingInterval = intervalFromRange(range, popup);
+  const pendingInterval = scheduled && intervalFromRange(range, scheduled);
 
   const saveInterval = async () => {
     if (!pendingInterval) return;
@@ -92,8 +100,9 @@ export default function PopupDateRangeButton({
     <div ref={containerRef}>
       <button
         type="button"
+        className={styles.rangeToggle}
         onClick={togglePicker}
-        disabled={disabled}
+        disabled={disabled || saving || !scheduled}
         aria-expanded={open}
         aria-label="Endre datoer"
       >
@@ -105,7 +114,8 @@ export default function PopupDateRangeButton({
             className={styles.dayPicker}
             mode="range"
             locale={nb}
-            defaultMonth={new Date(popup.startsAt)}
+            defaultMonth={scheduled?.from}
+            disabled={saving}
             selected={range}
             onSelect={(nextRange) => setRange(nextRange)}
             resetOnSelect
