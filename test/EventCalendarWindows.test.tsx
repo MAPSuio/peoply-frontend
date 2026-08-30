@@ -100,6 +100,13 @@ describe("EventCalendar windows in a real FullCalendar", () => {
     }
   });
 
+  it("has no paging controls left to click through", () => {
+    renderCalendar();
+
+    expect(screen.queryByRole("button", { name: /neste/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /forrige/i })).toBeNull();
+  });
+
   it("hands the next window the day after the last one ends", () => {
     renderCalendar();
 

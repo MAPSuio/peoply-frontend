@@ -7,10 +7,7 @@ import EventCalendar from "../components/EventCalendar";
 import type { Event } from "../types/types";
 import {
   WINDOWS_IN_HORIZON,
-  WINDOWS_SHOWN_AT_FIRST,
-  calendarWindows,
   rollingCalendarRange,
-  windowRangeLabel,
 } from "../utils/calendarEvents";
 
 function renderCalendar(events: Event[]) {
@@ -42,10 +39,7 @@ type EventContentRenderer = (arg: {
 }) => ReactNode;
 
 interface MockCalendarProps {
-  headerToolbar: false;
-  initialDate: Date;
   initialView: string;
-  validRange: { start: Date; end: Date };
   dayCellClass: unknown;
   dayHeaderInnerClass: unknown;
   eventContent: EventContentRenderer;
@@ -96,11 +90,7 @@ vi.mock("@fullcalendar/react", () => ({
       extendedProps: events[0].extendedProps,
     };
     return (
-      <div
-        data-initial-date={props.initialDate.toISOString()}
-        data-testid="calendar-instance"
-        data-view={props.initialView}
-      >
+      <div data-testid="calendar-instance" data-view={props.initialView}>
         <a
           href={event.url}
           onBlur={() => eventMouseLeave()}
@@ -209,45 +199,6 @@ describe("EventCalendar", () => {
 
     await user.click(event);
     expect(routerPush).toHaveBeenCalledWith("/events/kodekveld");
-  });
-
-  it("opens on a rolling five-week window anchored on this week, not on the first of the month", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
-
-    renderCalendar([EVENT]);
-
-    expect(screen.getAllByTestId("calendar-instance")[0]).toHaveAttribute(
-      "data-view",
-      "dayGridRolling",
-    );
-    expect(screen.getAllByTestId("calendar-instance")[0]).toHaveAttribute(
-      "data-initial-date",
-      new Date(2026, 7, 24).toISOString(),
-    );
-    expect(calendarProps.validRange.start).toEqual(new Date(2026, 7, 30));
-    expect(calendarProps.views).toHaveProperty("dayGridRolling.duration", {
-      weeks: 5,
-    });
-  });
-
-  it("stacks the coming windows under each other instead of paging month by month", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
-
-    renderCalendar([EVENT]);
-
-    const stacked = screen.getAllByTestId("calendar-instance");
-    const expectedWindows = calendarWindows(
-      new Date(2026, 7, 30),
-      WINDOWS_SHOWN_AT_FIRST,
-    );
-
-    expect(calendarProps.headerToolbar).toBe(false);
-    expect(stacked).toHaveLength(WINDOWS_SHOWN_AT_FIRST);
-    expect(
-      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
-    ).toEqual(expectedWindows.map(windowRangeLabel));
   });
 
   it("reaches a year ahead once the reader asks to see more", async () => {
