@@ -5,7 +5,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCalendar from "../components/EventCalendar";
 import type { Event } from "../types/types";
-import { rollingCalendarRange } from "../utils/calendarEvents";
+import {
+  WINDOWS_IN_HORIZON,
+  WINDOWS_SHOWN_AT_FIRST,
+  calendarWindows,
+  rollingCalendarRange,
+  windowRangeLabel,
+} from "../utils/calendarEvents";
 
 function renderCalendar(events: Event[]) {
   return render(
@@ -36,8 +42,7 @@ type EventContentRenderer = (arg: {
 }) => ReactNode;
 
 interface MockCalendarProps {
-  buttons: { dayGridRolling: { text: string }; listUpcoming: { text: string } };
-  headerToolbar: { right: string };
+  headerToolbar: false;
   initialDate: Date;
   initialView: string;
   validRange: { start: Date; end: Date };
@@ -91,20 +96,26 @@ vi.mock("@fullcalendar/react", () => ({
       extendedProps: events[0].extendedProps,
     };
     return (
-      <a
-        href={event.url}
-        onBlur={() => eventMouseLeave()}
-        onClick={(jsEvent) => eventClick({ event, jsEvent })}
-        onMouseEnter={(mouseEvent) =>
-          eventMouseEnter({ el: mouseEvent.currentTarget, event })
-        }
-        onMouseLeave={() => eventMouseLeave()}
-        ref={(element) => {
-          if (element) eventDidMount({ el: element, event });
-        }}
+      <div
+        data-initial-date={props.initialDate.toISOString()}
+        data-testid="calendar-instance"
+        data-view={props.initialView}
       >
-        {event.title}
-      </a>
+        <a
+          href={event.url}
+          onBlur={() => eventMouseLeave()}
+          onClick={(jsEvent) => eventClick({ event, jsEvent })}
+          onMouseEnter={(mouseEvent) =>
+            eventMouseEnter({ el: mouseEvent.currentTarget, event })
+          }
+          onMouseLeave={() => eventMouseLeave()}
+          ref={(element) => {
+            if (element) eventDidMount({ el: element, event });
+          }}
+        >
+          {event.title}
+        </a>
+      </div>
     );
   },
 }));
@@ -150,16 +161,28 @@ function eventArrangedBy(organization: {
   } as unknown as Event;
 }
 
+function stubViewport({ isDesktop }: { isDesktop: boolean }) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn((query: string) => ({
+      matches: isDesktop,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  );
+}
+
 describe("EventCalendar", () => {
   beforeEach(() => {
     routerPush.mockReset();
-    window.matchMedia = vi.fn().mockReturnValue({ matches: true });
+    stubViewport({ isDesktop: true });
   });
 
   it("shows event information on hover and keeps it open while entering the preview", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     renderCalendar([EVENT]);
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     await userEvent.hover(event);
     const preview = screen.getByRole("tooltip");
@@ -179,7 +202,7 @@ describe("EventCalendar", () => {
   it("shows the preview on keyboard focus without changing event navigation", async () => {
     const user = userEvent.setup();
     renderCalendar([EVENT]);
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     await user.tab();
     expect(screen.getByRole("tooltip")).toHaveTextContent("Kodekveld");
@@ -194,28 +217,67 @@ describe("EventCalendar", () => {
 
     renderCalendar([EVENT]);
 
-    expect(calendarProps.initialView).toBe("dayGridRolling");
-    expect(calendarProps.initialDate).toEqual(new Date(2026, 7, 30));
+    expect(screen.getAllByTestId("calendar-instance")[0]).toHaveAttribute(
+      "data-view",
+      "dayGridRolling",
+    );
+    expect(screen.getAllByTestId("calendar-instance")[0]).toHaveAttribute(
+      "data-initial-date",
+      new Date(2026, 7, 30).toISOString(),
+    );
     expect(calendarProps.validRange.start).toEqual(new Date(2026, 7, 30));
     expect(calendarProps.views).toHaveProperty("dayGridRolling.duration", {
       weeks: 5,
     });
   });
 
-  it("pages the grid by the rolling window instead of month by month", () => {
+  it("stacks the coming windows under each other instead of paging month by month", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
+
     renderCalendar([EVENT]);
 
-    expect(calendarProps.headerToolbar.right).toBe(
-      "dayGridRolling,listUpcoming",
+    const stacked = screen.getAllByTestId("calendar-instance");
+    const expectedWindows = calendarWindows(
+      new Date(2026, 7, 30),
+      WINDOWS_SHOWN_AT_FIRST,
     );
-    expect(calendarProps.buttons.dayGridRolling.text).toBe("Kalender");
+
+    expect(calendarProps.headerToolbar).toBe(false);
+    expect(stacked).toHaveLength(WINDOWS_SHOWN_AT_FIRST);
+    expect(
+      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
+    ).toEqual(expectedWindows.map(windowRangeLabel));
+  });
+
+  it("reaches a year ahead once the reader asks to see more", async () => {
+    renderCalendar([EVENT]);
+
+    await userEvent.click(screen.getByRole("button", { name: "Se mer" }));
+
+    expect(screen.getAllByTestId("calendar-instance")).toHaveLength(
+      WINDOWS_IN_HORIZON,
+    );
+    expect(
+      screen.queryByRole("button", { name: "Se mer" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("keeps one agenda on mobile and lengthens it instead of stacking grids", () => {
+    stubViewport({ isDesktop: false });
+
+    renderCalendar([EVENT]);
+
+    expect(screen.getByTestId("calendar-instance")).toHaveAttribute(
+      "data-view",
+      "agendaWindow",
+    );
   });
 
   it("uses the coordinated v7 configuration and event color fields", () => {
     renderCalendar([EVENT]);
 
     expect(calendarProps.plugins).toHaveLength(3);
-    expect(calendarProps.buttons.listUpcoming.text).toBe("Agenda");
     expect(calendarProps.tableHeaderSticky).toBe(false);
     expect(calendarProps.dayCellClass).toBeTypeOf("function");
     expect(calendarProps.dayHeaderInnerClass).toBeTypeOf("function");
@@ -226,7 +288,7 @@ describe("EventCalendar", () => {
       "dayGrid",
     );
     expect(calendarProps.views).toHaveProperty(
-      "listUpcoming.listItemEventClass",
+      "agendaWindow.listItemEventClass",
     );
     expect(calendarProps.events[0]).toMatchObject({
       extendedProps: { paletteKey: expect.any(String) },
@@ -242,7 +304,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -259,7 +321,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -322,7 +384,7 @@ describe("EventCalendar", () => {
       calendarProps.eventContent({
         event: calendarProps.events[0],
         timeText: "18:00",
-        view: { type: "listUpcoming" },
+        view: { type: "agendaWindow" },
       }),
     );
 
@@ -349,7 +411,7 @@ describe("EventCalendar", () => {
       }),
     ]);
     const calendar = container.firstElementChild as HTMLElement;
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toBe(
       "#0051f1",
@@ -362,7 +424,7 @@ describe("EventCalendar", () => {
   it("falls back to a color of its own when the logo yielded none", () => {
     const { container } = renderCalendar([eventArrangedBy(ORGANIZATION)]);
     const calendar = container.firstElementChild as HTMLElement;
-    const event = screen.getByRole("link", { name: "Kodekveld" });
+    const event = screen.getAllByRole("link", { name: "Kodekveld" })[0];
 
     expect(colorsPaintedOn(calendar, event, "--calendar-event-accent")).toMatch(
       /^hsl\(/,

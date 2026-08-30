@@ -44,15 +44,18 @@
   font-family: $main-font;
 }
 
-.calendarToolbar {
-  flex-wrap: wrap;
-  gap: $spacer-very-small;
-  margin-bottom: $spacer-small;
+.calendarWindow {
+  & + & {
+    border-top: 1px solid var(--divider-color, $divider-color);
+    margin-top: $spacer-medium;
+    padding-top: $spacer-medium;
+  }
 }
 
-.calendarToolbarTitle {
+.calendarWindowHeading {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-heading-small;
+  margin-bottom: $spacer-small;
   text-transform: capitalize;
 
   @include desktop() {
@@ -60,27 +63,10 @@
   }
 }
 
-.calendarButton {
-  @include monoFont();
-  border-radius: $border-radius-inside-card;
-  font-size: $font-size-secondary;
-  padding: $spacer-mini $spacer-very-small-plus;
-  text-transform: capitalize;
-  transition: background-color $animation-duration ease;
-
-  &:focus-visible {
-    outline: 2px solid var(--primary-color-200, $primary-color-200);
-    outline-offset: 2px;
-  }
-
-  &:disabled {
-    opacity: 0.4;
-  }
-}
-
-.calendarButtonActive {
-  background-color: var(--primary-color-400, $primary-color-400);
-  color: var(--text-color-button, $text-color-button);
+.showMore {
+  display: flex;
+  justify-content: center;
+  margin-top: $spacer-medium;
 }
 
 .dayHeader {

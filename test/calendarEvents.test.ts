@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import type { Event } from "../types/types";
 import { getArrangerColor, toArrangerColorKey } from "../utils/arrangerColor";
 import {
-  ROLLING_WINDOW_IN_WEEKS,
+  WINDOWS_IN_HORIZON,
+  calendarWindows,
   rollingCalendarRange,
   toArrangerColorsByKey,
   toCalendarEvents,
+  windowRangeLabel,
 } from "../utils/calendarEvents";
 
 function eventArrangedBy(organization: {
@@ -52,28 +54,59 @@ describe("rollingCalendarRange", () => {
     expect(start.getHours()).toBe(0);
   });
 
-  it("closes about half a year ahead", () => {
-    const { end } = rollingCalendarRange(new Date(2026, 7, 29));
+  it("reaches a year ahead, which is where the last window ends", () => {
+    const now = new Date(2026, 7, 29);
+    const windows = calendarWindows(now, WINDOWS_IN_HORIZON);
 
-    expect(end).toEqual(new Date(2027, 1, 20));
+    expect(rollingCalendarRange(now).end).toEqual(windows.at(-1)?.end);
+  });
+});
+
+describe("calendarWindows", () => {
+  it("opens on today rather than the first of the month", () => {
+    const [firstWindow] = calendarWindows(new Date(2026, 7, 29, 13, 45), 1);
+
+    expect(firstWindow).toEqual({
+      start: new Date(2026, 7, 29),
+      end: new Date(2026, 9, 3),
+    });
   });
 
-  it("rolls the year over at the end of December", () => {
-    const { start, end } = rollingCalendarRange(new Date(2026, 11, 31));
+  it("leaves no gap between the windows it stacks", () => {
+    const windows = calendarWindows(new Date(2026, 7, 29), 3);
 
-    expect(start).toEqual(new Date(2026, 11, 31));
-    expect(end).toEqual(new Date(2027, 5, 24));
+    expect(windows).toHaveLength(3);
+    expect(windows[1].start).toEqual(windows[0].end);
+    expect(windows[2].start).toEqual(windows[1].end);
   });
 
-  it("spans a whole number of windows, so the last page is a full grid", () => {
-    const { start, end } = rollingCalendarRange(new Date(2026, 7, 29));
-    const dayInMilliseconds = 24 * 60 * 60 * 1000;
-    const windowInDays = ROLLING_WINDOW_IN_WEEKS * 7;
+  it("stops at the horizon however many windows the caller asks for", () => {
+    const windows = calendarWindows(
+      new Date(2026, 7, 29),
+      WINDOWS_IN_HORIZON + 4,
+    );
 
-    expect(
-      Math.round((end.getTime() - start.getTime()) / dayInMilliseconds) %
-        windowInDays,
-    ).toBe(0);
+    expect(windows).toHaveLength(WINDOWS_IN_HORIZON);
+  });
+
+  it("stacks nothing when asked for fewer than one window", () => {
+    expect(calendarWindows(new Date(2026, 7, 29), 0)).toEqual([]);
+    expect(calendarWindows(new Date(2026, 7, 29), -2)).toEqual([]);
+  });
+
+  it("keeps both ends on midnight across the autumn clock change", () => {
+    const [windowOverClockChange] = calendarWindows(new Date(2026, 9, 12), 1);
+
+    expect(windowOverClockChange.start.getHours()).toBe(0);
+    expect(windowOverClockChange.end.getHours()).toBe(0);
+  });
+});
+
+describe("windowRangeLabel", () => {
+  it("names the first and last day the window actually shows", () => {
+    const [firstWindow] = calendarWindows(new Date(2026, 7, 29), 1);
+
+    expect(windowRangeLabel(firstWindow)).toBe("29. aug.–2. okt.");
   });
 });
 

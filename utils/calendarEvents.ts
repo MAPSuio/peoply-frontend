@@ -45,28 +45,53 @@ export interface CalendarEvent {
 
 export const ROLLING_WINDOW_IN_WEEKS = 5;
 
-const WINDOWS_IN_HORIZON = 5;
+export const WINDOWS_SHOWN_AT_FIRST = 6;
 
-const HORIZON_IN_WEEKS = ROLLING_WINDOW_IN_WEEKS * WINDOWS_IN_HORIZON;
+export const WINDOWS_IN_HORIZON = 10;
 
 const DAYS_IN_WEEK = 7;
+
+const WINDOW_IN_DAYS = ROLLING_WINDOW_IN_WEEKS * DAYS_IN_WEEK;
+
+const rangeFormatter = new Intl.DateTimeFormat("nb-NO", {
+  day: "numeric",
+  month: "short",
+});
 
 export interface CalendarRange {
   start: Date;
   end: Date;
 }
 
-export function rollingCalendarRange(now: Date): CalendarRange {
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+function midnightAfter(date: Date, dayCount: number) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + dayCount,
+  );
+}
 
+export function rollingCalendarRange(now: Date): CalendarRange {
   return {
-    start,
-    end: new Date(
-      start.getFullYear(),
-      start.getMonth(),
-      start.getDate() + HORIZON_IN_WEEKS * DAYS_IN_WEEK,
-    ),
+    start: midnightAfter(now, 0),
+    end: midnightAfter(now, WINDOW_IN_DAYS * WINDOWS_IN_HORIZON),
   };
+}
+
+export function calendarWindows(
+  now: Date,
+  windowCount: number,
+): CalendarRange[] {
+  const shownCount = Math.min(Math.max(windowCount, 0), WINDOWS_IN_HORIZON);
+
+  return Array.from({ length: shownCount }, (_, index) => ({
+    start: midnightAfter(now, index * WINDOW_IN_DAYS),
+    end: midnightAfter(now, (index + 1) * WINDOW_IN_DAYS),
+  }));
+}
+
+export function windowRangeLabel({ start, end }: CalendarRange): string {
+  return rangeFormatter.formatRange(start, midnightAfter(end, -1));
 }
 
 export function toCalendarEvents(events: Event[]): CalendarEvent[] {
