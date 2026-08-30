@@ -211,7 +211,7 @@ describe("EventCalendar", () => {
     expect(routerPush).toHaveBeenCalledWith("/events/kodekveld");
   });
 
-  it("opens on a rolling five-week window that starts today, not on the first of the month", () => {
+  it("opens on a rolling five-week window anchored on this week, not on the first of the month", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
 
@@ -223,7 +223,7 @@ describe("EventCalendar", () => {
     );
     expect(screen.getAllByTestId("calendar-instance")[0]).toHaveAttribute(
       "data-initial-date",
-      new Date(2026, 7, 30).toISOString(),
+      new Date(2026, 7, 24).toISOString(),
     );
     expect(calendarProps.validRange.start).toEqual(new Date(2026, 7, 30));
     expect(calendarProps.views).toHaveProperty("dayGridRolling.duration", {

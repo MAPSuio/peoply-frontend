@@ -71,10 +71,19 @@ function midnightAfter(date: Date, dayCount: number) {
   );
 }
 
+function startOfWeekContaining(date: Date) {
+  const daysSinceMonday = (date.getDay() + 6) % DAYS_IN_WEEK;
+
+  return midnightAfter(date, -daysSinceMonday);
+}
+
 export function rollingCalendarRange(now: Date): CalendarRange {
   return {
     start: midnightAfter(now, 0),
-    end: midnightAfter(now, WINDOW_IN_DAYS * WINDOWS_IN_HORIZON),
+    end: midnightAfter(
+      startOfWeekContaining(now),
+      WINDOW_IN_DAYS * WINDOWS_IN_HORIZON,
+    ),
   };
 }
 
@@ -83,10 +92,11 @@ export function calendarWindows(
   windowCount: number,
 ): CalendarRange[] {
   const shownCount = Math.min(Math.max(windowCount, 0), WINDOWS_IN_HORIZON);
+  const firstWindowStart = startOfWeekContaining(now);
 
   return Array.from({ length: shownCount }, (_, index) => ({
-    start: midnightAfter(now, index * WINDOW_IN_DAYS),
-    end: midnightAfter(now, (index + 1) * WINDOW_IN_DAYS),
+    start: midnightAfter(firstWindowStart, index * WINDOW_IN_DAYS),
+    end: midnightAfter(firstWindowStart, (index + 1) * WINDOW_IN_DAYS),
   }));
 }
 

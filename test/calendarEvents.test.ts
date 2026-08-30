@@ -63,13 +63,29 @@ describe("rollingCalendarRange", () => {
 });
 
 describe("calendarWindows", () => {
-  it("opens on today rather than the first of the month", () => {
-    const [firstWindow] = calendarWindows(new Date(2026, 7, 29, 13, 45), 1);
+  it("opens on this week rather than the first of the month", () => {
+    const saturday = new Date(2026, 7, 29, 13, 45);
+    const [firstWindow] = calendarWindows(saturday, 1);
 
     expect(firstWindow).toEqual({
-      start: new Date(2026, 7, 29),
-      end: new Date(2026, 9, 3),
+      start: new Date(2026, 7, 24),
+      end: new Date(2026, 8, 28),
     });
+  });
+
+  it("starts on Monday even when the week is almost over, so the grid rows line up", () => {
+    const sunday = new Date(2026, 7, 30);
+    const [firstWindow] = calendarWindows(sunday, 1);
+
+    expect(firstWindow.start).toEqual(new Date(2026, 7, 24));
+    expect(firstWindow.start.getDay()).toBe(1);
+  });
+
+  it("starts on the day itself when the day is a Monday", () => {
+    const monday = new Date(2026, 7, 24, 9, 30);
+    const [firstWindow] = calendarWindows(monday, 1);
+
+    expect(firstWindow.start).toEqual(new Date(2026, 7, 24));
   });
 
   it("leaves no gap between the windows it stacks", () => {
@@ -95,7 +111,7 @@ describe("calendarWindows", () => {
   });
 
   it("keeps both ends on midnight across the autumn clock change", () => {
-    const [windowOverClockChange] = calendarWindows(new Date(2026, 9, 12), 1);
+    const [windowOverClockChange] = calendarWindows(new Date(2026, 9, 14), 1);
 
     expect(windowOverClockChange.start.getHours()).toBe(0);
     expect(windowOverClockChange.end.getHours()).toBe(0);
@@ -106,7 +122,7 @@ describe("windowRangeLabel", () => {
   it("names the first and last day the window actually shows", () => {
     const [firstWindow] = calendarWindows(new Date(2026, 7, 29), 1);
 
-    expect(windowRangeLabel(firstWindow)).toBe("29. aug.–2. okt.");
+    expect(windowRangeLabel(firstWindow)).toBe("24. aug.–27. sep.");
   });
 });
 
