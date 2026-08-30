@@ -112,9 +112,11 @@ describe("calendarWindows", () => {
 
   it("keeps both ends on midnight across the autumn clock change", () => {
     const [windowOverClockChange] = calendarWindows(new Date(2026, 9, 14), 1);
+    const { start, end } = windowOverClockChange;
 
-    expect(windowOverClockChange.start.getHours()).toBe(0);
-    expect(windowOverClockChange.end.getHours()).toBe(0);
+    expect(start.getTimezoneOffset()).not.toBe(end.getTimezoneOffset());
+    expect(start.getHours()).toBe(0);
+    expect(end.getHours()).toBe(0);
   });
 });
 

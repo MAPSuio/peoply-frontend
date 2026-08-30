@@ -9,6 +9,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "jsdom",
+    env: { TZ: "Europe/Oslo" },
     setupFiles: ["./test/setup.ts"],
     include: ["test/**/*.test.{ts,tsx}"],
     /* Next's build output and the PWA service worker are not test sources. */
