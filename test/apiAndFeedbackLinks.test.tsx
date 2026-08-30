@@ -149,6 +149,21 @@ describe("API and feedback entry points", () => {
     expect(await screen.findByRole("status")).toHaveTextContent("Prøv igjen");
   });
 
+  it("keeps the whole MCP section collapsed until it is opened", async () => {
+    const user = userEvent.setup();
+    renderWithSwr(<Integrasjoner />);
+
+    const summary = screen.getByText("Model Context Protocol (MCP)");
+    const section = summary.closest("details") as HTMLDetailsElement;
+
+    expect(section.open).toBe(false);
+    expect(within(section).getByText(/MCP-endepunkt/i)).toBeInTheDocument();
+
+    await user.click(summary);
+
+    expect(section.open).toBe(true);
+  });
+
   it("lists the MCP tools grouped by the scope that unlocks them", async () => {
     const user = userEvent.setup();
     renderWithSwr(<Integrasjoner />);

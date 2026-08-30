@@ -223,14 +223,14 @@ const Integrasjoner = () => {
             </p>
           </aside>
 
-          <section className={`${styles.section} ${styles.mcpSection}`}>
-            <div className={styles.sectionHeading}>
+          <details className={`${styles.section} ${styles.mcpSection}`}>
+            <summary className={styles.sectionHeading}>
               <h2>Model Context Protocol (MCP)</h2>
               <p>
                 Koble Claude Code, OpenCode eller andre agenter direkte til
                 Peoply via MCP.
               </p>
-            </div>
+            </summary>
             <div className={styles.endpoint}>
               <span>MCP-endepunkt</span>
               <code>{mcpUrl}</code>
@@ -258,7 +258,7 @@ const Integrasjoner = () => {
             </details>
             <McpToolCatalog />
             <McpKeyManager />
-          </section>
+          </details>
 
           <section className={styles.section}>
             <div className={styles.sectionHeading}>

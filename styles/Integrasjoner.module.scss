@@ -150,6 +150,23 @@
   @include desktop() {
     padding: $spacer-large;
   }
+
+  > summary {
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    h2::before {
+      content: "▸ ";
+    }
+  }
+
+  &[open] > summary h2::before {
+    content: "▾ ";
+  }
 }
 
 .eyebrow {
