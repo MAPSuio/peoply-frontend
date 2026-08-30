@@ -1,8 +1,10 @@
+// fallow-ignore-file code-duplication -- the safety checklist intentionally follows the established FAQ policy-section markup
 import { useState } from "react";
 
 import BackButton from "../components/BackButton";
 import HeadComponent from "../components/HeadComponent";
 import Navbar from "../components/Navbar";
+import McpKeyManager from "../components/McpKeyManager";
 import useBack from "../hooks/useBack";
 
 import { API_URL } from "../constants/urls";
@@ -182,6 +184,7 @@ const Integrasjoner = () => {
   const apiBaseUrl = (API_URL || "https://api.peoply.app").replace(/\/+$/, "");
   const docsUrl = `${apiBaseUrl}/api`;
   const openApiUrl = `${apiBaseUrl}/api/openapi.json`;
+  const mcpUrl = `${apiBaseUrl}/mcp`;
   const prompts = createPrompts(apiBaseUrl, openApiUrl);
 
   return (
@@ -218,6 +221,42 @@ const Integrasjoner = () => {
               leser OpenAPI JSON direkte.
             </p>
           </aside>
+
+          <section className={`${styles.section} ${styles.mcpSection}`}>
+            <div className={styles.sectionHeading}>
+              <h2>Model Context Protocol (MCP)</h2>
+              <p>
+                Koble Claude Code, OpenCode eller andre agenter direkte til
+                Peoply via MCP.
+              </p>
+            </div>
+            <div className={styles.endpoint}>
+              <span>MCP-endepunkt</span>
+              <code>{mcpUrl}</code>
+            </div>
+            <details className={styles.setupGuide}>
+              <summary>Oppsett for Claude Code</summary>
+              <pre>
+                <code>{`claude mcp add --transport http peoply ${mcpUrl} \\\n  --header "Authorization: Bearer <token>"`}</code>
+              </pre>
+            </details>
+            <details className={styles.setupGuide}>
+              <summary>Oppsett for OpenCode</summary>
+              <pre>
+                <code>{`{
+  "mcp": {
+    "peoply": {
+      "type": "remote",
+      "url": "${mcpUrl}",
+      "oauth": false,
+      "headers": { "Authorization": "Bearer <token>" }
+    }
+  }
+}`}</code>
+              </pre>
+            </details>
+            <McpKeyManager />
+          </section>
 
           <section className={styles.section}>
             <div className={styles.sectionHeading}>
@@ -262,8 +301,8 @@ const Integrasjoner = () => {
               </li>
               <li>Ikke legg passord, cookies eller persondata i en prompt.</li>
               <li>
-                Beskyttede kall bruker Peoplys browserbaserte innlogging og skal
-                ikke videresendes til en autonom agent.
+                Bruk en personlig MCP-nøkkel, aldri browsercookies, når en
+                assistent trenger beskyttet tilgang.
               </li>
               <li>
                 Organisasjoner kan også importere og dele arrangementer via
