@@ -20,8 +20,8 @@ import {
   arrangerBackgroundVariable,
 } from "../utils/arrangerColor";
 import {
+  type CalendarRange,
   ROLLING_WINDOW_IN_WEEKS,
-  rollingCalendarRange,
   toArrangerColorsByKey,
   toCalendarEvents,
 } from "../utils/calendarEvents";
@@ -30,6 +30,7 @@ import EventPreviewCard, { EVENT_PREVIEW_ID } from "./EventPreviewCard";
 
 export interface EventCalendarProps {
   events: Event[];
+  range: CalendarRange;
 }
 
 // Rendered client-side only (next/dynamic with ssr: false), so window is
@@ -195,7 +196,7 @@ function renderEventContent(arg: EventDisplayInfo) {
   );
 }
 
-export default function EventCalendar({ events }: EventCalendarProps) {
+export default function EventCalendar({ events, range }: EventCalendarProps) {
   const router = useRouter();
   const { preview, showFor, cancelClose, scheduleClose } = useEventPreview();
   const [initialView] = useState(() =>
@@ -203,8 +204,6 @@ export default function EventCalendar({ events }: EventCalendarProps) {
       ? ROLLING_GRID_VIEW
       : "listUpcoming",
   );
-
-  const validRange = useMemo(() => rollingCalendarRange(new Date()), []);
 
   const calendarEvents = useMemo(() => toCalendarEvents(events), [events]);
   const arrangerColorVariables = useMemo(
@@ -239,14 +238,14 @@ export default function EventCalendar({ events }: EventCalendarProps) {
       <FullCalendar
         {...CALENDAR_CHROME}
         initialView={initialView}
-        initialDate={validRange.start}
+        initialDate={range.start}
         events={calendarEvents}
         eventContent={renderEventContent}
         eventClick={handleEventClick}
         eventMouseEnter={showPreviewFor}
         eventMouseLeave={scheduleClose}
         eventDidMount={handleEventDidMount}
-        validRange={validRange}
+        validRange={range}
       />
       {preview ? (
         <EventPreviewCard

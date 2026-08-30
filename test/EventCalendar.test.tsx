@@ -5,6 +5,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCalendar from "../components/EventCalendar";
 import type { Event } from "../types/types";
+import { rollingCalendarRange } from "../utils/calendarEvents";
+
+function renderCalendar(events: Event[]) {
+  return render(
+    <EventCalendar events={events} range={rollingCalendarRange(new Date())} />,
+  );
+}
 
 const routerPush = vi.fn();
 
@@ -151,7 +158,7 @@ describe("EventCalendar", () => {
 
   it("shows event information on hover and keeps it open while entering the preview", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
     const event = screen.getByRole("link", { name: "Kodekveld" });
 
     await userEvent.hover(event);
@@ -171,7 +178,7 @@ describe("EventCalendar", () => {
 
   it("shows the preview on keyboard focus without changing event navigation", async () => {
     const user = userEvent.setup();
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
     const event = screen.getByRole("link", { name: "Kodekveld" });
 
     await user.tab();
@@ -185,7 +192,7 @@ describe("EventCalendar", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
 
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
 
     expect(calendarProps.initialView).toBe("dayGridRolling");
     expect(calendarProps.initialDate).toEqual(new Date(2026, 7, 30));
@@ -196,7 +203,7 @@ describe("EventCalendar", () => {
   });
 
   it("pages the grid by the rolling window instead of month by month", () => {
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
 
     expect(calendarProps.headerToolbar.right).toBe(
       "dayGridRolling,listUpcoming",
@@ -205,7 +212,7 @@ describe("EventCalendar", () => {
   });
 
   it("uses the coordinated v7 configuration and event color fields", () => {
-    render(<EventCalendar events={[EVENT]} />);
+    renderCalendar([EVENT]);
 
     expect(calendarProps.plugins).toHaveLength(3);
     expect(calendarProps.buttons.listUpcoming.text).toBe("Agenda");
@@ -229,7 +236,7 @@ describe("EventCalendar", () => {
   });
 
   it("shows the arranger's picture in the agenda instead of a colored dot", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -246,11 +253,7 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to the arranger's initial when there is no picture", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -265,7 +268,7 @@ describe("EventCalendar", () => {
   });
 
   it("shows the arranger's logo in the month grid too", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -282,7 +285,7 @@ describe("EventCalendar", () => {
   });
 
   it("keeps the start time in the month grid when the cell is too narrow for FullCalendar to render one", () => {
-    render(<EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />);
+    renderCalendar([eventArrangedBy(ORGANIZATION)]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -298,11 +301,7 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to the initial in the month grid when there is no logo", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -317,11 +316,7 @@ describe("EventCalendar", () => {
   });
 
   it("keeps the arranger icon out of what a screen reader reads on the event", () => {
-    render(
-      <EventCalendar
-        events={[eventArrangedBy({ ...ORGANIZATION, image: undefined })]}
-      />,
-    );
+    renderCalendar([eventArrangedBy({ ...ORGANIZATION, image: undefined })]);
 
     const { container } = render(
       calendarProps.eventContent({
@@ -346,17 +341,13 @@ describe("EventCalendar", () => {
     );
 
   it("paints an event in the colors stored with its arranger's logo", () => {
-    const { container } = render(
-      <EventCalendar
-        events={[
-          eventArrangedBy({
-            ...ORGANIZATION,
-            imagePrimaryColor: "#fd7b03",
-            imageAccentColor: "#0051f1",
-          }),
-        ]}
-      />,
-    );
+    const { container } = renderCalendar([
+      eventArrangedBy({
+        ...ORGANIZATION,
+        imagePrimaryColor: "#fd7b03",
+        imageAccentColor: "#0051f1",
+      }),
+    ]);
     const calendar = container.firstElementChild as HTMLElement;
     const event = screen.getByRole("link", { name: "Kodekveld" });
 
@@ -369,9 +360,7 @@ describe("EventCalendar", () => {
   });
 
   it("falls back to a color of its own when the logo yielded none", () => {
-    const { container } = render(
-      <EventCalendar events={[eventArrangedBy(ORGANIZATION)]} />,
-    );
+    const { container } = renderCalendar([eventArrangedBy(ORGANIZATION)]);
     const calendar = container.firstElementChild as HTMLElement;
     const event = screen.getByRole("link", { name: "Kodekveld" });
 

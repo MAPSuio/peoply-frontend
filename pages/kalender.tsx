@@ -22,16 +22,16 @@ const EventCalendar = dynamic(() => import("../components/EventCalendar"), {
 
 export default function CalendarPage() {
   const goBack = useBack();
-  const eventsQuery = useMemo(() => {
-    const { start, end } = rollingCalendarRange(new Date());
-
-    return {
-      afterDate: start.toISOString(),
-      beforeDate: end.toISOString(),
+  const range = useMemo(() => rollingCalendarRange(new Date()), []);
+  const eventsQuery = useMemo(
+    () => ({
+      afterDate: range.start.toISOString(),
+      beforeDate: range.end.toISOString(),
       orderBy: "startDate",
       orderDirection: "asc",
-    };
-  }, []);
+    }),
+    [range],
+  );
 
   const eventsQueryResult = useSWR<Event[]>(
     `/events?${queryToString(eventsQuery)}`,
@@ -58,7 +58,7 @@ export default function CalendarPage() {
         >
           {(events) => (
             <section className={styles.calendarCard}>
-              <EventCalendar events={events} />
+              <EventCalendar events={events} range={range} />
             </section>
           )}
         </QueryState>

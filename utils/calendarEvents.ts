@@ -51,7 +51,12 @@ const HORIZON_IN_WEEKS = ROLLING_WINDOW_IN_WEEKS * WINDOWS_IN_HORIZON;
 
 const DAYS_IN_WEEK = 7;
 
-export function rollingCalendarRange(now: Date) {
+export interface CalendarRange {
+  start: Date;
+  end: Date;
+}
+
+export function rollingCalendarRange(now: Date): CalendarRange {
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   return {
