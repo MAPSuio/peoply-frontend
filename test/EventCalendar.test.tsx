@@ -182,18 +182,14 @@ describe("EventCalendar", () => {
   });
 
   it("opens on a rolling five-week window that starts today, not on the first of the month", () => {
-    const now = new Date();
-    const midnightToday = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-    );
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 7, 30, 13, 45));
 
     render(<EventCalendar events={[EVENT]} />);
 
     expect(calendarProps.initialView).toBe("dayGridRolling");
-    expect(calendarProps.initialDate).toEqual(midnightToday);
-    expect(calendarProps.validRange.start).toEqual(midnightToday);
+    expect(calendarProps.initialDate).toEqual(new Date(2026, 7, 30));
+    expect(calendarProps.validRange.start).toEqual(new Date(2026, 7, 30));
     expect(calendarProps.views).toHaveProperty("dayGridRolling.duration", {
       weeks: 5,
     });
