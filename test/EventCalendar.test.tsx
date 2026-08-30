@@ -39,7 +39,6 @@ type EventContentRenderer = (arg: {
 }) => ReactNode;
 
 interface MockCalendarProps {
-  initialView: string;
   dayCellClass: unknown;
   dayHeaderInnerClass: unknown;
   eventContent: EventContentRenderer;
@@ -90,7 +89,7 @@ vi.mock("@fullcalendar/react", () => ({
       extendedProps: events[0].extendedProps,
     };
     return (
-      <div data-testid="calendar-instance" data-view={props.initialView}>
+      <div data-testid="calendar-instance">
         <a
           href={event.url}
           onBlur={() => eventMouseLeave()}
@@ -212,17 +211,6 @@ describe("EventCalendar", () => {
     expect(
       screen.queryByRole("button", { name: "Se mer" }),
     ).not.toBeInTheDocument();
-  });
-
-  it("keeps one agenda on mobile and lengthens it instead of stacking grids", () => {
-    stubViewport({ isDesktop: false });
-
-    renderCalendar([EVENT]);
-
-    expect(screen.getByTestId("calendar-instance")).toHaveAttribute(
-      "data-view",
-      "agendaWindow",
-    );
   });
 
   it("uses the coordinated v7 configuration and event color fields", () => {

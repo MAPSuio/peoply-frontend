@@ -31,17 +31,29 @@ const dayCellFormatter = new Intl.DateTimeFormat("nb-NO", {
   year: "numeric",
 });
 
-function stubDesktopViewport() {
+function stubViewport({ isDesktop }: { isDesktop: boolean }) {
   vi.stubGlobal(
     "matchMedia",
     vi.fn((query: string) => ({
-      matches: true,
+      matches: isDesktop,
       media: query,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     })),
   );
 }
+
+const EVENT_EARLIER_TODAY = {
+  id: "event-1",
+  urlId: "frokost",
+  title: "Frokostmøte",
+  startDate: new Date(2026, 7, 30, 8, 0).toISOString(),
+  endDate: new Date(2026, 7, 30, 9, 0).toISOString(),
+  description: "",
+  locationName: "Ole-Johan Dahls hus",
+  visibility: "PUBLIC",
+  eventArrangers: [],
+} as unknown as Event;
 
 function renderCalendar(events: Event[] = []) {
   return render(
@@ -70,7 +82,7 @@ describe("EventCalendar windows in a real FullCalendar", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(A_SUNDAY);
-    stubDesktopViewport();
+    stubViewport({ isDesktop: true });
   });
 
   afterEach(() => {
@@ -137,20 +149,18 @@ describe("EventCalendar windows in a real FullCalendar", () => {
   });
 
   it("still shows an event that started earlier today", () => {
-    const eventEarlierToday = {
-      id: "event-1",
-      urlId: "frokost",
-      title: "Frokostmøte",
-      startDate: new Date(2026, 7, 30, 8, 0).toISOString(),
-      endDate: new Date(2026, 7, 30, 9, 0).toISOString(),
-      description: "",
-      locationName: "Ole-Johan Dahls hus",
-      visibility: "PUBLIC",
-      eventArrangers: [],
-    } as unknown as Event;
-
-    renderCalendar([eventEarlierToday]);
+    renderCalendar([EVENT_EARLIER_TODAY]);
 
     expect(screen.getAllByText("Frokostmøte").length).toBeGreaterThan(0);
+  });
+
+  it("gives a phone one agenda list and no grid at all", () => {
+    stubViewport({ isDesktop: false });
+
+    renderCalendar([EVENT_EARLIER_TODAY]);
+
+    expect(screen.getByText("Frokostmøte")).toBeInTheDocument();
+    expect(screen.queryAllByRole("gridcell")).toHaveLength(0);
+    expect(screen.queryAllByRole("heading", { level: 2 })).toHaveLength(0);
   });
 });
