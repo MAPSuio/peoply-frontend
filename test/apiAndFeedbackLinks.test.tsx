@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -14,7 +14,6 @@ import {
   DEFAULT_MCP_KEY_LIFETIME_DAYS,
   MCP_KEY_LIFETIME_OPTIONS,
   MAX_MCP_KEY_LIFETIME_DAYS,
-  toMcpKeyLifetimeDays,
 } from "../constants/mcpKeyLifetimes";
 
 vi.mock("next/router", () => ({
@@ -232,20 +231,55 @@ describe("API and feedback entry points", () => {
   });
 
   it("offers only lifetimes within the range the API documents", () => {
-    expect(MCP_KEY_LIFETIME_OPTIONS.length).toBeGreaterThan(1);
-    for (const option of MCP_KEY_LIFETIME_OPTIONS) {
-      expect(option.days).toBeGreaterThanOrEqual(1);
-      expect(option.days).toBeLessThanOrEqual(MAX_MCP_KEY_LIFETIME_DAYS);
-      expect(option.label).toMatch(/dager/);
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    const options = within(screen.getByLabelText("Levetid")).getAllByRole(
+      "option",
+    );
+
+    expect(options.length).toBeGreaterThan(1);
+    expect(options.map((option) => option.textContent)).toEqual(
+      MCP_KEY_LIFETIME_OPTIONS.map((option) => option.label),
+    );
+    for (const option of options) {
+      const days = Number(option.getAttribute("value"));
+      expect(days).toBeGreaterThanOrEqual(1);
+      expect(days).toBeLessThanOrEqual(MAX_MCP_KEY_LIFETIME_DAYS);
+      expect(option.textContent).toMatch(/dager/);
     }
-    expect(MCP_KEY_LIFETIME_OPTIONS.map((option) => option.days)).toContain(
-      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    expect(options.map((option) => option.getAttribute("value"))).toContain(
+      String(DEFAULT_MCP_KEY_LIFETIME_DAYS),
     );
   });
 
-  it("falls back to the default when the select reports an unknown value", () => {
-    expect(toMcpKeyLifetimeDays(4711)).toBe(DEFAULT_MCP_KEY_LIFETIME_DAYS);
-    expect(toMcpKeyLifetimeDays(Number.NaN)).toBe(
+  it("falls back to the default when the select reports an unknown value", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue({
+      id: "5b6c7d8e-9f00-4a1b-8c2d-3e4f5a6b7c8d",
+      name: "Ukjent levetid",
+      scopes: ["READ"],
+      expiresAt: "2026-11-28T00:00:00.000Z",
+      createdAt: "2026-08-30T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    });
+    renderWithSwr(<Integrasjoner />);
+
+    const lifetime = screen.getByLabelText("Levetid");
+    fireEvent.change(lifetime, { target: { value: "4711" } });
+
+    expect(lifetime).toHaveValue(String(DEFAULT_MCP_KEY_LIFETIME_DAYS));
+
+    await user.type(
+      screen.getByLabelText("Navn på nøkkelen"),
+      "Ukjent levetid",
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Ukjent levetid",
+      ["READ"],
       DEFAULT_MCP_KEY_LIFETIME_DAYS,
     );
   });
