@@ -5,6 +5,7 @@ import BackButton from "../components/BackButton";
 import HeadComponent from "../components/HeadComponent";
 import Navbar from "../components/Navbar";
 import McpKeyManager from "../components/McpKeyManager";
+import McpToolCatalog from "../components/McpToolCatalog";
 import useBack from "../hooks/useBack";
 
 import { API_URL } from "../constants/urls";
@@ -255,6 +256,7 @@ const Integrasjoner = () => {
 }`}</code>
               </pre>
             </details>
+            <McpToolCatalog />
             <McpKeyManager />
           </section>
 

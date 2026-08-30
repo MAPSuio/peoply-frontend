@@ -24,14 +24,19 @@ vi.mock("next/router", () => ({
   }),
 }));
 
-const { mockCreateKey, mockListKeys, mockRevokeKey, mockUseUser } = vi.hoisted(
-  () => ({
-    mockCreateKey: vi.fn(),
-    mockListKeys: vi.fn(),
-    mockRevokeKey: vi.fn(),
-    mockUseUser: vi.fn(),
-  }),
-);
+const {
+  mockCreateKey,
+  mockListKeys,
+  mockListTools,
+  mockRevokeKey,
+  mockUseUser,
+} = vi.hoisted(() => ({
+  mockCreateKey: vi.fn(),
+  mockListKeys: vi.fn(),
+  mockListTools: vi.fn(),
+  mockRevokeKey: vi.fn(),
+  mockUseUser: vi.fn(),
+}));
 
 vi.mock("../hooks/useUser", () => ({ default: mockUseUser }));
 vi.mock("../services/mcpKeys", () => ({
@@ -39,6 +44,7 @@ vi.mock("../services/mcpKeys", () => ({
   listMcpApiKeys: mockListKeys,
   revokeMcpApiKey: mockRevokeKey,
 }));
+vi.mock("../services/mcpTools", () => ({ listMcpTools: mockListTools }));
 vi.mock("../hooks/useNotifications", () => ({
   default: () => ({ hasUnreadNotifications: false }),
 }));
@@ -51,12 +57,34 @@ const renderWithSwr = (ui: React.ReactElement) =>
 const hrefOf = (name: RegExp) =>
   screen.getByRole("link", { name }).getAttribute("href");
 
+const toolCatalogue = [
+  {
+    name: "search_events",
+    title: "Search public events",
+    description: "Search public Peoply events.",
+    scope: "peoply:read",
+  },
+  {
+    name: "register_for_event",
+    title: "Register for event",
+    description: "Register the connected user for an event.",
+    scope: "peoply:write",
+  },
+  {
+    name: "create_event",
+    title: "Create event",
+    description: "Create an event for an organization you manage.",
+    scope: "peoply:organize",
+  },
+];
+
 describe("API and feedback entry points", () => {
   const expectedMcpUrl = `${(API_URL || "https://api.peoply.app").replace(/\/+$/, "")}/mcp`;
 
   beforeEach(() => {
     mockUseUser.mockReturnValue({ user: undefined, loading: false });
     mockListKeys.mockResolvedValue([]);
+    mockListTools.mockResolvedValue(toolCatalogue);
     mockCreateKey.mockReset();
     mockRevokeKey.mockReset();
   });
@@ -116,6 +144,45 @@ describe("API and feedback entry points", () => {
       await screen.findByRole("button", { name: /Kunne ikke kopiere/i }),
     ).toBeInTheDocument();
     expect(await screen.findByRole("status")).toHaveTextContent("Prøv igjen");
+  });
+
+  it("lists the MCP tools grouped by the scope that unlocks them", async () => {
+    const user = userEvent.setup();
+    renderWithSwr(<Integrasjoner />);
+
+    const summary = screen.getByText(/Hva kan agenten gjøre/i);
+    await user.click(summary);
+    const catalogue = summary.closest("details") as HTMLElement;
+
+    expect(
+      await within(catalogue).findByText("search_events"),
+    ).toBeInTheDocument();
+    expect(
+      within(catalogue).getByText("register_for_event"),
+    ).toBeInTheDocument();
+    expect(within(catalogue).getByText("create_event")).toBeInTheDocument();
+    expect(
+      within(catalogue).getByText("Search public Peoply events."),
+    ).toBeInTheDocument();
+    expect(
+      within(catalogue).getByRole("heading", { name: /^Les/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(catalogue).getByRole("heading", { name: /^Skriv/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(catalogue).getByRole("heading", { name: /^Arranger/ }),
+    ).toBeInTheDocument();
+    expect(within(catalogue).getAllByText("1 verktøy")).toHaveLength(3);
+  });
+
+  it("says so when the tool catalogue cannot be fetched", async () => {
+    mockListTools.mockRejectedValue(new Error("offline"));
+    renderWithSwr(<Integrasjoner />);
+
+    expect(
+      await screen.findByText(/Kunne ikke hente verktøylista/i),
+    ).toBeInTheDocument();
   });
 
   it("creates and revokes a personal MCP key", async () => {
