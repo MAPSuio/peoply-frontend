@@ -10,6 +10,11 @@ import Header from "../components/Header";
 import ProfileMenu from "../components/ProfileMenu";
 import { API_URL } from "../constants/urls";
 import { ApiError } from "../services/apiError";
+import {
+  DEFAULT_MCP_KEY_LIFETIME_DAYS,
+  MCP_KEY_LIFETIME_OPTIONS,
+  MAX_MCP_KEY_LIFETIME_DAYS,
+} from "../constants/mcpKeyLifetimes";
 
 vi.mock("next/router", () => ({
   useRouter: () => ({
@@ -136,10 +141,11 @@ describe("API and feedback entry points", () => {
     await user.click(screen.getByRole("checkbox", { name: /Skriv/i }));
     await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
 
-    expect(mockCreateKey).toHaveBeenCalledWith("Claude Code", [
-      "READ",
-      "WRITE",
-    ]);
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Claude Code",
+      ["READ", "WRITE"],
+      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
     expect(await screen.findByText("ppl_mcp_secret")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Tilbakekall" }));
     expect(mockRevokeKey).toHaveBeenCalledWith(key.id);
@@ -186,6 +192,53 @@ describe("API and feedback entry points", () => {
       await screen.findByText("Nøkkel fra race-testen"),
     ).toBeInTheDocument();
     expect(screen.getByText("Nøkkel som fantes fra før")).toBeInTheDocument();
+  });
+
+  it("lets the user choose how long the key stays valid", async () => {
+    const user = userEvent.setup();
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    mockCreateKey.mockResolvedValue({
+      id: "0d3a2b1c-6e5f-4a7b-8c9d-0e1f2a3b4c5d",
+      name: "Kortlevd",
+      scopes: ["READ"],
+      expiresAt: "2026-09-29T00:00:00.000Z",
+      createdAt: "2026-08-30T00:00:00.000Z",
+      token: "ppl_mcp_secret",
+    });
+    renderWithSwr(<Integrasjoner />);
+
+    await user.type(screen.getByLabelText("Navn på nøkkelen"), "Kortlevd");
+    await user.selectOptions(
+      screen.getByLabelText("Levetid"),
+      String(MCP_KEY_LIFETIME_OPTIONS[0].days),
+    );
+    await user.click(screen.getByRole("button", { name: "Opprett nøkkel" }));
+
+    expect(mockCreateKey).toHaveBeenCalledWith(
+      "Kortlevd",
+      ["READ"],
+      MCP_KEY_LIFETIME_OPTIONS[0].days,
+    );
+  });
+
+  it("preselects the default lifetime the backend also uses", () => {
+    mockUseUser.mockReturnValue({ user: { id: "user-1" }, loading: false });
+    renderWithSwr(<Integrasjoner />);
+
+    expect(screen.getByLabelText("Levetid")).toHaveValue(
+      String(DEFAULT_MCP_KEY_LIFETIME_DAYS),
+    );
+  });
+
+  it("offers only lifetimes the backend accepts", () => {
+    expect(MCP_KEY_LIFETIME_OPTIONS.length).toBeGreaterThan(1);
+    for (const option of MCP_KEY_LIFETIME_OPTIONS) {
+      expect(option.days).toBeGreaterThanOrEqual(1);
+      expect(option.days).toBeLessThanOrEqual(MAX_MCP_KEY_LIFETIME_DAYS);
+    }
+    expect(MCP_KEY_LIFETIME_OPTIONS.map((option) => option.days)).toContain(
+      DEFAULT_MCP_KEY_LIFETIME_DAYS,
+    );
   });
 
   it("names the reason when the key limit is reached", async () => {

@@ -22,11 +22,12 @@ export const listMcpApiKeys = async (): Promise<McpApiKey[]> => {
 export const createMcpApiKey = async (
   name: string,
   scopes: McpScope[],
+  expiresInDays: number,
 ): Promise<CreatedMcpApiKey> => {
   const data = (await fetchFromPeoplyApiJson("/mcp/keys", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, scopes, expiresInDays: 90 }),
+    body: JSON.stringify({ name, scopes, expiresInDays }),
   })) as CreatedMcpApiKey | undefined;
   if (!data?.token) {
     throw new Error("Kunne ikke hente MCP-nøkkel");
