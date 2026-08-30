@@ -224,11 +224,10 @@ const Integrasjoner = () => {
 
           <section className={`${styles.section} ${styles.mcpSection}`}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>For KI-assistenter</span>
-              <h2>Koble assistenten din til Peoply</h2>
+              <h2>Model Context Protocol (MCP)</h2>
               <p>
-                MCP gir Claude Code, OpenCode og andre kompatible klienter
-                trygg, personlig tilgang uten å dele innloggingscookies.
+                Koble Claude Code, OpenCode eller andre agenter direkte til
+                Peoply via MCP.
               </p>
             </div>
             <div className={styles.endpoint}>
@@ -238,7 +237,7 @@ const Integrasjoner = () => {
             <details className={styles.setupGuide}>
               <summary>Oppsett for Claude Code</summary>
               <pre>
-                <code>{`claude mcp add --transport http peoply ${mcpUrl} \\\n  --header "Authorization: Bearer DIN_NØKKEL"`}</code>
+                <code>{`claude mcp add --transport http peoply ${mcpUrl} \\\n  --header "Authorization: Bearer <token>"`}</code>
               </pre>
             </details>
             <details className={styles.setupGuide}>
@@ -249,7 +248,7 @@ const Integrasjoner = () => {
     "peoply": {
       "type": "remote",
       "url": "${mcpUrl}",
-      "headers": { "Authorization": "Bearer DIN_NØKKEL" }
+      "headers": { "Authorization": "Bearer <token>" }
     }
   }
 }`}</code>

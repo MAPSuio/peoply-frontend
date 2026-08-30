@@ -14,18 +14,25 @@ export type McpApiKey = {
 
 export type CreatedMcpApiKey = McpApiKey & { token: string };
 
-export const listMcpApiKeys = (): Promise<McpApiKey[]> =>
-  fetchFromPeoplyApiJson("/mcp/keys");
+export const listMcpApiKeys = async (): Promise<McpApiKey[]> => {
+  const data = await fetchFromPeoplyApiJson("/mcp/keys");
+  return data ?? [];
+};
 
-export const createMcpApiKey = (
+export const createMcpApiKey = async (
   name: string,
   scopes: McpScope[],
-): Promise<CreatedMcpApiKey> =>
-  fetchFromPeoplyApiJson("/mcp/keys", {
+): Promise<CreatedMcpApiKey> => {
+  const data = (await fetchFromPeoplyApiJson("/mcp/keys", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, scopes, expiresInDays: 90 }),
-  });
+  })) as CreatedMcpApiKey | undefined;
+  if (!data?.token) {
+    throw new Error("Kunne ikke hente MCP-nøkkel");
+  }
+  return data;
+};
 
 export const revokeMcpApiKey = (keyId: string) =>
   fetchFromPeoplyApi(`/mcp/keys/${encodeURIComponent(keyId)}`, {

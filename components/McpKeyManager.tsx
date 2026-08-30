@@ -122,15 +122,18 @@ const useMcpKeyActions = (mutate: KeyedMutator<McpApiKey[]>) => {
     });
 
   const createKey = async () => {
-    if (!name.trim()) return;
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
     setBusy(true);
     setError(undefined);
+    setToken(undefined);
     try {
-      const created = await createMcpApiKey(name, scopes);
-      await mutate((current = []) => [created, ...current], {
+      const created = await createMcpApiKey(trimmedName, scopes);
+      const { token: secretToken, ...storedKey } = created;
+      await mutate((current = []) => [storedKey, ...current], {
         revalidate: false,
       });
-      setToken(created.token);
+      setToken(secretToken);
       setName("");
     } catch {
       setError("Kunne ikke opprette API-nøkkelen.");
