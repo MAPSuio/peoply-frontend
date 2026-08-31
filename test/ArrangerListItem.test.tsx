@@ -106,6 +106,6 @@ describe("ArrangerListItem", () => {
     await clicker.click(screen.getByRole("button", { name: "Avfølg" }));
 
     expect(requests).toEqual([]);
-    expect(push).toHaveBeenCalledWith("/login?redirect=/me/following");
+    expect(push).toHaveBeenCalledWith("/login?redirect=%2Fme%2Ffollowing");
   });
 });
