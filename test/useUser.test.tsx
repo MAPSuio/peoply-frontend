@@ -154,6 +154,7 @@ describe("UserProvider account exit", () => {
     await userEvent.click(screen.getByRole("button", { name: "logg ut" }));
 
     await screen.findByText("ingen bruker");
+    expect(logout).toHaveBeenCalledTimes(1);
     expect(cacheStorage.delete).toHaveBeenCalledWith("apis");
     expect(cacheStorage.delete).not.toHaveBeenCalledWith(PRECACHE_NAME);
   });
@@ -168,6 +169,7 @@ describe("UserProvider account exit", () => {
     await userEvent.click(screen.getByRole("button", { name: "logg ut" }));
 
     await screen.findByText("ingen bruker");
+    expect(logout).toHaveBeenCalledTimes(1);
     expect(cacheStorage.delete).toHaveBeenCalledWith("apis");
   });
 
@@ -181,6 +183,7 @@ describe("UserProvider account exit", () => {
     await userEvent.click(screen.getByRole("button", { name: "slett konto" }));
 
     await screen.findByText("ingen bruker");
+    expect(deleteMe).toHaveBeenCalledTimes(1);
     expect(cacheStorage.delete).toHaveBeenCalledWith("apis");
   });
 });
