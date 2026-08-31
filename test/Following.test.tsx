@@ -108,7 +108,7 @@ describe("/me/following", () => {
     currentUser = undefined;
     renderPage(() => Promise.resolve([]));
 
-    expect(push).toHaveBeenCalledWith("/login?redirect=/me/following");
+    expect(push).toHaveBeenCalledWith("/login?redirect=%2Fme%2Ffollowing");
     expect(screen.queryByText(EMPTY_STATE)).not.toBeInTheDocument();
   });
 
