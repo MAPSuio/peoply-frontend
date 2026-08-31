@@ -27,6 +27,7 @@ const router = {
   push,
   replace,
   back: vi.fn(),
+  isReady: true,
 };
 
 vi.mock("next/router", () => ({ useRouter: () => router }));

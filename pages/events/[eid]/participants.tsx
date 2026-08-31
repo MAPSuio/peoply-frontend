@@ -78,8 +78,10 @@ const Participants = () => {
   );
 
   useRedirectWithReason({
-    when: Boolean(registrationsError || eventError || invitationsError),
-    reason: "Kunne ikke laste inn data for arrangementet.",
+    reason:
+      registrationsError || eventError || invitationsError
+        ? "Kunne ikke laste inn data for arrangementet."
+        : undefined,
     to: `/events/${eid}`,
   });
 

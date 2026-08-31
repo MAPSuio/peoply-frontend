@@ -13,9 +13,13 @@ const redirectToLogin = vi.fn();
 /* Next's router is a singleton whose identity is stable across renders, and
    only its query fills in once the URL has been parsed. */
 let routerQuery: { oid?: string } = { oid: "ificreatorsguild" };
+let routerReady = true;
 const router = {
   get query() {
     return routerQuery;
+  },
+  get isReady() {
+    return routerReady;
   },
   push,
   replace,
@@ -46,6 +50,7 @@ describe("members page for a user without access", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routerQuery = { oid: "ificreatorsguild" };
+    routerReady = true;
     useOrganizationMock.mockReturnValue({
       organization: ORGANIZATION,
       organizationUsers: undefined,
@@ -78,11 +83,13 @@ describe("members page for a user without access", () => {
 
   it("waits for the router before redirecting, and then redirects once", async () => {
     routerQuery = {};
+    routerReady = false;
     const { rerender } = render(<Members />);
 
     expect(replace).not.toHaveBeenCalled();
 
     routerQuery = { oid: "ificreatorsguild" };
+    routerReady = true;
     rerender(<Members />);
     rerender(<Members />);
 

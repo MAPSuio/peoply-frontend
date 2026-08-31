@@ -17,6 +17,7 @@ import useOrganization from "../../../../hooks/useOrganization";
 import EditIcon from "../../../../components/svgs/EditIcon";
 import useRedirectToLogin from "../../../../hooks/useRedirectToLogin";
 import useRedirectWithReason from "../../../../hooks/useRedirectWithReason";
+import { memberListBlockedReason } from "../../../../utils/organizationAccess";
 import useUser from "../../../../hooks/useUser";
 
 export default function Members() {
@@ -41,17 +42,13 @@ export default function Members() {
     }
   }, [redirectToLogin, user, userLoading]);
 
-  /* `oid` is empty until the router has parsed the URL, and the member list is
-     unknown until it has been fetched - neither is a reason to leave. */
   useRedirectWithReason({
-    when:
-      Boolean(oid) &&
-      !organizationLoading &&
-      Boolean(user) &&
-      !organizationUsers,
-    reason: membersForbidden
-      ? "Bare medlemmer kan se medlemslisten"
-      : "Kunne ikke hente medlemslisten",
+    reason: memberListBlockedReason({
+      loading: organizationLoading,
+      signedIn: Boolean(user),
+      hasMembers: Boolean(organizationUsers),
+      forbidden: membersForbidden,
+    }),
     to: organizationPageUrl,
   });
 

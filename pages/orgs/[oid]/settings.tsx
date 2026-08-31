@@ -16,7 +16,9 @@ import {
 } from "../../../types/types";
 import styles from "../../../styles/OrganizationSettings.module.scss";
 import useBack from "../../../hooks/useBack";
-import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 import BackButton from "../../../components/BackButton";
 import useOrganization from "../../../hooks/useOrganization";
 import TextInput from "../../../components/inputs/TextInput";
@@ -81,14 +83,22 @@ const OrganizationSettings: NextPage = () => {
   }, [icsFeed]);
 
   useRedirectWithReason({
-    when: !orgLoading && Boolean(orgError || !org),
-    reason: "Kunne ikke laste inn data for organisasjonen.",
+    reason: blockingReason(!orgLoading, [
+      {
+        blocked: Boolean(orgError || !org),
+        reason: "Kunne ikke laste inn data for organisasjonen.",
+      },
+    ]),
     to: "/",
   });
 
   useRedirectWithReason({
-    when: !orgLoading && Boolean(org) && !isAdminOrOwner,
-    reason: "Du har ikke rettigheter til dette.",
+    reason: blockingReason(!orgLoading, [
+      {
+        blocked: Boolean(org) && !isAdminOrOwner,
+        reason: "Du har ikke rettigheter til dette.",
+      },
+    ]),
     to: `/orgs/${oid}`,
   });
 

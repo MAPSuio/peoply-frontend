@@ -102,8 +102,7 @@ export default function InviteUsersToEvent() {
   }
 
   useRedirectWithReason({
-    when: !loading && Boolean(eventError),
-    reason: "Kunne ikke hente arrangementet",
+    reason: eventError ? "Kunne ikke hente arrangementet" : undefined,
     to: `/events/${eid}`,
   });
 

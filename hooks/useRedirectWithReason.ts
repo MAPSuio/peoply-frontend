@@ -4,15 +4,13 @@ import { useEffect, useRef } from "react";
 import { SnackTypes } from "../types/types";
 import useSnack from "./useSnack";
 
-interface RedirectWithReason {
+export interface RedirectWithReason {
   /**
-   * True once it is settled that the visitor cannot stay - never while the
-   * answer is still loading, or a page redirects itself away before it knows
-   * whether it had to.
+   * Why the visitor cannot stay, or undefined while they can - including
+   * while the answer is still loading, or the page sends itself away before
+   * it knows whether it had to.
    */
-  when: boolean;
-  /** What the visitor is told, in their own language. */
-  reason: string;
+  reason?: string;
   /** Where they end up instead. */
   to: string;
 }
@@ -26,25 +24,56 @@ interface RedirectWithReason {
  * with the same error repeating. Replacing drops the guarded entry, which
  * leaves back pointing at wherever they actually came from.
  *
+ * Waits for the router. Every caller builds `to` from `router.query`, which is
+ * empty until Next has parsed the URL, so redirecting before then would send
+ * the visitor to /orgs/undefined.
+ *
  * Fires once per mount: the page keeps rendering while the navigation is in
  * flight, and a second render must not repeat the message.
  */
 export default function useRedirectWithReason({
-  when,
   reason,
   to,
 }: RedirectWithReason) {
   const router = useRouter();
+  const { isReady } = router;
   const { addSnack } = useSnack();
   const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (hasRedirected.current || !when) {
+    if (hasRedirected.current || !reason || !isReady) {
       return;
     }
 
     hasRedirected.current = true;
     addSnack(reason, SnackTypes.ERROR);
     router.replace(to);
-  }, [addSnack, reason, router, to, when]);
+  }, [addSnack, isReady, reason, router, to]);
+}
+
+export interface AccessCheck {
+  /** True when this particular check says the visitor cannot stay. */
+  blocked: boolean;
+  reason: string;
+}
+
+/**
+ * The first reason the visitor cannot stay, once the page knows enough to say
+ * one.
+ *
+ * Guards used to read half-loaded values and send people away before the
+ * answer arrived, and each page spelled out its own "not while loading, and
+ * not before the router is ready" dance. `settled` is that gate, stated once
+ * per page; the checks are tried in order, so the most specific reason wins
+ * over the generic one.
+ */
+export function blockingReason(
+  settled: boolean,
+  checks: AccessCheck[],
+): string | undefined {
+  if (!settled) {
+    return undefined;
+  }
+
+  return checks.find((check) => check.blocked)?.reason;
 }

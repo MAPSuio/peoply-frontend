@@ -166,6 +166,10 @@
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
+  /* Set here rather than inherited from the anchor: the tile is only a link
+     when the list behind it is the viewer's to open, and the labels must not
+     get lighter when it is not. */
+  font-weight: $font-weight-bold;
   gap: $spacer-very-small;
 }
 
@@ -195,10 +199,6 @@
 
 .dataDescription {
   font-size: $font-size-tertiary;
-  /* Pinned rather than inherited: the tile is only a link when the list behind
-     it is the viewer's to open, and the label must not get lighter when it is
-     not. */
-  font-weight: $font-weight-bold;
   @include monoFont();
 
   @include desktop() {

@@ -18,11 +18,19 @@ const Edit = () => {
   const router = useRouter();
   const goBack = useBack();
   const { eid } = router.query;
-  const { data } = useSWR(() => (eid ? `/events/${eid}` : false));
+  const { data, error } = useSWR(() => (eid ? `/events/${eid}` : false));
+
+  /* Without this the page sits on "Loading..." forever when the event cannot
+     be fetched, with nothing telling the user why. */
+  useRedirectWithReason({
+    reason: error ? "Kunne ikke hente arrangementet" : undefined,
+    to: `/events/${eid}`,
+  });
 
   useRedirectWithReason({
-    when: Boolean(data?.readOnly),
-    reason: "Importerte ICS-arrangementer kan ikke redigeres",
+    reason: data?.readOnly
+      ? "Importerte ICS-arrangementer kan ikke redigeres"
+      : undefined,
     to: `/events/${data?.urlId}`,
   });
 

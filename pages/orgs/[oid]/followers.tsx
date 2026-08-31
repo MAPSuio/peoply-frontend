@@ -8,6 +8,7 @@ import MemberCard from "../../../components/MemberCard";
 import HeadComponent from "../../../components/HeadComponent";
 import useBack from "../../../hooks/useBack";
 import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import { followerListBlockedReason } from "../../../utils/organizationAccess";
 import useOrganization from "../../../hooks/useOrganization";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
@@ -47,12 +48,12 @@ const OrgFollowers = () => {
   }, [redirectToLogin, user, userLoading]);
 
   useRedirectWithReason({
-    when:
-      !organizationLoading &&
-      Boolean(user) &&
-      isAdminOrOwner === false &&
-      Boolean(organization),
-    reason: "Du har ikke tilgang til følgerlisten",
+    reason: followerListBlockedReason({
+      loading: organizationLoading,
+      signedIn: Boolean(user),
+      hasOrganization: Boolean(organization),
+      isAdminOrOwner,
+    }),
     to: `/orgs/${oid}`,
   });
 
