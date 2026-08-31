@@ -13,12 +13,17 @@ describe("getOrganizationSocialLinks", () => {
     expect(links.map((link) => link.url)).toContain("https://cyb.no");
   });
 
-  it("drops a javascript: url before it reaches an href", () => {
-    const links = getOrganizationSocialLinks(
-      orgWith({ websiteUrl: "javascript:alert(document.domain)" }),
-    );
-    expect(links.some((link) => link.url.startsWith("javascript:"))).toBe(
-      false,
-    );
-  });
+  const urlsOutsideTheHttpAllowlist = [
+    "javascript:alert(document.domain)",
+    "data:text/html,<script>alert(1)</script>",
+    "vbscript:msgbox(1)",
+    "file:///etc/passwd",
+  ];
+
+  it.each(urlsOutsideTheHttpAllowlist)(
+    "drops %s before it reaches an href",
+    (websiteUrl) => {
+      expect(getOrganizationSocialLinks(orgWith({ websiteUrl }))).toEqual([]);
+    },
+  );
 });
