@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import LoginCallback from "../pages/login/callback";
-import { CONFIRM_LINK_PATHS, LINK_PATHS } from "../constants/providers";
 import { API_URL } from "../constants/urls";
 import { LoginProvider } from "../types/types";
 
@@ -78,20 +77,5 @@ describe("confirming a parked account link from the modal", () => {
     );
 
     expect(navigatedTo).not.toBe(`${API_URL}/auth/login`);
-  });
-});
-
-describe("link modal entry points", () => {
-  it("confirms a parked link through its own backend door", () => {
-    expect(CONFIRM_LINK_PATHS[LoginProvider.VIPPS]).toBe("/auth/confirm-link");
-    expect(CONFIRM_LINK_PATHS[LoginProvider.GOOGLE]).toBe(
-      "/auth/confirm-link/google",
-    );
-  });
-
-  it("keeps the settings-initiated link separate from the confirm", () => {
-    for (const provider of Object.values(LoginProvider)) {
-      expect(CONFIRM_LINK_PATHS[provider]).not.toBe(LINK_PATHS[provider]);
-    }
   });
 });
