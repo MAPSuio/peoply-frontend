@@ -7,6 +7,7 @@ import Layout from "../../../components/Layout";
 import MemberCard from "../../../components/MemberCard";
 import HeadComponent from "../../../components/HeadComponent";
 import useBack from "../../../hooks/useBack";
+import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
 import useOrganization from "../../../hooks/useOrganization";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
@@ -45,25 +46,15 @@ const OrgFollowers = () => {
     }
   }, [redirectToLogin, user, userLoading]);
 
-  useEffect(() => {
-    if (
+  useRedirectWithReason({
+    when:
       !organizationLoading &&
-      user &&
+      Boolean(user) &&
       isAdminOrOwner === false &&
-      organization
-    ) {
-      addSnack("Du har ikke tilgang til følgerlisten", SnackTypes.ERROR);
-      router.push(`/orgs/${oid}`);
-    }
-  }, [
-    addSnack,
-    isAdminOrOwner,
-    oid,
-    organization,
-    organizationLoading,
-    router,
-    user,
-  ]);
+      Boolean(organization),
+    reason: "Du har ikke tilgang til følgerlisten",
+    to: `/orgs/${oid}`,
+  });
 
   if (userLoading || organizationLoading || !organization || !followersData) {
     return <></>;

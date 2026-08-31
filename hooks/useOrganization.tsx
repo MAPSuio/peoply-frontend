@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { ApiError } from "../services/apiError";
 import {
   getOrganization,
   getOrganizationUsers,
@@ -18,6 +19,12 @@ interface useOrganizationUsersType {
   isMember?: boolean;
   isOwner?: boolean;
   isAdminOrOwner?: boolean;
+  /**
+   * The API refused the member list. Only members may read it, so this is the
+   * expected answer for an outsider rather than something that went wrong -
+   * callers show it as "not yours to see", not as a failure.
+   */
+  membersForbidden?: boolean;
   loading?: boolean;
   error?: string;
 }
@@ -100,19 +107,22 @@ export default function useOrganization(
   );
 
   const organizationUser = members?.find((u) => u.user.id === user?.id);
+  const membersForbidden =
+    membersError instanceof ApiError && membersError.status === 403;
 
   return {
     organization,
     organizationUsers: members,
     organizationUser,
     ...rolesOf(organizationUser),
+    membersForbidden,
     /* Still loading while the user is being resolved and members are wanted:
        callers gate the whole page on this, and letting it fall to false early
        would flash the page without the admin-only controls. */
     loading:
       organizationLoading || (fetchMembers && (userLoading || membersLoading)),
     error:
-      organizationError || membersError
+      organizationError || (membersError && !membersForbidden)
         ? "Something went wrong when fetching organization data"
         : undefined,
   };

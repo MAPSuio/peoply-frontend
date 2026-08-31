@@ -11,6 +11,7 @@ import ModalButton from "../../../../../components/ModalButton";
 import SettingsButton from "../../../../../components/SettingsButton";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
+import useRedirectWithReason from "../../../../../hooks/useRedirectWithReason";
 import useSnack from "../../../../../hooks/useSnack";
 import useUser from "../../../../../hooks/useUser";
 import {
@@ -63,30 +64,25 @@ export default function EditOrganizationUser() {
     }
   }, [organizationUsers, uid]);
 
-  if (loading || loadingOrganization) {
-    return <></>;
-  }
-
-  if (organizationError) {
-    addSnack("Noe gikk galt", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}/members`);
-  }
-
-  const userToEdit = organizationUsers?.find((user) => user.userId === uid);
+  const userToEdit = organizationUsers?.find((member) => member.userId === uid);
   const isEditingSelf = user?.id === userToEdit?.userId;
   const canEdit = isAdminOrOwner || isEditingSelf;
 
-  if (!canEdit) {
-    addSnack("Du har ikke rettigheter til dette", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}/members`);
-  }
+  const cannotEditReason = (() => {
+    if (organizationError) return "Noe gikk galt";
+    if (!canEdit) return "Du har ikke rettigheter til dette";
+    if (!userToEdit) return "Denne brukeren er ikke medlem i organisasjonen";
+    return undefined;
+  })();
 
-  if (!userToEdit) {
-    addSnack(
-      "Denne brukeren er ikke medlem i organisasjonen",
-      SnackTypes.ERROR,
-    );
-    router.push(`/orgs/${oid}/members`);
+  useRedirectWithReason({
+    when: !loading && !loadingOrganization && Boolean(cannotEditReason),
+    reason: cannotEditReason ?? "Du har ikke rettigheter til dette",
+    to: `/orgs/${oid}/members`,
+  });
+
+  if (loading || loadingOrganization) {
+    return <></>;
   }
 
   /* the edit is valid if the description or role has changed */

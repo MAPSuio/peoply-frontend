@@ -7,6 +7,7 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useOrganization from "../../../hooks/useOrganization";
+import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { fetchFromPeoplyApi } from "../../../services/fetchers";
@@ -41,21 +42,16 @@ export default function InviteMembersToOrg() {
     setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
   };
 
+  useRedirectWithReason({
+    when: !loading && !organizationsLoading && !isAdminOrOwner,
+    reason: organizationError
+      ? "Kunne ikke hente organisasjonsdata"
+      : "Du har ikke rettigheter til å invitere nye medlemmer",
+    to: `/orgs/${oid}`,
+  });
+
   if (loading || organizationsLoading) {
     return <></>;
-  }
-
-  if (organizationError) {
-    addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}`);
-  }
-
-  if (!isAdminOrOwner) {
-    addSnack(
-      "Du har ikke rettigheter til å invitere ny medlemmer",
-      SnackTypes.ERROR,
-    );
-    router.push(`/orgs/${oid}`);
   }
 
   const onSubmit = async () => {

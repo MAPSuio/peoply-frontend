@@ -6,6 +6,7 @@ import { OrganizationRole } from "../types/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import useOrganization from "../hooks/useOrganization";
+import { ApiError } from "../services/apiError";
 import {
   getOrganization,
   getOrganizationUsers,
@@ -49,6 +50,7 @@ function OrganizationConsumer({
         isAdmin: state.isAdmin,
         loading: state.loading,
         error: state.error,
+        membersForbidden: state.membersForbidden,
       })}
     </output>
   );
@@ -136,6 +138,31 @@ describe("useOrganization", () => {
       isAdmin: true,
       loading: false,
     });
+  });
+
+  it("reports a 403 on the member list as forbidden rather than as a failure", async () => {
+    getOrganizationMock.mockResolvedValue(organization);
+    getOrganizationUsersMock.mockRejectedValue(
+      new ApiError("Forbidden", 403, "/organizations/org-1/members"),
+    );
+
+    renderWithSwr(<OrganizationConsumer oid="org-1" />);
+
+    await waitFor(() => expect(state().loading).toBe(false));
+    expect(state().membersForbidden).toBe(true);
+  });
+
+  it("reports a failed member list as an error, not as forbidden", async () => {
+    getOrganizationMock.mockResolvedValue(organization);
+    getOrganizationUsersMock.mockRejectedValue(
+      new ApiError("Boom", 500, "/organizations/org-1/members"),
+    );
+
+    renderWithSwr(<OrganizationConsumer oid="org-1" />);
+
+    await waitFor(() => expect(state().loading).toBe(false));
+    expect(state().membersForbidden).toBe(false);
+    expect(state().error).toBeTruthy();
   });
 
   it("skips members when fetchMembers is false", async () => {
