@@ -12,6 +12,7 @@ import { ApiError } from "../services/apiError";
 import { deleteMe, logout } from "../services/auth";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { fetchIpInfo } from "../services/ip";
+import { clearRuntimeCaches } from "../utils/offlineCaches";
 import { hasSessionMarker } from "../utils/session";
 import type {
   IpInfo,
@@ -168,28 +169,21 @@ export function UserProvider({
     };
   }, [user, reload]);
 
-  const clearOfflineCaches = async () => {
-    if (typeof caches === "undefined") {
-      return;
+  const exitAccount = async (
+    requestExitFromServer: () => Promise<Response>,
+  ) => {
+    try {
+      return await requestExitFromServer();
+    } finally {
+      setUser(undefined);
+      await clearRuntimeCaches(globalThis.caches);
     }
-    const names = await caches.keys();
-    await Promise.all(names.map((name) => caches.delete(name)));
   };
 
   /* will clear user state and request to remove the cookies */
-  const logoutHandler = async () => {
-    const response = await logout();
-    setUser(undefined);
-    await clearOfflineCaches();
-    return response;
-  };
+  const logoutHandler = () => exitAccount(logout);
 
-  const deleteMeHandler = async () => {
-    const response = await deleteMe();
-    setUser(undefined);
-    await clearOfflineCaches();
-    return response;
-  };
+  const deleteMeHandler = () => exitAccount(deleteMe);
 
   /* will switch context to org if provided, otherwise switch to user */
   const switchContext = (org?: Organization) => {
