@@ -21,6 +21,7 @@ import styles from "../styles/SummaryPage.module.scss";
 import { EventRegistrationMode } from "../types/types";
 import type { EventObjectProps } from "../pages/events/create";
 import useUser from "../hooks/useUser";
+import useObjectUrl from "../hooks/useObjectUrl";
 
 interface SummaryPageProps {
   title: string;
@@ -215,9 +216,8 @@ const SummaryPage = ({
   const validData = validDataMap.get(page);
 
   /* Get image source of either the supplied image or a placeholder. */
-  const imageSource = eventObject.eventImage
-    ? URL.createObjectURL(eventObject.eventImage)
-    : PlaceholderImage;
+  const eventImageUrl = useObjectUrl(eventObject.eventImage);
+  const imageSource = eventImageUrl ?? PlaceholderImage;
 
   /* Create FormData object to be posted. */
   const formData = new FormData();
