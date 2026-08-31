@@ -5,7 +5,7 @@ import Modal from "../../components/Modal";
 import ModalButton from "../../components/ModalButton";
 import {
   isLoginProvider,
-  LOGIN_PATHS,
+  CONFIRM_LINK_PATHS,
   PROVIDER_LOGOS,
   PROVIDER_NAMES,
 } from "../../constants/providers";
@@ -94,7 +94,7 @@ const LoginCallback: NextPage = () => {
             text={`Logg inn med ${PROVIDER_NAMES[provider]}`}
             icon={<Logo />}
             onClick={() => {
-              window.location.href = `${API_URL}${LOGIN_PATHS[provider]}`;
+              window.location.href = `${API_URL}${CONFIRM_LINK_PATHS[provider]}`;
             }}
           />
         );

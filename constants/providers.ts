@@ -16,10 +16,10 @@ export const PROVIDER_LOGOS: Record<
   [LoginProvider.GOOGLE]: GoogleLogo,
 };
 
-/** Backend entry points that start a plain OIDC login. */
-export const LOGIN_PATHS: Record<LoginProvider, string> = {
-  [LoginProvider.VIPPS]: "/auth/login",
-  [LoginProvider.GOOGLE]: "/auth/login/google",
+/** Backend entry points that confirm a link parked by an email collision. */
+export const CONFIRM_LINK_PATHS: Record<LoginProvider, string> = {
+  [LoginProvider.VIPPS]: "/auth/confirm-link",
+  [LoginProvider.GOOGLE]: "/auth/confirm-link/google",
 };
 
 /** Backend entry points that link the provider to the logged-in user. */
