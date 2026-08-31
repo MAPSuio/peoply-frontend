@@ -1,5 +1,6 @@
 import { defaultCache } from "@serwist/next/worker";
 import { type PrecacheEntry, type SerwistGlobalConfig, Serwist } from "serwist";
+import { restrictToSameOriginNonApiRequests } from "./runtimeCaching";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -22,7 +23,7 @@ const serwist = new Serwist({
      means the runtime cache names (pages, next-data, static-image-assets, ...)
      stay identical, so already-installed clients reuse their caches instead of
      refilling them on first load after the update. */
-  runtimeCaching: defaultCache,
+  runtimeCaching: restrictToSameOriginNonApiRequests(defaultCache),
   fallbacks: {
     entries: [
       {
