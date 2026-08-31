@@ -94,6 +94,7 @@ const OrganizationView = ({
         <>
           <OrganizationStats
             organization={org}
+            isMemberOfOrg={isMemberOfOrg}
             isAdminOrOwner={isAdminOrOwner}
             memberCount={memberCount}
             eventCount={events?.length}

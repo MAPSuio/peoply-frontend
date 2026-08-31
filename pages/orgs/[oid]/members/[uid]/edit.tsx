@@ -1,307 +1,75 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Avatar from "../../../../../components/Avatar";
-import BackButton from "../../../../../components/BackButton";
-import Button from "../../../../../components/Button";
-import Dropdown from "../../../../../components/Dropdown";
+import { useEffect } from "react";
+
 import HeadComponent from "../../../../../components/HeadComponent";
-import TextInput from "../../../../../components/inputs/TextInput";
-import Modal from "../../../../../components/Modal";
-import ModalButton from "../../../../../components/ModalButton";
-import SettingsButton from "../../../../../components/SettingsButton";
+import MemberEditForm from "../../../../../components/organization/MemberEditForm";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
-import useSnack from "../../../../../hooks/useSnack";
+import useRedirectToLogin from "../../../../../hooks/useRedirectToLogin";
+import useRedirectWithReason from "../../../../../hooks/useRedirectWithReason";
+import { memberEditBlockedReason } from "../../../../../utils/organizationAccess";
 import useUser from "../../../../../hooks/useUser";
-import {
-  fetchFromPeoplyApi,
-  fetchFromPeoplyApiJson,
-} from "../../../../../services/fetchers";
-import styles from "../../../../../styles/EditOrganizationUser.module.scss";
-import {
-  ButtonType,
-  OrganizationRole,
-  SettingTypes,
-  SnackTypes,
-  type UserOrganizationRoles,
-} from "../../../../../types/types";
-import { getOrganizationRolePrivilege } from "../../../../../utils/functions";
 
 export default function EditOrganizationUser() {
-  const goBack = useBack();
-  const { user, loading } = useUser();
-  const { addSnack } = useSnack();
   const router = useRouter();
   const { oid, uid } = router.query;
-  const [roleDescription, setRoleDescription] = useState("");
-  const [roleValue, setRoleValue] = useState<OrganizationRole>();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [changeOwnerModalOpen, setchangeOwnerModalOpen] = useState(false);
+  const memberListUrl = `/orgs/${oid}/members`;
+  const goBack = useBack(memberListUrl);
+  const redirectToLogin = useRedirectToLogin();
+  const { user, loading } = useUser();
   const {
     organization,
     organizationUsers,
+    organizationUser,
     isAdminOrOwner,
     isOwner,
     isAdmin,
     loading: loadingOrganization,
     error: organizationError,
-    organizationUser,
   } = useOrganization(oid as string);
 
-  /* fill form with data from the user to be edited */
+  const member = organizationUsers?.find((entry) => entry.userId === uid);
+  const canEdit = isAdminOrOwner || user?.id === member?.userId;
+
   useEffect(() => {
-    if (organizationUsers) {
-      const userToEdit = organizationUsers.find((u) => u.user.id === uid);
-
-      if (userToEdit?.role) {
-        setRoleValue(userToEdit.role);
-      }
-
-      if (userToEdit?.roleDescription) {
-        setRoleDescription(userToEdit.roleDescription);
-      }
+    if (!loading && !user) {
+      redirectToLogin();
     }
-  }, [organizationUsers, uid]);
+  }, [loading, redirectToLogin, user]);
 
-  if (loading || loadingOrganization) {
-    return <></>;
+  useRedirectWithReason({
+    reason: memberEditBlockedReason({
+      loading: loading || loadingOrganization,
+      signedIn: Boolean(user),
+      fetchFailed: Boolean(organizationError),
+      canEdit,
+      isMemberOfOrganization: Boolean(member),
+    }),
+    to: memberListUrl,
+  });
+
+  if (!user || !organization || !member) {
+    return null;
   }
 
-  if (organizationError) {
-    addSnack("Noe gikk galt", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}/members`);
-  }
-
-  const userToEdit = organizationUsers?.find((user) => user.userId === uid);
-  const isEditingSelf = user?.id === userToEdit?.userId;
-  const canEdit = isAdminOrOwner || isEditingSelf;
-
-  if (!canEdit) {
-    addSnack("Du har ikke rettigheter til dette", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}/members`);
-  }
-
-  if (!userToEdit) {
-    addSnack(
-      "Denne brukeren er ikke medlem i organisasjonen",
-      SnackTypes.ERROR,
-    );
-    router.push(`/orgs/${oid}/members`);
-  }
-
-  /* the edit is valid if the description or role has changed */
-  const validEdit = (() => {
-    if (isEditingSelf && userToEdit?.roleDescription !== roleDescription) {
-      return true;
-    } else if (userToEdit?.role !== roleValue) {
-      return true;
-    }
-    return false;
-  })();
-
-  const deleteUser = async (uid: string) => {
-    try {
-      await fetchFromPeoplyApi(
-        `/organizations/${organization?.id}/members/${uid}`,
-        {
-          method: "DELETE",
-        },
-      );
-      addSnack("Medlem fjernet", SnackTypes.SUCCESS);
-      router.back();
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
-
-  const changeOwner = async (uid: string) => {
-    try {
-      await fetchFromPeoplyApi(`/organizations/${organization?.id}/owner`, {
-        method: "PATCH",
-        body: JSON.stringify({ newOwnerId: uid }),
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-      });
-      addSnack("Eier endret", SnackTypes.SUCCESS);
-      router.back();
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
-  };
-
-  async function handleConfirm() {
-    try {
-      if (isEditingSelf && userToEdit?.roleDescription !== roleDescription) {
-        await fetchFromPeoplyApiJson(
-          `/organizations/${organization?.id}/roleDescription/${user?.id}`,
-          {
-            method: "PATCH",
-            body: JSON.stringify({ description: roleDescription }),
-            headers: { "Content-Type": "application/json; charset=utf-8" },
-          },
-        );
-      }
-      if (userToEdit?.role !== roleValue) {
-        await fetchFromPeoplyApiJson(
-          `/organizations/${organization?.id}/roles`,
-          {
-            method: "PATCH",
-            body: JSON.stringify({
-              role: roleValue,
-              userId: userToEdit?.userId,
-            }),
-            headers: { "Content-Type": "application/json; charset=utf-8" },
-          },
-        );
-      }
-      addSnack("Bruker oppdatert", SnackTypes.SUCCESS);
-    } catch {
-      addSnack("Klarte ikke å oppdatere profilen", SnackTypes.ERROR);
-    } finally {
-      router.push(`/orgs/${oid}/members`);
-    }
-  }
-
-  /* generates roles for the dropdown based on your role and the user you are editing */
-  function generateRoleOptions(userToEdit: UserOrganizationRoles) {
-    const ownerOption = {
-      value: OrganizationRole.OWNER,
-      label: "Eier",
-    };
-    const adminOption = {
-      value: OrganizationRole.ADMIN,
-      label: "Administrator",
-    };
-    const memberOption = {
-      value: OrganizationRole.MEMBER,
-      label: "Medlem",
-    };
-
-    if (isOwner) {
-      if (isEditingSelf) {
-        return [ownerOption];
-      } else {
-        return [adminOption, memberOption];
-      }
-    } else if (isAdmin) {
-      if (userToEdit?.role === OrganizationRole.MEMBER || isEditingSelf) {
-        return [memberOption, adminOption];
-      }
-    }
-    return [];
-  }
-
-  if (user && organizationUsers && organization && userToEdit) {
-    return (
-      <>
-        <HeadComponent
-          title={`${organization?.name} - Inviter medlemmer`}
-          description="Inviter medlemmer til din organisasjon"
-        />
-        <div className={styles.container}>
-          <BackButton onClick={goBack} />
-          <div className={styles.profile}>
-            <Avatar user={userToEdit?.user} size="large" />
-            <h1
-              className={styles.name}
-            >{`${userToEdit?.user.firstName} ${userToEdit?.user.lastName}`}</h1>
-            <p className={styles.roleDescription}>
-              {userToEdit.roleDescription}
-            </p>
-          </div>
-          <div className={styles.form}>
-            {isAdminOrOwner && (
-              <Dropdown
-                label="Rolle"
-                value={roleValue}
-                setValue={setRoleValue}
-                inputId="role"
-                options={generateRoleOptions(userToEdit)}
-              />
-            )}
-            {isEditingSelf && (
-              <TextInput
-                value={roleDescription}
-                handleChange={(e) => setRoleDescription(e.target.value)}
-                inputId="roleDescription"
-                inputName="roleDescription"
-                label="Tittel i organisajsonen"
-                maxLength={35}
-              />
-            )}
-            {
-              /* ((isAdminOrOwner && userToEdit.role === OrganizationRole.MEMBER) ||
-              (isOwner && userToEdit.role === OrganizationRole.ADMIN))  */
-              organizationUser &&
-                getOrganizationRolePrivilege(organizationUser?.role) >
-                  getOrganizationRolePrivilege(userToEdit.role) && (
-                  <SettingsButton
-                    text="Fjern bruker fra organisasjonen"
-                    type={SettingTypes.DANGER}
-                    onClick={() => setModalOpen(true)}
-                  />
-                )
-            }
-            {isOwner && !isEditingSelf && (
-              <SettingsButton
-                text="Gjør brukeren til eier"
-                type={SettingTypes.DANGER}
-                onClick={() => setchangeOwnerModalOpen(true)}
-              />
-            )}
-            {isEditingSelf && !isOwner && (
-              <SettingsButton
-                text="Fjern meg fra organisasjonen"
-                type={SettingTypes.DANGER}
-                onClick={() => setModalOpen(true)}
-              />
-            )}
-          </div>
-          <div className={`${styles.confirm} ${validEdit ? styles.show : ""}`}>
-            <Button
-              disabled={!validEdit}
-              text="Lagre endringer"
-              onClick={handleConfirm}
-            />
-          </div>
-        </div>
-        {modalOpen && (
-          <Modal
-            label={`Vil du fjerne brukeren?`}
-            description="Dette vil fjerne brukeren fra organisasjonen. Brukeren må inviteres på nytt for å bli medlem igjen."
-            closeButtonOnClick={() => setModalOpen(false)}
-          >
-            <ModalButton
-              text="Fjern bruker"
-              onClick={() => deleteUser(userToEdit?.userId)}
-              type={ButtonType.DANGERSOFT}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </Modal>
-        )}
-        {changeOwnerModalOpen && (
-          <Modal
-            label={`Vil du gjøre brukeren til eier?`}
-            description="Dette vil gjøre brukeren til eier og fjerne deg som eier."
-            closeButtonOnClick={() => setchangeOwnerModalOpen(false)}
-          >
-            <ModalButton
-              text="Gjør til eier"
-              onClick={() => changeOwner(userToEdit?.userId)}
-              type={ButtonType.DANGERSOFT}
-            />
-            <ModalButton
-              text="Lukk"
-              onClick={() => setchangeOwnerModalOpen(false)}
-              type={ButtonType.SECONDARY}
-            />
-          </Modal>
-        )}
-      </>
-    );
-  }
-  return <></>;
+  return (
+    <>
+      <HeadComponent
+        title={`${organization.name} - rediger medlem`}
+        description={`Rediger et medlem i ${organization.name}`}
+      />
+      <MemberEditForm
+        organization={organization}
+        member={member}
+        editorId={user.id}
+        viewer={{
+          isOwner,
+          isAdmin,
+          isAdminOrOwner,
+          membership: organizationUser,
+        }}
+        onBack={goBack}
+      />
+    </>
+  );
 }

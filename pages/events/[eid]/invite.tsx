@@ -10,6 +10,9 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import PlusIcon from "../../../components/svgs/PlusIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
@@ -100,13 +103,18 @@ export default function InviteUsersToEvent() {
     setSelectedUsers([...selectedUsers, ...memberUsers]);
   }
 
+  useRedirectWithReason({
+    reason: blockingReason(!loading && Boolean(user), [
+      {
+        blocked: Boolean(eventError),
+        reason: "Kunne ikke hente arrangementet",
+      },
+    ]),
+    to: `/events/${eid}`,
+  });
+
   if (loading) {
     return <></>;
-  }
-
-  if (eventError) {
-    addSnack("Kunne ikke hente arrangementet", SnackTypes.ERROR);
-    router.push(`/events/${eid}`);
   }
 
   const onSubmit = async () => {

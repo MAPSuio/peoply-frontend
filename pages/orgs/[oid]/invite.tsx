@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
@@ -7,6 +7,9 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useOrganization from "../../../hooks/useOrganization";
+import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import { inviteBlockedReason } from "../../../utils/organizationAccess";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { fetchFromPeoplyApi } from "../../../services/fetchers";
@@ -20,6 +23,7 @@ import {
 
 export default function InviteMembersToOrg() {
   const goBack = useBack();
+  const redirectToLogin = useRedirectToLogin();
   const { user, loading } = useUser();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const { addSnack } = useSnack();
@@ -33,6 +37,12 @@ export default function InviteMembersToOrg() {
     error: organizationError,
   } = useOrganization(oid as string);
 
+  useEffect(() => {
+    if (!loading && !user) {
+      redirectToLogin();
+    }
+  }, [loading, redirectToLogin, user]);
+
   const onUserSelect = (user: User) => {
     setSelectedUsers([...selectedUsers, user]);
   };
@@ -41,21 +51,18 @@ export default function InviteMembersToOrg() {
     setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id));
   };
 
+  useRedirectWithReason({
+    reason: inviteBlockedReason({
+      loading: loading || organizationsLoading,
+      signedIn: Boolean(user),
+      isAdminOrOwner,
+      fetchFailed: Boolean(organizationError),
+    }),
+    to: `/orgs/${oid}`,
+  });
+
   if (loading || organizationsLoading) {
     return <></>;
-  }
-
-  if (organizationError) {
-    addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
-    router.push(`/orgs/${oid}`);
-  }
-
-  if (!isAdminOrOwner) {
-    addSnack(
-      "Du har ikke rettigheter til å invitere ny medlemmer",
-      SnackTypes.ERROR,
-    );
-    router.push(`/orgs/${oid}`);
   }
 
   const onSubmit = async () => {

@@ -11,32 +11,49 @@ import UsersIconCard from "../svgs/UsersIconCard";
 import styles from "../../styles/Organization.module.scss";
 
 interface StatTileProps {
-  href: string;
+  /** Omitted when the list behind the tile is not this viewer's to open. */
+  href?: string;
   icon: ReactNode;
   value?: number;
   label: string;
 }
 
 function StatTile({ href, icon, value, label }: StatTileProps) {
-  return (
-    <Link href={href} className={styles.iconContainer}>
+  const content = (
+    <>
       {icon}
       <p className={styles.data}>{value}</p>
       <p className={styles.dataDescription}>{label}</p>
+    </>
+  );
+
+  return href ? (
+    <Link href={href} className={styles.iconContainer}>
+      {content}
     </Link>
+  ) : (
+    <div className={styles.iconContainer}>{content}</div>
   );
 }
 
 export interface OrganizationStatsProps {
   organization: Organization;
+  isMemberOfOrg?: boolean;
   isAdminOrOwner?: boolean;
   memberCount?: number;
   eventCount?: number;
 }
 
-/** Members, followers and arrangements, each linking to its own list. */
+/**
+ * Members, followers and arrangements, each linking to its own list.
+ *
+ * The member count is a public aggregate, but the list behind it is members
+ * only. Linking an outsider there sent them to a page that could only answer
+ * 403 and bounce them back, so the count stays and the link does not.
+ */
 export default function OrganizationStats({
   organization,
+  isMemberOfOrg,
   isAdminOrOwner,
   memberCount,
   eventCount,
@@ -53,7 +70,11 @@ export default function OrganizationStats({
     <div className={styles.dataContainer}>
       {memberCount !== undefined && (
         <StatTile
-          href={organizationPath(organization, "/members")}
+          href={
+            isMemberOfOrg
+              ? organizationPath(organization, "/members")
+              : undefined
+          }
           icon={
             <UsersIconCard className={`${styles.icon} ${styles.usersIcon}`} />
           }

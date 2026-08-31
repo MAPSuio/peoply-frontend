@@ -15,6 +15,7 @@ import UserCross from "../../../components/svgs/UserCross";
 import WaitlistIcon from "../../../components/svgs/WaitlistIcon";
 import TabSelection from "../../../components/TabSelection";
 import useBack from "../../../hooks/useBack";
+import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
 import useSnack from "../../../hooks/useSnack";
 import {
   fetchAllFromPeoplyApiJson,
@@ -76,10 +77,13 @@ const Participants = () => {
     event?.id ? `/events/${event.id}/invitations` : false,
   );
 
-  if (registrationsError || eventError || invitationsError) {
-    addSnack("Kunne ikke laste inn data for arrangementet.", SnackTypes.ERROR);
-    router.push(`/events/${eid}`);
-  }
+  useRedirectWithReason({
+    reason:
+      registrationsError || eventError || invitationsError
+        ? "Kunne ikke laste inn data for arrangementet."
+        : undefined,
+    to: `/events/${eid}`,
+  });
 
   if (!registrations || !event) {
     return <></>;

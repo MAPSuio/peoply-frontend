@@ -1,6 +1,5 @@
 // Hooks
 import useSWR from "swr";
-import { useEffect } from "react";
 
 // Services
 
@@ -13,25 +12,30 @@ import styles from "../../../styles/SummaryPage.module.scss";
 import { useRouter } from "next/router";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
-import useSnack from "../../../hooks/useSnack";
-import { SnackTypes } from "../../../types/types";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 
 const Edit = () => {
   const router = useRouter();
   const goBack = useBack();
-  const { addSnack } = useSnack();
   const { eid } = router.query;
-  const { data } = useSWR(() => (eid ? `/events/${eid}` : false));
+  const { data, error } = useSWR(() => (eid ? `/events/${eid}` : false));
 
-  useEffect(() => {
-    if (data?.readOnly) {
-      addSnack(
-        "Importerte ICS-arrangementer kan ikke redigeres",
-        SnackTypes.ERROR,
-      );
-      router.push(`/events/${data.urlId}`);
-    }
-  }, [addSnack, data, router]);
+  /* One reason, the failure first: SWR serves the cached event through a
+     failed revalidation, so both could otherwise be true at once and the page
+     would announce and redirect twice. Without the failure case the page sat
+     on "Loading..." forever with nothing telling the user why. */
+  useRedirectWithReason({
+    reason: blockingReason(true, [
+      { blocked: Boolean(error), reason: "Kunne ikke hente arrangementet" },
+      {
+        blocked: Boolean(data?.readOnly),
+        reason: "Importerte ICS-arrangementer kan ikke redigeres",
+      },
+    ]),
+    to: `/events/${eid}`,
+  });
 
   if (!data) {
     return <div>Loading...</div>;

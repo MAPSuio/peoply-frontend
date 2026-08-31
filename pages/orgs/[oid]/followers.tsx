@@ -7,6 +7,8 @@ import Layout from "../../../components/Layout";
 import MemberCard from "../../../components/MemberCard";
 import HeadComponent from "../../../components/HeadComponent";
 import useBack from "../../../hooks/useBack";
+import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import { followerListBlockedReason } from "../../../utils/organizationAccess";
 import useOrganization from "../../../hooks/useOrganization";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
@@ -28,6 +30,7 @@ const OrgFollowers = () => {
   const {
     organization,
     isAdminOrOwner,
+    error: organizationError,
     loading: organizationLoading,
   } = useOrganization(oid as string);
 
@@ -45,25 +48,16 @@ const OrgFollowers = () => {
     }
   }, [redirectToLogin, user, userLoading]);
 
-  useEffect(() => {
-    if (
-      !organizationLoading &&
-      user &&
-      isAdminOrOwner === false &&
-      organization
-    ) {
-      addSnack("Du har ikke tilgang til følgerlisten", SnackTypes.ERROR);
-      router.push(`/orgs/${oid}`);
-    }
-  }, [
-    addSnack,
-    isAdminOrOwner,
-    oid,
-    organization,
-    organizationLoading,
-    router,
-    user,
-  ]);
+  useRedirectWithReason({
+    reason: followerListBlockedReason({
+      loading: organizationLoading,
+      signedIn: Boolean(user),
+      hasOrganization: Boolean(organization),
+      isAdminOrOwner,
+      fetchFailed: Boolean(organizationError),
+    }),
+    to: `/orgs/${oid}`,
+  });
 
   if (userLoading || organizationLoading || !organization || !followersData) {
     return <></>;

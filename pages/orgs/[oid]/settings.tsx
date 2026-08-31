@@ -16,6 +16,9 @@ import {
 } from "../../../types/types";
 import styles from "../../../styles/OrganizationSettings.module.scss";
 import useBack from "../../../hooks/useBack";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 import BackButton from "../../../components/BackButton";
 import useOrganization from "../../../hooks/useOrganization";
 import TextInput from "../../../components/inputs/TextInput";
@@ -79,22 +82,25 @@ const OrganizationSettings: NextPage = () => {
     }
   }, [icsFeed]);
 
-  useEffect(() => {
-    if (!orgLoading && (orgError || !org)) {
-      addSnack(
-        "Kunne ikke laste inn data for organisasjonen.",
-        SnackTypes.ERROR,
-      );
-      router.push("/");
-    }
-  }, [addSnack, org, orgError, orgLoading, router]);
+  useRedirectWithReason({
+    reason: blockingReason(!orgLoading, [
+      {
+        blocked: Boolean(orgError || !org),
+        reason: "Kunne ikke laste inn data for organisasjonen.",
+      },
+    ]),
+    to: "/",
+  });
 
-  useEffect(() => {
-    if (!orgLoading && org && !isAdminOrOwner) {
-      addSnack("Du har ikke rettigheter til dette.", SnackTypes.ERROR);
-      router.push(`/orgs/${oid}`);
-    }
-  }, [addSnack, isAdminOrOwner, oid, org, orgLoading, router]);
+  useRedirectWithReason({
+    reason: blockingReason(!orgLoading, [
+      {
+        blocked: Boolean(org) && !isAdminOrOwner,
+        reason: "Du har ikke rettigheter til dette.",
+      },
+    ]),
+    to: `/orgs/${oid}`,
+  });
 
   if (orgLoading) {
     return <></>;

@@ -9,30 +9,30 @@ import useBack from "../../../../hooks/useBack";
 import styles from "../../../../styles/OrgMembers.module.scss";
 import {
   OrganizationRole,
-  SnackTypes,
   type UserOrganizationRoles,
 } from "../../../../types/types";
-import useSnack from "../../../../hooks/useSnack";
 import HeadComponent from "../../../../components/HeadComponent";
 import { getOrganizationRolePrivilege } from "../../../../utils/functions";
 import useOrganization from "../../../../hooks/useOrganization";
 import EditIcon from "../../../../components/svgs/EditIcon";
 import useRedirectToLogin from "../../../../hooks/useRedirectToLogin";
+import useRedirectWithReason from "../../../../hooks/useRedirectWithReason";
+import { memberListBlockedReason } from "../../../../utils/organizationAccess";
 import useUser from "../../../../hooks/useUser";
 
 export default function Members() {
-  const goBack = useBack();
   const router = useRouter();
   const redirectToLogin = useRedirectToLogin();
   const { oid } = router.query;
-  const { addSnack } = useSnack();
+  const organizationPageUrl = `/orgs/${oid}`;
+  const goBack = useBack(organizationPageUrl);
   const { user, loading: userLoading } = useUser();
   const {
     organization,
     organizationUsers,
     organizationUser,
     isAdminOrOwner,
-    error: organizationError,
+    membersForbidden,
     loading: organizationLoading,
   } = useOrganization(oid as string);
 
@@ -42,16 +42,15 @@ export default function Members() {
     }
   }, [redirectToLogin, user, userLoading]);
 
-  useEffect(() => {
-    if (!organizationLoading && user && !organizationUsers) {
-      addSnack("Du har ikke tilgang til medlemslisten", SnackTypes.ERROR);
-      router.push(`/orgs/${oid}`);
-    }
-  }, [addSnack, oid, organizationLoading, organizationUsers, router, user]);
-
-  if (organizationError) {
-    addSnack("Kunne ikke hente oppdatert organisasjonsdata", SnackTypes.ERROR);
-  }
+  useRedirectWithReason({
+    reason: memberListBlockedReason({
+      loading: organizationLoading,
+      signedIn: Boolean(user),
+      hasMembers: Boolean(organizationUsers),
+      forbidden: membersForbidden,
+    }),
+    to: organizationPageUrl,
+  });
 
   const filterMembersByRole = (
     users: UserOrganizationRoles[],
@@ -103,7 +102,7 @@ export default function Members() {
       <HeadComponent
         title={`${organization.name} - medlemmer`}
         description={`Medlemmer i ${organization.name}`}
-        path={`/orgs/${oid}/members`}
+        path={`${organizationPageUrl}/members`}
         imageUrl={organization.image}
       />
       <div className={styles.container}>
