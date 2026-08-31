@@ -12,6 +12,13 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+const cachesCrossOriginResponses = (entry: (typeof defaultCache)[number]) =>
+  (entry.handler as { cacheName?: string }).cacheName === "cross-origin";
+
+const sameOriginRuntimeCaching = defaultCache.filter(
+  (entry) => !cachesCrossOriginResponses(entry),
+);
+
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
@@ -22,7 +29,7 @@ const serwist = new Serwist({
      means the runtime cache names (pages, next-data, static-image-assets, ...)
      stay identical, so already-installed clients reuse their caches instead of
      refilling them on first load after the update. */
-  runtimeCaching: defaultCache,
+  runtimeCaching: sameOriginRuntimeCaching,
   fallbacks: {
     entries: [
       {

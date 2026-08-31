@@ -7,6 +7,7 @@ import BackButton from "../../components/BackButton";
 import type { User } from "../../types/types";
 import useBack from "../../hooks/useBack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
+import { isValidUuid } from "../../utils/apiPathParams";
 import styles from "../../styles/User.module.scss";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import type { ParsedUrlQuery } from "node:querystring";
@@ -66,8 +67,14 @@ interface IParams extends ParsedUrlQuery {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { uid } = context.params as IParams;
 
+  if (!isValidUuid(uid)) {
+    return { notFound: true };
+  }
+
   try {
-    const user = await fetchFromPeoplyApiJson(`/users/${uid}`);
+    const user = await fetchFromPeoplyApiJson(
+      `/users/${encodeURIComponent(uid)}`,
+    );
 
     if (!user) {
       return {

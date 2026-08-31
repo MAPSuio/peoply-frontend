@@ -38,7 +38,9 @@ describe("security headers", () => {
     expect(headers["X-Content-Type-Options"]).toBe("nosniff");
     expect(headers["Referrer-Policy"]).toBe("strict-origin-when-cross-origin");
     expect(headers["X-Frame-Options"]).toBe("DENY");
-    expect(headers["Content-Security-Policy"]).toBe("frame-ancestors 'none'");
+    expect(headers["Content-Security-Policy"]).toBe(
+      "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+    );
   });
 
   it("denies the powerful features the app never uses", async () => {

@@ -3,6 +3,7 @@ import type { ParsedUrlQuery } from "node:querystring";
 
 import { getOrganization } from "../services/organizations";
 import type { Organization } from "../types/types";
+import { isValidApiRef } from "./apiPathParams";
 
 interface OrganizationParams extends ParsedUrlQuery {
   oid: string;
@@ -20,6 +21,10 @@ interface OrganizationParams extends ParsedUrlQuery {
  */
 export const getOrganizationStaticProps: GetStaticProps = async (context) => {
   const { oid } = context.params as OrganizationParams;
+
+  if (!isValidApiRef(oid)) {
+    return { notFound: true };
+  }
 
   try {
     const organization = await getOrganization(oid);

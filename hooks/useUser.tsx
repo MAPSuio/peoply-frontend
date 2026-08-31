@@ -168,16 +168,26 @@ export function UserProvider({
     };
   }, [user, reload]);
 
+  const clearOfflineCaches = async () => {
+    if (typeof caches === "undefined") {
+      return;
+    }
+    const names = await caches.keys();
+    await Promise.all(names.map((name) => caches.delete(name)));
+  };
+
   /* will clear user state and request to remove the cookies */
   const logoutHandler = async () => {
     const response = await logout();
     setUser(undefined);
+    await clearOfflineCaches();
     return response;
   };
 
   const deleteMeHandler = async () => {
     const response = await deleteMe();
     setUser(undefined);
+    await clearOfflineCaches();
     return response;
   };
 

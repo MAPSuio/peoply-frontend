@@ -109,5 +109,7 @@ export const getOrganizationSocialLinks = (organization: Organization) =>
         platform,
       ): platform is (typeof organizationSocialPlatforms)[number] & {
         url: string;
-      } => Boolean(platform.url),
+      } =>
+        Boolean(platform.url) &&
+        isValidOrganizationSocialLink(platform.url ?? ""),
     );
