@@ -107,3 +107,29 @@ describe("hasUnsavedMemberEdit", () => {
     ).toBe(false);
   });
 });
+
+describe("hasUnsavedMemberEdit for a member with no title yet", () => {
+  it("sees no change when the empty form matches the missing title", () => {
+    expect(
+      hasUnsavedMemberEdit({
+        isEditingSelf: true,
+        savedRole: MEMBER,
+        savedRoleDescription: undefined,
+        roleDescription: "",
+        role: MEMBER,
+      }),
+    ).toBe(false);
+  });
+
+  it("still sees the first title as a change", () => {
+    expect(
+      hasUnsavedMemberEdit({
+        isEditingSelf: true,
+        savedRole: MEMBER,
+        savedRoleDescription: undefined,
+        roleDescription: "Leder",
+        role: MEMBER,
+      }),
+    ).toBe(true);
+  });
+});

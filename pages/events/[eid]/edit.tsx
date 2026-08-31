@@ -12,7 +12,9 @@ import styles from "../../../styles/SummaryPage.module.scss";
 import { useRouter } from "next/router";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
-import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 
 const Edit = () => {
   const router = useRouter();
@@ -20,18 +22,19 @@ const Edit = () => {
   const { eid } = router.query;
   const { data, error } = useSWR(() => (eid ? `/events/${eid}` : false));
 
-  /* Without this the page sits on "Loading..." forever when the event cannot
-     be fetched, with nothing telling the user why. */
+  /* One reason, the failure first: SWR serves the cached event through a
+     failed revalidation, so both could otherwise be true at once and the page
+     would announce and redirect twice. Without the failure case the page sat
+     on "Loading..." forever with nothing telling the user why. */
   useRedirectWithReason({
-    reason: error ? "Kunne ikke hente arrangementet" : undefined,
+    reason: blockingReason(true, [
+      { blocked: Boolean(error), reason: "Kunne ikke hente arrangementet" },
+      {
+        blocked: Boolean(data?.readOnly),
+        reason: "Importerte ICS-arrangementer kan ikke redigeres",
+      },
+    ]),
     to: `/events/${eid}`,
-  });
-
-  useRedirectWithReason({
-    reason: data?.readOnly
-      ? "Importerte ICS-arrangementer kan ikke redigeres"
-      : undefined,
-    to: `/events/${data?.urlId}`,
   });
 
   if (!data) {

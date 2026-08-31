@@ -61,7 +61,14 @@ export interface UnsavedMemberEditInput {
   role?: OrganizationRole;
 }
 
-/** Whether the form holds a change worth saving. Only your own title is yours to edit. */
+/**
+ * Whether the form holds a change worth saving. Only your own title is yours
+ * to edit.
+ *
+ * A member with no title has `undefined` where the form has "", so without
+ * normalising the two the save button lit up on mount and would have written
+ * an empty title over an empty title.
+ */
 export function hasUnsavedMemberEdit({
   isEditingSelf,
   savedRole,
@@ -69,7 +76,7 @@ export function hasUnsavedMemberEdit({
   roleDescription,
   role,
 }: UnsavedMemberEditInput): boolean {
-  if (isEditingSelf && savedRoleDescription !== roleDescription) {
+  if (isEditingSelf && (savedRoleDescription ?? "") !== roleDescription) {
     return true;
   }
 

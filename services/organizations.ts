@@ -88,7 +88,7 @@ export async function saveMemberEdit({
   roleDescription,
   role,
 }: MemberEdit) {
-  if (isEditingSelf && member.roleDescription !== roleDescription) {
+  if (isEditingSelf && (member.roleDescription ?? "") !== roleDescription) {
     await setOwnRoleDescription(organizationId, editorId, roleDescription);
   }
 

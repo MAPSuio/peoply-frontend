@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import HeadComponent from "../../../../../components/HeadComponent";
 import MemberEditForm from "../../../../../components/organization/MemberEditForm";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
+import useRedirectToLogin from "../../../../../hooks/useRedirectToLogin";
 import useRedirectWithReason from "../../../../../hooks/useRedirectWithReason";
 import { memberEditBlockedReason } from "../../../../../utils/organizationAccess";
 import useUser from "../../../../../hooks/useUser";
@@ -13,6 +15,7 @@ export default function EditOrganizationUser() {
   const { oid, uid } = router.query;
   const memberListUrl = `/orgs/${oid}/members`;
   const goBack = useBack(memberListUrl);
+  const redirectToLogin = useRedirectToLogin();
   const { user, loading } = useUser();
   const {
     organization,
@@ -28,9 +31,16 @@ export default function EditOrganizationUser() {
   const member = organizationUsers?.find((entry) => entry.userId === uid);
   const canEdit = isAdminOrOwner || user?.id === member?.userId;
 
+  useEffect(() => {
+    if (!loading && !user) {
+      redirectToLogin();
+    }
+  }, [loading, redirectToLogin, user]);
+
   useRedirectWithReason({
     reason: memberEditBlockedReason({
       loading: loading || loadingOrganization,
+      signedIn: Boolean(user),
       fetchFailed: Boolean(organizationError),
       canEdit,
       isMemberOfOrganization: Boolean(member),

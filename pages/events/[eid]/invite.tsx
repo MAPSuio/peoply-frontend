@@ -10,7 +10,9 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import PlusIcon from "../../../components/svgs/PlusIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
-import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
+import useRedirectWithReason, {
+  blockingReason,
+} from "../../../hooks/useRedirectWithReason";
 import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
@@ -102,7 +104,12 @@ export default function InviteUsersToEvent() {
   }
 
   useRedirectWithReason({
-    reason: eventError ? "Kunne ikke hente arrangementet" : undefined,
+    reason: blockingReason(!loading && Boolean(user), [
+      {
+        blocked: Boolean(eventError),
+        reason: "Kunne ikke hente arrangementet",
+      },
+    ]),
     to: `/events/${eid}`,
   });
 

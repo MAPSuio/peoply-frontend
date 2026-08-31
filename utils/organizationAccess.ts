@@ -41,6 +41,7 @@ export function memberListBlockedReason({
 export interface FollowerListAccess extends AccessContext {
   hasOrganization: boolean;
   isAdminOrOwner?: boolean;
+  fetchFailed?: boolean;
 }
 
 export function followerListBlockedReason({
@@ -48,8 +49,13 @@ export function followerListBlockedReason({
   signedIn,
   hasOrganization,
   isAdminOrOwner,
+  fetchFailed,
 }: FollowerListAccess): string | undefined {
-  return blockingReason(!loading && signedIn && hasOrganization, [
+  return blockingReason(!loading && signedIn, [
+    {
+      blocked: Boolean(fetchFailed) || !hasOrganization,
+      reason: "Kunne ikke hente organisasjonen",
+    },
     {
       blocked: isAdminOrOwner === false,
       reason: "Du har ikke tilgang til følgerlisten",
@@ -79,8 +85,7 @@ export function inviteBlockedReason({
   ]);
 }
 
-export interface MemberEditAccess {
-  loading?: boolean;
+export interface MemberEditAccess extends AccessContext {
   fetchFailed: boolean;
   canEdit?: boolean;
   isMemberOfOrganization: boolean;
@@ -88,11 +93,12 @@ export interface MemberEditAccess {
 
 export function memberEditBlockedReason({
   loading,
+  signedIn,
   fetchFailed,
   canEdit,
   isMemberOfOrganization,
 }: MemberEditAccess): string | undefined {
-  return blockingReason(!loading, [
+  return blockingReason(!loading && signedIn, [
     { blocked: fetchFailed, reason: "Noe gikk galt" },
     { blocked: !canEdit, reason: "Du har ikke rettigheter til dette" },
     {

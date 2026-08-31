@@ -106,6 +106,35 @@ describe("MemberEditForm", () => {
     expect(replace).not.toHaveBeenCalled();
   });
 
+  it("hides the role control when there is no role to hand out", () => {
+    const ADMIN = membership(OrganizationRole.ADMIN, "admin-1");
+    renderForm({
+      member: membership(OrganizationRole.ADMIN, "admin-2"),
+      editorId: "admin-1",
+      viewer: { isAdmin: true, isAdminOrOwner: true, membership: ADMIN },
+    });
+
+    expect(screen.queryByLabelText(/rolle/i)).not.toBeInTheDocument();
+  });
+
+  it("sends a removal once, however many times you click confirm", async () => {
+    let settle: () => void = vi.fn();
+    removeMemberMock.mockReturnValue(
+      new Promise((resolve) => {
+        settle = () => resolve(undefined as never);
+      }),
+    );
+    renderForm({});
+
+    await userEvent.click(screen.getByText("Fjern bruker fra organisasjonen"));
+    const confirm = screen.getByText("Fjern bruker");
+    await userEvent.click(confirm);
+    await userEvent.click(confirm);
+
+    expect(removeMemberMock).toHaveBeenCalledOnce();
+    settle();
+  });
+
   it("returns to the member list once a removal succeeds", async () => {
     removeMemberMock.mockResolvedValue(undefined as never);
     renderForm({});

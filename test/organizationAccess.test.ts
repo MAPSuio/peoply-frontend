@@ -62,6 +62,16 @@ describe("followerListBlockedReason", () => {
     ).toBeUndefined();
   });
 
+  it("says the organization could not be fetched rather than going blank", () => {
+    expect(
+      followerListBlockedReason({
+        signedIn: true,
+        hasOrganization: false,
+        fetchFailed: true,
+      }),
+    ).toBe("Kunne ikke hente organisasjonen");
+  });
+
   it("turns away someone who is not an admin", () => {
     expect(
       followerListBlockedReason({
@@ -117,6 +127,7 @@ describe("inviteBlockedReason", () => {
 
 describe("memberEditBlockedReason", () => {
   const allowed = {
+    signedIn: true,
     fetchFailed: false,
     canEdit: true,
     isMemberOfOrganization: true,
@@ -129,6 +140,7 @@ describe("memberEditBlockedReason", () => {
   it("reports the fetch failure before anything derived from it", () => {
     expect(
       memberEditBlockedReason({
+        signedIn: true,
         fetchFailed: true,
         canEdit: false,
         isMemberOfOrganization: false,
@@ -144,6 +156,12 @@ describe("memberEditBlockedReason", () => {
         isMemberOfOrganization: false,
       }),
     ).toBe("Du har ikke rettigheter til dette");
+  });
+
+  it("leaves a signed-out visitor to the login redirect", () => {
+    expect(
+      memberEditBlockedReason({ ...allowed, signedIn: false, canEdit: false }),
+    ).toBeUndefined();
   });
 
   it("reports a user who is not in the organization", () => {

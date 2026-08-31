@@ -30,6 +30,7 @@ const OrgFollowers = () => {
   const {
     organization,
     isAdminOrOwner,
+    error: organizationError,
     loading: organizationLoading,
   } = useOrganization(oid as string);
 
@@ -53,6 +54,7 @@ const OrgFollowers = () => {
       signedIn: Boolean(user),
       hasOrganization: Boolean(organization),
       isAdminOrOwner,
+      fetchFailed: Boolean(organizationError),
     }),
     to: `/orgs/${oid}`,
   });

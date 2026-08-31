@@ -66,10 +66,25 @@ async function runAndReport(
   onDone();
 }
 
+interface MemberActionsInput {
+  addSnack: AddSnack;
+  organization: Organization;
+  member: UserOrganizationRoles;
+  editorId: string;
+  isEditingSelf: boolean;
+  edit: MemberEditDraft;
+  busy: Busy;
+  setBusy: (busy: Busy) => void;
+  onDone: () => void;
+}
+
 interface DangerActions {
   onRemove: () => void;
   onTransferOwnership: () => void;
 }
+
+/** True while a membership change is in flight, so it cannot be sent twice. */
+type Busy = boolean;
 
 interface DangerButtonsProps extends DangerActions {
   mayRemoveMember: boolean;
@@ -114,12 +129,14 @@ function MemberDangerButtons({
 
 interface DangerModalsProps extends DangerActions {
   openModal: DangerModal;
+  busy: Busy;
   onClose: () => void;
 }
 
 /** The confirmations for the irreversible options. */
 function MemberDangerModals({
   openModal,
+  busy,
   onRemove,
   onTransferOwnership,
   onClose,
@@ -135,6 +152,7 @@ function MemberDangerModals({
           <ModalButton
             text="Fjern bruker"
             onClick={onRemove}
+            disabled={busy}
             type={ButtonType.DANGERSOFT}
           />
           <ModalButton
@@ -153,6 +171,7 @@ function MemberDangerModals({
           <ModalButton
             text="Gjør til eier"
             onClick={onTransferOwnership}
+            disabled={busy}
             type={ButtonType.DANGERSOFT}
           />
           <ModalButton
@@ -182,20 +201,24 @@ function MemberEditFields({
   edit,
   onChange,
 }: MemberEditFieldsProps) {
+  /* An admin looking at another admin may change nothing, and an empty
+     dropdown reads as a broken control rather than as a missing right. */
+  const roleOptions = roleOptionsFor({
+    isOwner: viewer.isOwner,
+    isAdmin: viewer.isAdmin,
+    isEditingSelf,
+    roleBeingEdited: member.role,
+  });
+
   return (
     <>
-      {viewer.isAdminOrOwner && (
+      {viewer.isAdminOrOwner && roleOptions.length > 0 && (
         <Dropdown
           label="Rolle"
           value={edit.role}
           setValue={(role) => onChange({ ...edit, role })}
           inputId="role"
-          options={roleOptionsFor({
-            isOwner: viewer.isOwner,
-            isAdmin: viewer.isAdmin,
-            isEditingSelf,
-            roleBeingEdited: member.role,
-          })}
+          options={roleOptions}
         />
       )}
       {isEditingSelf && (
@@ -245,6 +268,7 @@ export default function MemberEditForm({
     role: member.role,
   });
   const [openModal, setOpenModal] = useState<DangerModal>(null);
+  const [busy, setBusy] = useState(false);
 
   const isEditingSelf = editorId === member.userId;
   const hasChanges = hasUnsavedMemberEdit({
@@ -261,6 +285,8 @@ export default function MemberEditForm({
     editorId,
     isEditingSelf,
     edit,
+    busy,
+    setBusy,
     onDone: () => router.replace(organizationPath(organization, "/members")),
   });
 
@@ -301,22 +327,13 @@ export default function MemberEditForm({
       </div>
       <MemberDangerModals
         openModal={openModal}
+        busy={busy}
         onRemove={remove}
         onTransferOwnership={transferOwnership}
         onClose={() => setOpenModal(null)}
       />
     </>
   );
-}
-
-interface MemberActionsInput {
-  addSnack: AddSnack;
-  organization: Organization;
-  member: UserOrganizationRoles;
-  editorId: string;
-  isEditingSelf: boolean;
-  edit: MemberEditDraft;
-  onDone: () => void;
 }
 
 /** The three membership changes this form can make, each reporting its own outcome. */
@@ -327,10 +344,20 @@ function memberActions({
   editorId,
   isEditingSelf,
   edit,
+  busy,
+  setBusy,
   onDone,
 }: MemberActionsInput) {
-  const report = (action: () => Promise<unknown>, success: string) => () =>
-    runAndReport(addSnack, action, success, onDone);
+  /* One membership change at a time: a second click while the first is in
+     flight would send the same delete or ownership transfer twice. */
+  const report =
+    (action: () => Promise<unknown>, success: string) => async () => {
+      if (busy) return;
+
+      setBusy(true);
+      await runAndReport(addSnack, action, success, onDone);
+      setBusy(false);
+    };
 
   return {
     remove: report(
