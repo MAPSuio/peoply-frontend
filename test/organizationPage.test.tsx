@@ -2,10 +2,12 @@ import { render, screen } from "@testing-library/react";
 import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const useOrganization = vi.fn();
+/* Hoisted: vi.mock runs before the module body, so a plain const would still
+   be in its temporal dead zone when the factory reaches for it. */
+const { useOrganization } = vi.hoisted(() => ({ useOrganization: vi.fn() }));
 
 vi.mock("../hooks/useOrganization", () => ({
-  default: (...args: unknown[]) => useOrganization(...args),
+  default: useOrganization,
 }));
 vi.mock("../hooks/useUser", () => ({
   default: () => ({ user: { id: "u1" }, loading: false }),
@@ -13,15 +15,13 @@ vi.mock("../hooks/useUser", () => ({
 vi.mock("next/router", () => ({
   useRouter: () => ({ query: { oid: "maps" }, push: vi.fn() }),
 }));
-vi.mock("../hooks/useSnack", () => ({
-  default: () => ({ addSnack: vi.fn() }),
-}));
 /* The not-found page loads a blurred static import, which the bundler
    normally turns into a blurDataURL. */
 vi.mock("next/legacy/image", () => ({
   default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
 
+import { SnackbarProvider } from "../hooks/useSnack";
 import OrganizationPage from "../pages/orgs/[oid]/index";
 import type { Organization } from "../types/types";
 
@@ -35,11 +35,13 @@ const NOT_FOUND_TEXT = /Vi kunne ikke finne siden du leter etter/;
 
 function renderPage(prerendered: Organization | null) {
   return render(
-    <SWRConfig
-      value={{ provider: () => new Map(), fetcher: async () => undefined }}
-    >
-      <OrganizationPage organization={prerendered} />
-    </SWRConfig>,
+    <SnackbarProvider>
+      <SWRConfig
+        value={{ provider: () => new Map(), fetcher: async () => undefined }}
+      >
+        <OrganizationPage organization={prerendered} />
+      </SWRConfig>
+    </SnackbarProvider>,
   );
 }
 
@@ -54,12 +56,29 @@ describe("the organization page when the server prerendered nothing", () => {
     useOrganization.mockReset();
   });
 
-  it("does not claim the organization is gone while the browser is still asking", () => {
+  it("waits for the browser rather than claiming the organization is gone", () => {
     useOrganization.mockReturnValue({ loading: true });
 
-    renderPage(null);
+    const { rerender } = renderPage(null);
 
     expect(screen.queryByText(NOT_FOUND_TEXT)).toBeNull();
+    expect(screen.queryByText("MAPS")).toBeNull();
+
+    useOrganization.mockReturnValue({
+      organization: ORGANIZATION,
+      loading: false,
+    });
+    rerender(
+      <SnackbarProvider>
+        <SWRConfig
+          value={{ provider: () => new Map(), fetcher: async () => undefined }}
+        >
+          <OrganizationPage organization={null} />
+        </SWRConfig>
+      </SnackbarProvider>,
+    );
+
+    expect(screen.getByText("MAPS")).toBeTruthy();
   });
 
   it("renders the organization the browser resolved", () => {
@@ -92,7 +111,7 @@ describe("the organization page when the server prerendered nothing", () => {
    * page tells a founder their organization is gone because a request was
    * slow.
    */
-  it("does not answer a failed lookup with the not-found page", () => {
+  it("reports a failed lookup as a failure rather than as a missing organization", () => {
     useOrganization.mockReturnValue({
       loading: false,
       organizationMissing: false,
@@ -102,6 +121,7 @@ describe("the organization page when the server prerendered nothing", () => {
     renderPage(null);
 
     expect(screen.queryByText(NOT_FOUND_TEXT)).toBeNull();
+    expect(screen.getByText("Kunne ikke hente organisasjonsdata")).toBeTruthy();
   });
 
   it("keeps rendering the prerendered organization when there is one", () => {

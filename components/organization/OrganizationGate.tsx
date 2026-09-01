@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import type { ReactElement } from "react";
+import { type ReactElement, useEffect } from "react";
 
 import useOrganization, {
   type useOrganizationUsersType,
@@ -47,6 +47,19 @@ export default function OrganizationGate({
     notFound: membership.organizationMissing,
   });
 
+  const unreachable =
+    page.status === "unavailable" || Boolean(membership.error);
+
+  /* From an effect rather than from the branch below: the snackbar lives in a
+     provider above this component, and setting its state while rendering a
+     descendant is a render side effect that also repeats the notification on
+     every re-render. */
+  useEffect(() => {
+    if (unreachable) {
+      addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
+    }
+  }, [unreachable, addSnack]);
+
   /* Nothing while the browser is asking, which is what the profile page did
      before this gate existed. A spinner here would be a change to what every
      visitor sees, and this change is about which organization resolves, not
@@ -59,8 +72,7 @@ export default function OrganizationGate({
     return <Custom404 />;
   }
 
-  if (page.status === "unavailable" || membership.error) {
-    addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
+  if (unreachable || page.status !== "found") {
     return null;
   }
 
