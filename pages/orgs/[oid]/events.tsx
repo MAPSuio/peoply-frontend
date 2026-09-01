@@ -1,10 +1,12 @@
 // Next.js.
+import { useRouter } from "next/router";
 import useSWRInfinite from "swr/infinite";
 
 // React.
 import { useState } from "react";
 
 // Components.
+import Custom404 from "../../404";
 import EventList from "../../../components/EventList";
 import HeadComponent from "../../../components/HeadComponent";
 
@@ -18,9 +20,13 @@ import type { Event, Organization } from "../../../types/types";
 import TabSelection from "../../../components/TabSelection";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
+import useOrganization from "../../../hooks/useOrganization";
 import styles from "../../../styles/OrgEvents.module.scss";
 import { eventWindowBoundary } from "../../../utils/eventWindow";
-import { getOrganizationStaticProps } from "../../../utils/organization";
+import {
+  getOrganizationStaticProps,
+  resolveOrganizationPage,
+} from "../../../utils/organization";
 
 enum TabOption {
   FUTURE_EVENTS = "FUTURE_EVENTS",
@@ -35,10 +41,44 @@ function getGetKey(queryUrl: string, pageSize: number) {
 }
 
 interface EventsProps {
+  /* Null when the prerender ran for an organization the server may not see.
+     See `getOrganizationStaticProps`. */
+  organization: Organization | null;
+}
+
+/**
+ * Resolves the organization before the list mounts, so everything below can
+ * keep treating it as a value that is simply there.
+ */
+const Events = ({ organization }: EventsProps) => {
+  const router = useRouter();
+  const { oid } = router.query;
+  const { organization: fetched, loading } = useOrganization(oid as string, {
+    fetchMembers: false,
+  });
+
+  const { organization: org, missing } = resolveOrganizationPage({
+    fetched,
+    prerendered: organization,
+    loading,
+  });
+
+  if (loading) {
+    return null;
+  }
+
+  if (!org || missing) {
+    return <Custom404 />;
+  }
+
+  return <OrganizationEvents organization={org} />;
+};
+
+interface OrganizationEventsProps {
   organization: Organization;
 }
 
-const Events = ({ organization }: EventsProps) => {
+const OrganizationEvents = ({ organization }: OrganizationEventsProps) => {
   const boundary = eventWindowBoundary();
   const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
   const [isMorePastEvents, setIsMorePastEvents] = useState(true);

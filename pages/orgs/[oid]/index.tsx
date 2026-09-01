@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 // Components.
+import Custom404 from "../../404";
 import HeadComponent from "../../../components/HeadComponent";
 import Layout from "../../../components/Layout";
 import TabSelection from "../../../components/TabSelection";
@@ -35,11 +36,14 @@ import { eventWindowBoundary } from "../../../utils/eventWindow";
 import {
   getOrganizationStaticProps,
   organizationPath,
+  resolveOrganizationPage,
 } from "../../../utils/organization";
 import styles from "../../../styles/Organization.module.scss";
 
 interface OrganizationProps {
-  organization: Organization;
+  /* Null when the prerender ran for an organization the server may not see:
+     pending moderation, or absent. The browser asks again with the cookie. */
+  organization: Organization | null;
 }
 
 enum OrgTab {
@@ -131,17 +135,24 @@ const Organization = ({ organization }: OrganizationProps) => {
     },
   );
 
+  const { organization: org, missing } = resolveOrganizationPage({
+    fetched: orgData,
+    prerendered: organization,
+    loading: orgLoading,
+  });
+
   if (orgLoading) {
     return null;
   }
 
-  if (!organization && (!orgData || orgError || orgEventsError)) {
+  if (missing) {
+    return <Custom404 />;
+  }
+
+  if (!org || orgError || orgEventsError) {
     addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
     return null;
   }
-
-  /* use either fresh or fallback data */
-  const org = orgData ?? organization;
 
   return (
     <>
