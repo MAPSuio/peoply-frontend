@@ -8,6 +8,7 @@ import { useState } from "react";
 // Components.
 import HeadComponent from "../../../components/HeadComponent";
 import Layout from "../../../components/Layout";
+import OrganizationGate from "../../../components/organization/OrganizationGate";
 import TabSelection from "../../../components/TabSelection";
 import OrganizationAnalytics from "../../../components/organization/OrganizationAnalytics";
 import OrganizationHeading from "../../../components/organization/OrganizationHeading";
@@ -19,7 +20,7 @@ import HomeIcon from "../../../components/svgs/HomeIcon";
 
 // Hooks.
 import useSnack from "../../../hooks/useSnack";
-import useOrganization from "../../../hooks/useOrganization";
+import type { useOrganizationUsersType } from "../../../hooks/useOrganization";
 
 // Services.
 import {
@@ -39,7 +40,9 @@ import {
 import styles from "../../../styles/Organization.module.scss";
 
 interface OrganizationProps {
-  organization: Organization;
+  /* Null when the prerender ran for an organization the server may not see:
+     pending moderation, or absent. The browser asks again with the cookie. */
+  organization: Organization | null;
 }
 
 enum OrgTab {
@@ -106,42 +109,32 @@ const OrganizationView = ({
   );
 };
 
-const Organization = ({ organization }: OrganizationProps) => {
-  const { addSnack } = useSnack();
-  const router = useRouter();
-  const { oid } = router.query;
+const Organization = ({ organization }: OrganizationProps) => (
+  <OrganizationGate prerendered={organization}>
+    {(org, membership) => (
+      <OrganizationPage org={org} membership={membership} />
+    )}
+  </OrganizationGate>
+);
 
-  const {
-    organization: orgData,
-    organizationUsers: orgMembers,
-    organizationUser,
-    isAdminOrOwner,
-    loading: orgLoading,
-    error: orgError,
-  } = useOrganization(oid as string);
+interface OrganizationPageProps {
+  org: Organization;
+  membership: useOrganizationUsersType;
+}
+
+const OrganizationPage = ({ org, membership }: OrganizationPageProps) => {
+  const { addSnack } = useSnack();
 
   const { data: orgEvents, error: orgEventsError } = useSWR<Event[]>(
-    () =>
-      orgData?.id
-        ? `/events?afterDate=${eventWindowBoundary()}&organizationId=${orgData?.id}`
-        : false,
+    `/events?afterDate=${eventWindowBoundary()}&organizationId=${org.id}`,
     fetchFromPeoplyApiJson,
-    {
-      fallbackData: [],
-    },
+    { fallbackData: [] },
   );
 
-  if (orgLoading) {
-    return null;
-  }
-
-  if (!organization && (!orgData || orgError || orgEventsError)) {
+  if (orgEventsError) {
     addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
     return null;
   }
-
-  /* use either fresh or fallback data */
-  const org = orgData ?? organization;
 
   return (
     <>
@@ -157,9 +150,9 @@ const Organization = ({ organization }: OrganizationProps) => {
       />
       <OrganizationView
         org={org}
-        isMemberOfOrg={Boolean(organizationUser)}
-        isAdminOrOwner={isAdminOrOwner}
-        memberCount={orgMembers?.length ?? org.memberCount}
+        isMemberOfOrg={Boolean(membership.organizationUser)}
+        isAdminOrOwner={membership.isAdminOrOwner}
+        memberCount={membership.organizationUsers?.length ?? org.memberCount}
         events={orgEvents}
       />
     </>

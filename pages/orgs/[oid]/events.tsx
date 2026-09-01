@@ -12,9 +12,14 @@ import HeadComponent from "../../../components/HeadComponent";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
 
 // Types.
-import type { Event, Organization } from "../../../types/types";
+import {
+  type Event,
+  type Organization,
+  SnackTypes,
+} from "../../../types/types";
 
 // Assets.
+import OrganizationGate from "../../../components/organization/OrganizationGate";
 import TabSelection from "../../../components/TabSelection";
 import BackButton from "../../../components/BackButton";
 import useBack from "../../../hooks/useBack";
@@ -35,55 +40,62 @@ function getGetKey(queryUrl: string, pageSize: number) {
 }
 
 interface EventsProps {
+  /* Null when the prerender ran for an organization the server may not see.
+     See `getOrganizationStaticProps`. */
+  organization: Organization | null;
+}
+
+const EventsPage = ({ organization }: EventsProps) => (
+  <OrganizationGate prerendered={organization} fetchMembers={false}>
+    {(org) => <Events organization={org} />}
+  </OrganizationGate>
+);
+
+interface OrganizationEventsProps {
   organization: Organization;
 }
 
-const Events = ({ organization }: EventsProps) => {
+const PAGE_SIZE = 10;
+
+/**
+ * One tab's worth of events, page by page.
+ *
+ * The two tabs asked the same question of two different windows and each kept
+ * its own copy of the answer: two `useSWRInfinite` calls, two "is there more"
+ * flags and two next-page closures, differing only in the query string.
+ */
+function usePaginatedEvents(queryUrl: string) {
+  const [hasMore, setHasMore] = useState(true);
+
+  const { data, size, setSize } = useSWRInfinite<Event[]>(
+    getGetKey(queryUrl, PAGE_SIZE),
+    fetchFromPeoplyApiJson,
+    {
+      onSuccess: (pages) => {
+        if (pages[pages.length - 1].length < PAGE_SIZE) setHasMore(false);
+      },
+    },
+  );
+
+  return {
+    events: data,
+    nextPage: hasMore ? () => setSize(size + 1) : undefined,
+  };
+}
+
+const Events = ({ organization }: OrganizationEventsProps) => {
   const boundary = eventWindowBoundary();
-  const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
-  const [isMorePastEvents, setIsMorePastEvents] = useState(true);
   const [selectedTab, setSelectedTab] = useState<TabOption>(
     TabOption.FUTURE_EVENTS,
   );
   const goBack = useBack();
 
-  const futureQueryUrl = `/events?afterDate=${boundary}&organizationId=${organization.id}`;
-  const pastQueryUrl = `/events?beforeDate=${boundary}&organizationId=${organization.id}&orderDirection=desc`;
-
-  const pageSize = 10;
-  const getKeyFuture = getGetKey(futureQueryUrl, pageSize);
-  const getKeyPast = getGetKey(pastQueryUrl, pageSize);
-
-  const {
-    data: futureEvents,
-    size: futureEventsSize,
-    setSize: setFutureEventsSize,
-  } = useSWRInfinite<Event[]>(getKeyFuture, fetchFromPeoplyApiJson, {
-    onSuccess: (data) => {
-      if (data[data.length - 1].length < pageSize) setIsMoreFutureEvents(false);
-    },
-  });
-  const {
-    data: pastEvents,
-    size: pastEventsSize,
-    setSize: setPastEventsSize,
-  } = useSWRInfinite<Event[]>(getKeyPast, fetchFromPeoplyApiJson, {
-    onSuccess: (data) => {
-      if (data[data.length - 1].length < pageSize) setIsMorePastEvents(false);
-    },
-  });
-
-  const futureNextPage = isMoreFutureEvents
-    ? () => {
-        setFutureEventsSize(futureEventsSize + 1);
-      }
-    : undefined;
-
-  const pastNextPage = isMorePastEvents
-    ? () => {
-        setPastEventsSize(pastEventsSize + 1);
-      }
-    : undefined;
+  const { events: futureEvents, nextPage: futureNextPage } = usePaginatedEvents(
+    `/events?afterDate=${boundary}&organizationId=${organization.id}`,
+  );
+  const { events: pastEvents, nextPage: pastNextPage } = usePaginatedEvents(
+    `/events?beforeDate=${boundary}&organizationId=${organization.id}&orderDirection=desc`,
+  );
 
   return (
     <>
@@ -137,4 +149,4 @@ export async function getStaticPaths() {
   return { paths: [], fallback: "blocking" };
 }
 
-export default Events;
+export default EventsPage;
