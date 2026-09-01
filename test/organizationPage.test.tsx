@@ -124,6 +124,41 @@ describe("the organization page when the server prerendered nothing", () => {
     expect(screen.getByText("Kunne ikke hente organisasjonsdata")).toBeTruthy();
   });
 
+  /**
+   * A 404 arrives as both an absence and an error, because the hook reports
+   * the failed read either way. Reading the error first turned the not-found
+   * page into the not-found page plus a red "could not fetch" message.
+   */
+  it("does not also complain about a failure when the organization is simply gone", () => {
+    useOrganization.mockReturnValue({
+      loading: false,
+      organizationMissing: true,
+      error: "Something went wrong when fetching organization data",
+    });
+
+    renderPage(null);
+
+    expect(screen.getByText(NOT_FOUND_TEXT)).toBeTruthy();
+    expect(screen.queryByText("Kunne ikke hente organisasjonsdata")).toBeNull();
+  });
+
+  /**
+   * The prerendered copy is the whole reason the page still works when the
+   * browser's own read does not. Blanking it out on any error gives a visitor
+   * nothing where they used to get the page.
+   */
+  it("keeps showing the prerendered organization when the browser read fails", () => {
+    useOrganization.mockReturnValue({
+      loading: false,
+      error: "Something went wrong when fetching organization data",
+    });
+
+    renderPage(ORGANIZATION);
+
+    expect(screen.getByText("MAPS")).toBeTruthy();
+    expect(screen.queryByText("Kunne ikke hente organisasjonsdata")).toBeNull();
+  });
+
   it("keeps rendering the prerendered organization when there is one", () => {
     useOrganization.mockReturnValue({ loading: true });
 
