@@ -50,7 +50,7 @@ interface EventsProps {
  * Resolves the organization before the list mounts, so everything below can
  * keep treating it as a value that is simply there.
  */
-const Events = ({ organization }: EventsProps) => {
+const EventsPage = ({ organization }: EventsProps) => {
   const router = useRouter();
   const { oid } = router.query;
   const { organization: fetched, loading } = useOrganization(oid as string, {
@@ -71,14 +71,14 @@ const Events = ({ organization }: EventsProps) => {
     return <Custom404 />;
   }
 
-  return <OrganizationEvents organization={org} />;
+  return <Events organization={org} />;
 };
 
 interface OrganizationEventsProps {
   organization: Organization;
 }
 
-const OrganizationEvents = ({ organization }: OrganizationEventsProps) => {
+const Events = ({ organization }: OrganizationEventsProps) => {
   const boundary = eventWindowBoundary();
   const [isMoreFutureEvents, setIsMoreFutureEvents] = useState(true);
   const [isMorePastEvents, setIsMorePastEvents] = useState(true);
@@ -177,4 +177,4 @@ export async function getStaticPaths() {
   return { paths: [], fallback: "blocking" };
 }
 
-export default Events;
+export default EventsPage;

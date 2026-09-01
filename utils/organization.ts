@@ -92,7 +92,7 @@ export function organizationPath(
   return `/orgs/${organization.urlId ?? organization.id}${subPath}`;
 }
 
-interface OrganizationPageReads {
+export interface OrganizationPageReads {
   /** What the browser fetched, with the visitor's cookies attached. */
   fetched: Organization | undefined;
   /** What the server prerendered, anonymously, or null if it saw nothing. */
