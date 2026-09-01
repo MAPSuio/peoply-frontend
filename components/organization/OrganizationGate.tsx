@@ -47,8 +47,13 @@ export default function OrganizationGate({
     notFound: membership.organizationMissing,
   });
 
-  const unreachable =
-    page.status === "unavailable" || Boolean(membership.error);
+  /* Read from the resolution rather than from `membership.error`, which is
+     also set for a 404: the hook reports the read that failed, and that is
+     how an absence arrives. Taking the error first showed the not-found page
+     with a "could not fetch" message stapled to it, and blanked out a
+     prerendered organization whenever the browser's own read failed, which is
+     the one case the prerendered copy exists for. */
+  const unreachable = page.status === "unavailable";
 
   /* From an effect rather than from the branch below: the snackbar lives in a
      provider above this component, and setting its state while rendering a
@@ -72,7 +77,7 @@ export default function OrganizationGate({
     return <Custom404 />;
   }
 
-  if (unreachable || page.status !== "found") {
+  if (page.status !== "found") {
     return null;
   }
 
