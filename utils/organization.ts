@@ -99,23 +99,44 @@ export interface OrganizationPageReads {
   prerendered: Organization | null;
   /* Undefined where the hook has nothing outstanding to report. */
   loading: boolean | undefined;
+  /** The browser's own read came back a 404, rather than failing. */
+  notFound: boolean | undefined;
 }
 
+export type OrganizationPageState =
+  | { status: "loading" }
+  | { status: "found"; organization: Organization }
+  | { status: "missing" }
+  | { status: "unavailable" };
+
 /**
- * Which organization an `/orgs/[oid]` page should render, and whether to give
- * up and say it does not exist.
+ * Which of the four things an `/orgs/[oid]` page is looking at.
  *
- * Missing means both reads came back empty. Saying it while the browser is
- * still asking would flash the not-found page on the first paint of every
- * page the server was not allowed to prerender, which is every pending
- * organization seen by its own founder.
+ * The distinction that matters is between an organization that is not there
+ * and one we failed to ask about. Both leave the page holding nothing, and
+ * answering the second with the not-found page tells a visitor their
+ * organization is gone because a request timed out. Only a 404 from the
+ * browser's own read is an absence; anything else is a failure, and the two
+ * are separate states rather than one nullable value so a caller cannot read
+ * past the difference.
  */
 export function resolveOrganizationPage({
   fetched,
   prerendered,
   loading,
-}: OrganizationPageReads) {
-  const organization = fetched ?? prerendered ?? undefined;
+  notFound,
+}: OrganizationPageReads): OrganizationPageState {
+  const organization = fetched ?? prerendered;
 
-  return { organization, missing: !organization && !loading };
+  /* The prerendered copy is rendered while the browser revalidates behind it,
+     which is what kept navigating back to an organization from blanking out. */
+  if (organization) {
+    return { status: "found", organization };
+  }
+
+  if (loading) {
+    return { status: "loading" };
+  }
+
+  return notFound ? { status: "missing" } : { status: "unavailable" };
 }

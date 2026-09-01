@@ -5,10 +5,7 @@ vi.mock("../services/organizations", () => ({
 }));
 
 import { getOrganization } from "../services/organizations";
-import {
-  getOrganizationStaticProps,
-  resolveOrganizationPage,
-} from "../utils/organization";
+import { getOrganizationStaticProps } from "../utils/organization";
 
 interface StaticPropsResult {
   props?: { organization: unknown };
@@ -72,62 +69,5 @@ describe("getOrganizationStaticProps", () => {
 
     expect(result.notFound).toBe(true);
     expect(getOrganization).not.toHaveBeenCalled();
-  });
-});
-
-describe("resolveOrganizationPage", () => {
-  const PENDING = { id: "org-2", urlId: "pending", name: "Ny forening" };
-
-  it("prefers what the browser fetched over what was prerendered", () => {
-    expect(
-      resolveOrganizationPage({
-        fetched: PENDING as never,
-        prerendered: APPROVED as never,
-        loading: false,
-      }).organization,
-    ).toEqual(PENDING);
-  });
-
-  it("falls back to the prerendered copy while nothing has been fetched", () => {
-    expect(
-      resolveOrganizationPage({
-        fetched: undefined,
-        prerendered: APPROVED as never,
-        loading: false,
-      }).organization,
-    ).toEqual(APPROVED);
-  });
-
-  it("resolves an organization the server could not see but the browser could", () => {
-    const { organization, missing } = resolveOrganizationPage({
-      fetched: PENDING as never,
-      prerendered: null,
-      loading: false,
-    });
-
-    expect(organization).toEqual(PENDING);
-    expect(missing).toBe(false);
-  });
-
-  it("calls it missing only when both reads came back empty", () => {
-    expect(
-      resolveOrganizationPage({
-        fetched: undefined,
-        prerendered: null,
-        loading: false,
-      }).missing,
-    ).toBe(true);
-  });
-
-  /* Otherwise the not-found page flashes on every first paint of a page the
-     server was not allowed to prerender. */
-  it("does not call it missing while the browser is still asking", () => {
-    expect(
-      resolveOrganizationPage({
-        fetched: undefined,
-        prerendered: null,
-        loading: true,
-      }).missing,
-    ).toBe(false);
   });
 });

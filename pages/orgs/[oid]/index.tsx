@@ -6,9 +6,9 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 // Components.
-import Custom404 from "../../404";
 import HeadComponent from "../../../components/HeadComponent";
 import Layout from "../../../components/Layout";
+import OrganizationGate from "../../../components/organization/OrganizationGate";
 import TabSelection from "../../../components/TabSelection";
 import OrganizationAnalytics from "../../../components/organization/OrganizationAnalytics";
 import OrganizationHeading from "../../../components/organization/OrganizationHeading";
@@ -20,7 +20,7 @@ import HomeIcon from "../../../components/svgs/HomeIcon";
 
 // Hooks.
 import useSnack from "../../../hooks/useSnack";
-import useOrganization from "../../../hooks/useOrganization";
+import type { useOrganizationUsersType } from "../../../hooks/useOrganization";
 
 // Services.
 import {
@@ -36,7 +36,6 @@ import { eventWindowBoundary } from "../../../utils/eventWindow";
 import {
   getOrganizationStaticProps,
   organizationPath,
-  resolveOrganizationPage,
 } from "../../../utils/organization";
 import styles from "../../../styles/Organization.module.scss";
 
@@ -110,46 +109,29 @@ const OrganizationView = ({
   );
 };
 
-const Organization = ({ organization }: OrganizationProps) => {
-  const { addSnack } = useSnack();
-  const router = useRouter();
-  const { oid } = router.query;
+const Organization = ({ organization }: OrganizationProps) => (
+  <OrganizationGate prerendered={organization}>
+    {(org, membership) => (
+      <OrganizationPage org={org} membership={membership} />
+    )}
+  </OrganizationGate>
+);
 
-  const {
-    organization: orgData,
-    organizationUsers: orgMembers,
-    organizationUser,
-    isAdminOrOwner,
-    loading: orgLoading,
-    error: orgError,
-  } = useOrganization(oid as string);
+interface OrganizationPageProps {
+  org: Organization;
+  membership: useOrganizationUsersType;
+}
+
+const OrganizationPage = ({ org, membership }: OrganizationPageProps) => {
+  const { addSnack } = useSnack();
 
   const { data: orgEvents, error: orgEventsError } = useSWR<Event[]>(
-    () =>
-      orgData?.id
-        ? `/events?afterDate=${eventWindowBoundary()}&organizationId=${orgData?.id}`
-        : false,
+    `/events?afterDate=${eventWindowBoundary()}&organizationId=${org.id}`,
     fetchFromPeoplyApiJson,
-    {
-      fallbackData: [],
-    },
+    { fallbackData: [] },
   );
 
-  const { organization: org, missing } = resolveOrganizationPage({
-    fetched: orgData,
-    prerendered: organization,
-    loading: orgLoading,
-  });
-
-  if (orgLoading) {
-    return null;
-  }
-
-  if (missing) {
-    return <Custom404 />;
-  }
-
-  if (!org || orgError || orgEventsError) {
+  if (orgEventsError) {
     addSnack("Kunne ikke hente organisasjonsdata", SnackTypes.ERROR);
     return null;
   }
@@ -168,9 +150,9 @@ const Organization = ({ organization }: OrganizationProps) => {
       />
       <OrganizationView
         org={org}
-        isMemberOfOrg={Boolean(organizationUser)}
-        isAdminOrOwner={isAdminOrOwner}
-        memberCount={orgMembers?.length ?? org.memberCount}
+        isMemberOfOrg={Boolean(membership.organizationUser)}
+        isAdminOrOwner={membership.isAdminOrOwner}
+        memberCount={membership.organizationUsers?.length ?? org.memberCount}
         events={orgEvents}
       />
     </>

@@ -11,7 +11,7 @@ import {
 } from "../types/types";
 import useUser from "./useUser";
 
-interface useOrganizationUsersType {
+export interface useOrganizationUsersType {
   organization?: Organization;
   organizationUsers?: UserOrganizationRoles[];
   organizationUser?: UserOrganizationRoles;
@@ -25,11 +25,14 @@ interface useOrganizationUsersType {
    * callers show it as "not yours to see", not as a failure.
    */
   membersForbidden?: boolean;
+  /** There is no such organization, as opposed to `error`, which is anything
+      that went wrong on the way to asking. */
+  organizationMissing?: boolean;
   loading?: boolean;
   error?: string;
 }
 
-interface UseOrganizationOptions {
+export interface UseOrganizationOptions {
   fetchMembers?: boolean;
 }
 
@@ -44,6 +47,11 @@ interface UseOrganizationOptions {
  * SWR serves the cached organization on the next mount and revalidates behind
  * the rendered page.
  */
+/** Whether the API said there is no such organization, as opposed to failing. */
+function isMissing(error: unknown) {
+  return error instanceof ApiError && error.status === 404;
+}
+
 /** The signed-in user's standing in the organization, from their membership. */
 function rolesOf(organizationUser?: UserOrganizationRoles) {
   const role = organizationUser?.role;
@@ -112,6 +120,7 @@ export default function useOrganization(
 
   return {
     organization,
+    organizationMissing: isMissing(organizationError),
     organizationUsers: members,
     organizationUser,
     ...rolesOf(organizationUser),
