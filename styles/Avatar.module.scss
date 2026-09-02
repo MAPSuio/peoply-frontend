@@ -11,7 +11,8 @@
     background-color: var(--background-color-avatar, $background-color-avatar)
   }
 
-  img {
+  img,
+  svg {
     border-radius: $border-radius-rounded;
     height: 100%;
     object-fit: cover;

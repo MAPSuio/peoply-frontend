@@ -4,6 +4,7 @@ import EditCircle from "./EditCircle";
 import Image from "next/legacy/image";
 import eventPlaceholderImage from "../assets/images/undraw_partying.png";
 import { getEventImage } from "../utils/event";
+import Mascot from "./Mascot";
 import { type AvatarContent, getAvatarContent } from "../utils/avatar";
 
 interface AvatarProps {
@@ -57,10 +58,10 @@ export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
     <div>
       <div
         className={`${styles.avatar} ${sizeStyling} ${
-          content.type === "image" ? "" : styles.default
+          content.type === "initials" ? styles.default : ""
         }`}
       >
-        {content.type === "image" ? (
+        {content.type === "image" && (
           <Image
             src={content.src}
             width={imageSideLength}
@@ -68,7 +69,11 @@ export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
             className={sizeStyling}
             alt={content.alt}
           />
-        ) : (
+        )}
+        {content.type === "mascot" && (
+          <Mascot seed={content.seed} className={sizeStyling} />
+        )}
+        {content.type === "initials" && (
           <span className={styles.name}>{content.text}</span>
         )}
 
