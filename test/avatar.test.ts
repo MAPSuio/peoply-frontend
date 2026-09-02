@@ -67,12 +67,13 @@ describe("getAvatarContent", () => {
 });
 
 describe("getEventArrangerAvatarContent", () => {
-  it("prefers the organization when the arranger is one", () => {
+  it("prefers the organization over the user when the arranger has both", () => {
     expect(
       getEventArrangerAvatarContent(
         eventArrangedBy({
           id: "arranger-1",
           organization: organization({ image: "/maps.png" }),
+          user: user({ image: "/ola.jpg" }),
         }),
       ),
     ).toMatchObject({ type: "image", src: "/maps.png" });

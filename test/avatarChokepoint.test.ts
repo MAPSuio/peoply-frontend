@@ -5,13 +5,15 @@ import { describe, expect, it } from "vitest";
 const PROJECT_ROOT = join(__dirname, "..");
 const SCANNED_DIRECTORIES = ["components", "pages", "utils", "hooks"];
 
-const PERSON_IMAGE_FIELD =
-  /\b(user|User|arranger|organization|org)\??\.image\b/;
+const SUBJECT_IMAGE_FIELD = /(?<!classNames|styles)\.image\b/;
 
 const ALLOWED = [
   "utils/avatar.ts",
+  "utils/event.ts",
+  "components/EditSummaryPage.tsx",
   "pages/orgs/[oid]/index.tsx",
   "pages/orgs/[oid]/members/index.tsx",
+  "pages/users/[uid].tsx",
 ];
 
 function sourceFiles(directory: string): string[] {
@@ -29,9 +31,9 @@ function scannedFiles() {
 }
 
 describe("avatar chokepoint", () => {
-  it("resolves a person's picture in utils/avatar.ts and nowhere else", () => {
+  it("resolves a subject's picture in utils/avatar.ts and nowhere else", () => {
     const offenders = scannedFiles()
-      .filter((path) => PERSON_IMAGE_FIELD.test(readFileSync(path, "utf8")))
+      .filter((path) => SUBJECT_IMAGE_FIELD.test(readFileSync(path, "utf8")))
       .map((path) => relative(PROJECT_ROOT, path))
       .filter((path) => !ALLOWED.includes(path));
 
