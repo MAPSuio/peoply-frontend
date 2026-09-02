@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Script
         defer
         src="https://cloud.umami.is/script.js"
-        data-website-id="7ec1d359-0bab-4bee-b214-d6f116701233"
+        data-website-id="f0f3a519-fddc-40ed-bff1-fb3f58187b2c"
       />
       <UserProvider>
         <SnackbarProvider>
