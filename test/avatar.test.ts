@@ -42,21 +42,24 @@ describe("getAvatarContent", () => {
     });
   });
 
-  it("falls back to initials when the user has no picture", () => {
+  it("falls back to a mascot seeded by the user id when there is no picture", () => {
     expect(getAvatarContent({ type: "user", user: user() })).toEqual({
-      type: "initials",
-      text: "ON",
+      type: "mascot",
+      seed: "user-1",
       alt: "Profilbilde av Ola Nordmann",
     });
   });
 
-  it("uppercases initials no matter how the name was typed", () => {
-    expect(
-      getAvatarContent({
-        type: "user",
-        user: user({ firstName: "ola", lastName: "nordmann" }),
-      }),
-    ).toMatchObject({ text: "ON" });
+  it("never falls back to initials for a user, whatever the name is", () => {
+    for (const names of [
+      { firstName: "ola", lastName: "nordmann" },
+      { firstName: "Ola", lastName: "" },
+      { firstName: "", lastName: "" },
+    ]) {
+      expect(
+        getAvatarContent({ type: "user", user: user(names) }).type,
+      ).not.toBe("initials");
+    }
   });
 
   it("falls back to the organization's first letter", () => {
@@ -84,7 +87,7 @@ describe("getEventArrangerAvatarContent", () => {
       getEventArrangerAvatarContent(
         eventArrangedBy({ id: "arranger-1", user: user() }),
       ),
-    ).toMatchObject({ type: "initials", text: "ON" });
+    ).toMatchObject({ type: "mascot", seed: "user-1" });
   });
 
   it("has nothing to show when the event has no arranger", () => {

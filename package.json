@@ -17,6 +17,7 @@
     "lint:stylelint": "stylelint '**/*.{css,scss}'",
     "lint:biome": "biome check .",
     "format": "biome check --write .",
+    "generate:mascot": "node scripts/generate-mascot-definition.mjs",
     "prepare": "husky"
   },
   "overrides": {

@@ -19,7 +19,7 @@ const EVENT_BACKGROUND_ALPHA = 0.16;
 const HASHED_FALLBACK_SATURATION = 0.6;
 const HASHED_FALLBACK_LIGHTNESS = 0.5;
 
-function hashString(value: string): number {
+export function hashString(value: string): number {
   let hash = 5381;
   for (let index = 0; index < value.length; index++) {
     hash = (Math.imul(hash, 33) ^ value.charCodeAt(index)) >>> 0;

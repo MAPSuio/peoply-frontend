@@ -4,7 +4,7 @@
   // Filer som kjøres eller lastes uten at noe importerer dem. Next-pluginen
   // finner pages/ og API-rutene selv; dette er resten. Tilpass når du legger
   // til nye inngangspunkter, ellers rapporteres de som ubrukte filer.
-  "entry": ["test/setup.ts"],
+  "entry": ["test/setup.ts", "scripts/generate-mascot-definition.mjs"],
 
   // Byggeartefakter fra Next. dist/ og build/ er allerede ekskludert av fallow.
   "ignorePatterns": [".next/**"],

@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { getEventArrangerAvatarContent } from "../utils/avatar";
+import Mascot from "./Mascot";
 import { getPrimaryEventArranger } from "../utils/eventArrangers";
 import type { Event } from "../types/types";
 
@@ -31,6 +32,14 @@ const ArrangerAvatar = ({
   }
 
   const content = getEventArrangerAvatarContent(event);
+
+  if (content?.type === "mascot") {
+    return (
+      <div className={classNames.image}>
+        <Mascot seed={content.seed} />
+      </div>
+    );
+  }
 
   if (content?.type !== "image") {
     return <div className={classNames.iconContainer}>{fallbackIcon}</div>;

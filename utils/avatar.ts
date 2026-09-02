@@ -10,14 +10,11 @@ export type AvatarSubject =
 
 export type AvatarContent =
   | { type: "image"; src: string; alt: string }
+  | { type: "mascot"; seed: string; alt: string }
   | { type: "initials"; text: string; alt: string };
 
 function getUserName(user: AvatarUser) {
   return `${user.firstName} ${user.lastName}`.trim();
-}
-
-function getUserInitials(user: AvatarUser) {
-  return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 }
 
 export function getAvatarContent(subject: AvatarSubject): AvatarContent {
@@ -39,7 +36,7 @@ export function getAvatarContent(subject: AvatarSubject): AvatarContent {
 
   return user.image
     ? { type: "image", src: user.image, alt }
-    : { type: "initials", text: getUserInitials(user), alt };
+    : { type: "mascot", seed: user.id, alt };
 }
 
 export const PEOPLY_AVATAR: AvatarContent = {

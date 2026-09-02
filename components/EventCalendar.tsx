@@ -21,6 +21,7 @@ import {
   arrangerBackgroundVariable,
 } from "../utils/arrangerColor";
 import type { AvatarContent } from "../utils/avatar";
+import Mascot from "./Mascot";
 import {
   type CalendarRange,
   ROLLING_WINDOW_IN_WEEKS,
@@ -127,7 +128,7 @@ function ArrangerIcon({
 }) {
   return (
     <span aria-hidden="true" className={className}>
-      {avatar.type === "image" ? (
+      {avatar.type === "image" && (
         <Image
           alt=""
           className={styles.listEventIconImage}
@@ -135,7 +136,11 @@ function ArrangerIcon({
           src={avatar.src}
           width={ARRANGER_ICON_SIZE_PX}
         />
-      ) : (
+      )}
+      {avatar.type === "mascot" && (
+        <Mascot className={styles.listEventIconImage} seed={avatar.seed} />
+      )}
+      {avatar.type === "initials" && (
         <span className={styles.listEventIconInitial}>{avatar.text}</span>
       )}
     </span>
