@@ -97,8 +97,6 @@ const components = definition.components as unknown as Record<
   { variants: Record<string, { elements: DefinitionNode[] }> }
 >;
 
-export const MASCOT_LICENSE = definition.$provenance.attribution;
-
 export function getMascot(seed: string): Mascot {
   const palette: Palette = { background: PEOPLY_PANEL, glow: glowFor(seed) };
   const canvas = definition.canvas as unknown as {
