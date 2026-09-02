@@ -14,9 +14,10 @@ export interface Mascot {
   elements: MascotElement[];
 }
 
-/* Hue and saturation of $primary-color-600 (#4D21F7), dark enough that the
-   glow reads on it the way the artwork's own near-black palette intends. */
-const PEOPLY_PANEL = "hsl(255 60% 12%)";
+/* $primary-color-600 (#4D21F7) is hsl(252 93% 55%). The panel keeps its hue but
+   drops the lightness, because the per-user glow only reads against a dark
+   plate, the way the artwork's own near-black palette intends. */
+const PEOPLY_PANEL = "hsl(252 60% 12%)";
 
 const GLOW_SATURATION_PERCENT = 85;
 const GLOW_LIGHTNESS_PERCENT = 72;
