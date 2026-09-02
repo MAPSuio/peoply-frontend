@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EventCalendar from "../components/EventCalendar";
 import type { Event } from "../types/types";
+import type { AvatarContent } from "../utils/avatar";
 import {
   WINDOWS_IN_HORIZON,
   rollingCalendarRange,
@@ -24,8 +25,7 @@ interface MockCalendarEvent {
   url: string;
   extendedProps: {
     arranger: string;
-    arrangerImageUrl?: string;
-    arrangerInitial: string;
+    arrangerAvatar: AvatarContent;
     paletteKey: string;
     startTime: string;
     sourceEvent: Event;

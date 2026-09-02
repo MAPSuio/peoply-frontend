@@ -4,43 +4,38 @@ import EditCircle from "./EditCircle";
 import Image from "next/legacy/image";
 import eventPlaceholderImage from "../assets/images/undraw_partying.png";
 import { getEventImage } from "../utils/event";
+import { type AvatarContent, getAvatarContent } from "../utils/avatar";
 
 interface AvatarProps {
   user?: User;
   org?: Organization;
   event?: Event;
   size?: "small" | "medium" | "large";
-  edit?: boolean; // whether or not to show edit icon
+  edit?: boolean;
 }
 
-/* should get either user, org or event */
 export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
-  const getSizeStyling = () => {
+  const sizeStyling = (() => {
     switch (size) {
       case "small":
         return styles.small;
-      case "medium":
-        return styles.medium;
       case "large":
         return styles.large;
       default:
         return styles.medium;
     }
-  };
+  })();
+  const imageSideLength = size === "small" ? 100 : 200;
 
   if (event) {
     return (
       <div>
-        <div
-          className={`${styles.avatar} ${getSizeStyling()} ${
-            event ? "" : styles.default
-          }`}
-        >
+        <div className={`${styles.avatar} ${sizeStyling}`}>
           <Image
             src={getEventImage(event) ?? eventPlaceholderImage}
-            width={size === "small" ? "100" : "200"}
-            height={size === "small" ? "100" : "200"}
-            className={getSizeStyling()}
+            width={imageSideLength}
+            height={imageSideLength}
+            className={sizeStyling}
             alt={event.title}
           />
         </div>
@@ -48,60 +43,37 @@ export default function Avatar({ user, org, size, edit, event }: AvatarProps) {
     );
   }
 
-  if (org) {
-    return (
-      <div>
-        <div
-          className={`${styles.avatar} ${getSizeStyling()} ${
-            org.image ? "" : styles.default
-          }`}
-        >
-          {org.image ? (
-            <Image
-              src={org.image}
-              width={size === "small" ? "100" : "200"}
-              height={size === "small" ? "100" : "200"}
-              className={getSizeStyling()}
-              alt={org.name}
-            />
-          ) : (
-            <span className={styles.name}>
-              {`${org.name.charAt(0).toUpperCase()}`}
-            </span>
-          )}
+  const subject = org
+    ? ({ type: "organization", organization: org } as const)
+    : user
+      ? ({ type: "user", user } as const)
+      : null;
 
-          {edit && <EditCircle className={styles.edit} />}
-        </div>
+  if (!subject) return null;
+
+  const content: AvatarContent = getAvatarContent(subject);
+
+  return (
+    <div>
+      <div
+        className={`${styles.avatar} ${sizeStyling} ${
+          content.type === "image" ? "" : styles.default
+        }`}
+      >
+        {content.type === "image" ? (
+          <Image
+            src={content.src}
+            width={imageSideLength}
+            height={imageSideLength}
+            className={sizeStyling}
+            alt={content.alt}
+          />
+        ) : (
+          <span className={styles.name}>{content.text}</span>
+        )}
+
+        {edit && <EditCircle className={styles.edit} />}
       </div>
-    );
-  }
-
-  if (user) {
-    return (
-      <div>
-        <div
-          className={`${styles.avatar} ${getSizeStyling()} ${
-            user.image ? "" : styles.default
-          }`}
-        >
-          {user.image ? (
-            <Image
-              src={user.image}
-              width={size === "small" ? 100 : 200}
-              height={size === "small" ? 100 : 200}
-              className={getSizeStyling()}
-              alt={`profile image of ${user.firstName} ${user.lastName}`}
-            />
-          ) : (
-            <span className={styles.name}>
-              {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
-            </span>
-          )}
-          {edit && <EditCircle className={styles.edit} />}
-        </div>
-      </div>
-    );
-  }
-
-  return <></>;
+    </div>
+  );
 }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import { getEventArrangerAvatarContent } from "../utils/avatar";
 import { getPrimaryEventArranger } from "../utils/eventArrangers";
 import type { Event } from "../types/types";
 
@@ -19,36 +20,27 @@ interface ArrangerAvatarProps {
   hideWhenNoArranger?: boolean;
 }
 
-/**
- * The primary arranger's avatar, or a fallback icon.
- *
- * This was three copies of the same nested if/else - one per card - that had
- * already drifted apart on which Next Image API they used.
- */
 const ArrangerAvatar = ({
   event,
   classNames,
   fallbackIcon,
   hideWhenNoArranger,
 }: ArrangerAvatarProps) => {
-  const arranger = getPrimaryEventArranger(event);
-  const imageSrc = arranger?.user
-    ? arranger.user.image
-    : arranger?.organization?.image;
-
-  if (!arranger && hideWhenNoArranger) {
+  if (!getPrimaryEventArranger(event) && hideWhenNoArranger) {
     return null;
   }
 
-  if (!imageSrc) {
+  const content = getEventArrangerAvatarContent(event);
+
+  if (content?.type !== "image") {
     return <div className={classNames.iconContainer}>{fallbackIcon}</div>;
   }
 
   return (
     <div className={classNames.image}>
       <Image
-        src={imageSrc}
-        alt="Arrangøren av arrangementet"
+        src={content.src}
+        alt={content.alt}
         fill
         sizes="5vw"
         style={{ objectFit: "cover" }}

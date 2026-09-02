@@ -7,10 +7,13 @@ import {
   toArrangerColorKey,
 } from "./arrangerColor";
 import {
+  type AvatarContent,
+  PEOPLY_AVATAR,
+  getEventArrangerAvatarContent,
+} from "./avatar";
+import {
   getCompactEventArrangerLabel,
   getPrimaryEventArrangerColorKey,
-  getPrimaryEventArrangerImage,
-  getPrimaryEventArrangerInitial,
   getPrimaryEventArrangerPalette,
 } from "./eventArrangers";
 
@@ -34,8 +37,7 @@ export interface CalendarEvent {
   url: string;
   extendedProps: {
     arranger: string;
-    arrangerImageUrl?: string;
-    arrangerInitial: string;
+    arrangerAvatar: AvatarContent;
     arrangerPalette?: ArrangerPalette;
     paletteKey: string;
     sourceEvent: Event;
@@ -116,8 +118,7 @@ export function toCalendarEvents(events: Event[]): CalendarEvent[] {
       url: `/events/${event.urlId}`,
       extendedProps: {
         arranger: getCompactEventArrangerLabel(event, 1),
-        arrangerImageUrl: getPrimaryEventArrangerImage(event),
-        arrangerInitial: getPrimaryEventArrangerInitial(event),
+        arrangerAvatar: getEventArrangerAvatarContent(event) ?? PEOPLY_AVATAR,
         arrangerPalette: getPrimaryEventArrangerPalette(event),
         paletteKey: toArrangerColorKey(getPrimaryEventArrangerColorKey(event)),
         sourceEvent: event,
