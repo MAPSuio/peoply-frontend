@@ -38,11 +38,6 @@ export function getPrimaryEventArrangerColorKey(event: Event): string {
   return arranger?.organization?.id ?? arranger?.user?.id ?? "peoply";
 }
 
-export function getPrimaryEventArrangerImage(event: Event) {
-  const arranger = getPrimaryEventArranger(event);
-  return arranger?.organization?.image ?? arranger?.user?.image;
-}
-
 export function getPrimaryEventArrangerPalette(
   event: Event,
 ): ArrangerPalette | undefined {
@@ -53,12 +48,6 @@ export function getPrimaryEventArrangerPalette(
     primary: organization.imagePrimaryColor,
     accent: organization.imageAccentColor ?? null,
   };
-}
-
-export function getPrimaryEventArrangerInitial(event: Event) {
-  const eventArranger = event.eventArrangers?.[0];
-  const name = eventArranger ? getArrangerLabel(eventArranger) : "Peoply";
-  return name.charAt(0).toUpperCase();
 }
 
 export function getEventArrangerDisplayItems(

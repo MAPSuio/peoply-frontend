@@ -20,6 +20,7 @@ import {
   arrangerAccentVariable,
   arrangerBackgroundVariable,
 } from "../utils/arrangerColor";
+import type { AvatarContent } from "../utils/avatar";
 import {
   type CalendarRange,
   ROLLING_WINDOW_IN_WEEKS,
@@ -119,25 +120,23 @@ const CALENDAR_CHROME = {
 
 function ArrangerIcon({
   className,
-  imageUrl,
-  initial,
+  avatar,
 }: {
   className: string;
-  imageUrl?: string;
-  initial: string;
+  avatar: AvatarContent;
 }) {
   return (
     <span aria-hidden="true" className={className}>
-      {imageUrl ? (
+      {avatar.type === "image" ? (
         <Image
           alt=""
           className={styles.listEventIconImage}
           height={ARRANGER_ICON_SIZE_PX}
-          src={imageUrl}
+          src={avatar.src}
           width={ARRANGER_ICON_SIZE_PX}
         />
       ) : (
-        <span className={styles.listEventIconInitial}>{initial}</span>
+        <span className={styles.listEventIconInitial}>{avatar.text}</span>
       )}
     </span>
   );
@@ -152,8 +151,7 @@ function renderEventContent(arg: EventDisplayInfo) {
       <a href={arg.event.url} className={styles.listEvent}>
         <ArrangerIcon
           className={styles.listEventIcon}
-          imageUrl={arg.event.extendedProps.arrangerImageUrl}
-          initial={arg.event.extendedProps.arrangerInitial}
+          avatar={arg.event.extendedProps.arrangerAvatar}
         />
         <span className={styles.listEventText}>
           {arg.timeText ? (
@@ -174,8 +172,7 @@ function renderEventContent(arg: EventDisplayInfo) {
     <div className={styles.gridEvent}>
       <ArrangerIcon
         className={styles.gridEventIcon}
-        imageUrl={arg.event.extendedProps.arrangerImageUrl}
-        initial={arg.event.extendedProps.arrangerInitial}
+        avatar={arg.event.extendedProps.arrangerAvatar}
       />
       <span className={styles.gridEventTime}>
         {arg.timeText || arg.event.extendedProps.startTime}
