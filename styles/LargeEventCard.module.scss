@@ -30,7 +30,7 @@
 }
 
 .imageContainer {
-  aspect-ratio: 1.78 / 1;
+  aspect-ratio: $aspect-ratio-event-image;
   border-radius: $border-radius-regular $border-radius-regular 0 0;
   margin-bottom: $spacer-small;
   overflow: hidden;

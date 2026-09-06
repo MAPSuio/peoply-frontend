@@ -1,4 +1,3 @@
-import type { ChangeEvent } from "react";
 import type { StaticImageData } from "next/legacy/image";
 
 /* Components */
@@ -18,7 +17,9 @@ interface EditImageSectionProps {
   onCross: () => void;
   tempImage: File | undefined;
   placeholderImage: string | undefined;
-  onImageChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onImageChange: (eventImage: File) => void;
+  onProcessingChange: (processing: boolean) => void;
+  imageProcessing: boolean;
   onDeleteImage: () => void;
   imageSource: string | StaticImageData;
 }
@@ -32,6 +33,8 @@ const EditImageSection = ({
   tempImage,
   placeholderImage,
   onImageChange,
+  onProcessingChange,
+  imageProcessing,
   onDeleteImage,
   imageSource,
 }: EditImageSectionProps) => {
@@ -41,6 +44,9 @@ const EditImageSection = ({
       onCross={onCross}
       editButtonOnClick={editButtonOnClick}
       editButtonDisabled={editOpen}
+      /* Gates SummaryCard's accept button so a crop still being encoded cannot
+         be confirmed away. */
+      valid={!imageProcessing}
       inputId={6}
       Icon={
         <IconCircle
@@ -59,7 +65,8 @@ const EditImageSection = ({
             label="Last opp et bilde til arrangementet"
             buttonLabel="Endre bilde"
             errorMessage="Bildet kan ikke være så stort."
-            onChange={onImageChange}
+            onImageChange={onImageChange}
+            onProcessingChange={onProcessingChange}
             noExtraInfo
             card
           />

@@ -36,6 +36,7 @@ import { useRouter } from "next/router";
 import useSnack from "../hooks/useSnack";
 import useSWR from "swr";
 import useRegistrationCount from "../hooks/useRegistrationCount";
+import useObjectUrl from "../hooks/useObjectUrl";
 
 // Utils
 import {
@@ -194,6 +195,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   const [editOpen, setEditOpen] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [imageProcessing, setImageProcessing] = useState(false);
   const { addSnack } = useSnack();
 
   const { data: coOrganizerInvitations } = useSWR<EventCoOrganizerInvitation[]>(
@@ -421,15 +423,13 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     );
   }
 
-  const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setTempEventObject((tempEventObject) => ({
-        ...tempEventObject,
-        // @ts-expect-error
-        eventImage: e.target.files[0],
-        deleteImage: false,
-      }));
-    }
+  /* Receives the cropped JPEG from ImageInput's cropper, not the raw pick. */
+  const updateEventImage = (eventImage: File) => {
+    setTempEventObject((tempEventObject) => ({
+      ...tempEventObject,
+      eventImage,
+      deleteImage: false,
+    }));
   };
 
   function deleteImage() {
@@ -581,9 +581,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
   });
 
   /* Get image source of either the supplied image or a placeholder. */
-  const imageSource = tempEventObject.eventImage
-    ? URL.createObjectURL(tempEventObject.eventImage)
-    : tempEventObject.eventImage;
+  const imageSource = useObjectUrl(tempEventObject.eventImage);
 
   function mapsUrl(eventData: EventObjectProps) {
     if (navigator && eventData?.freeformAddress) {
@@ -739,6 +737,8 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
         tempImage={tempEventObject.eventImage}
         placeholderImage={event.image}
         onImageChange={updateEventImage}
+        onProcessingChange={setImageProcessing}
+        imageProcessing={imageProcessing}
         onDeleteImage={deleteImage}
         imageSource={imageSource ?? event.image ?? PlaceholderImage}
       />

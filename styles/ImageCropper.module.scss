@@ -1,0 +1,183 @@
+// Carries the bottom margin the static preview box has, so the "Endre bilde"
+// button below does not crowd the hint text.
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: $spacer-very-small-plus;
+  max-width: $max-width-input;
+  width: 100%;
+}
+
+// The frame is the crop: locked to the ratio the event page and the event cards
+// display at, so what is framed here is exactly what gets published.
+// touch-action: none is load-bearing - without it a vertical drag scrolls the
+// wizard instead of moving the image.
+.frame {
+  aspect-ratio: $aspect-ratio-event-image;
+  background-color: var(--background-color-input, $background-color-input);
+  border-radius: $border-radius-regular;
+  cursor: grab;
+  overflow: hidden;
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  width: 100%;
+}
+
+.frame:focus-visible {
+  outline: 2px solid var(--primary-color-400, $primary-color-400);
+  outline-offset: 2px;
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+.image {
+  left: 50%;
+  max-width: none;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+}
+
+// Rule-of-thirds guides, shown only mid-gesture so the resting state is a clean
+// preview rather than a tool.
+.grid {
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: opacity $animation-duration ease;
+  }
+}
+
+.dragging .grid {
+  opacity: 1;
+}
+
+// Each line carries its own position class rather than :first-of-type /
+// :last-of-type - those match by element type, and all four lines are spans, so
+// they would position the wrong two.
+.gridLine {
+  background-color: #FFFFFF;
+  opacity: 0.4;
+  position: absolute;
+}
+
+.gridLineVertical {
+  bottom: 0;
+  top: 0;
+  width: 1px;
+}
+
+.gridLineHorizontal {
+  height: 1px;
+  left: 0;
+  right: 0;
+}
+
+.gridLineFirstThird {
+  left: 33.333%;
+}
+
+.gridLineSecondThird {
+  left: 66.666%;
+}
+
+.gridLineTopThird {
+  top: 33.333%;
+}
+
+.gridLineBottomThird {
+  top: 66.666%;
+}
+
+.controls {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: $spacer-small;
+  margin-top: $spacer-very-small-plus;
+}
+
+// First range input in the codebase, so the track and thumb are styled from
+// scratch. The vendor pseudo-elements cannot be combined into one selector -
+// browsers drop the whole rule when they meet an unknown one.
+.zoom {
+  appearance: none;
+  background-color: transparent;
+  cursor: pointer;
+  flex: 1;
+  height: 24px;
+  margin: 0;
+  min-width: 0;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color-400, $primary-color-400);
+    outline-offset: 2px;
+  }
+
+  &::-webkit-slider-runnable-track {
+    background-color: var(--background-color-progress-connector, $background-color-progress-connector);
+    border-radius: $border-radius-round;
+    height: 4px;
+  }
+
+  &::-moz-range-track {
+    background-color: var(--background-color-progress-connector, $background-color-progress-connector);
+    border-radius: $border-radius-round;
+    height: 4px;
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    background-color: var(--primary-color-400, $primary-color-400);
+    border: none;
+    border-radius: $border-radius-round;
+    box-shadow: var(--shadow-slider, $shadow-slider);
+    height: 20px;
+    // Centres the thumb on a 4px track: half the thumb, less half the track.
+    margin-top: -8px;
+    width: 20px;
+  }
+
+  &::-moz-range-thumb {
+    background-color: var(--primary-color-400, $primary-color-400);
+    border: none;
+    border-radius: $border-radius-round;
+    box-shadow: var(--shadow-slider, $shadow-slider);
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.reset {
+  @include resetButton();
+  color: var(--text-color-link, $text-color-link);
+  flex-shrink: 0;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-medium;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.hint {
+  color: var(--text-color-primary, $text-color-primary);
+  font-size: $font-size-tertiary;
+  line-height: $line-height-hint-text;
+  margin-top: $spacer-very-small;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}

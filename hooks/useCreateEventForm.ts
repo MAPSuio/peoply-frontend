@@ -119,6 +119,9 @@ export default function useCreateEventForm() {
   const [coOrganizerSearch, setCoOrganizerSearch] = useState("");
   const [eventExtraInfoValid, setEventExtraInfoValid] = useState(false);
   const [eventImageValid, setEventImageValid] = useState(false);
+  /* True while the cropper is encoding. Deliberately outside eventObject: it is
+     transient UI state and must never be written to the draft in localStorage. */
+  const [eventImageProcessing, setEventImageProcessing] = useState(false);
   const coOrganizerCardRef = useRef<HTMLDivElement>(null);
 
   const [eventObject, setEventObject] = useState<EventObjectProps>({
@@ -393,26 +396,24 @@ export default function useCreateEventForm() {
     });
   };
 
-  /* TODO: Fix this TS error. */
-  const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const fileName = e.target.files[0].name;
-      //should we add check for same filename to avoid excess writes?
-      writeImageToLocalStorage(e.target.files[0]);
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        // @ts-expect-error
-        eventImage: e.target.files[0],
-        eventImageValid: true,
-        imageStorageKey: fileName,
-      }));
-      updateLocalStorage({
-        ...eventObject,
-        eventImage: e.target.files[0],
-        eventImageValid: true,
-        imageStorageKey: fileName,
-      });
-    }
+  /* Takes the cropped JPEG produced by ImageInput's cropper rather than the raw
+     picked file, so what is cached and what is uploaded are the framed image. */
+  const updateEventImage = (eventImage: File) => {
+    const fileName = eventImage.name;
+    //should we add check for same filename to avoid excess writes?
+    writeImageToLocalStorage(eventImage);
+    setEventObject((prevEventObject) => ({
+      ...prevEventObject,
+      eventImage,
+      eventImageValid: true,
+      imageStorageKey: fileName,
+    }));
+    updateLocalStorage({
+      ...eventObject,
+      eventImage,
+      eventImageValid: true,
+      imageStorageKey: fileName,
+    });
   };
 
   const updateEventImageFromStorage = (
@@ -1038,6 +1039,8 @@ export default function useCreateEventForm() {
     setEventAddressValid,
     eventImageValid,
     setEventImageValid,
+    eventImageProcessing,
+    setEventImageProcessing,
     eventExtraInfoValid,
     setEventExtraInfoValid,
     eventDateStartValid,

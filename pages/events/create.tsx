@@ -81,6 +81,8 @@ const CreateEvent = () => {
     eventAddressValid,
     setEventAddressValid,
     setEventImageValid,
+    eventImageProcessing,
+    setEventImageProcessing,
     setEventExtraInfoValid,
     eventDateStartValid,
     eventTimeStartValid,
@@ -186,8 +188,10 @@ const CreateEvent = () => {
             eventObject={eventObject}
             stepCount={stepCount}
             validDataMap={validDataMap}
+            eventImageProcessing={eventImageProcessing}
             buttonOnClick={inputPageOnClick}
             setEventImageValid={setEventImageValid}
+            setEventImageProcessing={setEventImageProcessing}
             updateEventImage={updateEventImage}
           />
         );

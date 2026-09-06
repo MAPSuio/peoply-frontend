@@ -285,18 +285,16 @@
   }
 } */
 
+// Same ratio as the cropper and the event page, so the summary shows the crop
+// the user framed rather than a differently proportioned centre cut.
 .imageContainer {
+  aspect-ratio: $aspect-ratio-event-image;
   border-radius: $border-radius-regular;
-  height: 250px;
   margin-bottom: $spacer-very-small-plus;
   max-width: $max-width-input;
   overflow: hidden;
   position: relative;
   width: 100%;
-
-  @include desktop() {
-    height: 350px;
-  }
 }
 
 
