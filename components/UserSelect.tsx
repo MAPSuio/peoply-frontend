@@ -1,5 +1,6 @@
 import Link from "./Link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import useDebouncedSearch from "../hooks/useDebouncedSearch";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/UserSearch.module.scss";
 import type { User } from "../types/types";
@@ -24,48 +25,21 @@ export default function UserSelect({
   excludeUsers,
 }: UserSearchProps) {
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [focused, setFocused] = useState(false);
   const { theme } = useTheme();
 
-  /* hook to fetch whenever search term changes */
-  useEffect(() => {
-    if (search.length < 1) {
-      return;
-    }
+  const { results: searchResults, loading } = useDebouncedSearch(
+    search,
+    (name: string): Promise<User[]> =>
+      fetchFromPeoplyApiJson(`/users?name=${encodeURIComponent(name)}`, {
+        method: "GET",
+      }),
+    { delayMs: 300, minLength: 1 },
+  );
 
-    setLoading(true);
-    let cancelled = false;
-
-    const timer = setTimeout(async () => {
-      const result: User[] = await fetchFromPeoplyApiJson(
-        `/users?name=${encodeURIComponent(search)}`,
-        {
-          method: "GET",
-        },
-      );
-      // A slower request for an earlier term must not overwrite the results
-      // of a later one.
-      if (cancelled) {
-        return;
-      }
-      setLoading(false);
-      setSearchResults(result);
-    }, 300);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [search]);
-
-  /* Filtering here rather than in the effect keeps `excludeUsers` out of its
-     dependencies - callers build it inline, so a new array identity on every
-     parent render would restart the debounce. */
   const users = useMemo(() => {
     const excludedIds = new Set(excludeUsers?.map(({ id }) => id));
-    return searchResults.filter(({ id }) => !excludedIds.has(id));
+    return (searchResults ?? []).filter(({ id }) => !excludedIds.has(id));
   }, [excludeUsers, searchResults]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,11 +48,6 @@ export default function UserSelect({
       return;
     }
     setSearch(query);
-    setSearchResults([]); // clear users when search term is changed
-
-    if (query.length < 1) {
-      setLoading(false);
-    }
   };
 
   const isUserSelected = (user: User) => {
