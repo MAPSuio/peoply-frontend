@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useDebouncedSearch from "../hooks/useDebouncedSearch";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import styles from "../styles/GlobalSearch.module.scss";
 import LoadingWheel from "./LoadingWheel";
@@ -18,48 +19,33 @@ enum FilterOption {
 
 export default function GlobalSearch() {
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(FilterOption.ALL);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const { theme } = useTheme();
-  /* hook to fetch whenever search term changes */
-  useEffect(() => {
-    if (search.length < 3) {
-      return;
-    }
 
-    setLoading(true);
-    let cancelled = false;
-
-    const timer = setTimeout(async () => {
+  const { results, loading } = useDebouncedSearch(
+    search,
+    async (
+      title: string,
+    ): Promise<{ events: Event[]; organizations: Organization[] }> => {
       const [events, organizations] = await Promise.all([
-        fetchFromPeoplyApiJson(`/events?title=${encodeURIComponent(search)}`, {
+        fetchFromPeoplyApiJson(`/events?title=${encodeURIComponent(title)}`, {
           method: "GET",
         }),
         fetchFromPeoplyApiJson(
-          `/organizations?name=${encodeURIComponent(search)}`,
+          `/organizations?name=${encodeURIComponent(title)}`,
           {
             method: "GET",
           },
         ),
       ]);
-      // A slower request for an earlier term must not overwrite the results
-      // of a later one.
-      if (cancelled) {
-        return;
-      }
-      setEvents(events);
-      setOrganizations(organizations);
-      setLoading(false);
-    }, 400);
+      return { events, organizations };
+    },
+    { delayMs: 400, minLength: 3 },
+  );
 
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [search]);
+  const events = results?.events ?? [];
+  const organizations = results?.organizations ?? [];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -67,12 +53,6 @@ export default function GlobalSearch() {
       return;
     }
     setSearch(query);
-    setEvents([]); // clear users when search term is changed
-    setOrganizations([]); // clear users when search term is changed
-
-    if (query.length < 3) {
-      setLoading(false);
-    }
   };
 
   const eventCount = events.length;
