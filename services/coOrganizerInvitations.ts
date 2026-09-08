@@ -1,16 +1,5 @@
-import type {
-  EventCoOrganizerInvitation,
-  InvitationStatus,
-} from "../types/types";
-import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
-
-/* Every co-organizer invitation on an event. Only the event's own arrangers
-   may read this - the API answers 403 for everyone else. */
-export function getCoOrganizerInvitations(
-  eventId: string,
-): Promise<EventCoOrganizerInvitation[]> {
-  return fetchFromPeoplyApiJson(`/events/${eventId}/coorganizer-invitations`);
-}
+import type { InvitationStatus } from "../types/types";
+import { fetchFromPeoplyApi } from "./fetchers";
 
 /* Answers one invitation on behalf of the invited organization. ACCEPTED is
    what puts the organization's name and logo on the event - nothing about it
