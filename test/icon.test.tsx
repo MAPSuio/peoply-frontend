@@ -67,7 +67,7 @@ describe("Icon", () => {
   it("lets an icon keep a default a caller may pass undefined over", () => {
     const svg = renderIcon({ strokeWidth: undefined });
 
-    expect(svg).not.toHaveAttribute("strokeWidth");
+    expect(svg).not.toHaveAttribute("stroke-width");
   });
 
   it("renders its children", () => {

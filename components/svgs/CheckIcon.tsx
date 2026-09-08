@@ -1,7 +1,12 @@
 import Icon, { type IconShapeProps } from "./Icon";
 
-const CheckIcon = (props: IconShapeProps) => (
-  <Icon viewBox="0 0 24 24" fill="none" style={{ display: "flex" }} {...props}>
+const CheckIcon = ({ style, ...props }: IconShapeProps) => (
+  <Icon
+    viewBox="0 0 24 24"
+    fill="none"
+    {...props}
+    style={{ display: "flex", ...style }}
+  >
     <svg id="pathWrapper" style={{ position: "relative" }}>
       <path
         d="M22.6667 1L8.00004 15.6667L1.33337 9"

@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { type ComponentType, createElement } from "react";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -28,6 +29,7 @@ describe("icon shell", () => {
     const handRolled = iconShellFiles().filter((file) => {
       const source = sourceOf(file);
       const rootElement = source.search(/<(svg|Icon)\b/);
+      if (rootElement === -1) return true;
       return !source.startsWith("<Icon", rootElement);
     });
 
@@ -40,6 +42,29 @@ describe("icon shell", () => {
     );
 
     expect(bypassing).toEqual([]);
+  });
+
+  it("gives every icon a viewBox, so none renders at a size the caller cannot control", async () => {
+    const iconModules = import.meta.glob("../components/svgs/*.tsx") as Record<
+      string,
+      () => Promise<{ default: ComponentType }>
+    >;
+    const rendered = iconShellFiles().map(
+      (file) => `../components/svgs/${file}`,
+    );
+
+    expect(rendered.every((path) => path in iconModules)).toBe(true);
+
+    const withoutViewBox: string[] = [];
+    for (const path of rendered) {
+      const { default: IconComponent } = await iconModules[path]();
+      const { container } = render(createElement(IconComponent));
+      if (!container.querySelector("svg")?.getAttribute("viewBox")) {
+        withoutViewBox.push(path);
+      }
+    }
+
+    expect(withoutViewBox).toEqual([]);
   });
 
   it("keeps an icon's own default when a caller passes undefined over it", () => {
