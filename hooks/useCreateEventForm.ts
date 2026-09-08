@@ -111,6 +111,12 @@ export interface EventObjectProps {
  * `pages/events/create.tsx` so the page can stay a thin orchestrator and the
  * per-step JSX can live in its own components.
  */
+function toggled<Item>(items: Item[], item: Item): Item[] {
+  return items.includes(item)
+    ? items.filter((candidate) => candidate !== item)
+    : [...items, item];
+}
+
 export default function useCreateEventForm() {
   const { user, ipInfo, orgs } = useUser();
   const redirectToLogin = useRedirectToLogin();
@@ -168,13 +174,29 @@ export default function useCreateEventForm() {
     fetchAllFromPeoplyApiJson,
   );
 
+  const latestEventObject = useRef(eventObject);
+
+  useEffect(() => {
+    latestEventObject.current = eventObject;
+  }, [eventObject]);
+
+  const patchEvent = (
+    patch:
+      | Partial<EventObjectProps>
+      | ((current: EventObjectProps) => Partial<EventObjectProps>),
+  ) => {
+    const current = latestEventObject.current;
+    const nextEventObject = {
+      ...current,
+      ...(typeof patch === "function" ? patch(current) : patch),
+    };
+    latestEventObject.current = nextEventObject;
+    setEventObject(nextEventObject);
+    updateLocalStorage({ ...nextEventObject });
+  };
+
   const updateEventTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventTitle: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventTitle: e.target.value,
     });
   };
@@ -183,231 +205,120 @@ export default function useCreateEventForm() {
     const primaryOrganizationId = orgs?.find(
       (organization) => organization.arrangerId === arrangerId,
     )?.id;
-    const nextCoOrganizerOrganizationIds = primaryOrganizationId
-      ? eventObject.eventCoOrganizerOrganizationIds.filter(
-          (organizationId) => organizationId !== primaryOrganizationId,
-        )
-      : eventObject.eventCoOrganizerOrganizationIds;
 
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
+    patchEvent((current) => ({
       eventArrangerId: arrangerId,
-      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
+      eventCoOrganizerOrganizationIds:
+        current.eventCoOrganizerOrganizationIds.filter(
+          (organizationId) => organizationId !== primaryOrganizationId,
+        ),
     }));
-    updateLocalStorage({
-      ...eventObject,
-      eventArrangerId: arrangerId,
-      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
-    });
   };
 
   const toggleCoOrganizerOrganization = (organizationId: string) => {
-    const nextCoOrganizerOrganizationIds =
-      eventObject.eventCoOrganizerOrganizationIds.includes(organizationId)
-        ? eventObject.eventCoOrganizerOrganizationIds.filter(
-            (id) => id !== organizationId,
-          )
-        : [...eventObject.eventCoOrganizerOrganizationIds, organizationId];
-
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
+    patchEvent((current) => ({
+      eventCoOrganizerOrganizationIds: toggled(
+        current.eventCoOrganizerOrganizationIds,
+        organizationId,
+      ),
     }));
-
-    updateLocalStorage({
-      ...eventObject,
-      eventCoOrganizerOrganizationIds: nextCoOrganizerOrganizationIds,
-    });
   };
 
   const updateEventDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventDescription: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventDescription: e.target.value,
     });
   };
 
   const updateEventLocationName = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventLocationName: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventLocationName: e.target.value,
     });
   };
 
   const updateEventLocation = (loc?: LocationSearchResult) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventLocation: loc,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventLocation: loc,
     });
   };
 
-  /* will toggle category */
   const updateEventCategories = (categoryId: number) => {
-    const newEventCategories = eventObject.eventActiveCategories.includes(
-      categoryId,
-    )
-      ? eventObject.eventActiveCategories.filter((id) => id !== categoryId)
-      : [...eventObject.eventActiveCategories, categoryId];
-
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventActiveCategories: newEventCategories,
+    patchEvent((current) => ({
+      eventActiveCategories: toggled(current.eventActiveCategories, categoryId),
     }));
-
-    updateLocalStorage({
-      ...eventObject,
-      eventActiveCategories: newEventCategories,
-    });
   };
 
   const updateEventDateStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventDateStart: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventDateStart: e.target.value,
     });
   };
 
   const updateEventTimeStart = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventTimeStart: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventTimeStart: e.target.value,
     });
   };
 
   const setEventHasDateEnd = (value: boolean) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventHasDateEnd: value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventHasDateEnd: value,
     });
   };
 
   const updateEventDateEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventDateEnd: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventDateEnd: e.target.value,
     });
   };
 
   const updateEventTimeEnd = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventTimeEnd: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventTimeEnd: e.target.value,
     });
   };
 
   const seteventHasRegStart = (value: boolean) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventHasRegStart: value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventHasRegStart: value,
     });
   };
 
   const updateEventRegStartDate = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventRegStartDate: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventRegStartDate: e.target.value,
     });
   };
 
   const updateEventRegStartTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventRegStartTime: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventRegStartTime: e.target.value,
     });
   };
 
   const seteventHasRegEnd = (value: boolean) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventHasRegEnd: value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventHasRegEnd: value,
     });
   };
 
   const updateEventRegEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventRegEndDate: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventRegEndDate: e.target.value,
     });
   };
 
   const updateEventRegEndTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventRegEndTime: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventRegEndTime: e.target.value,
     });
   };
 
-  /* TODO: Fix this TS error. */
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const fileName = e.target.files[0].name;
-      //should we add check for same filename to avoid excess writes?
       writeImageToLocalStorage(e.target.files[0]);
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        // @ts-expect-error
-        eventImage: e.target.files[0],
-        eventImageValid: true,
-        imageStorageKey: fileName,
-      }));
-      updateLocalStorage({
-        ...eventObject,
+      patchEvent({
         eventImage: e.target.files[0],
         eventImageValid: true,
         imageStorageKey: fileName,
@@ -437,132 +348,47 @@ export default function useCreateEventForm() {
   };
 
   const updateHasCapacity = (id: number) => {
-    if (id === 2) {
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        eventHasCapacity: true,
-      }));
-    } else {
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        eventHasCapacity: false,
-      }));
-    }
-    updateLocalStorage({
-      ...eventObject,
-      eventHasCapacity: id === 2,
-    });
+    patchEvent({ eventHasCapacity: id === 2 });
   };
 
   const updateEventCapacity = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventCapacity: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventCapacity: e.target.value,
     });
   };
 
   const updateVisibility = (id: number) => {
-    let visibility = Visibility.PUBLIC;
-    switch (id) {
-      case 1:
-        setEventObject((prevEventObject) => ({
-          ...prevEventObject,
-          eventVisibility: Visibility.PUBLIC,
-        }));
-        break;
-
-      case 2:
-        visibility = Visibility.UNLISTED;
-        setEventObject((prevEventObject: EventObjectProps) => ({
-          ...prevEventObject,
-          eventVisibility: Visibility.UNLISTED,
-        }));
-        break;
-
-      default:
-        break;
-    }
-    updateLocalStorage({
-      ...eventObject,
-      eventVisibility: visibility,
+    patchEvent({
+      eventVisibility: id === 2 ? Visibility.UNLISTED : Visibility.PUBLIC,
     });
   };
 
   const updateHasFood = (id: number) => {
-    let eventHasFood = false;
-    switch (id) {
-      case 1:
-        setEventObject((prevEventObject) => ({
-          ...prevEventObject,
-          eventHasFood: false,
-        }));
-        break;
-
-      case 2:
-        eventHasFood = true;
-        setEventObject((prevEventObject: EventObjectProps) => ({
-          ...prevEventObject,
-          eventHasFood: true,
-        }));
-        break;
-
-      default:
-        break;
-    }
-    updateLocalStorage({
-      ...eventObject,
-      eventHasFood: eventHasFood,
-    });
+    patchEvent({ eventHasFood: id === 2 });
   };
 
   const setEventHasExternalRegistration = (value: boolean) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
+    patchEvent((current) => ({
       eventHasExternalRegistration: value,
-      eventExternalUrl: value ? prevEventObject.eventExternalUrl : "",
+      eventExternalUrl: value ? current.eventExternalUrl : "",
     }));
-    updateLocalStorage({
-      ...eventObject,
-      eventHasExternalRegistration: value,
-      eventExternalUrl: value ? eventObject.eventExternalUrl : "",
-    });
   };
 
   const updateEventExternalUrl = (e: ChangeEvent<HTMLInputElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventExternalUrl: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventExternalUrl: e.target.value,
     });
   };
 
   const setEventHasFormQuestion = (value: boolean) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
+    patchEvent((current) => ({
       eventHasFormQuestion: value,
-      eventFormQuestion: value ? eventObject.eventFormQuestion : "",
+      eventFormQuestion: value ? current.eventFormQuestion : "",
     }));
-    updateLocalStorage({
-      ...eventObject,
-      eventHasFormQuestion: value,
-      eventFormQuestion: value ? eventObject.eventFormQuestion : "",
-    });
   };
 
   const updateEventFormQuestion = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setEventObject((prevEventObject) => ({
-      ...prevEventObject,
-      eventFormQuestion: e.target.value,
-    }));
-    updateLocalStorage({
-      ...eventObject,
+    patchEvent({
       eventFormQuestion: e.target.value,
     });
   };
@@ -575,24 +401,10 @@ export default function useCreateEventForm() {
   };
 
   const inputPageOnClick = (step: number) => {
-    if (step !== stepCount) {
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        currentStep: step,
-      }));
-    }
-    if (step > eventObject.reachedStep) {
-      setEventObject((prevEventObject) => ({
-        ...prevEventObject,
-        reachedStep: step,
-      }));
-    }
-    updateLocalStorage({
-      ...eventObject,
-      currentStep: step,
-      eventImageValid: eventImageValid,
-      eventExtraInfoValid: eventExtraInfoValid,
-    });
+    patchEvent((current) => ({
+      currentStep: step === stepCount ? current.currentStep : step,
+      reachedStep: Math.max(current.reachedStep, step),
+    }));
   };
 
   const summaryPageOnClick = async (formData: FormData) => {
@@ -882,7 +694,6 @@ export default function useCreateEventForm() {
   }
 
   function startNewEventCreation() {
-    updateLocalStorage(eventObject);
     localStorage.removeItem("eventObject");
     localStorage.removeItem("eventImage");
   }
