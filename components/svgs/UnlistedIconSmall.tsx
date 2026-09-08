@@ -1,6 +1,6 @@
 import Icon, { type IconShapeProps } from "./Icon";
 
-const PrivateIconSmall = (props: IconShapeProps) => (
+const UnlistedIconSmall = (props: IconShapeProps) => (
   <Icon viewBox="0 0 24 24" fill="none" {...props}>
     <g clipPath="url(#clip0_1161_351)">
       <path
@@ -24,4 +24,4 @@ const PrivateIconSmall = (props: IconShapeProps) => (
   </Icon>
 );
 
-export default PrivateIconSmall;
+export default UnlistedIconSmall;

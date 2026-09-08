@@ -2,7 +2,7 @@
 import { Visibility } from "../../types/types";
 
 /* Icons */
-import PrivateIconSmall from "../svgs/PrivateIconSmall";
+import UnlistedIconSmall from "../svgs/UnlistedIconSmall";
 import PublicIconSmall from "../svgs/PublicIconSmall";
 
 /* Styles */
@@ -17,7 +17,7 @@ icon and label used inside each page's data/visibility summary card. */
 const VisibilityIndicator = ({ visibility }: VisibilityIndicatorProps) => {
   return visibility === Visibility.UNLISTED ? (
     <div className={styles.dataItemContainer}>
-      <PrivateIconSmall className={styles.dataIcon} />{" "}
+      <UnlistedIconSmall className={styles.dataIcon} />{" "}
       <p className={styles.dataLabel}>Ikke oppført</p>
     </div>
   ) : visibility === Visibility.PUBLIC ? (
