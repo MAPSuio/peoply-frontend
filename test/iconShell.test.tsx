@@ -1,0 +1,56 @@
+import { render } from "@testing-library/react";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+
+import SmallCheckIcon from "../components/svgs/SmallCheckIcon";
+
+const SVG_DIRECTORY = join(process.cwd(), "components/svgs");
+
+const WRAPS_AN_ICON_RATHER_THAN_BEING_ONE = [
+  "Icon.tsx",
+  "FoodCircle.tsx",
+  "WaitlistIcon.tsx",
+];
+
+function iconShellFiles() {
+  return readdirSync(SVG_DIRECTORY)
+    .filter((file) => file.endsWith(".tsx"))
+    .filter((file) => !WRAPS_AN_ICON_RATHER_THAN_BEING_ONE.includes(file));
+}
+
+function sourceOf(file: string) {
+  return readFileSync(join(SVG_DIRECTORY, file), "utf8");
+}
+
+describe("icon shell", () => {
+  it("is what every icon opens with, so none hand-rolls a root svg", () => {
+    const handRolled = iconShellFiles().filter((file) => {
+      const source = sourceOf(file);
+      const rootElement = source.search(/<(svg|Icon)\b/);
+      return !source.startsWith("<Icon", rootElement);
+    });
+
+    expect(handRolled).toEqual([]);
+  });
+
+  it("is what every icon renders through", () => {
+    const bypassing = iconShellFiles().filter(
+      (file) => !sourceOf(file).includes("<Icon"),
+    );
+
+    expect(bypassing).toEqual([]);
+  });
+
+  it("keeps an icon's own default when a caller passes undefined over it", () => {
+    const { container } = render(<SmallCheckIcon strokeWidth={undefined} />);
+
+    expect(container.querySelector("svg")).toHaveAttribute("stroke-width", "2");
+  });
+
+  it("still lets a caller override that default", () => {
+    const { container } = render(<SmallCheckIcon strokeWidth="3" />);
+
+    expect(container.querySelector("svg")).toHaveAttribute("stroke-width", "3");
+  });
+});

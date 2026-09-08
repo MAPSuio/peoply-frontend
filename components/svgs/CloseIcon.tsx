@@ -1,31 +1,18 @@
-interface CloseIconProps {
-  className?: string;
-}
+import Icon, { type IconShapeProps } from "./Icon";
 
-export default function CloseIcon({ className }: CloseIconProps) {
-  return (
-    <svg
-      className={className}
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 4L4 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4 4L12 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+const CloseIcon = (props: IconShapeProps) => (
+  <Icon
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M12 4L4 12" />
+    <path d="M4 4L12 12" />
+  </Icon>
+);
+
+export default CloseIcon;
