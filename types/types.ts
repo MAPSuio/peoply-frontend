@@ -27,7 +27,6 @@ export interface User {
   image?: string;
   foodPreference?: FoodPreference;
   allowEmailFromArranger: boolean;
-  allowEmailPromotions: boolean;
   hasAdminAccess?: boolean;
   isAdmin?: boolean;
   userAllergens?: {
