@@ -24,6 +24,8 @@ export default function SwrProvider({ children }: { children: ReactNode }) {
       // forever.
       errorRetryCount: 3,
 
+      onErrorRetry: retryUnlessRateLimited,
+
       onError: (error: unknown) => {
         const status = error instanceof ApiError ? error.status : undefined;
 
@@ -39,4 +41,28 @@ export default function SwrProvider({ children }: { children: ReactNode }) {
   );
 
   return <SWRConfig value={value}>{children}</SWRConfig>;
+}
+
+const RATE_LIMITED = 429;
+const LONGEST_RETRY_BACKOFF_DOUBLINGS = 8;
+
+function isRateLimited(error: unknown) {
+  return error instanceof ApiError && error.status === RATE_LIMITED;
+}
+
+function retryUnlessRateLimited(
+  error: unknown,
+  _key: string,
+  config: { errorRetryCount?: number; errorRetryInterval: number },
+  revalidate: (options: { retryCount: number }) => void,
+  { retryCount }: { retryCount: number },
+) {
+  if (isRateLimited(error)) return;
+  if (retryCount > (config.errorRetryCount ?? 0)) return;
+
+  const doublings = Math.min(retryCount, LONGEST_RETRY_BACKOFF_DOUBLINGS);
+  setTimeout(
+    () => revalidate({ retryCount }),
+    config.errorRetryInterval * 2 ** doublings,
+  );
 }
