@@ -44,6 +44,7 @@ import {
   laterThan,
   latherThanNowISOString,
 } from "../utils/functions";
+import { withDatePart, withTimePart } from "../utils/eventDateTime";
 import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApiJson,
@@ -64,6 +65,19 @@ function getCategories(categories: EventCategory[] | undefined) {
 interface EditSummaryPageProps {
   event: Event;
 }
+
+export type EventDateTimeField =
+  | "startDate"
+  | "endDate"
+  | "regStart"
+  | "regEnd";
+
+export type EventDateTimePart = "date" | "time";
+
+export type PatchDateTime = (
+  field: EventDateTimeField,
+  part: EventDateTimePart,
+) => (e: ChangeEvent<HTMLInputElement>) => void;
 
 export interface EventObjectProps {
   visibility: Visibility;
@@ -322,104 +336,40 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     });
   };
 
-  function updateStartDate(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = e.target.value + tempEventObject.startDate.substring(10);
-    setTempEventObject({
-      ...tempEventObject,
-      startDate: newDate,
-    });
+  const revalidateDateTime: Record<
+    EventDateTimeField,
+    (next: EventObjectProps, part: EventDateTimePart) => void
+  > = {
+    startDate: (next, part) => {
+      if (part === "date") {
+        setValidStart(latherThanNowISOString(next.startDate));
+      }
+      setValidEnd(laterThan(next.endDate ?? next.startDate, next.startDate));
+    },
+    endDate: (next) => setValidEnd(laterThan(next.endDate, next.startDate)),
+    regStart: (next) =>
+      setValidRegStart(laterThan(next.startDate, next.regStart)),
+    regEnd: (next) =>
+      setValidRegEnd(
+        laterThan(next.endDate, next.regEnd) &&
+          laterThan(next.regEnd, next.regStart),
+      ),
+  };
 
-    setValidStart(latherThanNowISOString(tempEventObject.startDate));
-    setValidEnd(laterThan(tempEventObject.endDate ?? newDate, newDate));
-  }
+  const patchDateTime: PatchDateTime =
+    (field, part) => (e: ChangeEvent<HTMLInputElement>) => {
+      const current = tempEventObject[field] ?? tempEventObject.startDate;
+      const next = {
+        ...tempEventObject,
+        [field]:
+          part === "date"
+            ? withDatePart(current, e.target.value)
+            : withTimePart(current, e.target.value),
+      };
 
-  function updateStartTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = `${tempEventObject.startDate.substring(0, 11) + e.target.value}:00.000Z`;
-
-    setTempEventObject({
-      ...tempEventObject,
-      startDate: newDate,
-    });
-
-    setValidEnd(laterThan(tempEventObject.endDate ?? newDate, newDate));
-  }
-
-  function updateEndDate(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = e.target.value + tempEventObject.endDate?.substring(10);
-    setTempEventObject({
-      ...tempEventObject,
-      endDate: newDate,
-    });
-
-    setValidEnd(laterThan(newDate, tempEventObject.startDate));
-  }
-
-  function updateEndTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate =
-      tempEventObject.endDate?.substring(0, 10) +
-      "T" +
-      e.target.value +
-      ":00.000Z";
-
-    setTempEventObject({
-      ...tempEventObject,
-      endDate: newDate,
-    });
-
-    setValidEnd(laterThan(newDate, tempEventObject.startDate));
-  }
-
-  function updateRegStartDate(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = e.target.value + tempEventObject.regStart?.substring(10);
-    setTempEventObject({
-      ...tempEventObject,
-      regStart: newDate,
-    });
-
-    setValidRegStart(laterThan(tempEventObject.startDate, newDate));
-  }
-
-  function updateRegStartTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = `${tempEventObject.regStart?.substring(0, 11) + e.target.value}:00.000Z`;
-
-    setTempEventObject({
-      ...tempEventObject,
-      regStart: newDate,
-    });
-
-    setValidRegStart(laterThan(tempEventObject.startDate, newDate));
-  }
-
-  function updateRegEndDate(e: ChangeEvent<HTMLInputElement>) {
-    const newDate = e.target.value + tempEventObject.regEnd?.substring(10);
-    setTempEventObject({
-      ...tempEventObject,
-      regEnd: newDate,
-    });
-
-    setValidRegEnd(
-      laterThan(tempEventObject.endDate, newDate) &&
-        laterThan(newDate, tempEventObject.regStart),
-    );
-  }
-
-  function updateRegEndTime(e: ChangeEvent<HTMLInputElement>) {
-    const newDate =
-      tempEventObject.regEnd?.substring(0, 10) +
-      "T" +
-      e.target.value +
-      ":00.000Z";
-
-    setTempEventObject({
-      ...tempEventObject,
-      regEnd: newDate,
-    });
-
-    setValidRegEnd(
-      laterThan(tempEventObject.endDate, newDate) &&
-        laterThan(newDate, tempEventObject.regStart),
-    );
-  }
+      setTempEventObject(next);
+      revalidateDateTime[field](next, part);
+    };
 
   const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -681,14 +631,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
         setValidRegStart={setValidRegStart}
         validRegEnd={validRegEnd}
         setValidRegEnd={setValidRegEnd}
-        updateStartDate={updateStartDate}
-        updateStartTime={updateStartTime}
-        updateEndDate={updateEndDate}
-        updateEndTime={updateEndTime}
-        updateRegStartDate={updateRegStartDate}
-        updateRegStartTime={updateRegStartTime}
-        updateRegEndDate={updateRegEndDate}
-        updateRegEndTime={updateRegEndTime}
+        patchDateTime={patchDateTime}
       />
 
       <EditPlaceSection
