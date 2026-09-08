@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { SWRConfig } from "swr";
+import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import OrganizationStats from "../components/organization/OrganizationStats";
 import type { Organization } from "../types/types";
@@ -16,17 +17,14 @@ const ORGANIZATION = {
 } as Organization;
 
 function renderStats(props: { isMemberOfOrg: boolean }) {
-  return render(
-    <SWRConfig
-      value={{ provider: () => new Map(), fetcher: async () => undefined }}
-    >
-      <OrganizationStats
-        organization={ORGANIZATION}
-        memberCount={42}
-        eventCount={3}
-        {...props}
-      />
-    </SWRConfig>,
+  return renderWithSwr(
+    <OrganizationStats
+      organization={ORGANIZATION}
+      memberCount={42}
+      eventCount={3}
+      {...props}
+    />,
+    { fetcher: async () => undefined },
   );
 }
 

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import type { ReactNode } from "react";
-import { SWRConfig } from "swr";
+import { screen } from "@testing-library/react";
+import type { ReactElement, ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import EventCard from "../components/EventCard";
 import LargeEventCard from "../components/LargeEventCard";
@@ -40,12 +41,8 @@ const makeEvent = (registrationMode: EventRegistrationMode): Event =>
     registrationMode,
   }) as Event;
 
-function renderCard(card: ReactNode) {
-  return render(
-    <SWRConfig value={{ fetcher, provider: () => new Map() }}>
-      {card}
-    </SWRConfig>,
-  );
+function renderCard(card: ReactElement) {
+  return renderWithSwr(card, { fetcher });
 }
 
 /* 42 going out of 60 seats: both numbers, and the "42/60" the cards compose
