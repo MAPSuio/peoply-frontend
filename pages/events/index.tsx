@@ -11,6 +11,9 @@ import QueryState from "../../components/QueryState";
 import GridCompactIcon from "../../components/svgs/GridCompactIcon";
 import GridLargeIcon from "../../components/svgs/GridLargeIcon";
 import SearchIcon from "../../components/svgs/SearchIcon";
+import FilterOptionPanel, {
+  type FilterPanelCopy,
+} from "../../components/events/FilterOptionPanel";
 import useBack from "../../hooks/useBack";
 import {
   MAX_PAGE_SIZE,
@@ -24,6 +27,11 @@ import {
   type Organization,
 } from "../../types/types";
 import { getEventArrangerDisplayItems } from "../../utils/eventArrangers";
+import {
+  matchingOptions,
+  normalizeSearchValue,
+  sortedUniqueOptions,
+} from "../../utils/filterOptions";
 import { queryToString } from "../../utils/functions";
 
 import styles from "../../styles/EventsPage.module.scss";
@@ -32,11 +40,6 @@ interface EventMonthGroup {
   key: string;
   label: string;
   events: Event[];
-}
-
-interface FilterOption<T> {
-  value: T;
-  label: string;
 }
 
 const COMPACT_GRID_STORAGE_KEY = "eventsCompactGrid";
@@ -51,13 +54,19 @@ function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-function normalizeSearchValue(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-}
+const ORGANIZATION_FILTER: FilterPanelCopy = {
+  inputId: "organizationFilter",
+  label: "Foreninger",
+  searchPlaceholder: "Søk etter forening",
+  noMatchesText: "Ingen foreninger matcher søket.",
+};
+
+const CATEGORY_FILTER: FilterPanelCopy = {
+  inputId: "categoryFilter",
+  label: "Arrangementstype",
+  searchPlaceholder: "Søk etter type",
+  noMatchesText: "Ingen typer matcher søket.",
+};
 
 const Events: NextPage = () => {
   const router = useRouter();
@@ -137,69 +146,34 @@ const Events: NextPage = () => {
   );
   const { data: categories } = useSWR<Category[]>("/categories");
 
-  const organizationOptions = useMemo(() => {
-    const uniqueOrganizations = (organizations ?? []).reduce<
-      FilterOption<string>[]
-    >((allOrganizations, organization) => {
-      if (
-        allOrganizations.some((existing) => existing.value === organization.id)
-      ) {
-        return allOrganizations;
-      }
+  const organizationOptions = useMemo(
+    () =>
+      sortedUniqueOptions(
+        (organizations ?? []).map(({ id, name }) => ({
+          value: id,
+          label: name,
+        })),
+      ),
+    [organizations],
+  );
 
-      allOrganizations.push({
-        value: organization.id,
-        label: organization.name,
-      });
-      return allOrganizations;
-    }, []);
+  const categoryOptions = useMemo(
+    () =>
+      sortedUniqueOptions(
+        (categories ?? []).map(({ id, name }) => ({ value: id, label: name })),
+      ),
+    [categories],
+  );
 
-    return uniqueOrganizations.sort((a, b) =>
-      a.label.localeCompare(b.label, "nb-NO"),
-    );
-  }, [organizations]);
+  const visibleOrganizationOptions = useMemo(
+    () => matchingOptions(organizationOptions, organizationSearch),
+    [organizationOptions, organizationSearch],
+  );
 
-  const categoryOptions = useMemo(() => {
-    const uniqueCategories = (categories ?? []).reduce<FilterOption<number>[]>(
-      (allCategories, category) => {
-        if (allCategories.some((existing) => existing.value === category.id)) {
-          return allCategories;
-        }
-
-        allCategories.push({ value: category.id, label: category.name });
-        return allCategories;
-      },
-      [],
-    );
-
-    return uniqueCategories.sort((a, b) =>
-      a.label.localeCompare(b.label, "nb-NO"),
-    );
-  }, [categories]);
-
-  const visibleOrganizationOptions = useMemo(() => {
-    const normalizedSearch = normalizeSearchValue(organizationSearch);
-
-    if (!normalizedSearch) {
-      return organizationOptions;
-    }
-
-    return organizationOptions.filter((organization) =>
-      normalizeSearchValue(organization.label).includes(normalizedSearch),
-    );
-  }, [organizationOptions, organizationSearch]);
-
-  const visibleCategoryOptions = useMemo(() => {
-    const normalizedSearch = normalizeSearchValue(categorySearch);
-
-    if (!normalizedSearch) {
-      return categoryOptions;
-    }
-
-    return categoryOptions.filter((category) =>
-      normalizeSearchValue(category.label).includes(normalizedSearch),
-    );
-  }, [categoryOptions, categorySearch]);
+  const visibleCategoryOptions = useMemo(
+    () => matchingOptions(categoryOptions, categorySearch),
+    [categoryOptions, categorySearch],
+  );
 
   const selectedOrganizations = useMemo(
     () =>
@@ -446,98 +420,27 @@ const Events: NextPage = () => {
           )}
 
           {openFilterPanel === "organizations" && (
-            <div className={styles.optionList}>
-              <div className={styles.filterPanelHeader}>
-                <label
-                  className={styles.filterLabel}
-                  htmlFor="organizationFilter"
-                >
-                  Foreninger
-                </label>
-                <span className={styles.panelMeta}>
-                  {selectedOrganizationIds.length} valgt
-                </span>
-              </div>
-              <input
-                id="organizationFilter"
-                className={styles.searchInput}
-                type="text"
-                value={organizationSearch}
-                onChange={(event) => setOrganizationSearch(event.target.value)}
-                placeholder="Søk etter forening"
-              />
-              <div className={styles.optionTags}>
-                {visibleOrganizationOptions.map((organization) => {
-                  const isSelected = selectedOrganizationIds.includes(
-                    organization.value,
-                  );
-
-                  return (
-                    <button
-                      key={organization.value}
-                      type="button"
-                      className={`${styles.optionButton} ${
-                        isSelected ? styles.optionButtonSelected : ""
-                      }`}
-                      onClick={() => toggleOrganization(organization.value)}
-                    >
-                      {organization.label}
-                    </button>
-                  );
-                })}
-                {visibleOrganizationOptions.length === 0 && (
-                  <p className={styles.noOptionsText}>
-                    Ingen foreninger matcher søket.
-                  </p>
-                )}
-              </div>
-            </div>
+            <FilterOptionPanel
+              copy={ORGANIZATION_FILTER}
+              options={visibleOrganizationOptions}
+              selectedCount={selectedOrganizationIds.length}
+              search={organizationSearch}
+              onSearchChange={setOrganizationSearch}
+              isSelected={(id) => selectedOrganizationIds.includes(id)}
+              onToggle={toggleOrganization}
+            />
           )}
 
           {openFilterPanel === "categories" && (
-            <div className={styles.optionList}>
-              <div className={styles.filterPanelHeader}>
-                <label className={styles.filterLabel} htmlFor="categoryFilter">
-                  Arrangementstype
-                </label>
-                <span className={styles.panelMeta}>
-                  {selectedCategoryIds.length} valgt
-                </span>
-              </div>
-              <input
-                id="categoryFilter"
-                className={styles.searchInput}
-                type="text"
-                value={categorySearch}
-                onChange={(event) => setCategorySearch(event.target.value)}
-                placeholder="Søk etter type"
-              />
-              <div className={styles.optionTags}>
-                {visibleCategoryOptions.map((category) => {
-                  const isSelected = selectedCategoryIds.includes(
-                    category.value,
-                  );
-
-                  return (
-                    <button
-                      key={category.value}
-                      type="button"
-                      className={`${styles.optionButton} ${
-                        isSelected ? styles.optionButtonSelected : ""
-                      }`}
-                      onClick={() => toggleCategory(category.value)}
-                    >
-                      {category.label}
-                    </button>
-                  );
-                })}
-                {visibleCategoryOptions.length === 0 && (
-                  <p className={styles.noOptionsText}>
-                    Ingen typer matcher søket.
-                  </p>
-                )}
-              </div>
-            </div>
+            <FilterOptionPanel
+              copy={CATEGORY_FILTER}
+              options={visibleCategoryOptions}
+              selectedCount={selectedCategoryIds.length}
+              search={categorySearch}
+              onSearchChange={setCategorySearch}
+              isSelected={(id) => selectedCategoryIds.includes(id)}
+              onToggle={toggleCategory}
+            />
           )}
         </div>
 
