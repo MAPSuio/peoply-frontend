@@ -16,9 +16,8 @@ import EditIcon from "../../../components/svgs/EditIcon";
 import PlusIcon from "../../../components/svgs/PlusIcon";
 import TrashIcon from "../../../components/svgs/TrashIcon";
 import useBack from "../../../hooks/useBack";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
-import useUser from "../../../hooks/useUser";
 import { ApiError, apiErrorMessage } from "../../../services/apiError";
 import {
   fetchFromPeoplyApi,
@@ -30,6 +29,7 @@ import {
   ButtonType,
   type Popup,
   SnackTypes,
+  type User,
 } from "../../../types/types";
 import { isAdmin } from "../../../utils/admin";
 import {
@@ -236,9 +236,7 @@ function PopupCard({
   );
 }
 
-const PopupScheduler: NextPage = () => {
-  const { user, loading } = useUser();
-  const redirectToLogin = useRedirectToLogin();
+const PopupSchedule = ({ user }: { user: User }) => {
   const router = useRouter();
   const goBack = useBack();
   const { addSnack } = useSnack();
@@ -246,8 +244,8 @@ const PopupScheduler: NextPage = () => {
   const [deletePopup, setDeletePopup] = useState<Popup>();
 
   useEffect(() => {
-    if (!loading && user && !isAdmin(user)) router.replace("/me");
-  }, [loading, router, user]);
+    if (!isAdmin(user)) router.replace("/me");
+  }, [router, user]);
 
   const query = useSWR<Popup[]>(
     user && isAdmin(user) ? "/popups" : null,
@@ -328,11 +326,6 @@ const PopupScheduler: NextPage = () => {
     }
   };
 
-  if (loading) return null;
-  if (!user) {
-    redirectToLogin();
-    return null;
-  }
   if (!isAdmin(user)) return null;
 
   return (
@@ -477,5 +470,9 @@ const PopupScheduler: NextPage = () => {
     </>
   );
 };
+
+const PopupScheduler: NextPage = () => (
+  <RequireUser>{(user) => <PopupSchedule user={user} />}</RequireUser>
+);
 
 export default PopupScheduler;

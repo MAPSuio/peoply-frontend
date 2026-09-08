@@ -8,25 +8,24 @@ import Button from "../../../components/Button";
 import TextInputLong from "../../../components/inputs/TextInputLong";
 import MenuModal from "../../../components/MenuModal";
 import useBack from "../../../hooks/useBack";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import { ApiError } from "../../../services/apiError";
 import { fetchFromPeoplyApiJson } from "../../../services/fetchers";
-import { type Organization, SnackTypes } from "../../../types/types";
+import { type Organization, SnackTypes, type User } from "../../../types/types";
 import styles from "../../../styles/EditProfile.module.scss";
 import EditProfileImageMenu from "../../../components/EditProfileImageMenu";
 import TextInput from "../../../components/inputs/TextInput";
 
-const EditOrgProfile: NextPage = () => {
+const EditOrganizationForm = ({ user }: { user: User }) => {
   const goBack = useBack();
   const [editImage, setEditImage] = useState(false);
-  const { user, loading, reload } = useUser();
+  const { reload } = useUser();
   const [description, setDescription] = useState("");
   const [urlId, setUrlId] = useState("");
   const [validUrlId, setValidUrlId] = useState(true); // true by default because we don't want to show an error before the user has typed anything
   const [validEdit, setValidEdit] = useState(false);
-  const redirectToLogin = useRedirectToLogin();
   const router = useRouter();
   const { oid } = router.query;
 
@@ -58,12 +57,7 @@ const EditOrgProfile: NextPage = () => {
     }
   }, [urlId, description, org, validUrlId]);
 
-  if (!loading && !user) {
-    redirectToLogin();
-  }
-
   if (!org) return <></>;
-  if (!user) return <></>;
 
   const handleEditImageModalClose = () => {
     setEditImage(false);
@@ -159,5 +153,9 @@ const EditOrgProfile: NextPage = () => {
     </div>
   );
 };
+
+const EditOrgProfile: NextPage = () => (
+  <RequireUser>{(user) => <EditOrganizationForm user={user} />}</RequireUser>
+);
 
 export default EditOrgProfile;

@@ -7,50 +7,43 @@ import TextInputLong from "../../components/inputs/TextInputLong";
 import MenuModal from "../../components/MenuModal";
 import Button from "../../components/Button";
 import useBack from "../../hooks/useBack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import RequireUser from "../../components/RequireUser";
 import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditProfile.module.scss";
-import { FoodPreference, SnackTypes } from "../../types/types";
+import { FoodPreference, SnackTypes, type User } from "../../types/types";
 import Dropdown from "../../components/Dropdown";
 import CategoryInput from "../../components/inputs/CategoryInput";
 import useSWR from "swr";
 
-const EditProfile: NextPage = () => {
+const EditProfileForm = ({ user }: { user: User }) => {
   const goBack = useBack();
   const [editImage, setEditImage] = useState(false);
-  const { user, loading, reload } = useUser();
+  const { reload } = useUser();
   const [description, setDescription] = useState("");
   const [foodPreference, setFoodPreference] = useState<FoodPreference | null>(
     null,
   );
   const [activeAllergens, setActiveAllergens] = useState<number[]>([]);
-  const redirectToLogin = useRedirectToLogin();
 
   const { data: allergens } =
     useSWR<{ id: number; name: string }[]>("/allergens");
 
   const { addSnack } = useSnack();
   useEffect(() => {
-    if (user?.description) {
+    if (user.description) {
       setDescription(user.description);
     }
-    if (user?.foodPreference) {
+    if (user.foodPreference) {
       setFoodPreference(user.foodPreference);
     }
-    if (user?.userAllergens && user?.userAllergens?.length > 0) {
+    if (user.userAllergens && user.userAllergens.length > 0) {
       setActiveAllergens(
-        user?.userAllergens?.map((allergen) => allergen.allergenId),
+        user.userAllergens.map((allergen) => allergen.allergenId),
       );
     }
   }, [user]);
-
-  if (!loading && !user) {
-    redirectToLogin();
-  }
-
-  if (!user) return <></>;
 
   const handleEditImageModalClose = () => {
     setEditImage(false);
@@ -107,12 +100,12 @@ const EditProfile: NextPage = () => {
   }
 
   const validDescriptionEdit =
-    !(!user?.description && description === "") && // user.desc might be null if user has not edited yet - meaning we should not show confirm button
-    user?.description !== description;
+    !(!user.description && description === "") && // user.desc might be null if user has not edited yet - meaning we should not show confirm button
+    user.description !== description;
   const validFoodPreferenceEdit =
-    foodPreference && user?.foodPreference !== foodPreference;
+    foodPreference && user.foodPreference !== foodPreference;
   const validAllergenEdit =
-    activeAllergens.length !== user?.userAllergens?.length;
+    activeAllergens.length !== user.userAllergens?.length;
   const validEdit =
     validDescriptionEdit || validFoodPreferenceEdit || validAllergenEdit;
 
@@ -182,5 +175,9 @@ const EditProfile: NextPage = () => {
     </div>
   );
 };
+
+const EditProfile: NextPage = () => (
+  <RequireUser>{(user) => <EditProfileForm user={user} />}</RequireUser>
+);
 
 export default EditProfile;

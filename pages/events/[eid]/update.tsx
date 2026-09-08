@@ -12,9 +12,8 @@ import PublicIcon from "../../../components/svgs/PublicIcon";
 import UserCheck from "../../../components/svgs/UserCheck";
 import UserCheckLight from "../../../components/svgs/UserCheckLight";
 import useBack from "../../../hooks/useBack";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
-import useUser from "../../../hooks/useUser";
 import { useTheme } from "next-themes";
 import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/UpdateEvent.module.scss";
@@ -24,9 +23,8 @@ import {
   EventUpdateVisibility,
 } from "../../../types/types";
 
-export default function UpdateEvent() {
+function EventUpdateForm() {
   const goBack = useBack();
-  const { user, loading } = useUser();
   const { addSnack } = useSnack();
   const router = useRouter();
   const { theme } = useTheme();
@@ -44,11 +42,6 @@ export default function UpdateEvent() {
   const [visibility, setVisibility] = useState<EventUpdateVisibility>(
     EventUpdateVisibility.ALL,
   );
-  const redirectToLogin = useRedirectToLogin();
-
-  if (loading) {
-    return <></>;
-  }
 
   if (eventError) {
     addSnack("Kunne ikke hente arrangementet", SnackTypes.ERROR);
@@ -76,14 +69,9 @@ export default function UpdateEvent() {
     goBack();
   };
 
-  if (!user) {
-    redirectToLogin();
-    return <></>;
-  }
-
   const validEdit = subjectValid && contentValid && replyToMailValid;
 
-  if (user && event) {
+  if (event) {
     return (
       <>
         <HeadComponent
@@ -193,4 +181,8 @@ export default function UpdateEvent() {
     );
   }
   return <></>;
+}
+
+export default function UpdateEvent() {
+  return <RequireUser>{() => <EventUpdateForm />}</RequireUser>;
 }

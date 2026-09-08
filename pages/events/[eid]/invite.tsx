@@ -13,7 +13,7 @@ import useBack from "../../../hooks/useBack";
 import useRedirectWithReason, {
   blockingReason,
 } from "../../../hooks/useRedirectWithReason";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
 import useUser from "../../../hooks/useUser";
 import {
@@ -31,9 +31,9 @@ import {
 } from "../../../types/types";
 import { getOrganizationRolePrivilege } from "../../../utils/functions";
 
-export default function InviteUsersToEvent() {
+function EventInviteForm({ user }: { user: User }) {
   const goBack = useBack();
-  const { user, loading, orgs } = useUser();
+  const { orgs } = useUser();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const { addSnack } = useSnack();
   const router = useRouter();
@@ -41,17 +41,15 @@ export default function InviteUsersToEvent() {
   const { data: event, error: eventError } = useSWR<Event>(() =>
     eid ? `/events/${eid}` : false,
   );
-  const redirectToLogin = useRedirectToLogin();
   const [orgArrangerId, setOrgArrangerId] = useState<string | undefined>(
     undefined,
   );
 
   const validArrangersOptions = (() => {
-    if (!user) return [];
     const validArrangers = orgs?.filter((org) => {
       const userRoleInOrganization = org.organizationRoles.find((userRole) => {
         return (
-          userRole.userId === user?.id &&
+          userRole.userId === user.id &&
           getOrganizationRolePrivilege(userRole.role) >
             getOrganizationRolePrivilege(OrganizationRole.MEMBER)
         );
@@ -82,7 +80,7 @@ export default function InviteUsersToEvent() {
   };
 
   async function inviteOrgMembers() {
-    if (!event || !user || !orgArrangerId) return;
+    if (!event || !orgArrangerId) return;
 
     const org = orgs?.find((org) => org.arrangerId === orgArrangerId);
     const members = await fetchFromPeoplyApiJson(
@@ -104,7 +102,7 @@ export default function InviteUsersToEvent() {
   }
 
   useRedirectWithReason({
-    reason: blockingReason(!loading && Boolean(user), [
+    reason: blockingReason(true, [
       {
         blocked: Boolean(eventError),
         reason: "Kunne ikke hente arrangementet",
@@ -112,10 +110,6 @@ export default function InviteUsersToEvent() {
     ]),
     to: `/events/${eid}`,
   });
-
-  if (loading) {
-    return <></>;
-  }
 
   const onSubmit = async () => {
     if (selectedUsers.length) {
@@ -135,12 +129,7 @@ export default function InviteUsersToEvent() {
     }
   };
 
-  if (!user) {
-    redirectToLogin();
-    return <></>;
-  }
-
-  if (user && event) {
+  if (event) {
     return (
       <>
         <HeadComponent
@@ -212,4 +201,8 @@ export default function InviteUsersToEvent() {
     );
   }
   return <></>;
+}
+
+export default function InviteUsersToEvent() {
+  return <RequireUser>{(user) => <EventInviteForm user={user} />}</RequireUser>;
 }

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
@@ -7,11 +7,10 @@ import CloseIcon from "../../../components/svgs/CloseIcon";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useOrganization from "../../../hooks/useOrganization";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
 import { inviteBlockedReason } from "../../../utils/organizationAccess";
 import useSnack from "../../../hooks/useSnack";
-import useUser from "../../../hooks/useUser";
 import { fetchFromPeoplyApi } from "../../../services/fetchers";
 import styles from "../../../styles/InviteMembersToOrg.module.scss";
 import {
@@ -21,10 +20,8 @@ import {
   type User,
 } from "../../../types/types";
 
-export default function InviteMembersToOrg() {
+function InviteForm() {
   const goBack = useBack();
-  const redirectToLogin = useRedirectToLogin();
-  const { user, loading } = useUser();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const { addSnack } = useSnack();
   const router = useRouter();
@@ -37,12 +34,6 @@ export default function InviteMembersToOrg() {
     error: organizationError,
   } = useOrganization(oid as string);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      redirectToLogin();
-    }
-  }, [loading, redirectToLogin, user]);
-
   const onUserSelect = (user: User) => {
     setSelectedUsers([...selectedUsers, user]);
   };
@@ -53,15 +44,15 @@ export default function InviteMembersToOrg() {
 
   useRedirectWithReason({
     reason: inviteBlockedReason({
-      loading: loading || organizationsLoading,
-      signedIn: Boolean(user),
+      loading: organizationsLoading,
+      signedIn: true,
       isAdminOrOwner,
       fetchFailed: Boolean(organizationError),
     }),
     to: `/orgs/${oid}`,
   });
 
-  if (loading || organizationsLoading) {
+  if (organizationsLoading) {
     return <></>;
   }
 
@@ -88,7 +79,7 @@ export default function InviteMembersToOrg() {
     }
   };
 
-  if (user && organizationUsers && organization) {
+  if (organizationUsers && organization) {
     return (
       <>
         <HeadComponent
@@ -135,4 +126,8 @@ export default function InviteMembersToOrg() {
     );
   }
   return <></>;
+}
+
+export default function InviteMembersToOrg() {
+  return <RequireUser>{() => <InviteForm />}</RequireUser>;
 }

@@ -1,5 +1,4 @@
 import Link from "../../../../components/Link";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import BackButton from "../../../../components/BackButton";
@@ -15,18 +14,15 @@ import HeadComponent from "../../../../components/HeadComponent";
 import { getOrganizationRolePrivilege } from "../../../../utils/functions";
 import useOrganization from "../../../../hooks/useOrganization";
 import EditIcon from "../../../../components/svgs/EditIcon";
-import useRedirectToLogin from "../../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../../components/RequireUser";
 import useRedirectWithReason from "../../../../hooks/useRedirectWithReason";
 import { memberListBlockedReason } from "../../../../utils/organizationAccess";
-import useUser from "../../../../hooks/useUser";
 
-export default function Members() {
+function MemberList() {
   const router = useRouter();
-  const redirectToLogin = useRedirectToLogin();
   const { oid } = router.query;
   const organizationPageUrl = `/orgs/${oid}`;
   const goBack = useBack(organizationPageUrl);
-  const { user, loading: userLoading } = useUser();
   const {
     organization,
     organizationUsers,
@@ -36,16 +32,10 @@ export default function Members() {
     loading: organizationLoading,
   } = useOrganization(oid as string);
 
-  useEffect(() => {
-    if (!userLoading && !user) {
-      redirectToLogin();
-    }
-  }, [redirectToLogin, user, userLoading]);
-
   useRedirectWithReason({
     reason: memberListBlockedReason({
       loading: organizationLoading,
-      signedIn: Boolean(user),
+      signedIn: true,
       hasMembers: Boolean(organizationUsers),
       forbidden: membersForbidden,
     }),
@@ -88,12 +78,7 @@ export default function Members() {
       );
     });
 
-  if (
-    userLoading ||
-    organizationLoading ||
-    !organization ||
-    !organizationUsers
-  ) {
+  if (organizationLoading || !organization || !organizationUsers) {
     return <></>;
   }
 
@@ -136,4 +121,8 @@ export default function Members() {
       </div>
     </>
   );
+}
+
+export default function Members() {
+  return <RequireUser>{() => <MemberList />}</RequireUser>;
 }

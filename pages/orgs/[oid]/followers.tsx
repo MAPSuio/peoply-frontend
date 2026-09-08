@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import BackButton from "../../../components/BackButton";
@@ -10,9 +9,8 @@ import useBack from "../../../hooks/useBack";
 import useRedirectWithReason from "../../../hooks/useRedirectWithReason";
 import { followerListBlockedReason } from "../../../utils/organizationAccess";
 import useOrganization from "../../../hooks/useOrganization";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
-import useUser from "../../../hooks/useUser";
 import {
   Alignment,
   type ArrangerFollower,
@@ -20,12 +18,10 @@ import {
 } from "../../../types/types";
 import styles from "../../../styles/OrgFollowers.module.scss";
 
-const OrgFollowers = () => {
+const FollowerList = () => {
   const goBack = useBack();
   const router = useRouter();
-  const redirectToLogin = useRedirectToLogin();
   const { addSnack } = useSnack();
-  const { user, loading: userLoading } = useUser();
   const { oid } = router.query;
   const {
     organization,
@@ -37,21 +33,15 @@ const OrgFollowers = () => {
   const { data: followersData, error: followersError } = useSWR<
     ArrangerFollower[]
   >(
-    user && isAdminOrOwner && organization
+    isAdminOrOwner && organization
       ? `/organizations/${organization.id}/followers`
       : null,
   );
 
-  useEffect(() => {
-    if (!userLoading && !user) {
-      redirectToLogin();
-    }
-  }, [redirectToLogin, user, userLoading]);
-
   useRedirectWithReason({
     reason: followerListBlockedReason({
       loading: organizationLoading,
-      signedIn: Boolean(user),
+      signedIn: true,
       hasOrganization: Boolean(organization),
       isAdminOrOwner,
       fetchFailed: Boolean(organizationError),
@@ -59,7 +49,7 @@ const OrgFollowers = () => {
     to: `/orgs/${oid}`,
   });
 
-  if (userLoading || organizationLoading || !organization || !followersData) {
+  if (organizationLoading || !organization || !followersData) {
     return <></>;
   }
 
@@ -94,5 +84,7 @@ const OrgFollowers = () => {
     </>
   );
 };
+
+const OrgFollowers = () => <RequireUser>{() => <FollowerList />}</RequireUser>;
 
 export default OrgFollowers;
