@@ -1,6 +1,7 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SWRConfig } from "swr";
+
+import { renderWithSwr } from "./support/swr";
 
 import useRegistrationCount from "../hooks/useRegistrationCount";
 import { type Event, EventRegistrationMode } from "../types/types";
@@ -30,18 +31,13 @@ function renderHook(
   event?: Pick<Event, "id" | "goingCount" | "registrationMode">,
   forDisplay?: boolean,
 ) {
-  return render(
-    /* `provider` gives each test its own cache, otherwise the first test's
-       entry for an event id would satisfy the next one's render. */
-    /* focusThrottleInterval 0: SWR's 5s focus throttle would otherwise
-       swallow the dispatched focus events and let the focus tests pass
-       whether or not the hook opts out of focus revalidation. */
-    <SWRConfig
-      value={{ fetcher, provider: () => new Map(), focusThrottleInterval: 0 }}
-    >
-      <Consumer event={event} forDisplay={forDisplay} />
-    </SWRConfig>,
-  );
+  /* focusThrottleInterval 0: SWR's 5s focus throttle would otherwise swallow
+     the dispatched focus events and let the focus tests pass whether or not
+     the hook opts out of focus revalidation. */
+  return renderWithSwr(<Consumer event={event} forDisplay={forDisplay} />, {
+    fetcher,
+    focusThrottleInterval: 0,
+  });
 }
 
 describe("useRegistrationCount", () => {

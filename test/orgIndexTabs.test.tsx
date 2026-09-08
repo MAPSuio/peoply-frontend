@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ReactElement, ReactNode } from "react";
-import { SWRConfig } from "swr";
+import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import OrganizationPage from "../pages/orgs/[oid]/index";
 import type { Organization, UserOrganizationRoles } from "../types/types";
@@ -56,13 +57,10 @@ const membership = {
   user: { id: "user-1" },
 } as UserOrganizationRoles;
 
-function renderPage(): ReturnType<typeof render> {
-  const page = (
-    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
-      <OrganizationPage organization={organization} />
-    </SWRConfig>
-  ) as ReactElement;
-  return render(page);
+function renderPage() {
+  return renderWithSwr(<OrganizationPage organization={organization} />, {
+    dedupingInterval: 0,
+  });
 }
 
 describe("organization page tabs", () => {
