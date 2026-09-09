@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "./locale";
 import {
   InputPages,
   CircleLabels,
@@ -8,8 +9,6 @@ import {
 import type { ParsedUrlQuery } from "querystring";
 
 import React from "react";
-
-const DISPLAY_LOCALE = "no-NO";
 
 function formatDisplayDate(date: Date, options: Intl.DateTimeFormatOptions) {
   return date.toLocaleString(DISPLAY_LOCALE, options);
@@ -109,32 +108,32 @@ function formatEventDate(
 ): string {
   if (format === EventDateFormat.SHORT) {
     if (endDate && !sameDate(startDate, endDate)) {
-      return `${startDate.toLocaleString("no-NO", {
+      return `${startDate.toLocaleString(DISPLAY_LOCALE, {
         weekday: "short",
         month: "short",
         day: "2-digit",
-      })}–${endDate.toLocaleString("no-NO", {
+      })}–${endDate.toLocaleString(DISPLAY_LOCALE, {
         month: "short",
         day: "2-digit",
       })}`.toUpperCase();
     } else {
       if (isToday(startDate)) {
-        return `I dag ${startDate.toLocaleString("no-NO", {
+        return `I dag ${startDate.toLocaleString(DISPLAY_LOCALE, {
           hour: "2-digit",
           minute: "2-digit",
         })}`.toUpperCase();
       } else if (isTomorrow(startDate)) {
-        return `I morgen ${startDate.toLocaleString("no-NO", {
+        return `I morgen ${startDate.toLocaleString(DISPLAY_LOCALE, {
           hour: "2-digit",
           minute: "2-digit",
         })}`.toUpperCase();
       }
 
-      return `${startDate.toLocaleString("no-NO", {
+      return `${startDate.toLocaleString(DISPLAY_LOCALE, {
         weekday: "short",
         month: "short",
         day: "2-digit",
-      })} KL. ${startDate.toLocaleString("no-NO", {
+      })} KL. ${startDate.toLocaleString(DISPLAY_LOCALE, {
         hour: "2-digit",
         minute: "2-digit",
       })}`.toUpperCase();
@@ -157,7 +156,7 @@ function formatFollowedDate(dateString: string): string {
     return "I går";
   }
 
-  return `${date.toLocaleString("no-NO", {
+  return `${date.toLocaleString(DISPLAY_LOCALE, {
     month: "short",
     day: "2-digit",
   })}`;
@@ -693,7 +692,7 @@ function getTimeSinceString(date: Date) {
   } else if (diffInHours < 10) {
     return diffInHours > 1 ? `${diffInHours} timer siden` : "1 time siden";
   } else {
-    return `${date.toLocaleDateString("nb")} ${"  "} ${getTimeStringFromDate(
+    return `${date.toLocaleDateString(DISPLAY_LOCALE)} ${"  "} ${getTimeStringFromDate(
       date,
     )}`;
   }

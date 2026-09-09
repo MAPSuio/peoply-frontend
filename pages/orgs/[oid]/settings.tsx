@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../../../utils/locale";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { type ChangeEvent, useEffect, useState } from "react";
@@ -151,7 +152,7 @@ const OrganizationSettings: NextPage = () => {
       return "Ikke kjørt ennå";
     }
 
-    return new Date(value).toLocaleString("nb-NO");
+    return new Date(value).toLocaleString(DISPLAY_LOCALE);
   };
 
   const getRegistrationModeLabel = (mode?: EventRegistrationMode) => {

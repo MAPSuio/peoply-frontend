@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "./locale";
 import { ApiError } from "../services/apiError";
 
 /** The popup a rejected interval collided with, as the API reports it. */
@@ -46,11 +47,11 @@ export function popupConflict(error: unknown): PopupConflict | undefined {
   return { id, title, startsAt, endsAt };
 }
 
-const dayMonthFormatter = new Intl.DateTimeFormat("nb-NO", {
+const dayMonthFormatter = new Intl.DateTimeFormat(DISPLAY_LOCALE, {
   day: "numeric",
   month: "short",
 });
-const fullDateFormatter = new Intl.DateTimeFormat("nb-NO", {
+const fullDateFormatter = new Intl.DateTimeFormat(DISPLAY_LOCALE, {
   day: "numeric",
   month: "short",
   year: "numeric",
