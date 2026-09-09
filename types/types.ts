@@ -1,3 +1,5 @@
+import type { LocationSearchResult } from "./locationSearch";
+
 export enum OrganizationRole {
   ADMIN = "ADMIN",
   MEMBER = "MEMBER",
@@ -626,4 +628,47 @@ export interface OrganizationAnalytics {
     coreAudienceCount: number;
     attendeeFollowerRate: number | null;
   };
+}
+
+export interface ArrangerOption {
+  value: string;
+  label: string;
+  organization?: Organization;
+  user?: User;
+}
+
+export interface EventObjectProps {
+  eventTitle: string;
+  eventArrangerId: string;
+  eventCoOrganizerOrganizationIds: string[];
+  eventDescription: string;
+  eventLocationName: string;
+  eventLocation?: LocationSearchResult;
+  eventRegStartDate: string;
+  eventRegStartTime: string;
+  eventRegEndDate: string;
+  eventRegEndTime: string;
+  eventHasRegStart: boolean;
+  eventHasRegEnd: boolean;
+  eventDateStart: string;
+  eventDateEnd: string | null;
+  eventHasDateEnd: boolean;
+  eventTimeStart: string;
+  eventTimeEnd: string | null;
+  eventActiveCategories: number[];
+  eventVisibility: Visibility;
+  eventHasCapacity: boolean;
+  eventCapacity: string;
+  eventHasFood: boolean;
+  eventHasExternalRegistration: boolean;
+  eventExternalUrl: string;
+  eventHasFormQuestion: boolean;
+  eventFormQuestion?: string;
+  eventExtraInfoValid: boolean;
+  eventImage?: File;
+  eventImageValid: boolean;
+  currentStep: number;
+  imageStorageKey: string;
+  reachedStep: number;
+  imageCached: ImageCaching;
 }

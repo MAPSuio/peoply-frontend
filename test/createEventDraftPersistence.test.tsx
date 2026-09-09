@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, readdirSync } from "node:fs";
+import { extname, join, relative } from "node:path";
 
 import { act, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -78,15 +78,27 @@ describe("the create-event draft in localStorage", () => {
   });
 });
 
-describe("the draft writer", () => {
-  const source = readFileSync(
-    join(__dirname, "..", "hooks", "useCreateEventForm.ts"),
-    "utf8",
-  );
+const DRAFT_STORAGE = join("hooks", "createEvent", "eventDraft.ts");
 
-  it("is reached through patchEvent alone", () => {
-    const calls = source.match(/(?<!function )updateLocalStorage\(/g) ?? [];
+const DRAFT_STORAGE_KEY = /localStorage\.\w+\(\s*"event(?:Object|Image)"/;
 
-    expect(calls).toHaveLength(1);
+function sourceFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) return sourceFiles(path);
+    return [".ts", ".tsx"].includes(extname(entry.name)) ? [path] : [];
+  });
+}
+
+describe("the create-event draft in storage", () => {
+  it("is read and written from one module", () => {
+    const projectRoot = join(__dirname, "..");
+    const offenders = ["components", "pages", "hooks"]
+      .flatMap((directory) => sourceFiles(join(projectRoot, directory)))
+      .filter((path) => DRAFT_STORAGE_KEY.test(readFileSync(path, "utf8")))
+      .map((path) => relative(projectRoot, path))
+      .filter((path) => path !== DRAFT_STORAGE);
+
+    expect(offenders).toEqual([]);
   });
 });
