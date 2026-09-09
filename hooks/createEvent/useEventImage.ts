@@ -1,24 +1,23 @@
-import type { ChangeEvent } from "react";
+import { type ChangeEvent, useRef } from "react";
 
 import { ImageCaching } from "../../types/types";
 import {
-  IMAGE_CACHE_LIMIT_BYTES,
   type EventObjectProps,
+  IMAGE_CACHE_LIMIT_BYTES,
   clearStoredImage,
   readStoredImage,
   writeStoredImage,
 } from "./eventDraft";
 import type { EventDraft } from "./useEventDraft";
 
-function cacheImage(file: File): Promise<void> {
+function readDataUrl(file: File): Promise<string | null> {
   return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      if (typeof reader.result === "string") {
-        writeStoredImage(reader.result);
-      }
-      resolve();
-    });
+    reader.addEventListener("load", () =>
+      resolve(typeof reader.result === "string" ? reader.result : null),
+    );
+    reader.addEventListener("error", () => resolve(null));
+    reader.addEventListener("abort", () => resolve(null));
     reader.readAsDataURL(file);
   });
 }
@@ -33,31 +32,49 @@ export default function useEventImage({
   patchEventWithoutStoring,
   replaceEvent,
 }: EventDraft) {
-  const storeImage = (file: File) => {
+  const latestPick = useRef(0);
+
+  const cacheImage = async (file: File) => {
+    const pick = latestPick.current;
+
     if (file.size > IMAGE_CACHE_LIMIT_BYTES) {
-      patchEventWithoutStoring({
-        imageCached: ImageCaching.PREEMPTIVE_MESSAGE,
-      });
       clearStoredImage();
-      return;
+      return ImageCaching.PREEMPTIVE_MESSAGE;
     }
 
-    patchEventWithoutStoring({ imageCached: ImageCaching.OK });
-    cacheImage(file);
+    const dataUrl = await readDataUrl(file);
+
+    if (pick !== latestPick.current) {
+      return null;
+    }
+
+    if (!dataUrl) {
+      clearStoredImage();
+      return ImageCaching.PREEMPTIVE_MESSAGE;
+    }
+
+    writeStoredImage(dataUrl);
+    return ImageCaching.OK;
   };
 
-  const updateEventImage = (e: ChangeEvent<HTMLInputElement>) => {
+  const updateEventImage = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
       return;
     }
 
-    storeImage(file);
+    latestPick.current += 1;
     patchEvent({
       eventImage: file,
       eventImageValid: true,
       imageStorageKey: file.name,
     });
+
+    const imageCached = await cacheImage(file);
+
+    if (imageCached !== null) {
+      patchEventWithoutStoring({ imageCached });
+    }
   };
 
   const restoreImage = async (draft: EventObjectProps) => {

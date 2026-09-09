@@ -25,7 +25,7 @@ export interface StepValidityState {
 
 export default function useStepValidity(
   eventObject: EventObjectProps,
-  categories: Array<{ id: number; name: string }>,
+  categories: Array<{ id: number; name: string }> | undefined,
   { eventImageValid, eventExtraInfoValid }: StepValidityState,
 ) {
   const [eventTitleValid, setEventTitleValid] = useLatchedValidity(
@@ -91,7 +91,7 @@ export default function useStepValidity(
     validDataMap,
     summaryCategories: eventObject.eventActiveCategories.map((categoryId) => ({
       id: categoryId,
-      name: getCategoryText(categories, categoryId),
+      name: getCategoryText(categories ?? [], categoryId),
     })),
   };
 }

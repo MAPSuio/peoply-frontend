@@ -67,7 +67,17 @@ export function writeStoredDraft(draft: EventObjectProps): void {
 
 export function readStoredDraft(): EventObjectProps | null {
   const stored = localStorage.getItem(DRAFT_KEY);
-  return stored ? JSON.parse(stored) : null;
+
+  if (!stored) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(stored);
+  } catch {
+    clearStoredDraft();
+    return null;
+  }
 }
 
 export function clearStoredDraft(): void {
