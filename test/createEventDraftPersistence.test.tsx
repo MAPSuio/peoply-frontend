@@ -55,6 +55,18 @@ describe("the create-event draft in localStorage", () => {
     expect(storedDraft().eventTitle).toBe("Kodekveld");
   });
 
+  it("keeps an explicit validity patch, rather than the step state overwriting it", async () => {
+    await act(async () => {
+      await form.updateEventImage({
+        target: {
+          files: [new File(["x"], "plakat.png", { type: "image/png" })],
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    });
+
+    expect(storedDraft().eventImageValid).toBe(true);
+  });
+
   it("keeps both fields when two land before the next render", () => {
     act(() => {
       form.updateEventTitle(typedInto("Kodekveld"));
@@ -161,7 +173,8 @@ describe("a draft localStorage cannot parse", () => {
 
 const DRAFT_STORAGE = join("hooks", "createEvent", "eventDraft.ts");
 
-const DRAFT_STORAGE_KEY = /localStorage\.\w+\(\s*"event(?:Object|Image)"/;
+const STORES_A_DRAFT_KEY =
+  /(?:local|session)Storage\.\w+\(\s*["'`]event(?:Object|Image)["'`]/;
 
 function sourceFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -172,11 +185,11 @@ function sourceFiles(directory: string): string[] {
 }
 
 describe("the create-event draft in storage", () => {
-  it("is read and written from one module", () => {
+  it("is read and written from one module, whatever the quoting", () => {
     const projectRoot = join(__dirname, "..");
-    const offenders = ["components", "pages", "hooks"]
+    const offenders = ["components", "pages", "hooks", "services", "utils"]
       .flatMap((directory) => sourceFiles(join(projectRoot, directory)))
-      .filter((path) => DRAFT_STORAGE_KEY.test(readFileSync(path, "utf8")))
+      .filter((path) => STORES_A_DRAFT_KEY.test(readFileSync(path, "utf8")))
       .map((path) => relative(projectRoot, path))
       .filter((path) => path !== DRAFT_STORAGE);
 

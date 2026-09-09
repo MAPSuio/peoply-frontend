@@ -38,7 +38,7 @@ export default function useEventDraft(
   const writeEvent = (nextEventObject: EventObjectProps) => {
     latestEventObject.current = nextEventObject;
     setEventObject(nextEventObject);
-    writeStoredDraft({ ...nextEventObject, ...latestStepValidity.current });
+    writeStoredDraft({ ...latestStepValidity.current, ...nextEventObject });
   };
 
   const patchEvent = (patch: Partial<EventObjectProps>) =>
