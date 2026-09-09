@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 /* Assets. */
 import CheckIconRound from "./svgs/CheckIconRound";
 import ErrorIcon from "./svgs/ErrorIcon";
@@ -7,7 +9,37 @@ import WarningIcon from "./svgs/WarningIcon";
 import { SnackTypes } from "../types/types";
 
 /* Styles. */
+import cx from "../utils/cx";
 import styles from "../styles/Snackbar.module.scss";
+
+const SNACK_TONES: Record<
+  SnackTypes,
+  {
+    tone: string;
+    shadow: string;
+    Icon: ComponentType<{ className?: string }>;
+    iconClassName: string;
+  }
+> = {
+  [SnackTypes.SUCCESS]: {
+    tone: styles.success,
+    shadow: styles.successShadow,
+    Icon: CheckIconRound,
+    iconClassName: styles.successIcon,
+  },
+  [SnackTypes.WARNING]: {
+    tone: styles.warning,
+    shadow: styles.warningShadow,
+    Icon: WarningIcon,
+    iconClassName: styles.successIcon,
+  },
+  [SnackTypes.ERROR]: {
+    tone: styles.error,
+    shadow: styles.errorShadow,
+    Icon: ErrorIcon,
+    iconClassName: styles.errorIcon,
+  },
+};
 
 interface SnackbarProps {
   label: string;
@@ -16,48 +48,19 @@ interface SnackbarProps {
 }
 
 const Snackbar = ({ label, type, first }: SnackbarProps) => {
-  const getIcon = () => {
-    switch (type) {
-      case SnackTypes.SUCCESS:
-        return (
-          <CheckIconRound className={`${styles.icon} ${styles.successIcon}`} />
-        );
-      case SnackTypes.WARNING:
-        return (
-          <WarningIcon className={`${styles.icon} ${styles.successIcon}`} />
-        );
-      case SnackTypes.ERROR:
-        return <ErrorIcon className={`${styles.icon} ${styles.errorIcon}`} />;
-    }
-  };
-
-  const getSnackStyles = () => {
-    if (type === SnackTypes.SUCCESS && first) {
-      return `${styles.container} ${styles.success} ${styles.successShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.SUCCESS) {
-      return `${styles.container} ${styles.success}`;
-    } else if (type === SnackTypes.WARNING && first) {
-      return `${styles.container} ${styles.warning} ${styles.warningShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.WARNING) {
-      return `${styles.container} ${styles.warning}`;
-    } else if (type === SnackTypes.ERROR && first) {
-      return `${styles.container} ${styles.error} ${styles.errorShadow} ${styles.animation}`;
-    } else if (type === SnackTypes.ERROR) {
-      return `${styles.container} ${styles.error}`;
-    } else if (first) {
-      return `${styles.container} ${styles.shadow} ${styles.animation}`;
-    } else {
-      return `${styles.container} ${styles.animation}`;
-    }
-  };
-
-  const icon = getIcon();
-  const snackStyles = getSnackStyles();
+  const tone = type === undefined ? undefined : SNACK_TONES[type];
 
   return (
-    <div className={snackStyles}>
+    <div
+      className={cx(
+        styles.container,
+        tone?.tone,
+        first && (tone ? tone.shadow : styles.shadow),
+        (first || !tone) && styles.animation,
+      )}
+    >
       <div className={styles.labelContainer}>
-        {icon}
+        {tone && <tone.Icon className={cx(styles.icon, tone.iconClassName)} />}
         <p className={styles.label}>{label}</p>
       </div>
     </div>
