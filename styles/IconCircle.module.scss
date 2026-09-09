@@ -1,3 +1,14 @@
 .container {
   @include iconCircle();
 }
+
+.tightPadding {
+  padding: $spacer-mini;
+}
+
+.largeIcon {
+  svg {
+    height: 24px;
+    width: 24px;
+  }
+}

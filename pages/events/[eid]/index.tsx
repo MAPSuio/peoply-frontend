@@ -8,10 +8,11 @@ import router from "next/router";
 import { useEffect, useState } from "react";
 
 // Components.
-import UserCircle from "../../../components/UserCircle";
+import IconCircle from "../../../components/IconCircle";
+import UserIcon from "../../../components/svgs/UserIcon";
 import ArrangerAvatar from "../../../components/ArrangerAvatar";
-import DateCircle from "../../../components/DateCircle";
-import PlaceCircle from "../../../components/PlaceCircle";
+import DateIcon from "../../../components/svgs/DateIcon";
+import PlaceIcon from "../../../components/svgs/PlaceIcon";
 import RegistrationCount from "../../../components/RegistrationCount";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
 import FoodCircle from "../../../components/svgs/FoodCircle";
@@ -190,7 +191,9 @@ const ArrangerLine = ({ eventData }: { eventData: Event }) => (
         iconContainer: styles.iconContainer,
         icon: styles.icon,
       }}
-      fallbackIcon={<UserCircle className={styles.icon} />}
+      fallbackIcon={
+        <IconCircle Icon={UserIcon} iconClassName={styles.icon} tightPadding />
+      }
       hideWhenNoArranger
     />
     <p className={`${styles.infoText} ${styles.emphasis}`}>
@@ -219,7 +222,7 @@ const DateTimeRow = ({ eventData }: { eventData: Event }) => {
   return (
     <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
       <div className={styles.iconContainer}>
-        <DateCircle className={styles.icon} />
+        <IconCircle Icon={DateIcon} iconClassName={styles.icon} tightPadding />
       </div>
       <div>
         <p
@@ -251,7 +254,7 @@ const LocationRow = ({
   );
   const icon = (
     <div className={styles.iconContainer}>
-      <PlaceCircle className={styles.icon} />
+      <IconCircle Icon={PlaceIcon} iconClassName={styles.icon} tightPadding />
     </div>
   );
 
