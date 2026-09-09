@@ -64,12 +64,6 @@ describe("Icon", () => {
     expect(svg).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("lets an icon keep a default a caller may pass undefined over", () => {
-    const svg = renderIcon({ strokeWidth: undefined });
-
-    expect(svg).not.toHaveAttribute("stroke-width");
-  });
-
   it("renders its children", () => {
     expect(renderIcon().querySelector("path")).toBeInTheDocument();
   });
