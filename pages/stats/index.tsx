@@ -1,13 +1,29 @@
 import type { NextPage } from "next";
+import { useState } from "react";
 
-import styles from "../../styles/admin.module.scss";
-import RequireUser from "../../components/RequireUser";
 import BackButton from "../../components/BackButton";
-import useBack from "../../hooks/useBack";
 import HeadComponent from "../../components/HeadComponent";
 import InfoCard from "../../components/InfoCard";
+import RequireUser from "../../components/RequireUser";
 import NumberInput from "../../components/inputs/NumberInput";
-import { useState } from "react";
+import useBack from "../../hooks/useBack";
+
+import styles from "../../styles/admin.module.scss";
+
+const MAX_DAYS = 1000;
+
+const STAT_CARDS = [
+  { title: "Nye brukere", resource: "new-users" },
+  { title: "Nye arrangementer", resource: "new-events" },
+  { title: "Aktiviteter", resource: "new-registrations" },
+  { title: "Nye Organisasjoner", resource: "new-orgs" },
+  { title: "Nye Favoriseringer", resource: "new-favorites" },
+];
+
+function statsEndpoint(resource: string, days: string) {
+  const withinBounds = days !== "" && !(parseInt(days, 10) > MAX_DAYS);
+  return `/moderation/info/${resource}?days=${withinBounds ? days : 0}`;
+}
 
 const StatsPanel = () => {
   const goBack = useBack();
@@ -25,57 +41,26 @@ const StatsPanel = () => {
         <div className={styles.input}>
           <h1>Hvordan går det med Peoply</h1>
           <NumberInput
-            value={`${days}`}
-            max={"1000"}
+            value={days}
+            max={`${MAX_DAYS}`}
             min={"0"}
             inputId={"0"}
             inputName={"a"}
             label={"Antall dager"}
             placeholder={""}
-            errorMessage={"oppgi et tall mellom 1 og 1000"}
-            handleChange={(e) => {
-              setDays(e.target.value);
-            }}
+            errorMessage={`oppgi et tall mellom 1 og ${MAX_DAYS}`}
+            handleChange={(e) => setDays(e.target.value)}
           />
         </div>
 
         <div className={styles.cardContainer}>
-          <InfoCard
-            title={"Nye brukere"}
-            endpoint={
-              "/moderation/info/new-users?days=" +
-              (days === "" || parseInt(days, 10) > 1000 ? 0 : days)
-            }
-          />
-          <InfoCard
-            title={"Nye arrangementer"}
-            endpoint={
-              "/moderation/info/new-events?days=" +
-              (days === "" || parseInt(days, 10) > 1000 ? 0 : days)
-            }
-          />
-          <InfoCard
-            title={"Aktiviteter"}
-            endpoint={
-              "/moderation/info/new-registrations?days=" +
-              (days === "" || parseInt(days, 10) > 1000 ? 0 : days)
-            }
-          />
-          <InfoCard
-            title={"Nye Organisasjoner"}
-            endpoint={
-              "/moderation/info/new-orgs?days=" +
-              (days === "" || parseInt(days, 10) > 1000 ? 0 : days)
-            }
-          />
-
-          <InfoCard
-            title={"Nye Favoriseringer"}
-            endpoint={
-              "/moderation/info/new-favorites?days=" +
-              (days === "" || parseInt(days, 10) > 1000 ? 0 : days)
-            }
-          />
+          {STAT_CARDS.map(({ title, resource }) => (
+            <InfoCard
+              key={resource}
+              title={title}
+              endpoint={statsEndpoint(resource, days)}
+            />
+          ))}
         </div>
       </div>
     </>

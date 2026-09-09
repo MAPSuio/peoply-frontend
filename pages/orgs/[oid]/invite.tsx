@@ -3,7 +3,7 @@ import { useState } from "react";
 import BackButton from "../../../components/BackButton";
 import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
-import CloseIcon from "../../../components/svgs/CloseIcon";
+import SelectedUserChips from "../../../components/SelectedUserChips";
 import UserSelect from "../../../components/UserSelect";
 import useBack from "../../../hooks/useBack";
 import useOrganization from "../../../hooks/useOrganization";
@@ -92,22 +92,7 @@ function InviteForm() {
             <h1>Inviter medlemmer</h1>
             <p>Legg til nye medlemmer i {organization.name}</p>
           </div>
-          <div className={styles.selected}>
-            {selectedUsers.length !== 0 && <p>Valgte brukere: </p>}
-            {selectedUsers.map((user) => (
-              <button
-                type="button"
-                className={styles.selectedUser}
-                key={user.id}
-                onClick={() => onUserRemove(user)}
-              >
-                {`${user.firstName.slice(0, 1).toUpperCase()}. ${
-                  user.lastName
-                }`}
-                <CloseIcon />
-              </button>
-            ))}
-          </div>
+          <SelectedUserChips users={selectedUsers} onRemove={onUserRemove} />
           <UserSelect
             selectedUsers={selectedUsers}
             onUserRemove={onUserRemove}

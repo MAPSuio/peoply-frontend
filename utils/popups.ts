@@ -1,4 +1,5 @@
 import { ApiError } from "../services/apiError";
+import type { Popup } from "../types/types";
 
 /** The popup a rejected interval collided with, as the API reports it. */
 export interface PopupConflict {
@@ -100,4 +101,32 @@ export function getDefaultInterval(now = new Date()) {
     startsAt: toDateTimeLocal(now),
     endsAt: toDateTimeLocal(new Date(now.getTime() + 60 * 60 * 1000)),
   };
+}
+
+export type PopupStatus = "active" | "upcoming" | "past";
+
+export type PopupsByStatus = Record<PopupStatus, Popup[]>;
+
+function popupStatus(popup: Popup, now: number): PopupStatus {
+  const startsAt = new Date(popup.startsAt).getTime();
+  const endsAt = new Date(popup.endsAt).getTime();
+
+  if (Number.isNaN(startsAt) || Number.isNaN(endsAt) || startsAt > now) {
+    return "upcoming";
+  }
+
+  return endsAt > now ? "active" : "past";
+}
+
+export function groupPopupsByStatus(
+  popups: Popup[],
+  now: number,
+): PopupsByStatus {
+  const grouped: PopupsByStatus = { active: [], upcoming: [], past: [] };
+
+  for (const popup of popups) {
+    grouped[popupStatus(popup, now)].push(popup);
+  }
+
+  return grouped;
 }

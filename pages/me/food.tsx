@@ -9,8 +9,9 @@ import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditFoodPreference.module.scss";
-import { FoodPreference, SnackTypes, type User } from "../../types/types";
+import { type FoodPreference, SnackTypes, type User } from "../../types/types";
 import Dropdown from "../../components/Dropdown";
+import { foodPreferenceOptions } from "../../utils/foodPreference";
 
 const EditFoodPreference = ({ user }: { user: User }) => {
   const goBack = useBack();
@@ -40,33 +41,6 @@ const EditFoodPreference = ({ user }: { user: User }) => {
     }
   };
 
-  function generateFoodPreferenceOptions() {
-    function valueToLabel(preference: FoodPreference) {
-      switch (preference) {
-        case FoodPreference.VEGAN:
-          return "Vegan 🌱";
-        case FoodPreference.VEGETARIAN:
-          return "Vegetar 🧀";
-        case FoodPreference.PESCETARIAN:
-          return "Pescetar 🐟";
-        case FoodPreference.NO_PREFERENCE:
-          return "Ingen preferanse 🤷";
-        default:
-          return "";
-      }
-    }
-
-    return [
-      { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([, value]) => {
-        return {
-          value,
-          label: valueToLabel(value),
-        };
-      }),
-    ];
-  }
-
   const validFoodPreferenceEdit =
     foodPreference && user.foodPreference !== foodPreference;
 
@@ -76,7 +50,7 @@ const EditFoodPreference = ({ user }: { user: User }) => {
       <Avatar user={user} size="large" />
       <Dropdown
         label="Matpreferanse"
-        options={generateFoodPreferenceOptions()}
+        options={foodPreferenceOptions()}
         value={foodPreference ?? ""}
         inputId="foodPreference"
         setValue={setFoodPreference}
