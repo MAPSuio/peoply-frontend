@@ -1,62 +1,54 @@
-import type { FilterOption } from "../../utils/filterOptions";
+import type { FilterPanelState } from "../../hooks/events/useEventFilters";
+
 import styles from "../../styles/EventsPage.module.scss";
 
 export interface FilterPanelCopy {
   inputId: string;
+  toggleLabel: string;
   label: string;
   searchPlaceholder: string;
   noMatchesText: string;
 }
 
-interface FilterOptionPanelProps<T> {
+export interface FilterOptionPanelProps {
   copy: FilterPanelCopy;
-  options: FilterOption<T>[];
-  selectedCount: number;
-  search: string;
-  onSearchChange: (search: string) => void;
-  isSelected: (value: T) => boolean;
-  onToggle: (value: T) => void;
+  panel: FilterPanelState;
 }
 
-export default function FilterOptionPanel<T extends string | number>({
+export default function FilterOptionPanel({
   copy,
-  options,
-  selectedCount,
-  search,
-  onSearchChange,
-  isSelected,
-  onToggle,
-}: FilterOptionPanelProps<T>) {
+  panel,
+}: FilterOptionPanelProps) {
   return (
     <div className={styles.optionList}>
       <div className={styles.filterPanelHeader}>
         <label className={styles.filterLabel} htmlFor={copy.inputId}>
           {copy.label}
         </label>
-        <span className={styles.panelMeta}>{selectedCount} valgt</span>
+        <span className={styles.panelMeta}>{panel.selectedCount} valgt</span>
       </div>
       <input
         id={copy.inputId}
         className={styles.searchInput}
         type="text"
-        value={search}
-        onChange={(event) => onSearchChange(event.target.value)}
+        value={panel.search}
+        onChange={(event) => panel.onSearchChange(event.target.value)}
         placeholder={copy.searchPlaceholder}
       />
       <div className={styles.optionTags}>
-        {options.map((option) => (
+        {panel.options.map((option) => (
           <button
             key={option.value}
             type="button"
             className={`${styles.optionButton} ${
-              isSelected(option.value) ? styles.optionButtonSelected : ""
+              panel.isSelected(option.value) ? styles.optionButtonSelected : ""
             }`}
-            onClick={() => onToggle(option.value)}
+            onClick={() => panel.onToggle(option.value)}
           >
             {option.label}
           </button>
         ))}
-        {options.length === 0 && (
+        {panel.options.length === 0 && (
           <p className={styles.noOptionsText}>{copy.noMatchesText}</p>
         )}
       </div>
