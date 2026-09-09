@@ -1,15 +1,13 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-
-import styles from "../../styles/TextInputLocationSelect.module.scss";
+import useLocationSearchField from "../../hooks/useLocationSearchField";
 import type {
   LocationSearchOptions,
-  LocationSearchResponse,
   LocationSearchResult,
 } from "../../types/locationSearch";
-import useDebouncedSearch from "../../hooks/useDebouncedSearch";
-import { searchLocations } from "../../services/locationSearch";
-import ExitIcon from "../svgs/ExitIcon";
-import LoadingWheel from "../LoadingWheel";
+import InputFieldLabel from "./InputFieldLabel";
+import LocationInputAdornment from "./LocationInputAdornment";
+import LocationResultList from "./LocationResultList";
+
+import styles from "../../styles/TextInputLocationSelect.module.scss";
 
 interface TextInputLocationSelectProps {
   inputId: string;
@@ -23,6 +21,17 @@ interface TextInputLocationSelectProps {
   card?: boolean;
 }
 
+function containerStyles(valid: boolean, focused: boolean) {
+  const padding = valid || !focused ? styles.noErrorPadding : "";
+  return `${styles.inputContainer} ${padding}`.trim();
+}
+
+function inputStyles(valid: boolean, focused: boolean, card?: boolean) {
+  const invalid = !valid && focused ? styles.notValid : "";
+  const cardStyle = card ? styles.card : "";
+  return `${styles.textInput} ${invalid} ${cardStyle}`.trim();
+}
+
 const TextInputLocationSelect = ({
   inputId,
   inputName,
@@ -34,161 +43,42 @@ const TextInputLocationSelect = ({
   options,
   card,
 }: TextInputLocationSelectProps) => {
-  const [focused, setFocused] = useState(false);
-  const [search, setSearch] = useState<string>();
-  const [valid, setValid] = useState(false);
-  const [locations, setLocations] = useState<LocationSearchResult[]>([]);
-
-  const { results, loading } = useDebouncedSearch(
-    search ?? "",
-    (query: string): Promise<LocationSearchResponse> =>
-      searchLocations(query, options),
-    { delayMs: 500, minLength: 1 },
-  );
-
-  useEffect(() => {
-    setLocations(results?.results ?? []);
-  }, [results]);
-
-  /* The result list must close when the user interacts with anything else on
-     the page, otherwise it keeps floating over the content below the input. */
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handlePointerDown = (event: PointerEvent) => {
-      if (
-        containerRef.current &&
-        event.target instanceof Node &&
-        !containerRef.current.contains(event.target)
-      ) {
-        setLocations([]);
-      }
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-    };
-  }, []);
-
-  const inputContainerStyles = (() => {
-    if (valid || !focused) {
-      return `${styles.inputContainer} ${styles.noErrorPadding}`;
-    } else {
-      return styles.inputContainer;
-    }
-  })();
-
-  const textInputStyles = (() => {
-    if (valid) {
-      return `${styles.textInput} ${card && styles.card}`;
-    } else if (focused) {
-      return `${styles.textInput} ${styles.notValid} ${card && styles.card}`;
-    } else {
-      return `${styles.textInput} ${card && styles.card}`;
-    }
-  })();
-
-  useEffect(() => {
-    setValid(Boolean(selectedLocation));
-  }, [selectedLocation]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    if (query === " ") {
-      return;
-    }
-    setSearch(query);
-    setLocations([]);
-  };
+  const field = useLocationSearchField({
+    selectedLocation,
+    options,
+    onLocationSelect,
+  });
 
   return (
-    <div className={inputContainerStyles} ref={containerRef}>
-      {label && (
-        <div className={styles.labelContainer}>
-          {required ? (
-            <label
-              className={`${styles.label} ${styles.required}`}
-              htmlFor={inputId}
-            >
-              {label}
-              <span className={styles.asterisk}> *</span>
-            </label>
-          ) : (
-            <label className={styles.label} htmlFor={inputId}>
-              {`${label} (frivillig)`}
-            </label>
-          )}
-        </div>
-      )}
+    <div
+      className={containerStyles(field.valid, field.focused)}
+      ref={field.containerRef}
+    >
+      <InputFieldLabel inputId={inputId} label={label} required={required} />
       <div className={styles.inputAndIconContainer}>
         <input
-          onFocus={() => {
-            setFocused(true);
-            setSearch(undefined);
-            setLocations([]);
-          }}
-          onBlur={() => {
-            setFocused(false);
-            setSearch(undefined);
-          }}
-          className={textInputStyles}
+          onFocus={field.onFocus}
+          onBlur={field.onBlur}
+          className={inputStyles(field.valid, field.focused, card)}
           type="text"
-          value={search ?? selectedLocation?.address?.freeformAddress ?? ""}
+          value={field.value}
           id={inputId}
           name={inputName}
           placeholder={placeholder}
-          onChange={handleChange}
+          onChange={(event) => field.onSearchChange(event.target.value)}
           required={required}
           autoComplete="off"
         />
-        {selectedLocation && !loading ? (
-          <div className={styles.cancelSearch}>
-            <button
-              type="button"
-              onClick={() => {
-                if (!locations.length) onLocationSelect(undefined);
-                setSearch(undefined);
-                setLocations([]);
-              }}
-            >
-              <ExitIcon />
-            </button>
-          </div>
-        ) : loading ? (
-          <div className={styles.loadingCircle}>
-            <LoadingWheel />
-          </div>
-        ) : null}
+        <LocationInputAdornment
+          hasSelection={field.valid}
+          loading={field.loading}
+          onClear={field.onClear}
+        />
       </div>
-      {locations.length > 0 && (
-        <div className={styles.results}>
-          {locations.map((location) => (
-            <Fragment key={location.id}>
-              <span className={styles.divider} />
-              <button
-                type="button"
-                onClick={() => {
-                  onLocationSelect(location);
-                  setSearch(undefined);
-                  setLocations([]);
-                }}
-              >
-                <div className={styles.item}>
-                  {location.poi ? (
-                    <>
-                      <div>{`${location.poi.name}`}</div>
-                      <div>{location.address?.freeformAddress}</div>
-                    </>
-                  ) : (
-                    <div>{location.address?.freeformAddress}</div>
-                  )}
-                </div>
-              </button>
-            </Fragment>
-          ))}
-        </div>
-      )}
+      <LocationResultList
+        locations={field.locations}
+        onSelect={field.onSelect}
+      />
     </div>
   );
 };
