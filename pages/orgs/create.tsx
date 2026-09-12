@@ -9,25 +9,16 @@ import TextInputLong from "../../components/inputs/TextInputLong";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import useSnack from "../../hooks/useSnack";
 import { SnackTypes } from "../../types/types";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import RequireUser from "../../components/RequireUser";
 import HeadComponent from "../../components/HeadComponent";
 
-const Create = () => {
-  const { user, loading, reload } = useUser();
+const CreateOrganizationForm = () => {
+  const { reload } = useUser();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [nameValid, setNameValid] = useState(false);
   const goBack = useBack();
   const { addSnack } = useSnack();
-  const redirectToLogin = useRedirectToLogin();
-
-  if (loading) {
-    return <></>;
-  }
-
-  if (!user) {
-    redirectToLogin();
-  }
 
   const handleConfirm = async () => {
     try {
@@ -96,5 +87,9 @@ const Create = () => {
     </>
   );
 };
+
+const Create = () => (
+  <RequireUser>{() => <CreateOrganizationForm />}</RequireUser>
+);
 
 export default Create;

@@ -3,14 +3,13 @@ import useSWR from "swr";
 import Image from "next/legacy/image";
 
 // Hooks.
-import useUser from "../../hooks/useUser";
 import useBack from "../../hooks/useBack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import RequireUser from "../../components/RequireUser";
 
 // Services.
 
 // Types.
-import { Alignment, type ArrangerFollower } from "../../types/types";
+import { Alignment, type ArrangerFollower, type User } from "../../types/types";
 
 // Components.
 import HeadComponent from "../../components/HeadComponent";
@@ -25,17 +24,15 @@ import AloneImage from "../../assets/images/undraw_alone.png";
 // Styles.
 import styles from "../../styles/Following.module.scss";
 
-const Following = () => {
-  const { user, loading: userLoading } = useUser();
+const FollowedArrangers = ({ user }: { user: User }) => {
   const goBack = useBack();
-  const redirectToLogin = useRedirectToLogin();
 
   /* An answer we do not have yet is not an answer of "nobody". QueryState
      shows LoadingWheel while a request is in flight, so a slow request never
      flashes the empty state - and a failed request stops being silent, since
      SwrProvider swallows 401/403/404. */
   const followingQuery = useSWR<ArrangerFollower[]>(
-    user ? `/users/${user.id}/following` : null,
+    `/users/${user.id}/following`,
   );
 
   const renderFollowingList = (followedArrangers: ArrangerFollower[]) => {
@@ -67,17 +64,6 @@ const Following = () => {
     );
   };
 
-  if (userLoading) {
-    return <></>;
-  }
-
-  /* Every other page under /me sends anonymous visitors to login. This one
-     told them they followed nobody instead. */
-  if (!user) {
-    redirectToLogin();
-    return <></>;
-  }
-
   return (
     <>
       <HeadComponent
@@ -102,5 +88,9 @@ const Following = () => {
     </>
   );
 };
+
+const Following = () => (
+  <RequireUser>{(user) => <FollowedArrangers user={user} />}</RequireUser>
+);
 
 export default Following;

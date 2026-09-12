@@ -36,3 +36,15 @@ describe("guard redirects", () => {
     expect(sourceFiles(PAGES).length).toBeGreaterThan(10);
   });
 });
+
+describe("pages that require a signed-in user", () => {
+  it("gate through RequireUser, never on useRedirectToLogin themselves", () => {
+    const offenders = sourceFiles(PAGES)
+      .filter((path) =>
+        readFileSync(path, "utf8").includes("useRedirectToLogin"),
+      )
+      .map((path) => relative(PROJECT_ROOT, path));
+
+    expect(offenders).toEqual([]);
+  });
+});
