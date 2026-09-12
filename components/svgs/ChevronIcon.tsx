@@ -1,23 +1,14 @@
-interface ChevronIconProps {
-  className?: string;
-}
+import Icon, { type IconShapeProps } from "./Icon";
 
-export default function ChevronIcon({ className }: ChevronIconProps) {
-  return (
-    <svg
-      className={className}
-      width="8"
-      height="14"
-      viewBox="0 0 8 14"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7 13L1 7L7 1"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+const ChevronIcon = (props: IconShapeProps) => (
+  <Icon viewBox="0 0 8 14" fill="none" {...props}>
+    <path
+      d="M7 13L1 7L7 1"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Icon>
+);
+
+export default ChevronIcon;
