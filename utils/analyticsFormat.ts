@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "./locale";
 import type {
   OrganizationAnalyticsTimeOfDay,
   OrganizationAnalyticsWeekday,
@@ -5,7 +6,9 @@ import type {
 
 const EM_DASH = "—";
 
-const formatter = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 1 });
+const formatter = new Intl.NumberFormat(DISPLAY_LOCALE, {
+  maximumFractionDigits: 1,
+});
 
 const decimal = {
   // nb-NO renders negatives with U+2212; normalize to the plain hyphen the

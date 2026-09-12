@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../../utils/locale";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import CheckCircle from "../../components/CheckCircle";
@@ -38,7 +39,7 @@ const Login: NextPage = () => {
 
   /* formats date to fit card format (DD. Month YYYY) */
   const formatDate = (date: Date) => {
-    return `${date.getDate()}. ${date.toLocaleString("no", {
+    return `${date.getDate()}. ${date.toLocaleString(DISPLAY_LOCALE, {
       month: "long",
     })} ${date.getFullYear()}`;
   };

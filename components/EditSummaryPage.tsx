@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../utils/locale";
 // Types
 import {
   ButtonType,
@@ -622,7 +623,9 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
       id: organization.id,
       label: organization.name,
     }))
-    .sort((left, right) => left.label.localeCompare(right.label, "nb-NO"));
+    .sort((left, right) =>
+      left.label.localeCompare(right.label, DISPLAY_LOCALE),
+    );
   const visibleCoOrganizerOptions = coOrganizerOptions.filter((organization) =>
     organization.label
       .toLowerCase()
