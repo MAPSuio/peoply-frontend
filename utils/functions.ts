@@ -216,17 +216,6 @@ function getISODate(date: Date): string {
 }
 
 /* Formats a date(time) into hh:mm:ss. */
-function getISOTime(date: Date): string {
-  const isoString = date.toLocaleTimeString(DISPLAY_LOCALE, {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  });
-
-  return isoString;
-}
-
 /* format isoString and timezone into an isoString in UTC*/
 function removeTimezone(isoString: string): string {
   const date = new Date(isoString);
@@ -277,12 +266,6 @@ function getDateString(date: string): string {
 }
 
 /* Formats a date into hh:mm */
-function getTimeString(date: string): string {
-  const hour = date.slice(11, 13);
-  const minute = date.slice(14, 16);
-  return `${hour}:${minute}`;
-}
-
 function getTimeStringFromDate(date: Date): string {
   const hour = date.getHours();
   const minute = date.getMinutes();
@@ -481,14 +464,6 @@ function getCategoryText(
 }
 
 /* Checks if a text input is valid. */
-function textInputValid(
-  text: string,
-  minLength: number,
-  maxLength: number,
-): boolean {
-  return text.length > minLength && text.length <= maxLength;
-}
-
 /* Checks if a number input is valid. */
 function numberInputValid(number: number, min: number, max: number): boolean {
   return number > min && number <= max;
@@ -553,10 +528,6 @@ function latherThanNowISOString(isoString: string): boolean {
 }
 
 /* Checks if a category input is valid. */
-function categoryInputValid(categories: Array<number>): boolean {
-  return categories.length > 0;
-}
-
 /* Checks if a radio input is valid. */
 function radioInputValid(
   numberInputRequired: boolean,
@@ -572,10 +543,6 @@ function radioInputValid(
 }
 
 /* Checks if an image input is valid. */
-function imageInputValid(image: File | null): boolean {
-  return image !== null;
-}
-
 /* Checks if an event has all valid data. */
 function allEventInputsValid(eventInputsValid: Array<boolean>): boolean {
   const valid = eventInputsValid.every((eventInput) => {
@@ -721,27 +688,20 @@ export {
   formatFollowedDate,
   olderThanToday,
   getISODate,
-  getISOTime,
   formatDateAndTime,
-  laterThanNow,
   arrayFromRange,
   getInputPageData,
-  textInputValid,
   numberInputValid,
   dateInputStartValid,
   dateInputEndValid,
   timeInputStartValid,
   timeInputEndValid,
-  categoryInputValid,
   radioInputValid,
-  imageInputValid,
   allEventInputsValid,
   getDateString,
-  getTimeString,
   getCategoryText,
   getInputPageName,
   getProgressCircleLabel,
-  olderThanStart,
   getWeekday,
   throwNotImportedError,
   getISODateString,
@@ -757,6 +717,5 @@ export {
   queryToString,
   isValidEmail,
   getTimeSinceString,
-  getTimeStringFromDate,
   injectLink,
 };

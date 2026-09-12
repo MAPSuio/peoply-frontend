@@ -5,11 +5,9 @@ import {
   allEventInputsValid,
   arrayFromRange,
   calculateEditDistance,
-  categoryInputValid,
   getInputPageData,
   getISODate,
   groupBy,
-  imageInputValid,
   injectLink,
   isValidEmail,
   laterThan,
@@ -18,16 +16,7 @@ import {
   radioInputValid,
   removeTimezone,
   addTimezone,
-  textInputValid,
 } from "../utils/functions";
-
-describe("textInputValid", () => {
-  it("uses min exclusive and max inclusive", () => {
-    expect(textInputValid("ab", 1, 3)).toBe(true);
-    expect(textInputValid("a", 1, 3)).toBe(false);
-    expect(textInputValid("abcd", 1, 3)).toBe(false);
-  });
-});
 
 describe("numberInputValid", () => {
   it("uses min exclusive and max inclusive", () => {
@@ -57,20 +46,10 @@ describe("getInputPageData", () => {
 });
 
 describe("input validation helpers", () => {
-  it("requires at least one category", () => {
-    expect(categoryInputValid([1])).toBe(true);
-    expect(categoryInputValid([])).toBe(false);
-  });
-
   it("respects whether the radio number is required", () => {
     expect(radioInputValid(false, 0, 1, 5)).toBe(true);
     expect(radioInputValid(true, 1, 1, 5)).toBe(false);
     expect(radioInputValid(true, 2, 1, 5)).toBe(true);
-  });
-
-  it("requires an image file", () => {
-    expect(imageInputValid(new File([""], "x"))).toBe(true);
-    expect(imageInputValid(null)).toBe(false);
   });
 
   it("requires every event input to be valid", () => {
