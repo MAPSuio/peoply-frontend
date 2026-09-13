@@ -27,9 +27,18 @@ async function fileFromDataUrl(dataUrl: string, name: string): Promise<File> {
   return new File([blob], name, { type: blob.type, lastModified: Date.now() });
 }
 
+function storeImage(dataUrl: string): ImageCaching {
+  try {
+    writeStoredImage(dataUrl);
+    return ImageCaching.OK;
+  } catch {
+    clearStoredImage();
+    return ImageCaching.PREEMPTIVE_MESSAGE;
+  }
+}
+
 export default function useEventImage({
   patchEvent,
-  patchEventWithoutStoring,
   replaceEvent,
 }: EventDraft) {
   const latestPick = useRef(0);
@@ -53,8 +62,7 @@ export default function useEventImage({
       return ImageCaching.PREEMPTIVE_MESSAGE;
     }
 
-    writeStoredImage(dataUrl);
-    return ImageCaching.OK;
+    return storeImage(dataUrl);
   };
 
   const updateEventImage = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +81,7 @@ export default function useEventImage({
     const imageCached = await cacheImage(file);
 
     if (imageCached !== null) {
-      patchEventWithoutStoring({ imageCached });
+      patchEvent({ imageCached });
     }
   };
 

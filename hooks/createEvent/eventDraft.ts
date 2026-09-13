@@ -65,6 +65,21 @@ export function writeStoredDraft(draft: EventObjectProps): void {
   localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
 }
 
+function isDraftObject(parsed: unknown): parsed is EventObjectProps {
+  return (
+    typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)
+  );
+}
+
+function parseDraft(stored: string): EventObjectProps | null {
+  try {
+    const parsed: unknown = JSON.parse(stored);
+    return isDraftObject(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export function readStoredDraft(): EventObjectProps | null {
   const stored = localStorage.getItem(DRAFT_KEY);
 
@@ -72,12 +87,13 @@ export function readStoredDraft(): EventObjectProps | null {
     return null;
   }
 
-  try {
-    return JSON.parse(stored);
-  } catch {
+  const draft = parseDraft(stored);
+
+  if (!draft) {
     clearStoredDraft();
-    return null;
   }
+
+  return draft;
 }
 
 export function clearStoredDraft(): void {
@@ -102,11 +118,8 @@ export function draftWithFieldsOlderBuildsOmitted(
   signedInArrangerId: string | undefined,
 ): EventObjectProps {
   return {
+    ...emptyEventDraft(signedInArrangerId ?? ""),
     ...stored,
-    eventHasExternalRegistration: stored.eventHasExternalRegistration ?? false,
-    eventExternalUrl: stored.eventExternalUrl ?? "",
-    eventCoOrganizerOrganizationIds:
-      stored.eventCoOrganizerOrganizationIds ?? [],
     eventArrangerId: stored.eventArrangerId || (signedInArrangerId ?? ""),
   };
 }

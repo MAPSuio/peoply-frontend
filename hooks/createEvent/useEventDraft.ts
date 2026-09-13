@@ -14,7 +14,6 @@ export interface EventDraft {
     derive: (current: EventObjectProps) => Partial<EventObjectProps>,
   ) => void;
   replaceEvent: (draft: EventObjectProps) => void;
-  patchEventWithoutStoring: (patch: Partial<EventObjectProps>) => void;
 }
 
 export default function useEventDraft(
@@ -57,9 +56,6 @@ export default function useEventDraft(
     setEventObject(draft);
   };
 
-  const patchEventWithoutStoring = (patch: Partial<EventObjectProps>) =>
-    replaceEvent({ ...latestEventObject.current, ...patch });
-
   useEffect(() => {
     const arrangerId = user?.arrangerId;
     if (!arrangerId) {
@@ -77,6 +73,5 @@ export default function useEventDraft(
     patchEvent,
     patchEventFrom,
     replaceEvent,
-    patchEventWithoutStoring,
   };
 }

@@ -4,9 +4,13 @@ import { extname, join, relative } from "node:path";
 import { act, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { readStoredDraft } from "../hooks/createEvent/eventDraft";
+import {
+  draftWithFieldsOlderBuildsOmitted,
+  emptyEventDraft,
+  readStoredDraft,
+} from "../hooks/createEvent/eventDraft";
 import useCreateEventForm from "../hooks/useCreateEventForm";
-import { ImageCaching } from "../types/types";
+import { type EventObjectProps, ImageCaching } from "../types/types";
 
 vi.mock("next/router", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), asPath: "/" }),
@@ -119,8 +123,45 @@ describe("the cached create-event image", () => {
 
     expect(localStorage.getItem("eventImage")).toBeNull();
     expect(form.eventObject.imageCached).toBe(ImageCaching.PREEMPTIVE_MESSAGE);
+    expect(storedDraft().imageCached).toBe(ImageCaching.PREEMPTIVE_MESSAGE);
 
     failingReader.mockRestore();
+  });
+
+  it("says the image is not cached when the file is too large to cache", async () => {
+    const oversized = new File(["x"], "poster.png", { type: "image/png" });
+    Object.defineProperty(oversized, "size", { value: 4500001 });
+
+    await act(async () => {
+      await form.updateEventImage(pickedFile(oversized));
+    });
+
+    expect(localStorage.getItem("eventImage")).toBeNull();
+    expect(storedDraft().imageCached).toBe(ImageCaching.PREEMPTIVE_MESSAGE);
+  });
+
+  it("says the image is not cached when storage refuses the write", async () => {
+    const originalSetItem = Storage.prototype.setItem;
+    const refusingStorage = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(function (this: Storage, key: string, value: string) {
+        if (key === "eventImage") {
+          throw new DOMException("quota exceeded", "QuotaExceededError");
+        }
+        originalSetItem.call(this, key, value);
+      });
+
+    await act(async () => {
+      await form.updateEventImage(
+        pickedFile(new File(["x"], "poster.png", { type: "image/png" })),
+      );
+    });
+
+    expect(localStorage.getItem("eventImage")).toBeNull();
+    expect(form.eventObject.imageCached).toBe(ImageCaching.PREEMPTIVE_MESSAGE);
+    expect(storedDraft().imageCached).toBe(ImageCaching.PREEMPTIVE_MESSAGE);
+
+    refusingStorage.mockRestore();
   });
 
   it("keeps the last picked image when an earlier read finishes late", async () => {
@@ -168,6 +209,35 @@ describe("a draft localStorage cannot parse", () => {
 
     expect(readStoredDraft()).toBeNull();
     expect(localStorage.getItem("eventObject")).toBeNull();
+  });
+
+  it.each(["[]", '"text"', "42", "null"])(
+    "is thrown away when the JSON is %s rather than an object",
+    (stored) => {
+      localStorage.setItem("eventObject", stored);
+
+      expect(readStoredDraft()).toBeNull();
+      expect(localStorage.getItem("eventObject")).toBeNull();
+    },
+  );
+});
+
+describe("a draft from an older build", () => {
+  it("gets every field it never had from the empty draft", () => {
+    const stored = { eventTitle: "Kodekveld" } as EventObjectProps;
+
+    expect(draftWithFieldsOlderBuildsOmitted(stored, "a1")).toEqual({
+      ...emptyEventDraft("a1"),
+      eventTitle: "Kodekveld",
+    });
+  });
+
+  it("keeps the arranger it was written with", () => {
+    const stored = { eventArrangerId: "a0" } as EventObjectProps;
+
+    expect(
+      draftWithFieldsOlderBuildsOmitted(stored, "a1").eventArrangerId,
+    ).toBe("a0");
   });
 });
 
