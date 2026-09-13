@@ -1,8 +1,8 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
-import { SWRConfig } from "swr";
+import { act, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import useEventFavorite from "../hooks/useEventFavorite";
+import { renderWithSwr } from "./support/swr";
 
 const signedInUser = { id: "user-1" };
 const userState: { user: { id: string } | undefined; loading: boolean } = {
@@ -59,12 +59,13 @@ function Heart({ eventId }: { eventId: string }) {
 }
 
 function renderFeed(eventIds: string[] = feedEventIds) {
-  return render(
-    <SWRConfig value={{ fetcher: vi.fn(), provider: () => new Map() }}>
+  return renderWithSwr(
+    <>
       {eventIds.map((eventId) => (
         <Heart key={eventId} eventId={eventId} />
       ))}
-    </SWRConfig>,
+    </>,
+    { fetcher: vi.fn() },
   );
 }
 
