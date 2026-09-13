@@ -665,6 +665,12 @@ function getTimeSinceString(date: Date) {
   }
 }
 
+function toggled<Item>(items: Item[], item: Item): Item[] {
+  return items.includes(item)
+    ? items.filter((candidate) => candidate !== item)
+    : [...items, item];
+}
+
 function injectLink(str: string) {
   const urlRegex = /(https?:\/\/[^\s,]+)/g; // url cannot contain whitespace or comma
   const split = str.split(urlRegex);
@@ -718,4 +724,5 @@ export {
   isValidEmail,
   getTimeSinceString,
   injectLink,
+  toggled,
 };

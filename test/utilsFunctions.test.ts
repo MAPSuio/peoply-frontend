@@ -13,6 +13,7 @@ import {
   laterThan,
   numberInputValid,
   olderThanToday,
+  toggled,
   radioInputValid,
   removeTimezone,
   addTimezone,
@@ -79,6 +80,22 @@ describe("date and time helpers", () => {
   it("returns true when either laterThan argument is missing", () => {
     expect(laterThan(undefined, "2026-08-06T12:00:00Z")).toBe(true);
     expect(laterThan("2026-08-06T12:00:00Z")).toBe(true);
+  });
+});
+
+describe("toggled", () => {
+  it("adds a value the list does not hold", () => {
+    expect(toggled([1, 2], 3)).toEqual([1, 2, 3]);
+  });
+
+  it("removes a value the list already holds", () => {
+    expect(toggled(["a", "b"], "a")).toEqual(["b"]);
+  });
+
+  it("leaves the given list untouched", () => {
+    const values = [1];
+    toggled(values, 2);
+    expect(values).toEqual([1]);
   });
 });
 
