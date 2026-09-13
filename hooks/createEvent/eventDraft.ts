@@ -51,12 +51,6 @@ export function emptyEventDraft(arrangerId: string): EventObjectProps {
   };
 }
 
-export function toggled<Item>(items: Item[], item: Item): Item[] {
-  return items.includes(item)
-    ? items.filter((candidate) => candidate !== item)
-    : [...items, item];
-}
-
 export function hasStoredDraft(): boolean {
   return localStorage.getItem(DRAFT_KEY) !== null;
 }

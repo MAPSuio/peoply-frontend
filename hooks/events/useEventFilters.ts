@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import type { Category, Organization } from "../../types/types";
+import { toggled } from "../../utils/functions";
 import {
   type FilterOption,
   matchingOptions,
@@ -27,12 +28,6 @@ export interface FilterPanelState {
   onSearchChange: (search: string) => void;
   isSelected: (value: FilterValue) => boolean;
   onToggle: (value: FilterValue) => void;
-}
-
-function toggled<Value>(values: Value[], value: Value): Value[] {
-  return values.includes(value)
-    ? values.filter((candidate) => candidate !== value)
-    : [...values, value];
 }
 
 function optionsOf(

@@ -3,7 +3,7 @@ import type { ChangeEvent } from "react";
 import type { LocationSearchResult } from "../../types/locationSearch";
 import { type Organization, Visibility } from "../../types/types";
 import type { EventObjectProps } from "../../types/types";
-import { toggled } from "./eventDraft";
+import { toggled } from "../../utils/functions";
 import type { EventDraft } from "./useEventDraft";
 
 type FieldsOfType<Value> = Extract<
