@@ -2,8 +2,7 @@
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 import BackButton from "./BackButton";
-import TitleSummarySection from "./summary/TitleSummarySection";
-import PersonSummarySection from "./summary/PersonSummarySection";
+import SummaryTextCard from "./summary/SummaryTextCard";
 import DateTimeSummarySection from "./summary/DateTimeSummarySection";
 import PlaceSummarySection from "./summary/PlaceSummarySection";
 import DescriptionSummarySection from "./summary/DescriptionSummarySection";
@@ -12,6 +11,8 @@ import DataSummarySection from "./summary/DataSummarySection";
 
 /* Assets */
 import PlaceholderImage from "../assets/images/cat.jpg";
+import TitleIcon from "./svgs/TitleIcon";
+import UserIcon from "./svgs/UserIcon";
 
 /* Utils */
 import { formatDateAndTime } from "../utils/functions";
@@ -252,16 +253,24 @@ const SummaryPage = ({
           />
         </aside>
         <div className={styles.main}>
-          <TitleSummarySection
-            title={eventObject.eventTitle}
+          <SummaryTextCard
+            text={eventObject.eventTitle}
+            Icon={TitleIcon}
             onClick={buttonOnClick}
           />
           {eventObject.eventArrangerId && (
-            <PersonSummarySection text={arrangerName} onClick={buttonOnClick} />
+            <SummaryTextCard
+              text={arrangerName}
+              Icon={UserIcon}
+              largeIcon
+              onClick={buttonOnClick}
+            />
           )}
           {selectedCoOrganizerNames.length > 0 && (
-            <PersonSummarySection
+            <SummaryTextCard
               text={selectedCoOrganizerNames.join(" · ")}
+              Icon={UserIcon}
+              largeIcon
               onClick={buttonOnClick}
             />
           )}

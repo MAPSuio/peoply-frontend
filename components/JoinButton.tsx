@@ -28,6 +28,7 @@ import FormQuestionModal from "./FormQuestionModal";
 import UnregisterConfirmationModal from "./UnregisterConfirmationModal";
 import styles from "../styles/JoinButton.module.scss";
 import { getSafeExternalUrl } from "../utils/event";
+import { announceRegistration } from "../utils/registrationOutcome";
 
 interface JoinButtonProps {
   event: Event;
@@ -303,162 +304,147 @@ export default function JoinButton({
     );
   }
 
+  const registrationListeners = {
+    refresh: () => {
+      updateRegistration();
+      runUpdate();
+    },
+    snack: addSnack,
+  };
+
+  async function unansweredQuestionsOpened() {
+    const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
+      UserSeenUpdateType.HAS_SET_ALLERGENS,
+    );
+
+    if (event.hasFood && (!user?.foodPreference || !hasSeenAllergenUpdate)) {
+      setFoodPreferenceModalOpen(true);
+      return true;
+    }
+
+    if (event.formQuestion) {
+      setFormQuestionModalOpen(true);
+      return true;
+    }
+
+    return false;
+  }
+
   async function createNewRegistration() {
     if (!user) {
       return;
     }
 
-    let newRegistration: Registration | undefined;
+    let created: Registration | undefined;
     try {
-      newRegistration = await registerUser(
+      created = await registerUser(
         user.id,
         event.id,
         RegStatus.GOING,
         formQuestionAnswer,
       );
     } catch {
-      newRegistration = undefined;
+      created = undefined;
     }
 
-    if (newRegistration) {
-      updateRegistration();
-      runUpdate();
-      if (newRegistration.regStatus === RegStatus.GOING) {
-        addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-      } else if (newRegistration.regStatus === RegStatus.WAITLISTED) {
-        addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-      }
-    } else {
-      addSnack("En feil skjedde under påmelding", SnackTypes.ERROR);
+    announceRegistration(
+      created,
+      "En feil skjedde under påmelding",
+      registrationListeners,
+    );
+    return created;
+  }
+
+  async function applyRegistrationStatus(
+    status: RegStatus,
+    formAnswer?: string,
+  ) {
+    if (!user) {
+      return;
     }
-    return newRegistration;
+
+    let updated: Registration | undefined;
+    try {
+      updated = (await updateRegistrationUser(
+        user.id,
+        event.id,
+        status,
+        formAnswer,
+      )) as Registration;
+    } catch {
+      updated = undefined;
+    }
+
+    announceRegistration(
+      updated,
+      "En feil skjedde under oppdatering",
+      registrationListeners,
+    );
+    return updated;
+  }
+
+  async function acceptInvitationRequest(formAnswer?: string) {
+    try {
+      await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          status: InvitationStatus.ACCEPTED,
+          formAnswer,
+        }),
+      });
+      announceRegistration(
+        { regStatus: RegStatus.GOING },
+        "Noe gikk galt",
+        registrationListeners,
+      );
+    } catch {
+      addSnack("Noe gikk galt", SnackTypes.ERROR);
+    }
   }
 
   async function registerForEvent() {
-    if (user) {
-      if (!regClosed && !eventFinished) {
-        /* force user to update food prefs if food is served */
-        const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
-          UserSeenUpdateType.HAS_SET_ALLERGENS,
-        );
+    if (!user) {
+      return redirectToLogin();
+    }
 
-        if (event.hasFood && (!user.foodPreference || !hasSeenAllergenUpdate)) {
-          return setFoodPreferenceModalOpen(true);
-        }
+    if (regClosed || eventFinished) {
+      return;
+    }
 
-        if (event.formQuestion) {
-          return setFormQuestionModalOpen(true);
-        }
+    if (await unansweredQuestionsOpened()) {
+      return;
+    }
 
-        const create = await createNewRegistration();
-        if (!create) {
-          await updateRegistrationStatus(RegStatus.GOING);
-        }
-      }
-    } else {
-      redirectToLogin();
+    const created = await createNewRegistration();
+    if (!created) {
+      await updateRegistrationStatus(RegStatus.GOING);
     }
   }
 
   async function updateRegistrationStatus(status: RegStatus) {
-    if (user) {
-      /* force user to update food prefs if food is served */
-      const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
-        UserSeenUpdateType.HAS_SET_ALLERGENS,
-      );
-
-      if (
-        status === RegStatus.GOING &&
-        event.hasFood &&
-        (!user.foodPreference || !hasSeenAllergenUpdate)
-      ) {
-        return setFoodPreferenceModalOpen(true);
-      }
-
-      if (status === RegStatus.GOING && event.formQuestion) {
-        return setFormQuestionModalOpen(true); // flow is resumed in answerFormQuestion()
-      }
-
-      let success: Registration | undefined;
-      try {
-        success = (await updateRegistrationUser(
-          user.id,
-          event.id,
-          status,
-        )) as Registration;
-      } catch {
-        /* Falls through to the error snack below; `success` stays undefined. */
-      }
-      if (success) {
-        updateRegistration();
-        runUpdate();
-        if (success.regStatus === RegStatus.GOING) {
-          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.WAITLISTED) {
-          addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-        } else if (success.regStatus === RegStatus.NOT_GOING) {
-          addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
-        }
-      } else {
-        addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
-      }
-      return success;
-    } else {
-      redirectToLogin();
+    if (!user) {
+      return redirectToLogin();
     }
+
+    if (status === RegStatus.GOING && (await unansweredQuestionsOpened())) {
+      return;
+    }
+
+    return applyRegistrationStatus(status);
   }
 
-  /* called when answer to form question is submitted (Not very DRY code...) */
   async function answerFormQuestion() {
     if (!user) {
       return;
     }
 
-    /* assume food has already been set here */
     switch (myRegistration?.regStatus) {
-      case RegStatus.NOT_GOING: {
-        let success: Registration | undefined;
-        try {
-          success = (await updateRegistrationUser(
-            user.id,
-            event.id,
-            RegStatus.GOING,
-            formQuestionAnswer,
-          )) as Registration;
-        } catch {
-          /* Falls through to the error snack below. */
-        }
-        if (success) {
-          updateRegistration();
-          runUpdate();
-          if (success.regStatus === RegStatus.GOING) {
-            addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-          } else if (success.regStatus === RegStatus.WAITLISTED) {
-            addSnack("Du er nå på venteliste", SnackTypes.SUCCESS);
-          } else if (success.regStatus === RegStatus.NOT_GOING) {
-            addSnack("Du er nå meldt av arrangementet", SnackTypes.SUCCESS);
-          }
-        } else {
-          addSnack("En feil skjedde under oppdatering", SnackTypes.ERROR);
-        }
+      case RegStatus.NOT_GOING:
+        await applyRegistrationStatus(RegStatus.GOING, formQuestionAnswer);
         break;
-      }
       case RegStatus.INVITED:
-        try {
-          await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json; charset=utf-8" },
-            body: JSON.stringify({
-              status: InvitationStatus.ACCEPTED,
-              formAnswer: formQuestionAnswer,
-            }),
-          });
-          updateRegistration();
-          runUpdate();
-          addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-        } catch {
-          addSnack("Noe gikk galt", SnackTypes.ERROR);
-        }
+        await acceptInvitationRequest(formQuestionAnswer);
         break;
       default:
         createNewRegistration();
@@ -466,33 +452,11 @@ export default function JoinButton({
   }
 
   async function acceptInvitation() {
-    /* force user to update food prefs if food is served */
-    const hasSeenAllergenUpdate = await userHasSeenUpdateLive(
-      UserSeenUpdateType.HAS_SET_ALLERGENS,
-    );
-
-    if (event.hasFood && (!user?.foodPreference || !hasSeenAllergenUpdate)) {
-      return setFoodPreferenceModalOpen(true);
+    if (await unansweredQuestionsOpened()) {
+      return;
     }
 
-    if (event.formQuestion) {
-      return setFormQuestionModalOpen(true);
-    }
-
-    try {
-      await fetchFromPeoplyApi(`/events/${event?.id}/invitations`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          status: InvitationStatus.ACCEPTED,
-        }),
-      });
-      updateRegistration();
-      runUpdate();
-      addSnack("Du er nå meldt på arrangementet", SnackTypes.SUCCESS);
-    } catch {
-      addSnack("Noe gikk galt", SnackTypes.ERROR);
-    }
+    await acceptInvitationRequest();
   }
 
   const buttonFunction = (() => {

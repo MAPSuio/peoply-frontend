@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../utils/locale";
 // Next.js.
 import { useRouter } from "next/router";
 
@@ -763,7 +764,9 @@ export default function useCreateEventForm() {
       id: organization.id,
       label: organization.name,
     }))
-    .sort((left, right) => left.label.localeCompare(right.label, "nb-NO"));
+    .sort((left, right) =>
+      left.label.localeCompare(right.label, DISPLAY_LOCALE),
+    );
 
   const visibleCoOrganizerOptions = coOrganizerOptions.filter((organization) =>
     organization.label

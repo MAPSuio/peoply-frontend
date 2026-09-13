@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import GlobalPopups from "../components/GlobalPopups";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
@@ -21,11 +22,7 @@ const popup = {
 };
 
 function renderPopups() {
-  return render(
-    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
-      <GlobalPopups />
-    </SWRConfig>,
-  );
+  return renderWithSwr(<GlobalPopups />, { dedupingInterval: 0 });
 }
 
 describe("GlobalPopups", () => {

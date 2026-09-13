@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "./locale";
 import {
   InputPages,
   CircleLabels,
@@ -8,8 +9,6 @@ import {
 import type { ParsedUrlQuery } from "querystring";
 
 import React from "react";
-
-const DISPLAY_LOCALE = "no-NO";
 
 function formatDisplayDate(date: Date, options: Intl.DateTimeFormatOptions) {
   return date.toLocaleString(DISPLAY_LOCALE, options);
@@ -109,32 +108,32 @@ function formatEventDate(
 ): string {
   if (format === EventDateFormat.SHORT) {
     if (endDate && !sameDate(startDate, endDate)) {
-      return `${startDate.toLocaleString("no-NO", {
+      return `${startDate.toLocaleString(DISPLAY_LOCALE, {
         weekday: "short",
         month: "short",
         day: "2-digit",
-      })}–${endDate.toLocaleString("no-NO", {
+      })}–${endDate.toLocaleString(DISPLAY_LOCALE, {
         month: "short",
         day: "2-digit",
       })}`.toUpperCase();
     } else {
       if (isToday(startDate)) {
-        return `I dag ${startDate.toLocaleString("no-NO", {
+        return `I dag ${startDate.toLocaleString(DISPLAY_LOCALE, {
           hour: "2-digit",
           minute: "2-digit",
         })}`.toUpperCase();
       } else if (isTomorrow(startDate)) {
-        return `I morgen ${startDate.toLocaleString("no-NO", {
+        return `I morgen ${startDate.toLocaleString(DISPLAY_LOCALE, {
           hour: "2-digit",
           minute: "2-digit",
         })}`.toUpperCase();
       }
 
-      return `${startDate.toLocaleString("no-NO", {
+      return `${startDate.toLocaleString(DISPLAY_LOCALE, {
         weekday: "short",
         month: "short",
         day: "2-digit",
-      })} KL. ${startDate.toLocaleString("no-NO", {
+      })} KL. ${startDate.toLocaleString(DISPLAY_LOCALE, {
         hour: "2-digit",
         minute: "2-digit",
       })}`.toUpperCase();
@@ -157,7 +156,7 @@ function formatFollowedDate(dateString: string): string {
     return "I går";
   }
 
-  return `${date.toLocaleString("no-NO", {
+  return `${date.toLocaleString(DISPLAY_LOCALE, {
     month: "short",
     day: "2-digit",
   })}`;
@@ -217,17 +216,6 @@ function getISODate(date: Date): string {
 }
 
 /* Formats a date(time) into hh:mm:ss. */
-function getISOTime(date: Date): string {
-  const isoString = date.toLocaleTimeString(DISPLAY_LOCALE, {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  });
-
-  return isoString;
-}
-
 /* format isoString and timezone into an isoString in UTC*/
 function removeTimezone(isoString: string): string {
   const date = new Date(isoString);
@@ -278,12 +266,6 @@ function getDateString(date: string): string {
 }
 
 /* Formats a date into hh:mm */
-function getTimeString(date: string): string {
-  const hour = date.slice(11, 13);
-  const minute = date.slice(14, 16);
-  return `${hour}:${minute}`;
-}
-
 function getTimeStringFromDate(date: Date): string {
   const hour = date.getHours();
   const minute = date.getMinutes();
@@ -482,14 +464,6 @@ function getCategoryText(
 }
 
 /* Checks if a text input is valid. */
-function textInputValid(
-  text: string,
-  minLength: number,
-  maxLength: number,
-): boolean {
-  return text.length > minLength && text.length <= maxLength;
-}
-
 /* Checks if a number input is valid. */
 function numberInputValid(number: number, min: number, max: number): boolean {
   return number > min && number <= max;
@@ -554,10 +528,6 @@ function latherThanNowISOString(isoString: string): boolean {
 }
 
 /* Checks if a category input is valid. */
-function categoryInputValid(categories: Array<number>): boolean {
-  return categories.length > 0;
-}
-
 /* Checks if a radio input is valid. */
 function radioInputValid(
   numberInputRequired: boolean,
@@ -573,10 +543,6 @@ function radioInputValid(
 }
 
 /* Checks if an image input is valid. */
-function imageInputValid(image: File | null): boolean {
-  return image !== null;
-}
-
 /* Checks if an event has all valid data. */
 function allEventInputsValid(eventInputsValid: Array<boolean>): boolean {
   const valid = eventInputsValid.every((eventInput) => {
@@ -693,7 +659,7 @@ function getTimeSinceString(date: Date) {
   } else if (diffInHours < 10) {
     return diffInHours > 1 ? `${diffInHours} timer siden` : "1 time siden";
   } else {
-    return `${date.toLocaleDateString("nb")} ${"  "} ${getTimeStringFromDate(
+    return `${date.toLocaleDateString(DISPLAY_LOCALE)} ${"  "} ${getTimeStringFromDate(
       date,
     )}`;
   }
@@ -722,27 +688,20 @@ export {
   formatFollowedDate,
   olderThanToday,
   getISODate,
-  getISOTime,
   formatDateAndTime,
-  laterThanNow,
   arrayFromRange,
   getInputPageData,
-  textInputValid,
   numberInputValid,
   dateInputStartValid,
   dateInputEndValid,
   timeInputStartValid,
   timeInputEndValid,
-  categoryInputValid,
   radioInputValid,
-  imageInputValid,
   allEventInputsValid,
   getDateString,
-  getTimeString,
   getCategoryText,
   getInputPageName,
   getProgressCircleLabel,
-  olderThanStart,
   getWeekday,
   throwNotImportedError,
   getISODateString,
@@ -758,6 +717,5 @@ export {
   queryToString,
   isValidEmail,
   getTimeSinceString,
-  getTimeStringFromDate,
   injectLink,
 };

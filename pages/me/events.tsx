@@ -14,7 +14,6 @@ import TabSelection from "../../components/TabSelection";
 import HeadComponent from "../../components/HeadComponent";
 
 /* Hooks. */
-import useUser from "../../hooks/useUser";
 
 /* Utils. */
 import { formatDateRange, getWeekday } from "../../utils/functions";
@@ -29,6 +28,7 @@ import {
   type Registration,
   RegStatus,
   SectionTypes,
+  type User,
 } from "../../types/types";
 
 /* Assets. */
@@ -39,10 +39,10 @@ import NoFavoriteImage from "../../assets/images/undraw_no_favorites.png";
 
 /* Styles. */
 import styles from "../../styles/MyEvents.module.scss";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import RequireUser from "../../components/RequireUser";
 import { isEventFinished } from "../../utils/event";
 
-const MyEvents = () => {
+const MyEventsList = ({ user }: { user: User }) => {
   const [activeSection, setActiveSection] = useState(SectionTypes.REGISTERED);
   // Registration/Favorite/EventArranger differ, but every card-rendering
   // consumer below only ever reads the shared `.event` field.
@@ -53,17 +53,14 @@ const MyEvents = () => {
   const [dateAndEventsMapArray, setDateAndEventsMapArray] = useState<
     Array<{ date: string; events: Array<Event> }>
   >([]);
-  const { user, loading } = useUser();
-  const redirectToLogin = useRedirectToLogin();
-
   const { data: eventsArranging } = useSWR<EventArranger[]>(
-    `/users/${user?.id}/arranging`,
+    `/users/${user.id}/arranging`,
   );
   const { data: eventsFavorited } = useSWR<Favorite[]>(
-    `/users/${user?.id}/favorites?includeEvent=true&includeArrangers=true`,
+    `/users/${user.id}/favorites?includeEvent=true&includeArrangers=true`,
   );
   const { data: eventsGoing } = useSWR<Registration[]>(
-    `/users/${user?.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true&take=100`,
+    `/users/${user.id}/registrations?regStatus=${RegStatus.GOING}&includeEvent=true&includeArrangers=true&take=100`,
   );
 
   const changeActiveSection = (section: SectionTypes) => {
@@ -137,15 +134,6 @@ const MyEvents = () => {
       default:
         return "";
     }
-  }
-
-  if (loading) {
-    return <></>;
-  }
-
-  if (!user) {
-    redirectToLogin();
-    return <></>;
   }
 
   const hasFutureEvents = dateAndEventsMapArray.some(
@@ -329,5 +317,9 @@ const EmptyEvents = ({ eventType }: EmptyEventsProps) => {
     </div>
   );
 };
+
+const MyEvents = () => (
+  <RequireUser>{(user) => <MyEventsList user={user} />}</RequireUser>
+);
 
 export default MyEvents;

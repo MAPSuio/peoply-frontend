@@ -1,31 +1,17 @@
-interface PlusIconProps {
-  className?: string;
-}
+import Icon, { type IconShapeProps } from "./Icon";
 
-const PlusIcon = ({ className }: PlusIconProps) => {
-  return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7 2.91669V11.0834"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2.91669 7H11.0834"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
+const PlusIcon = (props: IconShapeProps) => (
+  <Icon
+    viewBox="0 0 14 14"
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M7 2.91669V11.0834" />
+    <path d="M2.91669 7H11.0834" />
+  </Icon>
+);
 
 export default PlusIcon;

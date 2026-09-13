@@ -36,23 +36,15 @@ git checkout -b fix/thing-that-is-broken
 ```
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/),
-enforced by a `commit-msg` hook — a message that does not parse is rejected
-before the commit is created. Write the subject so it says what changed for a
-user or a caller, not which file you touched.
+enforced by a `commit-msg` hook. The rules are the same in both Peoply
+repositories and are written down once, in
+[the backend's `CONTRIBUTING.md`](https://github.com/MAPSuio/peoply-backend/blob/master/CONTRIBUTING.md#commit-messages).
 
 ```text
 feat(header): link to source code from the front page
 fix(pwa): stop the service worker precaching a 404
 feat(api)!: drop the v1 endpoints
 ```
-
-Types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`,
-`revert`, `style`, `test`. The scope is optional; `!` before the colon marks a
-breaking change.
-
-The type must be lowercase. The subject need not be — `fix: API returns 500` is
-fine, because a rule that rejects it would reject naming `API`, `SWR` or `Vipps`
-first in the sentence. Merge, revert and fixup commits are ignored.
 
 ## Checks
 

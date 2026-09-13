@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "./locale";
 import type { Event } from "../types/types";
 import {
   type ArrangerColor,
@@ -16,8 +17,6 @@ import {
   getPrimaryEventArrangerColorKey,
   getPrimaryEventArrangerPalette,
 } from "./eventArrangers";
-
-const DISPLAY_LOCALE = "no-NO";
 
 const START_TIME_FORMAT = {
   hour: "2-digit",
@@ -55,7 +54,7 @@ const DAYS_IN_WEEK = 7;
 
 const WINDOW_IN_DAYS = ROLLING_WINDOW_IN_WEEKS * DAYS_IN_WEEK;
 
-const rangeFormatter = new Intl.DateTimeFormat("nb-NO", {
+const rangeFormatter = new Intl.DateTimeFormat(DISPLAY_LOCALE, {
   day: "numeric",
   month: "short",
 });

@@ -1,3 +1,5 @@
+import { DISPLAY_LOCALE } from "./locale";
+
 export interface FilterOption<T> {
   value: T;
   label: string;
@@ -23,7 +25,7 @@ export function sortedUniqueOptions<T>(
   }
 
   return [...firstOfEachValue.values()].sort((a, b) =>
-    a.label.localeCompare(b.label, "nb-NO"),
+    a.label.localeCompare(b.label, DISPLAY_LOCALE),
   );
 }
 

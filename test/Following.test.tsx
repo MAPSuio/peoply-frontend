@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import type { ReactNode } from "react";
-import { SWRConfig } from "swr";
+import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import Following from "../pages/me/following";
 import type { ArrangerFollower, User } from "../types/types";
@@ -46,20 +46,11 @@ function arrangerFollower(): ArrangerFollower {
 /* Renders the page against a fetcher the test controls, with a cache of its
    own so one test's answer never leaks into the next. */
 function renderPage(fetcher: () => Promise<unknown>) {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <SWRConfig
-      value={{
-        fetcher,
-        provider: () => new Map(),
-        dedupingInterval: 0,
-        shouldRetryOnError: false,
-      }}
-    >
-      {children}
-    </SWRConfig>
-  );
-
-  return render(<Following />, { wrapper });
+  return renderWithSwr(<Following />, {
+    fetcher,
+    dedupingInterval: 0,
+    shouldRetryOnError: false,
+  });
 }
 
 describe("/me/following", () => {

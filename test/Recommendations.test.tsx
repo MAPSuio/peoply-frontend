@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import type { ReactNode } from "react";
-import { SWRConfig } from "swr";
+import { screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import Recommendations from "../components/Recommendations";
 import type { Event, Organization } from "../types/types";
@@ -25,19 +25,11 @@ const ORG = { id: "o1", name: "MAPS" } as Organization;
 /* Renders against a fetcher the test controls, with a cache of its own so one
    test's answer never leaks into the next. */
 function renderWithFetcher(fetcher: (key: string) => Promise<unknown>) {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <SWRConfig
-      value={{
-        fetcher,
-        provider: () => new Map(),
-        dedupingInterval: 0,
-        shouldRetryOnError: false,
-      }}
-    >
-      {children}
-    </SWRConfig>
-  );
-  return render(<Recommendations />, { wrapper });
+  return renderWithSwr(<Recommendations />, {
+    fetcher,
+    dedupingInterval: 0,
+    shouldRetryOnError: false,
+  });
 }
 
 describe("Recommendations", () => {

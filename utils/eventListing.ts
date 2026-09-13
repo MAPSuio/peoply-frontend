@@ -2,6 +2,7 @@ import { MAX_PAGE_SIZE } from "../services/fetchers";
 import type { Event } from "../types/types";
 import { getEventArrangerDisplayItems } from "./eventArrangers";
 import { normalizeSearchValue } from "./filterOptions";
+import { DISPLAY_LOCALE } from "./locale";
 
 export interface EventMonthGroup {
   key: string;
@@ -104,7 +105,7 @@ export function filterEvents(
 }
 
 function monthLabel(startDate: Date): string {
-  const label = startDate.toLocaleString("nb-NO", {
+  const label = startDate.toLocaleString(DISPLAY_LOCALE, {
     month: "long",
     year: "numeric",
   });

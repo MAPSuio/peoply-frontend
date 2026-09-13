@@ -27,7 +27,6 @@ export interface User {
   image?: string;
   foodPreference?: FoodPreference;
   allowEmailFromArranger: boolean;
-  allowEmailPromotions: boolean;
   hasAdminAccess?: boolean;
   isAdmin?: boolean;
   userAllergens?: {
@@ -51,19 +50,6 @@ export enum FoodPreference {
 export enum EventUpdateVisibility {
   ALL = "ALL",
   GOING = "GOING",
-}
-
-export interface GeolocationPostitionObject {
-  coords: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-    altitude: number;
-    altitudeAccuracy: number;
-    heading: number;
-    speed: number;
-  };
-  timestamp: number;
 }
 
 export interface OutboundOrganizationInvitation {
@@ -129,14 +115,6 @@ export interface IpInfo {
   country_population: number;
   asn: string;
   org: string;
-}
-
-export interface GeolocationContextType {
-  activated?: boolean;
-  geolocation?: GeolocationPosition;
-  loading: boolean;
-  error?: string;
-  activateGeolocation: () => void;
 }
 
 export interface NotificationsContextType {
@@ -365,28 +343,10 @@ export interface Event {
   favorites?: Favorite[];
 }
 
-export interface MyEventData {
-  id: number;
-  startDate: string;
-  endDate: string;
-  title: string;
-  capacity?: number;
-  image?: string;
-  registrations: Registration[];
-}
-
 export interface FavoriteData {
   userId: string;
   eventId: string;
   favoritedDate: string;
-}
-
-export interface RegistrationData {
-  eventId: string;
-  userId: string;
-  regDate: Date;
-  regStatus: RegStatus;
-  attendance: boolean;
 }
 
 export interface Category {
@@ -447,21 +407,6 @@ export interface EventUpdate {
   createdByUser?: User;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface EmailContent {
-  /**
-   * Subject of the email message
-   */
-  subject: string;
-  /**
-   * Plain text version of the email message.
-   */
-  plainText?: string;
-  /**
-   * Html version of the email message.
-   */
-  html?: string;
 }
 
 export enum InputPages {
