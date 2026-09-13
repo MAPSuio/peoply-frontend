@@ -2,7 +2,8 @@ import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
-import TitleCircle from "../TitleCircle";
+import IconCircle from "../IconCircle";
+import TitleIcon from "../svgs/TitleIcon";
 import TextInput from "../inputs/TextInput";
 
 /* Styles */
@@ -35,7 +36,7 @@ const EditTitleSection = ({
   return (
     <SummaryCard
       inputId={0}
-      Icon={<TitleCircle className={styles.summaryIcon} />}
+      Icon={<IconCircle Icon={TitleIcon} iconClassName={styles.summaryIcon} />}
       editButtonVisible
       editButtonDisabled={editOpen}
       onCheck={onCheck}

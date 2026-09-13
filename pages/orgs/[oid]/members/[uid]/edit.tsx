@@ -1,22 +1,19 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 import HeadComponent from "../../../../../components/HeadComponent";
 import MemberEditForm from "../../../../../components/organization/MemberEditForm";
 import useBack from "../../../../../hooks/useBack";
 import useOrganization from "../../../../../hooks/useOrganization";
-import useRedirectToLogin from "../../../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../../../components/RequireUser";
 import useRedirectWithReason from "../../../../../hooks/useRedirectWithReason";
 import { memberEditBlockedReason } from "../../../../../utils/organizationAccess";
-import useUser from "../../../../../hooks/useUser";
+import type { User } from "../../../../../types/types";
 
-export default function EditOrganizationUser() {
+function MemberEditor({ user }: { user: User }) {
   const router = useRouter();
   const { oid, uid } = router.query;
   const memberListUrl = `/orgs/${oid}/members`;
   const goBack = useBack(memberListUrl);
-  const redirectToLogin = useRedirectToLogin();
-  const { user, loading } = useUser();
   const {
     organization,
     organizationUsers,
@@ -29,18 +26,12 @@ export default function EditOrganizationUser() {
   } = useOrganization(oid as string);
 
   const member = organizationUsers?.find((entry) => entry.userId === uid);
-  const canEdit = isAdminOrOwner || user?.id === member?.userId;
-
-  useEffect(() => {
-    if (!loading && !user) {
-      redirectToLogin();
-    }
-  }, [loading, redirectToLogin, user]);
+  const canEdit = isAdminOrOwner || user.id === member?.userId;
 
   useRedirectWithReason({
     reason: memberEditBlockedReason({
-      loading: loading || loadingOrganization,
-      signedIn: Boolean(user),
+      loading: loadingOrganization,
+      signedIn: true,
       fetchFailed: Boolean(organizationError),
       canEdit,
       isMemberOfOrganization: Boolean(member),
@@ -48,7 +39,7 @@ export default function EditOrganizationUser() {
     to: memberListUrl,
   });
 
-  if (!user || !organization || !member) {
+  if (!organization || !member) {
     return null;
   }
 
@@ -72,4 +63,8 @@ export default function EditOrganizationUser() {
       />
     </>
   );
+}
+
+export default function EditOrganizationUser() {
+  return <RequireUser>{(user) => <MemberEditor user={user} />}</RequireUser>;
 }

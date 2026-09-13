@@ -9,20 +9,17 @@ import Button from "../../../components/Button";
 import HeadComponent from "../../../components/HeadComponent";
 import QueryState from "../../../components/QueryState";
 import useBack from "../../../hooks/useBack";
-import useRedirectToLogin from "../../../hooks/useRedirectToLogin";
+import RequireUser from "../../../components/RequireUser";
 import useSnack from "../../../hooks/useSnack";
-import useUser from "../../../hooks/useUser";
 import { isAdmin } from "../../../utils/admin";
 import {
   fetchAllFromPeoplyApiJson,
   fetchFromPeoplyApi,
 } from "../../../services/fetchers";
-import { type Organization, SnackTypes } from "../../../types/types";
+import { type Organization, SnackTypes, type User } from "../../../types/types";
 import styles from "../../../styles/OrganizationApprovalAdmin.module.scss";
 
-const OrganizationApprovalAdmin: NextPage = () => {
-  const { user, loading } = useUser();
-  const redirectToLogin = useRedirectToLogin();
+const OrganizationApprovalQueue = ({ user }: { user: User }) => {
   const goBack = useBack();
   const router = useRouter();
   const { addSnack } = useSnack();
@@ -34,13 +31,13 @@ const OrganizationApprovalAdmin: NextPage = () => {
   const hasWriteAccess = isAdmin(user);
 
   useEffect(() => {
-    if (!loading && user && !user.hasAdminAccess) {
+    if (!user.hasAdminAccess) {
       router.replace("/me");
     }
-  }, [loading, router, user]);
+  }, [router, user]);
 
   const organizationsQuery = useSWR<Organization[]>(
-    user?.hasAdminAccess ? "/organizations/admin/all" : null,
+    user.hasAdminAccess ? "/organizations/admin/all" : null,
     fetchAllFromPeoplyApiJson,
   );
   const { mutate } = organizationsQuery;
@@ -63,16 +60,7 @@ const OrganizationApprovalAdmin: NextPage = () => {
     }
   };
 
-  if (loading) {
-    return <></>;
-  }
-
-  if (!loading && !user) {
-    redirectToLogin();
-    return <></>;
-  }
-
-  if (!loading && user && !user.hasAdminAccess) {
+  if (!user.hasAdminAccess) {
     return <></>;
   }
 
@@ -141,5 +129,11 @@ const OrganizationApprovalAdmin: NextPage = () => {
     </>
   );
 };
+
+const OrganizationApprovalAdmin: NextPage = () => (
+  <RequireUser>
+    {(user) => <OrganizationApprovalQueue user={user} />}
+  </RequireUser>
+);
 
 export default OrganizationApprovalAdmin;

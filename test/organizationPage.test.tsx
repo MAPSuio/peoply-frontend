@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { SWRConfig } from "swr";
+import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 /* Hoisted: vi.mock runs before the module body, so a plain const would still
    be in its temporal dead zone when the factory reaches for it. */
@@ -34,14 +35,11 @@ const ORGANIZATION = {
 const NOT_FOUND_TEXT = /Vi kunne ikke finne siden du leter etter/;
 
 function renderPage(prerendered: Organization | null) {
-  return render(
+  return renderWithSwr(
     <SnackbarProvider>
-      <SWRConfig
-        value={{ provider: () => new Map(), fetcher: async () => undefined }}
-      >
-        <OrganizationPage organization={prerendered} />
-      </SWRConfig>
+      <OrganizationPage organization={prerendered} />
     </SnackbarProvider>,
+    { fetcher: async () => undefined },
   );
 }
 
@@ -70,11 +68,7 @@ describe("the organization page when the server prerendered nothing", () => {
     });
     rerender(
       <SnackbarProvider>
-        <SWRConfig
-          value={{ provider: () => new Map(), fetcher: async () => undefined }}
-        >
-          <OrganizationPage organization={null} />
-        </SWRConfig>
+        <OrganizationPage organization={null} />
       </SnackbarProvider>,
     );
 

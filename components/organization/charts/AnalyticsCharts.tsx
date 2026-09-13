@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../../../utils/locale";
 import { useMemo } from "react";
 import { barY, defineChart, lineY, stack } from "@tanstack/charts";
 import { Chart } from "@tanstack/charts/react";
@@ -13,7 +14,7 @@ import styles from "../../../styles/OrganizationAnalytics.module.scss";
 const GOING_SERIES = "Påmeldt";
 const WAITLIST_SERIES = "Venteliste";
 
-const shortDate = new Intl.DateTimeFormat("nb-NO", {
+const shortDate = new Intl.DateTimeFormat(DISPLAY_LOCALE, {
   day: "numeric",
   month: "short",
 });

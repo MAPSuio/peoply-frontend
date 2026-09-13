@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import OrganizationAnalytics from "../components/organization/OrganizationAnalytics";
 import type {
@@ -98,18 +99,8 @@ const payload: OrganizationAnalyticsPayload = {
 
 const fetcher = vi.fn();
 
-function renderWithSwr(ui: ReactElement) {
-  return render(
-    <SWRConfig
-      value={{
-        provider: () => new Map(),
-        dedupingInterval: 0,
-        fetcher,
-      }}
-    >
-      {ui}
-    </SWRConfig>,
-  );
+function renderAnalytics(ui: ReactElement) {
+  return renderWithSwr(ui, { dedupingInterval: 0, fetcher });
 }
 
 describe("OrganizationAnalytics", () => {
@@ -120,7 +111,7 @@ describe("OrganizationAnalytics", () => {
   });
 
   it("fetches the analytics payload and renders the KPI values", async () => {
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     expect(await screen.findByText("120")).toBeDefined();
     expect(fetcher).toHaveBeenCalledWith(
@@ -137,7 +128,7 @@ describe("OrganizationAnalytics", () => {
   });
 
   it("renders the top events by attendance with signup counts", async () => {
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     expect(await screen.findByText("Kveldskurs")).toBeDefined();
     expect(screen.getByText("Morgentrening")).toBeDefined();
@@ -149,7 +140,7 @@ describe("OrganizationAnalytics", () => {
     const { userEvent } = await import("@testing-library/user-event").then(
       (module) => ({ userEvent: module.default }),
     );
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
     await screen.findByText("120");
 
     await userEvent.selectOptions(
@@ -165,7 +156,7 @@ describe("OrganizationAnalytics", () => {
   });
 
   it("does not render charts on mobile", async () => {
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     await screen.findByText("120");
     expect(screen.queryByTestId("charts")).toBeNull();
@@ -173,7 +164,7 @@ describe("OrganizationAnalytics", () => {
 
   it("renders charts on desktop", async () => {
     isDesktop = true;
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     await screen.findByText("120");
     expect(screen.getByTestId("charts")).toBeDefined();
@@ -202,7 +193,7 @@ describe("OrganizationAnalytics", () => {
       },
     });
 
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     await screen.findByText("120");
     expect(screen.getAllByText("—").length).toBeGreaterThan(0);
@@ -211,7 +202,7 @@ describe("OrganizationAnalytics", () => {
   it("shows the shared error state when the request fails", async () => {
     fetcher.mockRejectedValue(new Error("boom"));
 
-    renderWithSwr(<OrganizationAnalytics organization={organization} />);
+    renderAnalytics(<OrganizationAnalytics organization={organization} />);
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toBeDefined();

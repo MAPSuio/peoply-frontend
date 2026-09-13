@@ -4,34 +4,28 @@ import Avatar from "../../components/Avatar";
 import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
 import useBack from "../../hooks/useBack";
-import useRedirectToLogin from "../../hooks/useRedirectToLogin";
+import RequireUser from "../../components/RequireUser";
 import useSnack from "../../hooks/useSnack";
 import useUser from "../../hooks/useUser";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import styles from "../../styles/EditFoodPreference.module.scss";
-import { FoodPreference, SnackTypes } from "../../types/types";
+import { type FoodPreference, SnackTypes, type User } from "../../types/types";
 import Dropdown from "../../components/Dropdown";
+import { foodPreferenceOptions } from "../../utils/foodPreference";
 
-const FoodPreferences: NextPage = () => {
+const EditFoodPreference = ({ user }: { user: User }) => {
   const goBack = useBack();
-  const { user, loading, reload } = useUser();
+  const { reload } = useUser();
   const [foodPreference, setFoodPreference] = useState<FoodPreference | null>(
     null,
   );
-  const redirectToLogin = useRedirectToLogin();
 
   const { addSnack } = useSnack();
   useEffect(() => {
-    if (user?.foodPreference) {
+    if (user.foodPreference) {
       setFoodPreference(user.foodPreference);
     }
   }, [user]);
-
-  if (!loading && !user) {
-    redirectToLogin();
-  }
-
-  if (!user) return <></>;
 
   const handleConfirm = async () => {
     try {
@@ -47,35 +41,8 @@ const FoodPreferences: NextPage = () => {
     }
   };
 
-  function generateFoodPreferenceOptions() {
-    function valueToLabel(preference: FoodPreference) {
-      switch (preference) {
-        case FoodPreference.VEGAN:
-          return "Vegan 🌱";
-        case FoodPreference.VEGETARIAN:
-          return "Vegetar 🧀";
-        case FoodPreference.PESCETARIAN:
-          return "Pescetar 🐟";
-        case FoodPreference.NO_PREFERENCE:
-          return "Ingen preferanse 🤷";
-        default:
-          return "";
-      }
-    }
-
-    return [
-      { value: null, label: "", isDefault: true },
-      ...Object.entries(FoodPreference).map(([, value]) => {
-        return {
-          value,
-          label: valueToLabel(value),
-        };
-      }),
-    ];
-  }
-
   const validFoodPreferenceEdit =
-    foodPreference && user?.foodPreference !== foodPreference;
+    foodPreference && user.foodPreference !== foodPreference;
 
   return (
     <div className={styles.container}>
@@ -83,7 +50,7 @@ const FoodPreferences: NextPage = () => {
       <Avatar user={user} size="large" />
       <Dropdown
         label="Matpreferanse"
-        options={generateFoodPreferenceOptions()}
+        options={foodPreferenceOptions()}
         value={foodPreference ?? ""}
         inputId="foodPreference"
         setValue={setFoodPreference}
@@ -100,5 +67,9 @@ const FoodPreferences: NextPage = () => {
     </div>
   );
 };
+
+const FoodPreferences: NextPage = () => (
+  <RequireUser>{(user) => <EditFoodPreference user={user} />}</RequireUser>
+);
 
 export default FoodPreferences;

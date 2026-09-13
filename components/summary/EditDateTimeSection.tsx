@@ -15,7 +15,7 @@ import { getISODateString, getISOTimeString } from "../../utils/functions";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
-import type { EventObjectProps } from "../EditSummaryPage";
+import type { EventObjectProps, PatchDateTime } from "../EditSummaryPage";
 
 interface EditDateTimeSectionProps {
   editOpen: boolean;
@@ -32,14 +32,7 @@ interface EditDateTimeSectionProps {
   setValidRegStart: Dispatch<SetStateAction<boolean>>;
   validRegEnd: boolean;
   setValidRegEnd: Dispatch<SetStateAction<boolean>>;
-  updateStartDate: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateStartTime: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateEndDate: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateEndTime: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateRegStartDate: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateRegStartTime: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateRegEndDate: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateRegEndTime: (e: ChangeEvent<HTMLInputElement>) => void;
+  patchDateTime: PatchDateTime;
 }
 
 /* Editable date/time card used by EditSummaryPage (event editing). */
@@ -58,14 +51,7 @@ const EditDateTimeSection = ({
   setValidRegStart,
   validRegEnd,
   setValidRegEnd,
-  updateStartDate,
-  updateStartTime,
-  updateEndDate,
-  updateEndTime,
-  updateRegStartDate,
-  updateRegStartTime,
-  updateRegEndDate,
-  updateRegEndTime,
+  patchDateTime,
 }: EditDateTimeSectionProps) => {
   return (
     <SummaryCard
@@ -93,7 +79,7 @@ const EditDateTimeSection = ({
               inputName="eventDateStart"
               label="Dato start"
               errorMessage="Dato må være i dag eller i fremtiden."
-              handleChange={updateStartDate}
+              handleChange={patchDateTime("startDate", "date")}
               valid={validStart}
               noExtraInfo
               card
@@ -104,7 +90,7 @@ const EditDateTimeSection = ({
               inputName="eventTimeStart"
               label="Tidspunkt start"
               errorMessage="Tiden må være i fremtiden."
-              handleChange={updateStartTime}
+              handleChange={patchDateTime("startDate", "time")}
               valid={validStart}
               noExtraInfo
               card
@@ -154,7 +140,7 @@ const EditDateTimeSection = ({
                   inputName="eventDateEnd"
                   label="Dato slutt"
                   errorMessage="Sluttdato kan ikke være før startdato."
-                  handleChange={updateEndDate}
+                  handleChange={patchDateTime("endDate", "date")}
                   valid={validEnd}
                   initiallyFocused
                   noExtraInfo
@@ -170,7 +156,7 @@ const EditDateTimeSection = ({
                   inputName="eventTimeEnd"
                   label="Tidspunkt slutt"
                   errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
-                  handleChange={updateEndTime}
+                  handleChange={patchDateTime("endDate", "time")}
                   valid={validEnd}
                   initiallyFocused
                   noExtraInfo
@@ -223,7 +209,7 @@ const EditDateTimeSection = ({
                   inputName="eventRegDateStart"
                   label="Dato åpning"
                   errorMessage="Påmelding må åpne før startdato."
-                  handleChange={updateRegStartDate}
+                  handleChange={patchDateTime("regStart", "date")}
                   valid={validRegStart}
                   initiallyFocused
                   noExtraInfo
@@ -239,7 +225,7 @@ const EditDateTimeSection = ({
                   inputName="eventRegTimeStart"
                   label="Tidspunkt åpning"
                   errorMessage="Påmelding må åpne før startdato."
-                  handleChange={updateRegStartTime}
+                  handleChange={patchDateTime("regStart", "time")}
                   valid={validRegStart}
                   initiallyFocused
                   noExtraInfo
@@ -292,7 +278,7 @@ const EditDateTimeSection = ({
                   inputName="eventRegDateEnd"
                   label="Dato frist"
                   errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                  handleChange={updateRegEndDate}
+                  handleChange={patchDateTime("regEnd", "date")}
                   valid={validRegEnd}
                   initiallyFocused
                   noExtraInfo
@@ -308,7 +294,7 @@ const EditDateTimeSection = ({
                   inputName="eventRegTimeEnd"
                   label="Tidspunkt frist"
                   errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                  handleChange={updateRegEndTime}
+                  handleChange={patchDateTime("regEnd", "time")}
                   valid={validRegEnd}
                   initiallyFocused
                   noExtraInfo

@@ -5,6 +5,7 @@ import {
   type User,
 } from "../../types/types";
 import { getOrganizationRolePrivilege } from "../../utils/functions";
+import { DISPLAY_LOCALE } from "../../utils/locale";
 
 export interface CoOrganizerOption {
   id: string;
@@ -53,7 +54,9 @@ export function coOrganizerOptionsFor(
   return (organizations ?? [])
     .filter((organization) => organization.id !== excludedOrganizationId)
     .map((organization) => ({ id: organization.id, label: organization.name }))
-    .sort((left, right) => left.label.localeCompare(right.label, "nb-NO"));
+    .sort((left, right) =>
+      left.label.localeCompare(right.label, DISPLAY_LOCALE),
+    );
 }
 
 export function matchingCoOrganizerOptions(

@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../../utils/locale";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
@@ -155,7 +156,7 @@ const Events: NextPage = () => {
     }, []);
 
     return uniqueOrganizations.sort((a, b) =>
-      a.label.localeCompare(b.label, "nb-NO"),
+      a.label.localeCompare(b.label, DISPLAY_LOCALE),
     );
   }, [organizations]);
 
@@ -173,7 +174,7 @@ const Events: NextPage = () => {
     );
 
     return uniqueCategories.sort((a, b) =>
-      a.label.localeCompare(b.label, "nb-NO"),
+      a.label.localeCompare(b.label, DISPLAY_LOCALE),
     );
   }, [categories]);
 
@@ -328,7 +329,7 @@ const Events: NextPage = () => {
       const startDate = new Date(event.startDate);
       const key = `${startDate.getFullYear()}-${startDate.getMonth()}`;
       const label = capitalize(
-        startDate.toLocaleString("nb-NO", {
+        startDate.toLocaleString(DISPLAY_LOCALE, {
           month: "long",
           year: "numeric",
         }),

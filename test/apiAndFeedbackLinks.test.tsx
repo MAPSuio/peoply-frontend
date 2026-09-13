@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SWRConfig } from "swr";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import FAQ from "../pages/faq";
 import Integrasjoner from "../pages/integrasjoner";
@@ -50,9 +51,6 @@ vi.mock("../hooks/useNotifications", () => ({
 }));
 vi.mock("../hooks/useBack", () => ({ default: () => vi.fn() }));
 vi.mock("../components/HeadComponent", () => ({ default: () => null }));
-
-const renderWithSwr = (ui: React.ReactElement) =>
-  render(<SWRConfig value={{ provider: () => new Map() }}>{ui}</SWRConfig>);
 
 const hrefOf = (name: RegExp) =>
   screen.getByRole("link", { name }).getAttribute("href");

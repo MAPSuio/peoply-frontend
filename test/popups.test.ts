@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "../services/apiError";
+import type { Popup } from "../types/types";
 import {
   formatPopupRange,
   fromDateTimeLocal,
   getDefaultInterval,
+  groupPopupsByStatus,
   popupConflict,
   toDateTimeLocal,
 } from "../utils/popups";
@@ -89,5 +91,46 @@ describe("popupConflict", () => {
         }),
       ),
     ).toBeUndefined();
+  });
+});
+
+describe("groupPopupsByStatus", () => {
+  const now = new Date("2026-05-04T12:00:00.000Z").getTime();
+
+  function popupWith(id: string, startsAt: string, endsAt: string) {
+    return { id, title: id, body: "", startsAt, endsAt } as Popup;
+  }
+
+  it("puts each popup in exactly one bucket", () => {
+    const grouped = groupPopupsByStatus(
+      [
+        popupWith(
+          "past",
+          "2026-05-01T00:00:00.000Z",
+          "2026-05-02T00:00:00.000Z",
+        ),
+        popupWith(
+          "active",
+          "2026-05-04T00:00:00.000Z",
+          "2026-05-05T00:00:00.000Z",
+        ),
+        popupWith(
+          "upcoming",
+          "2026-05-06T00:00:00.000Z",
+          "2026-05-07T00:00:00.000Z",
+        ),
+      ],
+      now,
+    );
+
+    expect(grouped.past.map(({ id }) => id)).toEqual(["past"]);
+    expect(grouped.active.map(({ id }) => id)).toEqual(["active"]);
+    expect(grouped.upcoming.map(({ id }) => id)).toEqual(["upcoming"]);
+  });
+
+  it("keeps a popup with unreadable dates visible as upcoming", () => {
+    const grouped = groupPopupsByStatus([popupWith("broken", "", "")], now);
+
+    expect(grouped.upcoming.map(({ id }) => id)).toEqual(["broken"]);
   });
 });

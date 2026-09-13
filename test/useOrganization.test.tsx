@@ -1,9 +1,10 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { SWRConfig } from "swr";
 import type { Organization, User, UserOrganizationRoles } from "../types/types";
 import { OrganizationRole } from "../types/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { renderWithSwr } from "./support/swr";
 
 import useOrganization from "../hooks/useOrganization";
 import { ApiError } from "../services/apiError";
@@ -70,25 +71,11 @@ function state() {
    without this the second test to ask for org-1 is served from what the first
    one left behind and never calls the fetcher at all. Retries are off so an
    errored key stays errored for the length of a test. */
-function renderWithSwr(ui: ReactElement) {
-  const wrap = (node: ReactElement) => (
-    <SWRConfig
-      value={{
-        provider: () => new Map(),
-        dedupingInterval: 0,
-        shouldRetryOnError: false,
-      }}
-    >
-      {node}
-    </SWRConfig>
-  );
-
-  const result = render(wrap(ui));
-
-  return {
-    ...result,
-    rerender: (next: ReactElement) => result.rerender(wrap(next)),
-  };
+function renderConsumer(ui: ReactElement) {
+  return renderWithSwr(ui, {
+    dedupingInterval: 0,
+    shouldRetryOnError: false,
+  });
 }
 
 describe("useOrganization", () => {
@@ -102,7 +89,7 @@ describe("useOrganization", () => {
   it("does not refetch a missing organization on a same-ID user rerender", async () => {
     getOrganizationMock.mockRejectedValue(new Error("Not found"));
 
-    const { rerender } = renderWithSwr(
+    const { rerender } = renderConsumer(
       <OrganizationConsumer oid="missing-org" />,
     );
 
@@ -120,7 +107,7 @@ describe("useOrganization", () => {
     getOrganizationMock.mockResolvedValue(organization);
     getOrganizationUsersMock.mockReturnValue(members.promise);
 
-    renderWithSwr(<OrganizationConsumer oid="org-1" />);
+    renderConsumer(<OrganizationConsumer oid="org-1" />);
 
     await waitFor(() =>
       expect(getOrganizationUsersMock).toHaveBeenCalledOnce(),
@@ -146,7 +133,7 @@ describe("useOrganization", () => {
       new ApiError("Forbidden", 403, "/organizations/org-1/members"),
     );
 
-    renderWithSwr(<OrganizationConsumer oid="org-1" />);
+    renderConsumer(<OrganizationConsumer oid="org-1" />);
 
     await waitFor(() => expect(state().loading).toBe(false));
     expect(state().membersForbidden).toBe(true);
@@ -158,7 +145,7 @@ describe("useOrganization", () => {
       new ApiError("Boom", 500, "/organizations/org-1/members"),
     );
 
-    renderWithSwr(<OrganizationConsumer oid="org-1" />);
+    renderConsumer(<OrganizationConsumer oid="org-1" />);
 
     await waitFor(() => expect(state().loading).toBe(false));
     expect(state().membersForbidden).toBe(false);
@@ -168,7 +155,7 @@ describe("useOrganization", () => {
   it("skips members when fetchMembers is false", async () => {
     getOrganizationMock.mockResolvedValue(organization);
 
-    renderWithSwr(<OrganizationConsumer oid="org-1" fetchMembers={false} />);
+    renderConsumer(<OrganizationConsumer oid="org-1" fetchMembers={false} />);
 
     await waitFor(() => expect(state().loading).toBe(false));
     expect(getOrganizationMock).toHaveBeenCalledOnce();
@@ -183,7 +170,7 @@ describe("useOrganization", () => {
         : Promise.resolve({ id: oid } as Organization),
     );
 
-    const { rerender } = renderWithSwr(
+    const { rerender } = renderConsumer(
       <OrganizationConsumer oid="org-1" fetchMembers={false} />,
     );
     rerender(<OrganizationConsumer oid="org-2" fetchMembers={false} />);

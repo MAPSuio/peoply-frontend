@@ -46,7 +46,6 @@ import useBackgroundPatternPreference from "../../hooks/useBackgroundPatternPref
 const Settings = () => {
   const [allowEmailNotifications, setAllowEmailNotifications] = useState(true);
   const [allowEmailFromArranger, setAllowEmailFromArranger] = useState(true);
-  const [allowEmailPromotions, setAllowEmailPromotions] = useState(true);
   const [backgroundPatternEnabled, setBackgroundPatternEnabled] =
     useBackgroundPatternPreference();
   const { theme, setTheme } = useTheme();
@@ -90,22 +89,19 @@ const Settings = () => {
     if (user) {
       setEmail(user.email);
       setAllowEmailFromArranger(user.allowEmailFromArranger);
-      setAllowEmailPromotions(user.allowEmailPromotions);
 
-      /* activate the allow email switch if either email toggles are true */
-      if (user.allowEmailFromArranger || user.allowEmailPromotions) {
+      if (user.allowEmailFromArranger) {
         setAllowEmailNotifications(true);
       }
     }
   }, [user]);
 
-  /* untoggle email switch if both email toggles are false */
   useEffect(() => {
-    if (!allowEmailFromArranger && !allowEmailPromotions) {
+    if (!allowEmailFromArranger) {
       setAllowEmailNotifications(false);
       setEmail(user?.email ?? "");
     }
-  }, [allowEmailFromArranger, allowEmailPromotions, user?.email]);
+  }, [allowEmailFromArranger, user?.email]);
 
   if (loading) {
     /* TODO: Create actual loading skeleton. */
@@ -126,12 +122,7 @@ const Settings = () => {
 
   const validAllowEmailFromArrangerEdit =
     allowEmailFromArranger !== user?.allowEmailFromArranger;
-  const validAllowEmailPromotionsEdit =
-    allowEmailPromotions !== user?.allowEmailPromotions;
-  const validEdit =
-    validAllowEmailFromArrangerEdit ||
-    validAllowEmailPromotionsEdit ||
-    email !== user?.email;
+  const validEdit = validAllowEmailFromArrangerEdit || email !== user?.email;
 
   const linkedProviders = user?.providers?.map((link) => link.provider) ?? [];
   const UnlinkLogo = unlinkTarget ? PROVIDER_LOGOS[unlinkTarget] : undefined;
@@ -155,11 +146,7 @@ const Settings = () => {
   const handleConfirm = async () => {
     try {
       const body = {
-        ...(validAllowEmailFromArrangerEdit && {
-          allowEmailFromArranger,
-          allowEmailOnWaitlist: allowEmailFromArranger,
-        }),
-        ...(validAllowEmailPromotionsEdit && { allowEmailPromotions }),
+        ...(validAllowEmailFromArrangerEdit && { allowEmailFromArranger }),
       };
 
       await fetchFromPeoplyApiJson("/users/me", {
@@ -231,7 +218,6 @@ const Settings = () => {
                 onClick={() => {
                   if (allowEmailNotifications) {
                     setAllowEmailFromArranger(false);
-                    setAllowEmailPromotions(false);
                     setEmail(user?.email ?? "");
                   } else {
                     setAllowEmailFromArranger(true);
@@ -248,15 +234,6 @@ const Settings = () => {
                     checkboxName="allowNotifications"
                     onChange={() =>
                       setAllowEmailFromArranger(!allowEmailFromArranger)
-                    }
-                  />
-                  <CheckboxInput
-                    label="Motta epost fra Peoply-teamet"
-                    checked={allowEmailPromotions}
-                    checkboxId="allowPromotions"
-                    checkboxName="allowPromotions"
-                    onChange={() =>
-                      setAllowEmailPromotions(!allowEmailPromotions)
                     }
                   />
                 </div>

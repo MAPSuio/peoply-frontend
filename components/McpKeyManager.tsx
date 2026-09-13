@@ -1,3 +1,4 @@
+import { DISPLAY_LOCALE } from "../utils/locale";
 import { useState } from "react";
 import useSWR, { type KeyedMutator } from "swr";
 import useUser from "../hooks/useUser";
@@ -138,7 +139,7 @@ const KeyList = ({
           <strong>{key.name}</strong>
           <small>
             {key.scopes.join(" · ")} · utløper{" "}
-            {new Date(key.expiresAt).toLocaleDateString("nb-NO", {
+            {new Date(key.expiresAt).toLocaleDateString(DISPLAY_LOCALE, {
               timeZone: "UTC",
             })}
           </small>
