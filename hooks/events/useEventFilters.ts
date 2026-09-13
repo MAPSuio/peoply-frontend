@@ -81,6 +81,15 @@ export default function useEventFilters(
     [organizations],
   );
   const categoryOptions = useMemo(() => optionsOf(categories), [categories]);
+  const deferredEventSearch = useDeferredValue(eventSearch);
+  const criteria = useMemo(
+    () => ({
+      selectedOrganizationIds,
+      selectedCategoryIds,
+      search: deferredEventSearch,
+    }),
+    [selectedOrganizationIds, selectedCategoryIds, deferredEventSearch],
+  );
 
   const panels: FilterPanelState[] = [
     panelState(
@@ -102,11 +111,7 @@ export default function useEventFilters(
   ];
 
   return {
-    criteria: {
-      selectedOrganizationIds,
-      selectedCategoryIds,
-      search: useDeferredValue(eventSearch),
-    },
+    criteria,
     eventSearch,
     setEventSearch,
     panels,

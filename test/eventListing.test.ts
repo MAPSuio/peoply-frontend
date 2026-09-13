@@ -6,6 +6,7 @@ import {
   buildEventsQuery,
   filterEvents,
   groupEventsByMonth,
+  hasExplicitTake,
 } from "../utils/eventListing";
 
 const NOW = new Date("2026-05-04T10:00:00.000Z");
@@ -55,6 +56,13 @@ describe("buildEventsQuery", () => {
     );
     expect(buildEventsQuery({ take: "12" }, NOW).take).toBe("12");
   });
+
+  it("treats an empty take as no take at all", () => {
+    expect(buildEventsQuery({ take: "" }, NOW).take).toBeUndefined();
+    expect(hasExplicitTake({ take: "" })).toBe(false);
+    expect(hasExplicitTake({})).toBe(false);
+    expect(hasExplicitTake({ take: "12" })).toBe(true);
+  });
 });
 
 describe("filterEvents", () => {
@@ -67,9 +75,47 @@ describe("filterEvents", () => {
     eventWith({
       id: "b",
       title: "Åpen scene",
-      eventCategories: [{ categoryId: 2 }] as Event["eventCategories"],
+      eventCategories: [
+        { categoryId: 2, category: { name: "Sosialt" } },
+      ] as Event["eventCategories"],
+      eventArrangers: [
+        {
+          arrangerId: "arr-1",
+          arranger: { organization: { id: "org-1", name: "Språktek" } },
+        },
+      ] as Event["eventArrangers"],
     }),
   ];
+
+  it("keeps only events arranged by a selected organization", () => {
+    expect(
+      filterEvents(events, {
+        selectedOrganizationIds: ["org-1"],
+        selectedCategoryIds: [],
+        search: "",
+      }).map(({ id }) => id),
+    ).toEqual(["b"]);
+  });
+
+  it("finds an event by its arranger's name", () => {
+    expect(
+      filterEvents(events, {
+        selectedOrganizationIds: [],
+        selectedCategoryIds: [],
+        search: "sprak",
+      }).map(({ id }) => id),
+    ).toEqual(["b"]);
+  });
+
+  it("finds an event by its category's name", () => {
+    expect(
+      filterEvents(events, {
+        selectedOrganizationIds: [],
+        selectedCategoryIds: [],
+        search: "sosialt",
+      }).map(({ id }) => id),
+    ).toEqual(["b"]);
+  });
 
   it("keeps everything when nothing is selected", () => {
     expect(

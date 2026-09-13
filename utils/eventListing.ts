@@ -27,14 +27,20 @@ function stringOr(
   return typeof value === "string" ? value : fallback;
 }
 
-function clampedTake(query: RouterQuery): { take?: string } {
-  const take = query.take;
+export function hasExplicitTake(
+  query: RouterQuery,
+): query is RouterQuery & { take: string } {
+  return typeof query.take === "string" && query.take !== "";
+}
 
-  if (typeof take !== "string") {
+function clampedTake(query: RouterQuery): { take?: string } {
+  if (!hasExplicitTake(query)) {
     return {};
   }
 
-  return { take: `${Math.min(Number(take) || MAX_PAGE_SIZE, MAX_PAGE_SIZE)}` };
+  return {
+    take: `${Math.min(Number(query.take) || MAX_PAGE_SIZE, MAX_PAGE_SIZE)}`,
+  };
 }
 
 export function buildEventsQuery(query: RouterQuery, now: Date) {
@@ -97,6 +103,10 @@ export function filterEvents(
       !categorisedAsAnyOf(event, selectedCategoryIds)
     ) {
       return false;
+    }
+
+    if (searchTerms.length === 0) {
+      return true;
     }
 
     const searchableContent = searchableContentOf(event);
