@@ -91,6 +91,18 @@
       "matchManagers": ["github-actions"],
       "schedule": ["before 6am on the first day of the month"],
       "semanticCommitType": "ci"
+    },
+    {
+      "description": [
+        "Auto-merge routine updates once the required checks pass"
+      ],
+      "matchManagers": ["npm", "github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchCurrentVersion": "!/^0\\./",
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "platformAutomerge": true
     }
   ]
 }
