@@ -23,12 +23,20 @@ cp .env.example .env.development # local env — see "Environment variables"
 npm run dev                      # http://localhost:3001
 ```
 
-`.env.example` already points at `http://localhost:3000`, so after the copy
-`npm run dev` talks to a local backend out of the box.
+`.env.example` already points at `http://localhost:3000`, so after the copy `npm run dev` talks to a local backend out of the box.
 
-Without a backend running the app renders, but every request fails and you get
-the "Noe gikk galt" snackbar on most pages. For anything beyond static markup you
-need the backend too.
+Without a backend running the app renders, but every request fails and you get the "Noe gikk galt" snackbar on most pages. For anything beyond static markup you need the backend too.
+
+### Frontend Troubleshooting & Common Issues
+
+- **"Noe gikk galt" snackbar / failed data requests**:
+  The backend API is not running or not reachable on `http://localhost:3000`. Ensure the backend server is running (`npm run dev` in `peoply-backend`).
+
+- **Authentication cookie dropped or login redirect fails**:
+  Check `CORS_ORIGIN` and `FRONTEND_URL` in `peoply-backend/.env`. Both must be set to `http://localhost:3001`.
+
+- **`Node.js` version error during build/dev**:
+  Ensure you are using Node >= 22.11.0 as specified in `.nvmrc` (`nvm use`).
 
 ## Run the backend alongside it
 
