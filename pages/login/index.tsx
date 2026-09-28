@@ -13,7 +13,10 @@ import Link from "../../components/Link";
 import HeadComponent from "../../components/HeadComponent";
 import { API_URL } from "../../constants/urls";
 import { useEffect, useState } from "react";
-import { toSafeRedirectPath } from "../../utils/redirect";
+import {
+  takeStoredRedirectPath,
+  toSafeRedirectPath,
+} from "../../utils/redirect";
 
 const Login: NextPage = () => {
   const { user, loading } = useUser();
@@ -21,11 +24,7 @@ const Login: NextPage = () => {
   const [redirectURL, setRedirectURL] = useState<string>("/");
 
   useEffect(() => {
-    const redirectUrlFromLocalStorage = localStorage.getItem("redirectURL");
-    if (redirectUrlFromLocalStorage) {
-      setRedirectURL(toSafeRedirectPath(redirectUrlFromLocalStorage));
-      localStorage.removeItem("redirectURL");
-    }
+    setRedirectURL(takeStoredRedirectPath());
   }, []);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import {
 } from "../../constants/providers";
 import { API_URL } from "../../constants/urls";
 import { ButtonType, LoginProvider } from "../../types/types";
-import { toSafeRedirectPath } from "../../utils/redirect";
+import { takeStoredRedirectPath } from "../../utils/redirect";
 
 /** The providers the existing account can log in with, per `link_with`. */
 const parseLinkWith = (linkWith: unknown): LoginProvider[] => {
@@ -43,12 +43,7 @@ const LoginCallback: NextPage = () => {
       return;
     }
 
-    const redirectURL = localStorage.getItem("redirectURL");
-    localStorage.removeItem("redirectURL");
-    // Checked again on the way out as well as on the way in: localStorage is
-    // writable by anything running in this origin, and router.push turns a
-    // value with a scheme into window.location.href = value.
-    const target = toSafeRedirectPath(redirectURL);
+    const target = takeStoredRedirectPath();
 
     // The link outcome rides along to the destination, where it becomes a
     // snack (settings listens for these).

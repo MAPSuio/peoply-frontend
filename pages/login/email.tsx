@@ -7,12 +7,12 @@ import HeadComponent from "../../components/HeadComponent";
 import Link from "../../components/Link";
 import { requestEmailLogin, verifyEmailLogin } from "../../services/auth";
 import styles from "../../styles/Login.module.scss";
-import { toSafeRedirectPath } from "../../utils/redirect";
+import { takeStoredRedirectPath } from "../../utils/redirect";
 
 type Status = "idle" | "sending" | "sent" | "failed" | "rateLimited";
 
 const STATUS_TEXT: Partial<Record<Status, string>> = {
-  sent: "Sjekk e-posten din. Finnes det en bruker med denne adressen, har vi sendt en lenke som virker i 15 minutter.",
+  sent: "Sjekk e-posten din. Finnes det en bruker med denne adressen, har vi sendt deg en lenke.",
   failed: "Noe gikk galt. Prøv igjen.",
   rateLimited: "For mange forsøk. Vent litt og prøv igjen.",
 };
@@ -93,9 +93,7 @@ const UseLink = ({ token }: { token: string }) => {
         setStatus(response.status === 401 ? "invalid" : "failed");
         return;
       }
-      const redirectURL = localStorage.getItem("redirectURL");
-      localStorage.removeItem("redirectURL");
-      window.location.assign(toSafeRedirectPath(redirectURL));
+      window.location.assign(takeStoredRedirectPath());
     } catch {
       setStatus("failed");
     }
