@@ -105,6 +105,7 @@
     a {
       color: var(--text-color-emphasis, $text-color-emphasis);
       display: inline;
+      padding-block: 12px;
       text-decoration: underline;
       width: auto;
     }

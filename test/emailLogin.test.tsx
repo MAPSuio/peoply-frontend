@@ -70,6 +70,26 @@ describe("requesting a login link", () => {
 
     expect(await screen.findByText(/For mange forsøk/)).toBeTruthy();
   });
+
+  it("drops the answer to a request for an email the user has since changed", async () => {
+    let answer: ((response: Response) => void) | undefined;
+    fetchMock.mockReturnValue(
+      new Promise<Response>((resolve) => {
+        answer = resolve;
+      }),
+    );
+
+    render(<EmailLogin />);
+    const input = screen.getByLabelText("E-post");
+    await userEvent.type(input, "ola@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Send lenke" }));
+    await userEvent.type(input, "x");
+    answer?.(new Response("{}", { status: 202 }));
+
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(screen.queryByText(/Sjekk e-posten din/)).toBeNull();
+  });
 });
 
 describe("opening the link from the email", () => {

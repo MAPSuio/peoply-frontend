@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { type FormEvent, type MouseEvent, useState } from "react";
+import { type FormEvent, type MouseEvent, useRef, useState } from "react";
 import BackButton from "../../components/BackButton";
 import Button from "../../components/Button";
 import HeadComponent from "../../components/HeadComponent";
@@ -20,13 +20,22 @@ const STATUS_TEXT: Partial<Record<Status, string>> = {
 const RequestLinkForm = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const latestRequest = useRef(0);
+
+  const changeEmail = (value: string) => {
+    latestRequest.current += 1;
+    setEmail(value);
+    setStatus("idle");
+  };
 
   const submit = async (event: FormEvent | MouseEvent) => {
     event.preventDefault();
     if (!email.trim()) return;
+    const request = ++latestRequest.current;
     setStatus("sending");
     try {
       const response = await requestEmailLogin(email.trim());
+      if (request !== latestRequest.current) return;
       setStatus(
         response.ok
           ? "sent"
@@ -35,7 +44,7 @@ const RequestLinkForm = () => {
             : "failed",
       );
     } catch {
-      setStatus("failed");
+      if (request === latestRequest.current) setStatus("failed");
     }
   };
 
@@ -54,7 +63,7 @@ const RequestLinkForm = () => {
         maxLength={254}
         required
         value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        onChange={(event) => changeEmail(event.target.value)}
       />
       <Button
         text="Send lenke"

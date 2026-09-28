@@ -142,8 +142,18 @@ const Login: NextPage = () => {
             </div>
             <p className={styles.vippsNotice}>
               Vi migrerer Vipps til en ny avtale, midlertidig: Lenk kontoen din
-              til en <Link href="/me/settings">Google-konto</Link> eller få
-              engangslenke på e-post <Link href="/login/email">her</Link>.
+              til en{" "}
+              <a
+                href={`${API_URL}/auth/login`}
+                onClick={() => {
+                  localStorage.setItem("redirectURL", "/me/settings");
+                  return true;
+                }}
+              >
+                Google-konto
+              </a>{" "}
+              eller få engangslenke på e-post{" "}
+              <Link href="/login/email">her</Link>.
             </p>
           </div>
         </div>
