@@ -54,3 +54,23 @@ export async function unlinkProvider(provider: LoginProvider) {
   const url = `/users/me/providers/${provider}`;
   return fetchFromPeoplyApi(url, { method: "DELETE" });
 }
+
+const EMAIL_LOGIN_TIMEOUT_MS = 15_000;
+
+function postEmailLogin(path: string, body: Record<string, string>) {
+  return fetch(`${getApiBaseUrl()}${path}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(EMAIL_LOGIN_TIMEOUT_MS),
+  });
+}
+
+export function requestEmailLogin(email: string) {
+  return postEmailLogin("/auth/email/request", { email });
+}
+
+export function verifyEmailLogin(token: string) {
+  return postEmailLogin("/auth/email/verify", { token });
+}
