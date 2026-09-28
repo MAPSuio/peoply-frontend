@@ -19,6 +19,7 @@ vi.mock("next/router", () => ({ useRouter: () => router }));
 
 let assigned: string;
 const fetchMock = vi.fn();
+const realLocation = window.location;
 
 beforeEach(() => {
   routerQuery = {};
@@ -38,6 +39,10 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  Object.defineProperty(window, "location", {
+    configurable: true,
+    value: realLocation,
+  });
 });
 
 const lastRequest = () => {
