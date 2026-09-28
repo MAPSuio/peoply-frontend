@@ -4,8 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 import { API_URL } from "../constants/urls";
 import Login from "../pages/login";
 
+const router = vi.hoisted(() => ({
+  query: {} as Record<string, string>,
+}));
+
 vi.mock("next/router", () => ({
-  useRouter: () => ({ query: {}, push: vi.fn(), isReady: true }),
+  useRouter: () => ({ query: router.query, push: vi.fn(), isReady: true }),
 }));
 
 vi.mock("../hooks/useUser", () => ({
@@ -26,5 +30,15 @@ describe("the Vipps migration notice on the login page", () => {
     expect(screen.getByRole("link", { name: "her" }).getAttribute("href")).toBe(
       "/login/email",
     );
+  });
+
+  it("keeps the page the visitor came for when they choose email login", () => {
+    router.query = { redirect: "/events/42" };
+    render(<Login />);
+
+    fireEvent.click(screen.getByRole("link", { name: "her" }));
+
+    expect(localStorage.getItem("redirectURL")).toBe("/events/42");
+    router.query = {};
   });
 });

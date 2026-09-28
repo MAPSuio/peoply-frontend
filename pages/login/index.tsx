@@ -43,6 +43,10 @@ const Login: NextPage = () => {
     })} ${date.getFullYear()}`;
   };
 
+  const stashRedirect = () => {
+    localStorage.setItem("redirectURL", redirectURL);
+  };
+
   const handleBack = () => {
     router.push("/");
   };
@@ -112,26 +116,13 @@ const Login: NextPage = () => {
               <MobileLoginIllustration />
             </div>
             <div className={styles.loginButtonContainer}>
-              <a
-                href={`${API_URL}/auth/login`}
-                onClick={() => {
-                  if (redirectURL) {
-                    localStorage.setItem("redirectURL", redirectURL);
-                  }
-                  return true;
-                }}
-              >
+              <a href={`${API_URL}/auth/login`} onClick={stashRedirect}>
                 <ContinueWithVippsButton />
               </a>
               <a
                 className={styles.providerButton}
                 href={`${API_URL}/auth/login/google`}
-                onClick={() => {
-                  if (redirectURL) {
-                    localStorage.setItem("redirectURL", redirectURL);
-                  }
-                  return true;
-                }}
+                onClick={stashRedirect}
               >
                 <GoogleLogo />
                 <span className={styles.providerButtonText}>
@@ -152,7 +143,10 @@ const Login: NextPage = () => {
                 Google-konto
               </a>{" "}
               eller få engangslenke på e-post{" "}
-              <Link href="/login/email">her</Link>.
+              <Link href="/login/email" onClick={stashRedirect}>
+                her
+              </Link>
+              .
             </p>
           </div>
         </div>
