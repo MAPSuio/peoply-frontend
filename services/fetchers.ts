@@ -53,7 +53,7 @@ async function readErrorBody(response: Response): Promise<unknown> {
  * both surface as the same ApiTimeoutError - from the caller's side both mean
  * "we don't know what the server would have said".
  */
-async function fetchWithTimeout(
+export async function fetchWithTimeout(
   url: string,
   init: RequestInit,
   path: string,

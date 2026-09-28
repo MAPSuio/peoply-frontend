@@ -13,7 +13,10 @@ import Link from "../../components/Link";
 import HeadComponent from "../../components/HeadComponent";
 import { API_URL } from "../../constants/urls";
 import { useEffect, useState } from "react";
-import { toSafeRedirectPath } from "../../utils/redirect";
+import {
+  takeStoredRedirectPath,
+  toSafeRedirectPath,
+} from "../../utils/redirect";
 
 const Login: NextPage = () => {
   const { user, loading } = useUser();
@@ -21,11 +24,7 @@ const Login: NextPage = () => {
   const [redirectURL, setRedirectURL] = useState<string>("/");
 
   useEffect(() => {
-    const redirectUrlFromLocalStorage = localStorage.getItem("redirectURL");
-    if (redirectUrlFromLocalStorage) {
-      setRedirectURL(toSafeRedirectPath(redirectUrlFromLocalStorage));
-      localStorage.removeItem("redirectURL");
-    }
+    setRedirectURL(takeStoredRedirectPath());
   }, []);
 
   useEffect(() => {
@@ -42,6 +41,10 @@ const Login: NextPage = () => {
     return `${date.getDate()}. ${date.toLocaleString(DISPLAY_LOCALE, {
       month: "long",
     })} ${date.getFullYear()}`;
+  };
+
+  const stashRedirect = () => {
+    localStorage.setItem("redirectURL", redirectURL);
   };
 
   const handleBack = () => {
@@ -113,26 +116,13 @@ const Login: NextPage = () => {
               <MobileLoginIllustration />
             </div>
             <div className={styles.loginButtonContainer}>
-              <a
-                href={`${API_URL}/auth/login`}
-                onClick={() => {
-                  if (redirectURL) {
-                    localStorage.setItem("redirectURL", redirectURL);
-                  }
-                  return true;
-                }}
-              >
+              <a href={`${API_URL}/auth/login`} onClick={stashRedirect}>
                 <ContinueWithVippsButton />
               </a>
               <a
                 className={styles.providerButton}
                 href={`${API_URL}/auth/login/google`}
-                onClick={() => {
-                  if (redirectURL) {
-                    localStorage.setItem("redirectURL", redirectURL);
-                  }
-                  return true;
-                }}
+                onClick={stashRedirect}
               >
                 <GoogleLogo />
                 <span className={styles.providerButtonText}>
@@ -140,6 +130,24 @@ const Login: NextPage = () => {
                 </span>
               </a>
             </div>
+            <p className={styles.vippsNotice}>
+              Vi migrerer Vipps til en ny avtale, midlertidig: Lenk kontoen din
+              til en{" "}
+              <a
+                href={`${API_URL}/auth/login`}
+                onClick={() => {
+                  localStorage.setItem("redirectURL", "/me/settings");
+                  return true;
+                }}
+              >
+                Google-konto
+              </a>{" "}
+              eller få engangslenke på e-post{" "}
+              <Link href="/login/email" onClick={stashRedirect}>
+                her
+              </Link>
+              .
+            </p>
           </div>
         </div>
       )}

@@ -47,3 +47,9 @@ export function toSafeRedirectPath(
 
   return value;
 }
+
+export function takeStoredRedirectPath(): string {
+  const stored = localStorage.getItem("redirectURL");
+  localStorage.removeItem("redirectURL");
+  return toSafeRedirectPath(stored);
+}

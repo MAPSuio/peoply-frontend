@@ -1,6 +1,10 @@
 import type { LoginProvider } from "../types/types";
 import { getApiBaseUrl } from "./apiUrl";
-import { fetchFromPeoplyApi } from "./fetchers";
+import {
+  DEFAULT_TIMEOUT_MS,
+  fetchFromPeoplyApi,
+  fetchWithTimeout,
+} from "./fetchers";
 
 /**
  * Tracks an in-flight refresh so that several concurrent 401s in the same
@@ -53,4 +57,26 @@ export async function deleteMe() {
 export async function unlinkProvider(provider: LoginProvider) {
   const url = `/users/me/providers/${provider}`;
   return fetchFromPeoplyApi(url, { method: "DELETE" });
+}
+
+function postEmailLogin(path: string, body: Record<string, string>) {
+  return fetchWithTimeout(
+    `${getApiBaseUrl()}${path}`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    },
+    path,
+    DEFAULT_TIMEOUT_MS,
+  );
+}
+
+export function requestEmailLogin(email: string) {
+  return postEmailLogin("/auth/email/request", { email });
+}
+
+export function verifyEmailLogin(token: string) {
+  return postEmailLogin("/auth/email/verify", { token });
 }

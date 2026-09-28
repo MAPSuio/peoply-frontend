@@ -94,6 +94,45 @@
     font-weight: $font-weight-bold;
   }
 
+  .vippsNotice {
+    color: var(--text-color-primary, $text-color-primary);
+    font-size: $font-size-secondary;
+    line-height: 1.5;
+    margin-top: $spacer-medium;
+    max-width: 320px;
+    text-align: center;
+
+    a {
+      color: var(--text-color-emphasis, $text-color-emphasis);
+      display: inline;
+      padding-block: 12px;
+      text-decoration: underline;
+      width: auto;
+    }
+  }
+
+  .emailForm {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer-small;
+    max-width: 360px;
+    width: 100%;
+  }
+
+  .emailLabel {
+    @include label();
+  }
+
+  .emailInput {
+    @include input();
+  }
+
+  .emailStatus {
+    color: var(--text-color-emphasis, $text-color-emphasis);
+    font-size: $font-size-secondary;
+    line-height: 1.5;
+  }
+
   .card {
     @include card();
     display: flex;
