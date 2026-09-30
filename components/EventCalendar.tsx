@@ -280,6 +280,7 @@ export default function EventCalendar({ events, range }: EventCalendarProps) {
         ))
       ) : (
         <FullCalendar
+          key={`mobile-calendar-${shownWindowCount}`}
           {...sharedCalendarProps}
           duration={{ weeks: ROLLING_WINDOW_IN_WEEKS * shownWindowCount }}
           initialDate={range.start}
