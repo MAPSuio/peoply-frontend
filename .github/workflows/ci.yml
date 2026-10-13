@@ -81,7 +81,6 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_URL: https://example.com
           NEXT_PUBLIC_API_URL: https://example.com/api
-          BLOB_DOMAIN: example.com
 
       # Also the only place the security headers are seen the way a browser
       # sees them: next.config.js can list a header that no response carries if
@@ -90,7 +89,6 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_URL: https://example.com
           NEXT_PUBLIC_API_URL: https://example.com/api
-          BLOB_DOMAIN: example.com
         run: |
           node node_modules/next/dist/bin/next start --port 3999 &
           SERVER_PID=$!

@@ -74,10 +74,6 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: process.env.BLOB_DOMAIN || '',
-      },
-      {
-        protocol: 'https',
         hostname: 'peoply-images.ams3.cdn.digitaloceanspaces.com',
       },
     ],
