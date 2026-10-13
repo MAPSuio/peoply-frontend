@@ -76,6 +76,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: process.env.BLOB_DOMAIN || '',
       },
+      {
+        protocol: 'https',
+        hostname: 'peoply-images.ams3.cdn.digitaloceanspaces.com',
+      },
     ],
     deviceSizes: [480, 750, 1080, 1920],
     imageSizes: [16, 48, 96, 256],
