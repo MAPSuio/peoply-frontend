@@ -93,7 +93,6 @@ that ship to the browser anyway; nothing secret belongs in this repo.
 | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Backend base URL | `http://localhost:3000` |
 | `NEXT_PUBLIC_BASE_URL` | This app's own URL — share links, OG tags, ICS feeds | `http://localhost:3001` |
-| `BLOB_DOMAIN` | Remote host allowlisted for `next/image` | `peoply.blob.core.windows.net` |
 | `API_INTERNAL_URL` | Prod only, server-side. Lets SSR bypass Cloudflare bot protection; falls back to the public URL when unset | — |
 
 Production values live in the DigitalOcean App Platform spec, not here.
