@@ -42,6 +42,7 @@ import cx from "../../../utils/cx";
 import { formatDateRange, formatTimeRange } from "../../../utils/functions";
 import { getEventArrangerDisplayItems } from "../../../utils/eventArrangers";
 import {
+  canInviteTo,
   getEventImage,
   getSafeExternalUrl,
   showsRegistrationCount,
@@ -325,15 +326,17 @@ const ShareButtons = ({
       shareTitle={eventData.title}
       iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
     />
-    <LinkButton
-      href={`/events/${eventData.urlId}/invite`}
-      small
-      text="Inviter brukere"
-      type={ButtonType.SECONDARY}
-      icon={<MailIcon />}
-      iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
-      noShadow
-    />
+    {canInviteTo(eventData, isArranger) && (
+      <LinkButton
+        href={`/events/${eventData.urlId}/invite`}
+        small
+        text="Inviter brukere"
+        type={ButtonType.SECONDARY}
+        icon={<MailIcon />}
+        iconPlacement={IconPlacement.ABOVE_ON_MOBILE}
+        noShadow
+      />
+    )}
     {isArranger && (
       <LinkButton
         href={`/events/${eventData.urlId}/update`}

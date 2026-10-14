@@ -1,4 +1,9 @@
-import { type Event, EventRegistrationMode, EventSource } from "../types/types";
+import {
+  type Event,
+  EventRegistrationMode,
+  EventSource,
+  Visibility,
+} from "../types/types";
 import { getPrimaryEventArrangerOrganization } from "./eventArrangers";
 import { formatDateAndTime } from "./functions";
 
@@ -11,6 +16,13 @@ export function showsRegistrationCount(
   event?: Pick<Event, "registrationMode">,
 ): boolean {
   return event?.registrationMode !== EventRegistrationMode.EXTERNAL;
+}
+
+export function canInviteTo(
+  event: Pick<Event, "visibility">,
+  isArranger: boolean,
+): boolean {
+  return isArranger || event.visibility !== Visibility.PRIVATE;
 }
 
 /* Events imported from an .ics feed never carry an image: the calendar format
