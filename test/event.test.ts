@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { type Event, EventRegistrationMode } from "../types/types";
-import { isEventFinished, showsRegistrationCount } from "../utils/event";
+import { type Event, EventRegistrationMode, Visibility } from "../types/types";
+import {
+  canInviteTo,
+  isEventFinished,
+  showsRegistrationCount,
+} from "../utils/event";
 
 /* Local noon, so the "same day" cases are unaffected by the timezone the
    test runs in. */
@@ -101,5 +105,20 @@ describe("showsRegistrationCount", () => {
 
   it("defaults to showing when there is no event yet", () => {
     expect(showsRegistrationCount(undefined)).toBe(true);
+  });
+});
+
+describe("canInviteTo", () => {
+  it("lets anyone invite to a public event", () => {
+    expect(canInviteTo({ visibility: Visibility.PUBLIC }, false)).toBe(true);
+  });
+
+  it("lets anyone invite to an unlisted event", () => {
+    expect(canInviteTo({ visibility: Visibility.UNLISTED }, false)).toBe(true);
+  });
+
+  it("keeps private events to their arrangers", () => {
+    expect(canInviteTo({ visibility: Visibility.PRIVATE }, false)).toBe(false);
+    expect(canInviteTo({ visibility: Visibility.PRIVATE }, true)).toBe(true);
   });
 });
