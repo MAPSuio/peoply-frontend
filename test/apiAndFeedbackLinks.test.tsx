@@ -96,6 +96,22 @@ describe("API and feedback entry points", () => {
     expect(hrefOf(/API for utviklere/i)).toBe("/integrasjoner");
   });
 
+  it("displays organization number, company name, and contact email in the footer for Vipps Login compliance", () => {
+    renderWithSwr(<Footer />);
+
+    expect(
+      screen.getByText(
+        /MAPS - Matematikk, Algoritmer og Programmering for Studenter/i,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText("995 251 884")).toBeInTheDocument();
+    expect(hrefOf(/995 251 884/i)).toContain("995251884");
+    expect(hrefOf(/maps-kontakt@studorg\.uio\.no/i)).toBe(
+      "mailto:maps-kontakt@studorg.uio.no",
+    );
+    expect(hrefOf(/Spørsmål og kontakt/i)).toBe("/faq");
+  });
+
   it("offers the API docs from the profile menu", () => {
     renderWithSwr(<ProfileMenu />);
 

@@ -7,7 +7,13 @@ import ExpandableCard from "../components/ExpandableCard";
 import HeadComponent from "../components/HeadComponent";
 import MapsLogo from "../components/svgs/MapsLogo";
 
-import { mapsUrl } from "../utils/constants";
+import {
+  mapsAddress,
+  mapsContactEmail,
+  mapsOrganizationName,
+  mapsOrgNumber,
+  mapsUrl,
+} from "../utils/constants";
 import useBack from "../hooks/useBack";
 
 import styles from "../styles/FAQ.module.scss";
@@ -223,17 +229,11 @@ const FAQ = () => {
               <span className={styles.divider} />
               <MapsLogo className={styles.mapsLogo} />
               <p className={styles.infoText}>
-                <a href={mapsUrl}>
-                  MAPS - Matematikk, Algoritmer og Programmering for Studenter
-                </a>
+                <a href={mapsUrl}>{mapsOrganizationName}</a>
               </p>
-              <p className={styles.infoText}>Orgnr: 995 251 884</p>
-              <p className={styles.infoText}>
-                Adresse: Postboks 1080 Blindern, 0316 Oslo
-              </p>
-              <p className={styles.infoText}>
-                Email: maps-kontakt@studorg.uio.no
-              </p>
+              <p className={styles.infoText}>Orgnr: {mapsOrgNumber}</p>
+              <p className={styles.infoText}>Adresse: {mapsAddress}</p>
+              <p className={styles.infoText}>Email: {mapsContactEmail}</p>
               <p className={styles.infoText}>
                 Discord:{" "}
                 <a href="https://discord.gg/Aj8eGf9nM6">
