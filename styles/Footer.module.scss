@@ -55,4 +55,30 @@
       width: 20px;
     }
   }
+
+  .info {
+    align-items: center;
+    color: var(--text-color-primary, $text-color-primary);
+    display: flex;
+    flex-flow: column nowrap;
+    font-size: $font-size-secondary;
+    gap: $spacer-mini;
+    text-align: center;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      display: inline;
+      font-size: inherit;
+      font-weight: inherit;
+      min-height: auto;
+      text-decoration: underline;
+    }
+  }
 }

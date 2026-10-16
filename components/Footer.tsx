@@ -5,15 +5,21 @@ import MapsLogo from "./svgs/MapsLogo";
 import Link from "./Link";
 
 // Utils.
-import { mapsUrl, sourceCodeUrl } from "../utils/constants";
+import {
+  mapsContactEmail,
+  mapsOrganizationName,
+  mapsOrgNumber,
+  mapsUrl,
+  sourceCodeUrl,
+} from "../utils/constants";
 
 // Styles.
 import styles from "../styles/Footer.module.scss";
 
 /**
  * Maintainer-byline for forsiden: hvem som drifter Peoply, og hvor
- * kildekoden bor. Rendres kun på forsiden - undersider skal ikke bære
- * footer-vekt i en feed-app.
+ * kildekoden bor, samt foretaksinformasjon for Vipps Login.
+ * Rendres kun på forsiden - undersider skal ikke bære footer-vekt i en feed-app.
  */
 export default function Footer() {
   return (
@@ -41,6 +47,13 @@ export default function Footer() {
           <ApiIcon className={styles.apiIcon} />
           <span>API for utviklere</span>
         </Link>
+      </div>
+      <div className={styles.info}>
+        <p>{mapsOrganizationName}</p>
+        <p>
+          Org.nr: {mapsOrgNumber} · Kontakt:{" "}
+          <a href={`mailto:${mapsContactEmail}`}>{mapsContactEmail}</a>
+        </p>
       </div>
     </footer>
   );
