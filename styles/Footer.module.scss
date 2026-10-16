@@ -1,210 +1,84 @@
 .footer {
   align-items: center;
-  border-top: 1px solid var(--divider-color, $divider-color);
   display: flex;
   flex-flow: column nowrap;
-  gap: $spacer-small-plus;
-  margin-top: $spacer-medium;
+  gap: $spacer-very-small-plus;
   /* Stor bunn-padding så footeren ikke gjemmer seg bak den flytende navbaren. */
   padding: $spacer-large $spacer-small $spacer-large-plus;
-  width: 100%;
 
-  @include desktop() {
-    gap: $spacer-medium;
-    margin-top: $spacer-large;
-    padding: $spacer-large-plus $spacer-medium calc($spacer-large-plus + $spacer-medium);
-  }
-}
-
-.container {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: $spacer-small-plus;
-  max-width: $max-width;
-  text-align: center;
-  width: 100%;
-
-  @include desktop() {
-    gap: $spacer-medium;
-  }
-}
-
-.brand {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: $spacer-very-small;
-}
-
-.maintainer {
-  align-items: center;
-  color: var(--text-color-primary, $text-color-primary);
-  display: flex;
-  font-size: $font-size-secondary;
-  font-weight: $font-weight-medium;
-  gap: $spacer-very-small;
-  min-height: 2.75rem;
-  text-decoration: none;
-  transition: color $animation-duration ease, transform $animation-duration ease;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    transform: translateY(-1px);
-  }
-
-  @include desktop() {
-    font-size: $font-size-secondary-desktop;
-  }
-}
-
-.maintainerPrefix {
-  color: var(--text-color-primary, $text-color-primary);
-  font-size: $font-size-secondary;
-
-  @include desktop() {
-    font-size: $font-size-secondary-desktop;
-  }
-}
-
-.mapsLogo {
-  /* Litt høyere enn teksten så logoen bærer bylinen. */
-  height: 2rem;
-  width: auto;
-
-  @include desktop() {
-    height: 2.5rem;
-  }
-}
-
-.orgFullName {
-  color: var(--text-color-primary, $text-color-primary);
-  font-size: $font-size-secondary;
-  font-weight: $font-weight-regular;
-  line-height: $line-height-hint-text;
-  margin: 0;
-  max-width: $max-width-text;
-
-  @include desktop() {
-    font-size: $font-size-secondary-desktop;
-  }
-}
-
-.legalInfo {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  gap: $spacer-very-small $spacer-small;
-  justify-content: center;
-  max-width: $max-width-text;
-}
-
-.infoPill {
-  align-items: center;
-  background-color: var(--background-color-card, $background-color-card);
-  border: 1px solid var(--border-color-input, $border-color-input);
-  border-radius: $border-radius-round;
-  display: flex;
-  font-size: $font-size-tertiary;
-  gap: $spacer-very-small;
-  line-height: 1;
-  padding: $spacer-very-small $spacer-small;
-  transition: border-color $animation-duration ease;
-
-  &:hover {
-    border-color: var(--primary-color-200, $primary-color-200);
-  }
-
-  @include desktop() {
+  a {
+    align-items: center;
+    color: var(--text-color-primary, $text-color-primary);
+    display: flex;
     font-size: $font-size-secondary;
-    padding: $spacer-very-small-plus $spacer-small-plus;
-  }
-}
+    font-weight: $font-weight-medium;
+    gap: $spacer-very-small;
+    /* En tommel treffer ikke en tekstlinje på 18px. */
+    min-height: 2.75rem;
 
-.infoLabel {
-  color: var(--text-color-primary, $text-color-primary);
-  font-family: $mono-font;
-  font-size: $font-size-tertiary;
-  font-weight: $font-weight-medium;
-  text-transform: uppercase;
+    &:hover,
+    &:focus-visible {
+      color: var(--text-color-emphasis, $text-color-emphasis);
+    }
 
-  @include desktop() {
-    font-size: $font-size-tertiary-desktop;
-  }
-}
-
-.infoLink {
-  align-items: center;
-  color: var(--text-color-emphasis, $text-color-emphasis);
-  display: inline-flex;
-  font-weight: $font-weight-medium;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color $animation-duration ease;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--primary-color-200, $primary-color-200);
-  }
-}
-
-.infoValue {
-  color: var(--text-color-emphasis, $text-color-emphasis);
-  font-weight: $font-weight-medium;
-}
-
-.links {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  gap: $spacer-very-small $spacer-medium;
-  justify-content: center;
-}
-
-.sourceLink {
-  align-items: center;
-  color: var(--text-color-primary, $text-color-primary);
-  display: flex;
-  font-size: $font-size-secondary;
-  font-weight: $font-weight-medium;
-  gap: $spacer-very-small;
-  /* En tommel treffer ikke en tekstlinje på 18px. */
-  min-height: 2.75rem;
-  text-decoration: none;
-  transition: color $animation-duration ease, transform $animation-duration ease;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--text-color-emphasis, $text-color-emphasis);
-    transform: translateY(-1px);
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
   }
 
-  @include desktop() {
-    font-size: $font-size-secondary-desktop;
+  .mapsLogo {
+    /* Litt høyere enn teksten så logoen bærer bylinen. */
+    height: 2rem;
+    width: auto;
+
+    @include desktop() {
+      height: 2.5rem;
+    }
+  }
+
+  /* To lenker side om side på mobil; wrapper hvis skjermen er for smal. */
+  .links {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    gap: $spacer-very-small-plus $spacer-medium;
+    justify-content: center;
+  }
+
+  .githubIcon,
+  .apiIcon {
+    height: 18px;
+    width: 18px;
+
+    @include desktop() {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  .info {
+    align-items: center;
+    color: var(--text-color-primary, $text-color-primary);
+    display: flex;
+    flex-flow: column nowrap;
+    font-size: $font-size-secondary;
+    gap: $spacer-mini;
+    text-align: center;
+
+    @include desktop() {
+      font-size: $font-size-secondary-desktop;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      display: inline;
+      font-size: inherit;
+      font-weight: inherit;
+      min-height: auto;
+      text-decoration: underline;
+    }
   }
 }
-
-.linkIcon,
-.githubIcon,
-.apiIcon {
-  height: 18px;
-  width: 18px;
-
-  @include desktop() {
-    height: 20px;
-    width: 20px;
-  }
-}
-
-.copyright {
-  color: var(--text-color-primary, $text-color-primary);
-  font-size: $font-size-tertiary;
-  margin: 0;
-  opacity: 0.8;
-
-  @include desktop() {
-    font-size: $font-size-tertiary-desktop;
-  }
-}
-

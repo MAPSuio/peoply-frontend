@@ -11,8 +11,6 @@ export const mapsOrganizationName =
 export const mapsOrgNumber = "995 251 884";
 export const mapsContactEmail = "maps-kontakt@studorg.uio.no";
 export const mapsAddress = "Postboks 1080 Blindern, 0316 Oslo";
-export const mapsBrregUrl =
-  "https://virksomhet.brreg.no/nb/oppslag/enheter/995251884";
 
 export const eventTitleMinLength = 3;
 export const eventTitleMaxLength = 100;
