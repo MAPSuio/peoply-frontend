@@ -163,4 +163,26 @@ describe("EventCalendar windows in a real FullCalendar", () => {
     expect(screen.queryAllByRole("gridcell")).toHaveLength(0);
     expect(screen.queryAllByRole("heading", { level: 2 })).toHaveLength(0);
   });
+
+  it("expands agenda duration on phone when clicking 'Se mer'", async () => {
+    const { fireEvent } = await import("@testing-library/react");
+    stubViewport({ isDesktop: false });
+
+    const FUTURE_EVENT = {
+      ...EVENT_EARLIER_TODAY,
+      id: "event-future",
+      startDate: new Date(2026, 8, 25, 12, 0).toISOString(),
+      endDate: new Date(2026, 8, 25, 14, 0).toISOString(),
+      title: "Fremtidig Arrangement",
+    } as unknown as Event;
+
+    renderCalendar([EVENT_EARLIER_TODAY, FUTURE_EVENT]);
+
+    const showMoreBtn = screen.getByRole("button", { name: /se mer/i });
+    expect(showMoreBtn).toBeInTheDocument();
+
+    fireEvent.click(showMoreBtn);
+
+    expect(screen.getByText("Fremtidig Arrangement")).toBeInTheDocument();
+  });
 });
