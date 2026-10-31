@@ -5,7 +5,7 @@ import DataIconSummary from "../svgs/DataIconSummary";
 import VisibilityIndicator from "./VisibilityIndicator";
 
 /* Icons */
-import NoLimitIconSmall from "../svgs/NoLimitIconSmall";
+import FollowIcon from "../svgs/FollowIcon";
 import LimitIconSmall from "../svgs/LimitIconSmall";
 import LinkIcon from "../svgs/LinkIcon";
 import FoodIcon from "../svgs/FoodIcon";
@@ -45,7 +45,7 @@ const DataSummarySection = ({
           </div>
         ) : (
           <div className={styles.dataItemContainer}>
-            <NoLimitIconSmall className={styles.dataIcon} />
+            <FollowIcon className={styles.dataIcon} />
             <p className={styles.dataLabel}>Ingen kapasitet</p>
           </div>
         )}

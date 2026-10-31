@@ -35,6 +35,100 @@ interface EditDateTimeSectionProps {
   patchDateTime: PatchDateTime;
 }
 
+type OptionalDateTimeField = "endDate" | "regStart" | "regEnd";
+
+interface OptionalDateTimeProps {
+  field: OptionalDateTimeField;
+  label: string;
+  ids: [string, string];
+  names: [string, string];
+  labels: [string, string];
+  errors: [string, string];
+  valid: boolean;
+  setValid: Dispatch<SetStateAction<boolean>>;
+  tempEventObject: EventObjectProps;
+  setTempEventObject: Dispatch<SetStateAction<EventObjectProps>>;
+  patchDateTime: PatchDateTime;
+}
+
+const OptionalDateTime = ({
+  field,
+  label,
+  ids,
+  names,
+  labels,
+  errors,
+  valid,
+  setValid,
+  tempEventObject,
+  setTempEventObject,
+  patchDateTime,
+}: OptionalDateTimeProps) => {
+  const value = tempEventObject[field];
+
+  if (!value) {
+    return (
+      <button
+        type="button"
+        className={styles.addDateContainer}
+        onClick={() =>
+          setTempEventObject({
+            ...tempEventObject,
+            [field]: tempEventObject.startDate,
+          })
+        }
+      >
+        <PlusIcon className={styles.addDateIcon} />
+        <p className={styles.addDateText}>{label}</p>
+      </button>
+    );
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.addDateContainer}
+        onClick={() => {
+          setTempEventObject({ ...tempEventObject, [field]: undefined });
+          setValid(true);
+        }}
+      >
+        <MinusIcon
+          className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
+        />
+        <p className={styles.addDateText}>{label}</p>
+      </button>
+      <div className={`${styles.horizontalContainer} `}>
+        <DateInput
+          value={getISODateString(value)}
+          inputId={ids[0]}
+          inputName={names[0]}
+          label={labels[0]}
+          errorMessage={errors[0]}
+          handleChange={patchDateTime(field, "date")}
+          valid={valid}
+          initiallyFocused
+          noExtraInfo
+          card
+        />
+        <TimeInput
+          value={getISOTimeString(value)}
+          inputId={ids[1]}
+          inputName={names[1]}
+          label={labels[1]}
+          errorMessage={errors[1]}
+          handleChange={patchDateTime(field, "time")}
+          valid={valid}
+          initiallyFocused
+          noExtraInfo
+          card
+        />
+      </div>
+    </>
+  );
+};
+
 /* Editable date/time card used by EditSummaryPage (event editing). */
 const EditDateTimeSection = ({
   editOpen,
@@ -53,6 +147,8 @@ const EditDateTimeSection = ({
   setValidRegEnd,
   patchDateTime,
 }: EditDateTimeSectionProps) => {
+  const shared = { tempEventObject, setTempEventObject, patchDateTime };
+
   return (
     <SummaryCard
       onCheck={onCheck}
@@ -96,213 +192,48 @@ const EditDateTimeSection = ({
               card
             />
           </div>
-          {!tempEventObject.endDate && (
-            <button
-              type="button"
-              className={styles.addDateContainer}
-              onClick={() => {
-                setTempEventObject({
-                  ...tempEventObject,
-                  endDate: tempEventObject.startDate,
-                });
-              }}
-            >
-              <PlusIcon className={styles.addDateIcon} />
-              <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
-            </button>
-          )}
-          {tempEventObject.endDate && (
-            <>
-              <button
-                type="button"
-                className={styles.addDateContainer}
-                onClick={() => {
-                  setTempEventObject({
-                    ...tempEventObject,
-                    endDate: undefined,
-                  });
-                  setValidEnd(true);
-                }}
-              >
-                <MinusIcon
-                  className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                />
-                <p className={styles.addDateText}>Sluttdato og -tidspunkt</p>
-              </button>
-              <div className={`${styles.horizontalContainer} `}>
-                <DateInput
-                  value={
-                    tempEventObject.endDate
-                      ? getISODateString(tempEventObject.endDate)
-                      : getISODateString(tempEventObject.startDate)
-                  }
-                  inputId="dateEnd"
-                  inputName="eventDateEnd"
-                  label="Dato slutt"
-                  errorMessage="Sluttdato kan ikke være før startdato."
-                  handleChange={patchDateTime("endDate", "date")}
-                  valid={validEnd}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-                <TimeInput
-                  value={
-                    tempEventObject.endDate
-                      ? getISOTimeString(tempEventObject.endDate)
-                      : getISOTimeString(tempEventObject.startDate)
-                  }
-                  inputId="timeEnd"
-                  inputName="eventTimeEnd"
-                  label="Tidspunkt slutt"
-                  errorMessage="Sluttidspunkt kan ikke være før starttidspunkt."
-                  handleChange={patchDateTime("endDate", "time")}
-                  valid={validEnd}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-              </div>
-            </>
-          )}
-          {!tempEventObject.regStart && (
-            <button
-              type="button"
-              className={styles.addDateContainer}
-              onClick={() => {
-                setTempEventObject({
-                  ...tempEventObject,
-                  regStart: tempEventObject.startDate,
-                });
-              }}
-            >
-              <PlusIcon className={styles.addDateIcon} />
-              <p className={styles.addDateText}>Påmelding åpner</p>
-            </button>
-          )}
-          {tempEventObject.regStart && (
-            <>
-              <button
-                type="button"
-                className={styles.addDateContainer}
-                onClick={() => {
-                  setTempEventObject({
-                    ...tempEventObject,
-                    regStart: undefined,
-                  });
-                  setValidRegStart(true);
-                }}
-              >
-                <MinusIcon
-                  className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                />
-                <p className={styles.addDateText}>Påmelding åpner</p>
-              </button>
-              <div className={`${styles.horizontalContainer} `}>
-                <DateInput
-                  value={
-                    tempEventObject.regStart
-                      ? getISODateString(tempEventObject.regStart)
-                      : ""
-                  }
-                  inputId="regDateStart"
-                  inputName="eventRegDateStart"
-                  label="Dato åpning"
-                  errorMessage="Påmelding må åpne før startdato."
-                  handleChange={patchDateTime("regStart", "date")}
-                  valid={validRegStart}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-                <TimeInput
-                  value={
-                    tempEventObject.regStart
-                      ? getISOTimeString(tempEventObject.regStart)
-                      : ""
-                  }
-                  inputId="regTimeStart"
-                  inputName="eventRegTimeStart"
-                  label="Tidspunkt åpning"
-                  errorMessage="Påmelding må åpne før startdato."
-                  handleChange={patchDateTime("regStart", "time")}
-                  valid={validRegStart}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-              </div>
-            </>
-          )}
-          {!tempEventObject.regEnd && (
-            <button
-              type="button"
-              className={styles.addDateContainer}
-              onClick={() => {
-                setTempEventObject({
-                  ...tempEventObject,
-                  regEnd: tempEventObject.startDate,
-                });
-              }}
-            >
-              <PlusIcon className={styles.addDateIcon} />
-              <p className={styles.addDateText}>Påmelding stenger</p>
-            </button>
-          )}
-          {tempEventObject.regEnd && (
-            <>
-              <button
-                type="button"
-                className={styles.addDateContainer}
-                onClick={() => {
-                  setTempEventObject({
-                    ...tempEventObject,
-                    regEnd: undefined,
-                  });
-                  setValidRegEnd(true);
-                }}
-              >
-                <MinusIcon
-                  className={`${styles.addDateIcon} ${styles.marginBottomMedium}`}
-                />
-                <p className={styles.addDateText}>Påmelding stenger</p>
-              </button>
-              <div className={`${styles.horizontalContainer} `}>
-                <DateInput
-                  value={
-                    tempEventObject.regEnd
-                      ? getISODateString(tempEventObject.regEnd)
-                      : ""
-                  }
-                  inputId="regDateEnd"
-                  inputName="eventRegDateEnd"
-                  label="Dato frist"
-                  errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                  handleChange={patchDateTime("regEnd", "date")}
-                  valid={validRegEnd}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-                <TimeInput
-                  value={
-                    tempEventObject.regEnd
-                      ? getISOTimeString(tempEventObject.regEnd)
-                      : ""
-                  }
-                  inputId="regTimeEnd"
-                  inputName="eventRegTimeEnd"
-                  label="Tidspunkt frist"
-                  errorMessage="Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato."
-                  handleChange={patchDateTime("regEnd", "time")}
-                  valid={validRegEnd}
-                  initiallyFocused
-                  noExtraInfo
-                  card
-                />
-              </div>
-            </>
-          )}
+          <OptionalDateTime
+            field="endDate"
+            label="Sluttdato og -tidspunkt"
+            ids={["dateEnd", "timeEnd"]}
+            names={["eventDateEnd", "eventTimeEnd"]}
+            labels={["Dato slutt", "Tidspunkt slutt"]}
+            errors={[
+              "Sluttdato kan ikke være før startdato.",
+              "Sluttidspunkt kan ikke være før starttidspunkt.",
+            ]}
+            valid={validEnd}
+            setValid={setValidEnd}
+            {...shared}
+          />
+          <OptionalDateTime
+            field="regStart"
+            label="Påmelding åpner"
+            ids={["regDateStart", "regTimeStart"]}
+            names={["eventRegDateStart", "eventRegTimeStart"]}
+            labels={["Dato åpning", "Tidspunkt åpning"]}
+            errors={[
+              "Påmelding må åpne før startdato.",
+              "Påmelding må åpne før startdato.",
+            ]}
+            valid={validRegStart}
+            setValid={setValidRegStart}
+            {...shared}
+          />
+          <OptionalDateTime
+            field="regEnd"
+            label="Påmelding stenger"
+            ids={["regDateEnd", "regTimeEnd"]}
+            names={["eventRegDateEnd", "eventRegTimeEnd"]}
+            labels={["Dato frist", "Tidspunkt frist"]}
+            errors={[
+              "Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato.",
+              "Påmeldingsfristen må være etter påmeldingsåpning og før sluttdato.",
+            ]}
+            valid={validRegEnd}
+            setValid={setValidRegEnd}
+            {...shared}
+          />
         </>
       }
     >

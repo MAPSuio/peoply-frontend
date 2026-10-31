@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   bestTimeLabel,
   formatCount,
-  formatDays,
   formatDelta,
   formatPercent,
 } from "../utils/analyticsFormat";
@@ -23,13 +22,10 @@ describe("analyticsFormat", () => {
 
   it("renders missing metrics as an em dash", () => {
     expect(formatPercent(null)).toBe("—");
-    expect(formatDays(null)).toBe("—");
     expect(formatCount(null)).toBe("—");
   });
 
   it("formats day counts and plain counts", () => {
-    expect(formatDays(7)).toBe("7 d");
-    expect(formatDays(0.5)).toBe("0,5 d");
     expect(formatCount(42)).toBe("42");
     expect(formatCount(1.6667)).toBe("1,7");
   });

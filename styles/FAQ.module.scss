@@ -53,10 +53,6 @@
   color: var(--text-color-emphasis, $text-color-emphasis);
 }
 
-.regularWeight {
-  font-weight: $font-weight-regular;
-}
-
 .cardContainer {
   align-items: center;
   display: flex;
@@ -109,11 +105,6 @@
   margin-top: $spacer-very-small;
   padding-left: $spacer-medium;
   padding-right: $spacer-medium;
-}
-
-.emailLink {
-  font-weight: $font-weight-regular;
-  text-decoration: underline;
 }
 
 .divider {
