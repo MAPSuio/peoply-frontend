@@ -12,7 +12,7 @@ export interface CoOrganizerOption {
   label: string;
 }
 
-function administers(organization: Organization, user: User): boolean {
+export function administers(organization: Organization, user: User): boolean {
   return organization.organizationRoles.some(
     (userRole) =>
       userRole.userId === user.id &&

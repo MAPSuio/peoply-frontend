@@ -25,28 +25,6 @@
   }
 }
 
-.userContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  margin-bottom: $spacer-medium;
-  width: $page-width-mobile;
-
-  @include desktop() {
-    margin-bottom: $spacer-large;
-  }
-}
-
-.title {
-  font-size: $font-size-title;
-  margin-right: $spacer-mini;
-
-  @include desktop() {
-    font-size: $font-size-title-desktop;
-    margin-right: $spacer-very-small;
-  }
-}
-
 .errorTitle {
   font-size: $font-size-heading-large;
   margin-bottom: $spacer-small;
@@ -55,72 +33,6 @@
   @include desktop() {
     font-size: $font-size-heading-large-desktop;
     margin-bottom: $spacer-medium;
-  }
-}
-
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
-}
-
-.loginButtonContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  margin-top: $spacer-medium;
-}
-
-.loginButtonText {
-  font-size: $font-size-tertiary;
-  letter-spacing: 0.02em;
-  line-height: $line-height-text;
-  margin-top: $spacer-very-small;
-  max-width: 267px;
-  text-align: center;
-
-  @include desktop() {
-    font-size: $font-size-tertiary-desktop;
-    letter-spacing: 0;
-  }
-}
-
-.chevronDownIcon {
-  height: 18px;
-  stroke: var(--text-color-primary, $text-color-primary);
-  width: 18px;
-
-  @include desktop() {
-    height: 24px;
-    width: 24px;
-  }
-}
-
-.sectionButtonsContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  margin-bottom: $spacer-medium;
-  width: 100%;
-
-  @include desktop() {
-    margin-bottom: $spacer-large;
-  }
-}
-
-.buttonsContainer {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  width: 100%;
-
-  .button {
-    @include resetButton();
-    display: flex;
-    justify-content: center;
-    position: relative;
-    width: 100%;
   }
 }
 
@@ -179,23 +91,6 @@
   }
 }
 
-.sectionIcon {
-  fill: none;
-  height: 24px;
-  stroke: var(--text-color-primary, $text-color-primary);
-  transition: all $animation-duration ease;
-  width: 24px;
-
-  @include desktop {
-    height: 32px;
-    width: 32px;
-  }
-}
-
-.active {
-  stroke: var(--text-color-emphasis, $text-color-emphasis);
-}
-
 .imageContainer {
   margin-bottom: $spacer-small;
   max-width: 250px;
@@ -203,25 +98,6 @@
   @media screen and (min-width: 600px) and (min-height: 900px) {
     margin-bottom: $spacer-medium;
     max-width: 300px;
-  }
-}
-
-.activeLine {
-  animation-duration: $animation-duration;
-  animation-fill-mode: both;
-  animation-name: line-enter-reduced-motion;
-  animation-timing-function: ease;
-  background-color: var(--text-color-emphasis, $text-color-emphasis);
-  bottom: -8px;
-  height: 1px;
-  left: 0;
-  margin: 0 auto;
-  position: absolute;
-  right: 0;
-  width: 100%;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation-name: line-enter-reduced-motion, line-enter-full-motion;
   }
 }
 

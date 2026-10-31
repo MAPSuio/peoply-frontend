@@ -22,14 +22,6 @@
   @include label();
 }
 
-.lengthText {
-  font-size: $font-size-tertiary;
-
-  @include desktop() {
-    font-size: $font-size-tertiary-desktop;
-  }
-}
-
 .inputAndIconContainer {
   position: relative;
 }
@@ -41,19 +33,6 @@
 
 .textInput::placeholder {
   color: var(--text-color-input, $text-color-input);
-}
-
-.errorContainer {
-  @include errorContainer();
-}
-
-.errorText {
-  @include errorText();
-}
-
-.errorIcon {
-  @include errorIconDimensions();
-  stroke: var(--error-color, $error-color);
 }
 
 .notValid {

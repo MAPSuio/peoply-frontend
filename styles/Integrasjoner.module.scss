@@ -169,16 +169,6 @@
   }
 }
 
-.eyebrow {
-  color: var(--text-color-link, $text-color-link);
-  display: block;
-  font-size: $font-size-tertiary;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  margin-bottom: $spacer-mini;
-  text-transform: uppercase;
-}
-
 .endpoint {
   @include code-panel;
 

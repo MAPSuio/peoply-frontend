@@ -206,14 +206,6 @@
   }
 }
 
-.noMargin {
-  margin-bottom: 0;
-}
-
-.uppercase {
-  @include uppercase();
-}
-
 .link {
   @include link();
 }

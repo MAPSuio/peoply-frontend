@@ -1,7 +1,7 @@
 /* Components */
 import SummaryCard from "../SummaryCard";
 import IconCircle from "../IconCircle";
-import PlaceIconSummary from "../svgs/PlaceIconSummary";
+import PlaceIcon from "../svgs/PlaceIcon";
 
 /* Styles */
 import styles from "../../styles/SummaryPage.module.scss";
@@ -20,12 +20,7 @@ const PlaceSummarySection = ({
   return (
     <SummaryCard
       inputId={2}
-      Icon={
-        <IconCircle
-          Icon={PlaceIconSummary}
-          iconClassName={styles.summaryIcon}
-        />
-      }
+      Icon={<IconCircle Icon={PlaceIcon} iconClassName={styles.summaryIcon} />}
       onClick={onClick}
     >
       <p className={`${styles.placeText} ${styles.marginBottomSmall}`}>
