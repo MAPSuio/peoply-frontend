@@ -1,4 +1,4 @@
-import type { ChangeEvent, Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 /* Components */
 import SummaryCard from "../SummaryCard";
@@ -129,6 +129,72 @@ const OptionalDateTime = ({
   );
 };
 
+const DateTimeSummary = ({
+  eventObject,
+  tempEventObject,
+}: {
+  eventObject: EventObjectProps;
+  tempEventObject: EventObjectProps;
+}) => (
+  <div className={`${styles.horizontalContainer}`}>
+    <div className={`${styles.diagonalContainer} `}>
+      <span className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}>
+        Start:{" "}
+      </span>
+      {eventObject.endDate && (
+        <span
+          className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+        >
+          Slutt:{" "}
+        </span>
+      )}
+      {eventObject.regStart && (
+        <span
+          className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+        >
+          Påmelding åpner:
+        </span>
+      )}
+      {eventObject.regEnd && (
+        <span
+          className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
+        >
+          Påmelding stenger:
+        </span>
+      )}
+    </div>
+
+    <div className={`${styles.diagonalContainer} ${styles.startAlign}`}>
+      <TimeView
+        ISOtime={tempEventObject.startDate}
+        styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+        localTime={false}
+      ></TimeView>
+      {tempEventObject.endDate && (
+        <TimeView
+          ISOtime={tempEventObject.endDate}
+          styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+          localTime={false}
+        ></TimeView>
+      )}
+      {tempEventObject.regStart && (
+        <TimeView
+          ISOtime={tempEventObject.regStart}
+          styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+          localTime={false}
+        ></TimeView>
+      )}
+      {tempEventObject.regEnd && (
+        <TimeView
+          ISOtime={tempEventObject.regEnd}
+          styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
+          localTime={false}
+        ></TimeView>
+      )}
+    </div>
+  </div>
+);
+
 /* Editable date/time card used by EditSummaryPage (event editing). */
 const EditDateTimeSection = ({
   editOpen,
@@ -237,65 +303,10 @@ const EditDateTimeSection = ({
         </>
       }
     >
-      <div className={`${styles.horizontalContainer}`}>
-        <div className={`${styles.diagonalContainer} `}>
-          <span
-            className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-          >
-            Start:{" "}
-          </span>
-          {eventObject.endDate && (
-            <span
-              className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-            >
-              Slutt:{" "}
-            </span>
-          )}
-          {eventObject.regStart && (
-            <span
-              className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-            >
-              Påmelding åpner:
-            </span>
-          )}
-          {eventObject.regEnd && (
-            <span
-              className={`${styles.marginBottomVerySmall} ${styles.startAlign}`}
-            >
-              Påmelding stenger:
-            </span>
-          )}
-        </div>
-
-        <div className={`${styles.diagonalContainer} ${styles.startAlign}`}>
-          <TimeView
-            ISOtime={tempEventObject.startDate}
-            styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-            localTime={false}
-          ></TimeView>
-          {tempEventObject.endDate && (
-            <TimeView
-              ISOtime={tempEventObject.endDate}
-              styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-              localTime={false}
-            ></TimeView>
-          )}
-          {tempEventObject.regStart && (
-            <TimeView
-              ISOtime={tempEventObject.regStart}
-              styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-              localTime={false}
-            ></TimeView>
-          )}
-          {tempEventObject.regEnd && (
-            <TimeView
-              ISOtime={tempEventObject.regEnd}
-              styles={`${styles.marginBottomVerySmall} ${styles.dateText}`}
-              localTime={false}
-            ></TimeView>
-          )}
-        </div>
-      </div>
+      <DateTimeSummary
+        eventObject={eventObject}
+        tempEventObject={tempEventObject}
+      />
     </SummaryCard>
   );
 };
