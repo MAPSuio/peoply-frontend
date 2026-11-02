@@ -116,6 +116,36 @@
   z-index: 10;
 }
 
+.editSummary > .ctaBar {
+  background: none;
+  position: static;
+}
+
+.editSummary .signupQuestionCard {
+  cursor: default;
+}
+
+.removeQuestion {
+  @include resetButton();
+  align-items: center;
+  color: var(--danger-color, $danger-color);
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+.signupQuestion {
+  overflow-wrap: anywhere;
+  text-align: left;
+  width: 100%;
+}
+
 .primaryButton {
   font-size: $font-size-primary;
   width: 100%;
