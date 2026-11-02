@@ -47,6 +47,7 @@ const SummaryCard = ({
         {Icon}
         {editButtonVisible && (
           <EditIconGlass
+            className={styles.editButton}
             disabled={editButtonDisabled}
             onClick={() => {
               setEditClosed(false);
