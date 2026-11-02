@@ -4,7 +4,9 @@ import useSnack from "../../hooks/useSnack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
 import { type Event, SnackTypes } from "../../types/types";
 import styles from "../../styles/SummaryPage.module.scss";
-import MinusIcon from "../svgs/MinusIcon";
+import SummaryCard from "../SummaryCard";
+import IconCircle from "../IconCircle";
+import DataIconSummary from "../svgs/DataIconSummary";
 
 export default function EditSignupQuestion({ event }: { event: Event }) {
   const [pending, setPending] = useState(false);
@@ -36,17 +38,27 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
 
   if (!event.formQuestion || removed === event.id) return null;
   return (
-    <div>
-      <p>{event.formQuestion}</p>
-      <button
-        type="button"
-        className={styles.addDateContainer}
-        disabled={pending}
-        onClick={removeQuestion}
+    <section aria-label="Signup question" className={styles.editSummary}>
+      <SummaryCard
+        inputId={8}
+        Icon={
+          <IconCircle
+            Icon={DataIconSummary}
+            iconClassName={styles.summaryIcon}
+          />
+        }
+        editButtonVisible
+        editButtonDisabled={pending}
+        editButtonOnClick={() => undefined}
+        onCheck={removeQuestion}
+        onCross={() => undefined}
+        valid={!pending}
+        inputComponent={
+          <p>Remove the signup question for future participants?</p>
+        }
       >
-        <MinusIcon className={styles.addDateIcon} />
-        <span className={styles.addDateText}>Remove signup question</span>
-      </button>
-    </div>
+        <p>{event.formQuestion}</p>
+      </SummaryCard>
+    </section>
   );
 }

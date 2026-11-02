@@ -116,6 +116,11 @@
   z-index: 10;
 }
 
+.editSummary > .ctaBar {
+  background: none;
+  position: static;
+}
+
 .primaryButton {
   font-size: $font-size-primary;
   width: 100%;

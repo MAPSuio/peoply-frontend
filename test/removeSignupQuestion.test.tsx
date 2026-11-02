@@ -34,12 +34,21 @@ beforeEach(() => {
   vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue({});
 });
 
+async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
+  const region = screen.getByRole("region", { name: "Signup question" });
+  const edit = region.querySelector("button button");
+  if (!(edit instanceof HTMLElement)) throw new Error("Missing edit button");
+  await user.click(edit);
+  const accept = region.querySelector('button[class*="check"]');
+  if (!(accept instanceof HTMLElement))
+    throw new Error("Missing accept button");
+  await user.click(accept);
+}
+
 it("removes an existing event question and refreshes the event", async () => {
   const user = userEvent.setup();
   render(<Edit />);
-  await user.click(
-    screen.getByRole("button", { name: "Remove signup question" }),
-  );
+  await confirmRemoval(user);
   await waitFor(() => expect(mutate).toHaveBeenCalledWith("/events/event-1"));
   const call = vi.mocked(fetchFromPeoplyApiJson).mock.calls[0];
   if (!call) throw new Error("Missing update request");
@@ -56,13 +65,13 @@ it("keeps the question available for retry when removal fails", async () => {
   vi.mocked(fetchFromPeoplyApiJson).mockRejectedValue(new Error("Offline"));
   const user = userEvent.setup();
   render(<Edit />);
-  await user.click(
-    screen.getByRole("button", { name: "Remove signup question" }),
-  );
+  await confirmRemoval(user);
   await waitFor(() => expect(addSnack).toHaveBeenCalled());
   expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: "Remove signup question" }),
+    screen
+      .getByRole("region", { name: "Signup question" })
+      .querySelector("button"),
   ).toBeEnabled();
   expect(mutate).not.toHaveBeenCalled();
 });
@@ -71,9 +80,7 @@ it("reports success when refreshing the cache fails after removal", async () => 
   mutate.mockRejectedValue(new Error("Offline"));
   const user = userEvent.setup();
   render(<Edit />);
-  await user.click(
-    screen.getByRole("button", { name: "Remove signup question" }),
-  );
+  await confirmRemoval(user);
   await waitFor(() =>
     expect(addSnack).toHaveBeenCalledWith(
       "Signup question removed",
@@ -86,14 +93,29 @@ it("reports success when refreshing the cache fails after removal", async () => 
 it("shows the question when navigating to another event after removal", async () => {
   const user = userEvent.setup();
   const { rerender } = render(<EditSignupQuestion event={event as Event} />);
-  await user.click(
-    screen.getByRole("button", { name: "Remove signup question" }),
-  );
+  await confirmRemoval(user);
   await waitFor(() =>
     expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument(),
   );
   rerender(<EditSignupQuestion event={{ ...event, id: "event-2" } as Event} />);
   expect(
-    screen.getByRole("button", { name: "Remove signup question" }),
+    screen
+      .getByRole("region", { name: "Signup question" })
+      .querySelector("button"),
   ).toBeEnabled();
+});
+
+it("cancels removal without changing the event", async () => {
+  const user = userEvent.setup();
+  render(<Edit />);
+  const region = screen.getByRole("region", { name: "Signup question" });
+  const edit = region.querySelector("button button");
+  if (!(edit instanceof HTMLElement)) throw new Error("Missing edit button");
+  await user.click(edit);
+  const cancel = region.querySelector('button[class*="cross"]');
+  if (!(cancel instanceof HTMLElement))
+    throw new Error("Missing cancel button");
+  await user.click(cancel);
+  expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
+  expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();
 });
