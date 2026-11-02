@@ -8,7 +8,7 @@ import MinusIcon from "../svgs/MinusIcon";
 
 export default function EditSignupQuestion({ event }: { event: Event }) {
   const [pending, setPending] = useState(false);
-  const [removed, setRemoved] = useState(false);
+  const [removed, setRemoved] = useState<string>();
   const { addSnack } = useSnack();
   const { mutate } = useSWRConfig();
 
@@ -21,8 +21,8 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
         method: "PATCH",
         body,
       });
-      setRemoved(true);
-      await mutate(`/events/${event.id}`);
+      setRemoved(event.id);
+      void mutate(`/events/${event.id}`).catch(() => undefined);
       addSnack("Signup question removed", SnackTypes.SUCCESS);
     } catch {
       addSnack(
@@ -34,7 +34,7 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
     }
   }
 
-  if (!event.formQuestion || removed) return null;
+  if (!event.formQuestion || removed === event.id) return null;
   return (
     <div>
       <p>{event.formQuestion}</p>

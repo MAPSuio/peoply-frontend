@@ -1,6 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
+import EditSignupQuestion from "../components/summary/EditSignupQuestion";
+import type { Event } from "../types/types";
 import Edit from "../pages/events/[eid]/edit";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 
@@ -28,6 +30,7 @@ vi.mock("../services/fetchers", () => ({ fetchFromPeoplyApiJson: vi.fn() }));
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mutate.mockResolvedValue(undefined);
   vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue({});
 });
 
@@ -62,4 +65,35 @@ it("keeps the question available for retry when removal fails", async () => {
     screen.getByRole("button", { name: "Remove signup question" }),
   ).toBeEnabled();
   expect(mutate).not.toHaveBeenCalled();
+});
+
+it("reports success when refreshing the cache fails after removal", async () => {
+  mutate.mockRejectedValue(new Error("Offline"));
+  const user = userEvent.setup();
+  render(<Edit />);
+  await user.click(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  );
+  await waitFor(() =>
+    expect(addSnack).toHaveBeenCalledWith(
+      "Signup question removed",
+      expect.anything(),
+    ),
+  );
+  expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument();
+});
+
+it("shows the question when navigating to another event after removal", async () => {
+  const user = userEvent.setup();
+  const { rerender } = render(<EditSignupQuestion event={event as Event} />);
+  await user.click(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  );
+  await waitFor(() =>
+    expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument(),
+  );
+  rerender(<EditSignupQuestion event={{ ...event, id: "event-2" } as Event} />);
+  expect(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  ).toBeEnabled();
 });
