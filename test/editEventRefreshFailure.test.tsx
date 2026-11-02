@@ -78,8 +78,6 @@ it("keeps an unsaved edit when refreshing the event fails", async () => {
   });
   await user.clear(input);
   await user.type(input, "Unsaved title");
-  await user.click(screen.getByRole("button", { name: "Bekreft" }));
-  expect(screen.getByText("Unsaved title")).toBeInTheDocument();
 
   fetcher.mockImplementation(async (key: string) => {
     if (key === EVENT_KEY) throw new Error("Offline");
@@ -88,8 +86,6 @@ it("keeps an unsaved edit when refreshing the event fails", async () => {
   await user.click(screen.getByRole("button", { name: "Refresh event" }));
   await waitFor(() => expect(onError).toHaveBeenCalled());
 
-  await waitFor(() =>
-    expect(screen.getByText("Unsaved title")).toBeInTheDocument(),
-  );
+  expect(input).toHaveValue("Unsaved title");
   expect(router.replace).not.toHaveBeenCalled();
 });

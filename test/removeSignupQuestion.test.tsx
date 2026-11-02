@@ -14,6 +14,7 @@ const nextEvent = {
   formQuestion: "Any allergies?",
 };
 const LOAD_FAILURE = "Kunne ikke hente arrangementet";
+const REMOVE_LABEL = "Fjern spørsmålet";
 
 const { addSnack, redirect, router } = vi.hoisted(() => ({
   addSnack: vi.fn(),
@@ -44,10 +45,15 @@ function findRegion() {
   return screen.findByRole("region", { name: "Påmeldingsspørsmål" });
 }
 
-async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
+async function openConfirmation(user: ReturnType<typeof userEvent.setup>) {
   const region = within(await findRegion());
-  await user.click(region.getByRole("button", { name: "Rediger" }));
-  await user.click(region.getByRole("button", { name: "Bekreft" }));
+  await user.click(region.getByRole("button", { name: REMOVE_LABEL }));
+}
+
+async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
+  await openConfirmation(user);
+  const dialog = within(screen.getByRole("dialog"));
+  await user.click(dialog.getByRole("button", { name: "Fjern" }));
 }
 
 it("removes an existing event question without refetching the event", async () => {
@@ -80,8 +86,21 @@ it("keeps the question available for retry when removal fails", async () => {
   await waitFor(() => expect(addSnack).toHaveBeenCalled());
   expect(screen.getByText(QUESTION)).toBeInTheDocument();
   expect(
-    within(await findRegion()).getByRole("button", { name: "Rediger" }),
+    within(await findRegion()).getByRole("button", { name: REMOVE_LABEL }),
   ).toBeEnabled();
+});
+
+it("disables the trashcan while the removal is running", async () => {
+  vi.mocked(fetchFromPeoplyApiJson).mockReturnValue(
+    new Promise(() => undefined),
+  );
+  const user = userEvent.setup();
+  renderWithSwr(<Edit />, { fetcher });
+  await confirmRemoval(user);
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(
+    within(await findRegion()).getByRole("button", { name: REMOVE_LABEL }),
+  ).toBeDisabled();
 });
 
 it("shows the question of the next event after a removal", async () => {
@@ -108,15 +127,12 @@ it("closes the confirmation when moving to another cached event", async () => {
     fetcher,
     fallback: { "/events/team-lunch": nextEvent },
   });
-  const region = within(await findRegion());
-  await user.click(region.getByRole("button", { name: "Rediger" }));
-  expect(screen.getByRole("button", { name: "Bekreft" })).toBeInTheDocument();
+  await openConfirmation(user);
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
   router.query.eid = "team-lunch";
   rerender(<Edit />);
   expect(await screen.findByText("Any allergies?")).toBeInTheDocument();
-  expect(
-    screen.queryByRole("button", { name: "Bekreft" }),
-  ).not.toBeInTheDocument();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
 
 it("changes only the question in the cached event page when the editor was opened by id", async () => {
@@ -160,9 +176,11 @@ it("changes only the question in the cached event page when the editor was opene
 it("cancels removal without changing the event", async () => {
   const user = userEvent.setup();
   renderWithSwr(<Edit />, { fetcher });
-  const region = within(await findRegion());
-  await user.click(region.getByRole("button", { name: "Rediger" }));
-  await user.click(region.getByRole("button", { name: "Avbryt" }));
+  await openConfirmation(user);
+  await user.click(
+    within(screen.getByRole("dialog")).getByRole("button", { name: "Avbryt" }),
+  );
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(screen.getByText(QUESTION)).toBeInTheDocument();
   expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();
 });

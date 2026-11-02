@@ -34,17 +34,19 @@ const SummaryCard = ({
   valid = true,
 }: SummaryCardProps) => {
   const [editClosed, setEditClosed] = useState(true);
-  const className = `${styles.summaryCardContainer} ${
-    !editClosed && styles.noHover
-  }`;
 
-  const content = (
-    <>
+  return (
+    <button
+      type="button"
+      onClick={() => onClick(inputId)}
+      className={`${styles.summaryCardContainer} ${
+        !editClosed && styles.noHover
+      }`}
+    >
       <div className={styles.iconContainer}>
         {Icon}
         {editButtonVisible && (
           <EditIconGlass
-            className={styles.editButton}
             disabled={editButtonDisabled}
             onClick={() => {
               setEditClosed(false);
@@ -73,20 +75,6 @@ const SummaryCard = ({
           ></AcceptRejectButton>
         </>
       )}
-    </>
-  );
-
-  if (editButtonVisible) {
-    return <div className={className}>{content}</div>;
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={() => onClick(inputId)}
-      className={className}
-    >
-      {content}
     </button>
   );
 };

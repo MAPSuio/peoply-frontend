@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useSWRConfig } from "swr";
 import useSnack from "../../hooks/useSnack";
 import { fetchFromPeoplyApiJson } from "../../services/fetchers";
-import { type Event, SnackTypes } from "../../types/types";
+import { ButtonType, type Event, SnackTypes } from "../../types/types";
+import cardStyles from "../../styles/SummaryCard.module.scss";
 import styles from "../../styles/SummaryPage.module.scss";
-import SummaryCard from "../SummaryCard";
 import IconCircle from "../IconCircle";
+import Modal from "../Modal";
+import ModalButton from "../ModalButton";
 import InfoIconSummary from "../svgs/InfoIconSummary";
+import TrashIcon from "../svgs/TrashIcon";
 
 export default function EditSignupQuestion({
   event,
@@ -15,11 +18,13 @@ export default function EditSignupQuestion({
   event: Event;
   cacheKey: string;
 }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const { addSnack } = useSnack();
   const { mutate } = useSWRConfig();
 
   async function removeQuestion() {
+    setConfirmOpen(false);
     setPending(true);
     try {
       const body = new FormData();
@@ -47,24 +52,46 @@ export default function EditSignupQuestion({
   if (!event.formQuestion) return null;
   return (
     <section aria-label="Påmeldingsspørsmål" className={styles.editSummary}>
-      <SummaryCard
-        inputId={8}
-        Icon={
+      <div
+        className={`${cardStyles.summaryCardContainer} ${cardStyles.noHover} ${styles.signupQuestionCard}`}
+      >
+        <div className={cardStyles.iconContainer}>
           <IconCircle
             Icon={InfoIconSummary}
             iconClassName={styles.summaryIcon}
           />
-        }
-        editButtonVisible
-        editButtonDisabled={pending}
-        editButtonOnClick={() => undefined}
-        onCheck={removeQuestion}
-        onCross={() => undefined}
-        valid={!pending}
-        inputComponent={<p>Fjerne spørsmålet for nye deltakere?</p>}
-      >
+          <button
+            type="button"
+            aria-label="Fjern spørsmålet"
+            className={styles.removeQuestion}
+            disabled={pending}
+            onClick={() => setConfirmOpen(true)}
+          >
+            <TrashIcon />
+          </button>
+        </div>
         <p className={styles.signupQuestion}>{event.formQuestion}</p>
-      </SummaryCard>
+      </div>
+      {confirmOpen && (
+        <Modal
+          label="Fjern spørsmålet"
+          description="Er du sikker på at du vil fjerne spørsmålet for nye deltakere?"
+          closeButtonOnClick={() => setConfirmOpen(false)}
+        >
+          <ModalButton
+            text="Fjern"
+            onClick={removeQuestion}
+            type={ButtonType.DANGERSOFT}
+            noShadow
+          />
+          <ModalButton
+            text="Avbryt"
+            onClick={() => setConfirmOpen(false)}
+            type={ButtonType.SECONDARY}
+            noShadow
+          />
+        </Modal>
+      )}
     </section>
   );
 }

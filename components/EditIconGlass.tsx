@@ -18,7 +18,6 @@ export default function EditIconGlass({
   return (
     <button
       type="button"
-      aria-label="Rediger"
       onClick={onClick}
       disabled={loading || disabled}
       className={`${styles.container} ${className}`}

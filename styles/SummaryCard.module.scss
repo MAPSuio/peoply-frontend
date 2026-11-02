@@ -7,7 +7,6 @@
   flex-flow: column nowrap;
   max-width: $max-width-input;
   padding: $spacer-small;
-  text-align: center;
   transition: box-shadow $animation-duration ease;
   width: 100%;
 
@@ -26,11 +25,6 @@
   justify-content: space-between;
   margin-bottom: $spacer-small-plus;
   width: 100%;
-}
-
-.editButton {
-  min-height: 44px;
-  min-width: 44px;
 }
 
 .marginTopSmall {
