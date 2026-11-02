@@ -6,7 +6,7 @@ import { type Event, SnackTypes } from "../../types/types";
 import styles from "../../styles/SummaryPage.module.scss";
 import SummaryCard from "../SummaryCard";
 import IconCircle from "../IconCircle";
-import DataIconSummary from "../svgs/DataIconSummary";
+import InfoIconSummary from "../svgs/InfoIconSummary";
 
 export default function EditSignupQuestion({ event }: { event: Event }) {
   const [pending, setPending] = useState(false);
@@ -43,7 +43,7 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
         inputId={8}
         Icon={
           <IconCircle
-            Icon={DataIconSummary}
+            Icon={InfoIconSummary}
             iconClassName={styles.summaryIcon}
           />
         }
