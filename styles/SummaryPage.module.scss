@@ -121,6 +121,12 @@
   position: static;
 }
 
+.signupQuestion {
+  overflow-wrap: anywhere;
+  text-align: left;
+  width: 100%;
+}
+
 .primaryButton {
   font-size: $font-size-primary;
   width: 100%;

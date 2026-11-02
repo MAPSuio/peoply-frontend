@@ -23,13 +23,16 @@ const Edit = () => {
   const { eid } = router.query;
   const { data, error } = useSWR(() => (eid ? `/events/${eid}` : false));
 
-  /* One reason, the failure first: SWR serves the cached event through a
-     failed revalidation, so both could otherwise be true at once and the page
-     would announce and redirect twice. Without the failure case the page sat
-     on "Loading..." forever with nothing telling the user why. */
+  /* SWR keeps the cached event through a failed revalidation, so only a failed
+     first load redirects. A failed refresh must not discard unsaved edits.
+     Without the failure case the page sat on "Loading..." forever with nothing
+     telling the user why. */
   useRedirectWithReason({
     reason: blockingReason(true, [
-      { blocked: Boolean(error), reason: "Kunne ikke hente arrangementet" },
+      {
+        blocked: Boolean(error) && !data,
+        reason: "Kunne ikke hente arrangementet",
+      },
       {
         blocked: Boolean(data?.readOnly),
         reason: "Importerte ICS-arrangementer kan ikke redigeres",

@@ -1,53 +1,55 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
-import EditSignupQuestion from "../components/summary/EditSignupQuestion";
-import type { Event } from "../types/types";
 import Edit from "../pages/events/[eid]/edit";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
+import { renderWithSwr } from "./support/swr";
 
-const { event, addSnack, mutate } = vi.hoisted(() => ({
-  event: { id: "event-1", formQuestion: "Dietary requirements?" },
+const QUESTION = "Dietary requirements?";
+const event = { id: "event-1", formQuestion: QUESTION };
+const LOAD_FAILURE = "Kunne ikke hente arrangementet";
+
+const { addSnack, redirect, router } = vi.hoisted(() => ({
   addSnack: vi.fn(),
-  mutate: vi.fn().mockResolvedValue(undefined),
+  redirect: vi.fn(),
+  router: { query: { eid: "team-dinner" } },
 }));
-vi.mock("next/router", () => ({
-  useRouter: () => ({ query: { eid: "team-dinner" } }),
-}));
+vi.mock("next/router", () => ({ useRouter: () => router }));
 vi.mock("../hooks/useBack", () => ({ default: () => vi.fn() }));
-vi.mock("../hooks/useRedirectWithReason", () => ({
-  default: vi.fn(),
-  blockingReason: vi.fn(),
+vi.mock("../hooks/useRedirectWithReason", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../hooks/useRedirectWithReason")>()),
+  default: redirect,
 }));
 vi.mock("../hooks/useSnack", () => ({ default: () => ({ addSnack }) }));
-vi.mock("swr", () => ({
-  default: () => ({ data: event }),
-  useSWRConfig: () => ({ mutate }),
-}));
 vi.mock("../components/EditSummaryPage", () => ({ default: () => null }));
 vi.mock("../components/HeadComponent", () => ({ default: () => null }));
 vi.mock("../services/fetchers", () => ({ fetchFromPeoplyApiJson: vi.fn() }));
 
+const fetcher = vi.fn();
+
 beforeEach(() => {
   vi.clearAllMocks();
-  mutate.mockResolvedValue(undefined);
+  router.query.eid = "team-dinner";
+  fetcher.mockResolvedValue(event);
   vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue({});
 });
 
-async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
-  const region = screen.getByRole("region", { name: "Påmeldingsspørsmål" });
-  const edit = within(region).getByRole("button", { name: "Rediger" });
-  await user.click(edit);
-  const accept = within(region).getByRole("button", { name: "Bekreft" });
-  await user.click(accept);
+function findRegion() {
+  return screen.findByRole("region", { name: "Påmeldingsspørsmål" });
 }
 
-it("removes an existing event question and refreshes the event", async () => {
+async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
+  const region = within(await findRegion());
+  await user.click(region.getByRole("button", { name: "Rediger" }));
+  await user.click(region.getByRole("button", { name: "Bekreft" }));
+}
+
+it("removes an existing event question without refetching the event", async () => {
   const user = userEvent.setup();
-  render(<Edit />);
+  renderWithSwr(<Edit />, { fetcher });
   await confirmRemoval(user);
   await waitFor(() =>
-    expect(mutate).toHaveBeenCalledWith("/events/team-dinner"),
+    expect(screen.queryByText(QUESTION)).not.toBeInTheDocument(),
   );
   const call = vi.mocked(fetchFromPeoplyApiJson).mock.calls[0];
   if (!call) throw new Error("Missing update request");
@@ -57,71 +59,74 @@ it("removes an existing event question and refreshes the event", async () => {
   if (!(options?.body instanceof FormData))
     throw new Error("Missing form data");
   expect([...options.body.entries()]).toEqual([["formQuestion", ""]]);
-  expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument();
+  expect(addSnack).toHaveBeenCalledWith(
+    "Påmeldingsspørsmålet er fjernet",
+    expect.anything(),
+  );
+  expect(fetcher).toHaveBeenCalledTimes(1);
 });
 
 it("keeps the question available for retry when removal fails", async () => {
   vi.mocked(fetchFromPeoplyApiJson).mockRejectedValue(new Error("Offline"));
   const user = userEvent.setup();
-  render(<Edit />);
+  renderWithSwr(<Edit />, { fetcher });
   await confirmRemoval(user);
   await waitFor(() => expect(addSnack).toHaveBeenCalled());
-  expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
+  expect(screen.getByText(QUESTION)).toBeInTheDocument();
   expect(
-    within(
-      screen.getByRole("region", { name: "Påmeldingsspørsmål" }),
-    ).getByRole("button", { name: "Rediger" }),
+    within(await findRegion()).getByRole("button", { name: "Rediger" }),
   ).toBeEnabled();
-  expect(mutate).not.toHaveBeenCalled();
 });
 
-it("reports success when refreshing the cache fails after removal", async () => {
-  mutate.mockRejectedValue(new Error("Offline"));
+it("shows the question of the next event after a removal", async () => {
+  fetcher.mockImplementation(async (key: string) =>
+    key === "/events/team-lunch"
+      ? { id: "event-2", formQuestion: "Any allergies?" }
+      : event,
+  );
   const user = userEvent.setup();
-  render(<Edit />);
+  const { rerender } = renderWithSwr(<Edit />, { fetcher });
   await confirmRemoval(user);
   await waitFor(() =>
-    expect(addSnack).toHaveBeenCalledWith(
-      "Påmeldingsspørsmålet er fjernet",
-      expect.anything(),
-    ),
+    expect(screen.queryByText(QUESTION)).not.toBeInTheDocument(),
   );
-  expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument();
-});
-
-it("shows the question when navigating to another event after removal", async () => {
-  const user = userEvent.setup();
-  const { rerender } = render(
-    <EditSignupQuestion
-      cacheKey="/events/team-dinner"
-      event={event as Event}
-    />,
-  );
-  await confirmRemoval(user);
-  await waitFor(() =>
-    expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument(),
-  );
-  rerender(
-    <EditSignupQuestion
-      cacheKey="/events/team-dinner"
-      event={{ ...event, id: "event-2" } as Event}
-    />,
-  );
-  expect(
-    within(
-      screen.getByRole("region", { name: "Påmeldingsspørsmål" }),
-    ).getByRole("button", { name: "Rediger" }),
-  ).toBeEnabled();
+  router.query.eid = "team-lunch";
+  rerender(<Edit />);
+  expect(await screen.findByText("Any allergies?")).toBeInTheDocument();
 });
 
 it("cancels removal without changing the event", async () => {
   const user = userEvent.setup();
-  render(<Edit />);
-  const region = screen.getByRole("region", { name: "Påmeldingsspørsmål" });
-  const edit = within(region).getByRole("button", { name: "Rediger" });
-  await user.click(edit);
-  const cancel = within(region).getByRole("button", { name: "Avbryt" });
-  await user.click(cancel);
-  expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
+  renderWithSwr(<Edit />, { fetcher });
+  const region = within(await findRegion());
+  await user.click(region.getByRole("button", { name: "Rediger" }));
+  await user.click(region.getByRole("button", { name: "Avbryt" }));
+  expect(screen.getByText(QUESTION)).toBeInTheDocument();
   expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();
+});
+
+it("keeps the edit form when refreshing a loaded event fails", async () => {
+  const onError = vi.fn();
+  fetcher.mockRejectedValue(new Error("Offline"));
+  renderWithSwr(<Edit />, {
+    fetcher,
+    onError,
+    shouldRetryOnError: false,
+    fallback: { "/events/team-dinner": event },
+  });
+  await waitFor(() => expect(onError).toHaveBeenCalled());
+  await findRegion();
+  expect(redirect).not.toHaveBeenCalledWith(
+    expect.objectContaining({ reason: LOAD_FAILURE }),
+  );
+});
+
+it("leaves the edit page when the event cannot be loaded", async () => {
+  fetcher.mockRejectedValue(new Error("Offline"));
+  renderWithSwr(<Edit />, { fetcher, shouldRetryOnError: false });
+  await waitFor(() =>
+    expect(redirect).toHaveBeenLastCalledWith(
+      expect.objectContaining({ reason: LOAD_FAILURE }),
+    ),
+  );
 });

@@ -16,7 +16,6 @@ export default function EditSignupQuestion({
   cacheKey: string;
 }) {
   const [pending, setPending] = useState(false);
-  const [removed, setRemoved] = useState<string>();
   const { addSnack } = useSnack();
   const { mutate } = useSWRConfig();
 
@@ -29,8 +28,11 @@ export default function EditSignupQuestion({
         method: "PATCH",
         body,
       });
-      setRemoved(event.id);
-      void mutate(cacheKey).catch(() => undefined);
+      await mutate(
+        cacheKey,
+        { ...event, formQuestion: "" },
+        { revalidate: false },
+      );
       addSnack("Påmeldingsspørsmålet er fjernet", SnackTypes.SUCCESS);
     } catch {
       addSnack(
@@ -42,7 +44,7 @@ export default function EditSignupQuestion({
     }
   }
 
-  if (!event.formQuestion || removed === event.id) return null;
+  if (!event.formQuestion) return null;
   return (
     <section aria-label="Påmeldingsspørsmål" className={styles.editSummary}>
       <SummaryCard
@@ -61,7 +63,7 @@ export default function EditSignupQuestion({
         valid={!pending}
         inputComponent={<p>Fjerne spørsmålet for nye deltakere?</p>}
       >
-        <p>{event.formQuestion}</p>
+        <p className={styles.signupQuestion}>{event.formQuestion}</p>
       </SummaryCard>
     </section>
   );
