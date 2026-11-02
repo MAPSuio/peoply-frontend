@@ -93,6 +93,7 @@ export interface EventObjectProps {
   categoryIds: number[];
   capacity?: number | null;
   externalUrl?: string;
+  formQuestion: string;
   eventImage?: File;
   deleteImage: boolean;
   locationName: string;
@@ -144,6 +145,7 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
     registrationMode: event.registrationMode ?? EventRegistrationMode.PEOPLY,
     capacity: event.capacity,
     externalUrl: initialExternalUrl,
+    formQuestion: event.formQuestion ?? "",
     eventImage: undefined,
     deleteImage: false,
     locationName: event.locationName,
@@ -694,6 +696,11 @@ const EditSummaryPage = ({ event }: EditSummaryPageProps) => {
         editButtonOnClick={editButtonOnClick}
         onCheck={acceptChange}
         onCross={rejectChange}
+        tempFormQuestion={tempEventObject.formQuestion}
+        displayFormQuestion={eventObject.formQuestion}
+        onRemoveFormQuestion={() =>
+          setTempEventObject({ ...tempEventObject, formQuestion: "" })
+        }
         tempVisibility={tempEventObject.visibility}
         onVisibilityClick={updateVisibility}
         capacityFieldVisible={capacityFieldVisible}

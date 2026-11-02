@@ -26,6 +26,9 @@ import { getSafeHttpUrl } from "../../utils/event";
 import styles from "../../styles/SummaryPage.module.scss";
 
 interface EditDataSectionProps {
+  tempFormQuestion: string;
+  displayFormQuestion: string;
+  onRemoveFormQuestion: () => void;
   editOpen: boolean;
   editButtonOnClick: () => void;
   onCheck: () => void;
@@ -52,6 +55,9 @@ interface EditDataSectionProps {
 
 /* Editable data/visibility card used by EditSummaryPage (event editing). */
 const EditDataSection = ({
+  tempFormQuestion,
+  displayFormQuestion,
+  onRemoveFormQuestion,
   editOpen,
   editButtonOnClick,
   onCheck,
@@ -89,6 +95,21 @@ const EditDataSection = ({
       editButtonVisible
       inputComponent={
         <>
+          {tempFormQuestion && (
+            <>
+              <p>{tempFormQuestion}</p>
+              <button
+                type="button"
+                className={styles.addDateContainer}
+                onClick={onRemoveFormQuestion}
+              >
+                <MinusIcon className={styles.addDateIcon} />
+                <span className={styles.addDateText}>
+                  Remove signup question
+                </span>
+              </button>
+            </>
+          )}
           <RadioInput
             optionsAndIcons={[
               {
@@ -181,6 +202,7 @@ const EditDataSection = ({
       }
     >
       <div className={styles.dataContainer}>
+        {displayFormQuestion && <p>{displayFormQuestion}</p>}
         <VisibilityIndicator visibility={displayVisibility} />
         {displayCapacity !== null ? (
           <div className={styles.dataItemContainer}>
