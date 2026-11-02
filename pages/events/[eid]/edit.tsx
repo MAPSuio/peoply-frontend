@@ -4,6 +4,7 @@ import useSWR from "swr";
 // Services
 
 // Assets
+import EditSignupQuestion from "../../../components/summary/EditSignupQuestion";
 import EditSummaryPage from "../../../components/EditSummaryPage";
 import HeadComponent from "../../../components/HeadComponent";
 
@@ -58,6 +59,7 @@ const Edit = () => {
         <div className={styles.headerContainer}>
           <h1 className={styles.title}>Rediger arrangement</h1>
         </div>
+        <EditSignupQuestion event={data} />
         <EditSummaryPage event={data} />
       </div>
     </>

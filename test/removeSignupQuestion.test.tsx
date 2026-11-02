@@ -1,93 +1,65 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, it, vi } from "vitest";
-import EditSummaryPage from "../components/EditSummaryPage";
+import { beforeEach, expect, it, vi } from "vitest";
+import Edit from "../pages/events/[eid]/edit";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
-import { type Event, EventRegistrationMode, Visibility } from "../types/types";
 
-vi.mock("next/router", () => ({ useRouter: () => ({ back: vi.fn() }) }));
-vi.mock("../hooks/useUser", () => ({ default: () => ({}) }));
-vi.mock("../hooks/useSnack", () => ({
-  default: () => ({ addSnack: vi.fn() }),
+const { event, addSnack, mutate } = vi.hoisted(() => ({
+  event: { id: "event-1", formQuestion: "Dietary requirements?" },
+  addSnack: vi.fn(),
+  mutate: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../hooks/useRegistrationCount", () => ({ default: () => ({}) }));
-vi.mock("swr", () => ({ default: () => ({ data: [] }) }));
-vi.mock("../services/fetchers", () => ({
-  fetchFromPeoplyApiJson: vi.fn().mockResolvedValue({}),
-  fetchAllFromPeoplyApiJson: vi.fn(),
+vi.mock("next/router", () => ({
+  useRouter: () => ({ query: { eid: "event-1" } }),
 }));
-vi.mock("../components/summary/EditTitleSection", () => ({
-  default: () => null,
+vi.mock("../hooks/useBack", () => ({ default: () => vi.fn() }));
+vi.mock("../hooks/useRedirectWithReason", () => ({
+  default: vi.fn(),
+  blockingReason: vi.fn(),
 }));
-vi.mock("../components/summary/EditCoOrganizerSection", () => ({
-  default: () => null,
+vi.mock("../hooks/useSnack", () => ({ default: () => ({ addSnack }) }));
+vi.mock("swr", () => ({
+  default: () => ({ data: event }),
+  useSWRConfig: () => ({ mutate }),
 }));
-vi.mock("../components/summary/EditDateTimeSection", () => ({
-  default: () => null,
-}));
-vi.mock("../components/summary/EditPlaceSection", () => ({
-  default: () => null,
-}));
-vi.mock("../components/summary/EditDescriptionSection", () => ({
-  default: () => null,
-}));
-vi.mock("../components/summary/EditCategorySection", () => ({
-  default: () => null,
-}));
-vi.mock("../components/summary/EditImageSection", () => ({
-  default: () => null,
-}));
+vi.mock("../components/EditSummaryPage", () => ({ default: () => null }));
+vi.mock("../components/HeadComponent", () => ({ default: () => null }));
+vi.mock("../services/fetchers", () => ({ fetchFromPeoplyApiJson: vi.fn() }));
 
-const event = {
-  id: "event-1",
-  title: "Dinner",
-  description: "Team dinner",
-  startDate: "2027-01-01T12:00:00Z",
-  visibility: Visibility.PUBLIC,
-  registrationMode: EventRegistrationMode.PEOPLY,
-  formQuestion: "Dietary requirements?",
-  capacity: null,
-  locationName: "Office",
-  eventCategories: [],
-  eventArrangers: [],
-} as unknown as Event;
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(fetchFromPeoplyApiJson).mockResolvedValue({});
+});
 
-it.each([true, false])(
-  "persists removal only when accepted: %s",
-  async (accept) => {
-    vi.mocked(fetchFromPeoplyApiJson).mockClear();
-    const user = userEvent.setup();
-    render(<EditSummaryPage event={event} />);
-    const editButton = screen
-      .getByText("Dietary requirements?")
-      .closest("button")
-      ?.querySelector("button");
-    if (!editButton) throw new Error("Missing edit control");
-    await user.click(editButton);
-    await user.click(
-      screen.getByRole("button", { name: "Remove signup question" }),
-    );
-    const action = document.querySelector<HTMLButtonElement>(
-      accept ? 'button[class*="check"]' : 'button[class*="cross"]',
-    );
-    if (!action) throw new Error("Missing accept or cancel control");
-    await user.click(action);
-    const save = screen.getByRole("button", { name: "Lagre endringer" });
-    if (!accept) {
-      expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
-      expect(save).toBeDisabled();
-      expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();
-      return;
-    }
-    await user.click(save);
-    await waitFor(() => expect(fetchFromPeoplyApiJson).toHaveBeenCalled());
-    const call = vi.mocked(fetchFromPeoplyApiJson).mock.calls.at(-1);
-    if (!call) throw new Error("Missing update request");
-    const [url, options] = call;
-    expect(url).toBe("/events/event-1");
-    expect(options?.method).toBe("PATCH");
-    if (!(options?.body instanceof FormData))
-      throw new Error("Missing form data");
-    expect(options.body.get("formQuestion")).toBe("");
-  },
-);
+it("removes an existing event question and refreshes the event", async () => {
+  const user = userEvent.setup();
+  render(<Edit />);
+  await user.click(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  );
+  await waitFor(() => expect(mutate).toHaveBeenCalledWith("/events/event-1"));
+  const call = vi.mocked(fetchFromPeoplyApiJson).mock.calls[0];
+  if (!call) throw new Error("Missing update request");
+  const [url, options] = call;
+  expect(url).toBe("/events/event-1");
+  expect(options?.method).toBe("PATCH");
+  if (!(options?.body instanceof FormData))
+    throw new Error("Missing form data");
+  expect([...options.body.entries()]).toEqual([["formQuestion", ""]]);
+  expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument();
+});
+
+it("keeps the question available for retry when removal fails", async () => {
+  vi.mocked(fetchFromPeoplyApiJson).mockRejectedValue(new Error("Offline"));
+  const user = userEvent.setup();
+  render(<Edit />);
+  await user.click(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  );
+  await waitFor(() => expect(addSnack).toHaveBeenCalled());
+  expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Remove signup question" }),
+  ).toBeEnabled();
+  expect(mutate).not.toHaveBeenCalled();
+});
