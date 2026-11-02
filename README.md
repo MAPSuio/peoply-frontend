@@ -16,7 +16,7 @@ fail on any other version. npm must be >= 10.
 ## Run the frontend
 
 ```bash
-nvm install "$(node -p "require('./package.json').engines.node")"
+nvm install "$(sed -n 's/.*"node": "\(.*\)".*/\1/p' package.json)"
 npm ci                           # not npm install — see CONTRIBUTING.md
 cp .env.example .env.development # local env — see "Environment variables"
 npm run dev                      # http://localhost:3001

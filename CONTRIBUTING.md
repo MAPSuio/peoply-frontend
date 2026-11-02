@@ -11,7 +11,7 @@ moves production and CI together. `.npmrc` sets `engine-strict`, so `npm ci` and
 `npm install` fail on any other Node version.
 
 ```bash
-nvm install "$(node -p "require('./package.json').engines.node")"
+nvm install "$(sed -n 's/.*"node": "\(.*\)".*/\1/p' package.json)"
 npm ci        # install exactly what the lockfile says
 npm run dev   # http://localhost:3001
 ```
