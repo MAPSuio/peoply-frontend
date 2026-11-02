@@ -125,10 +125,12 @@ const SummaryPage = ({
       formData.set("externalUrl", eventObject.eventExternalUrl.trim());
     }
 
-    /* Append participant question. */
-    if (eventObject.eventHasFormQuestion && eventObject.eventFormQuestion) {
-      formData.set("formQuestion", eventObject.eventFormQuestion);
-    }
+    formData.set(
+      "formQuestion",
+      eventObject.eventHasFormQuestion
+        ? (eventObject.eventFormQuestion ?? "")
+        : "",
+    );
 
     /* Append category IDs. */
     const categoryStrings = JSON.stringify(eventObject.eventActiveCategories);
