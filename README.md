@@ -9,15 +9,14 @@ All data comes from the Peoply backend — this app owns no database.
 | Frontend | you are here | `http://localhost:3001` | `https://peoply.app` |
 | Backend | [`MAPSuio/peoply-backend`](https://github.com/MAPSuio/peoply-backend) | `http://localhost:3000` | `https://api.peoply.app` |
 
-Node >= 22.11.0, npm >= 10 (`engines` in `package.json`). `.nvmrc` pins the
-version CI builds with, so `nvm use` gets you the same one. Older Node installs
-fine and then fails during build in ways that are hard to read — check `node -v`
-first.
+`engines.node` in `package.json` is the only Node version. DigitalOcean and CI
+both read it, and `.npmrc` sets `engine-strict`, so `npm ci` and `npm install`
+fail on any other version. npm must be >= 10.
 
 ## Run the frontend
 
 ```bash
-nvm use                          # reads .nvmrc
+nvm install "$(node -p "require('./package.json').engines.node")"
 npm ci                           # not npm install — see CONTRIBUTING.md
 cp .env.example .env.development # local env — see "Environment variables"
 npm run dev                      # http://localhost:3001
@@ -35,8 +34,8 @@ Without a backend running the app renders, but every request fails and you get t
 - **Authentication cookie dropped or login redirect fails**:
   Check `CORS_ORIGIN` and `FRONTEND_URL` in `peoply-backend/.env`. Both must be set to `http://localhost:3001`.
 
-- **`Node.js` version error during build/dev**:
-  Ensure you are using Node >= 22.11.0 as specified in `.nvmrc` (`nvm use`).
+- **`EBADENGINE` or a `Node.js` version error during install/build/dev**:
+  Run the `nvm install` command above to switch to the version in `engines.node`.
 
 ## Run the backend alongside it
 
