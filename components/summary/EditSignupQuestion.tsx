@@ -29,7 +29,7 @@ export default function EditSignupQuestion({
         body,
       });
       await mutate(
-        cacheKey,
+        (key) => key === cacheKey || key === `/events/${event.urlId}`,
         { ...event, formQuestion: "" },
         { revalidate: false },
       );

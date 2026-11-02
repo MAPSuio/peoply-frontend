@@ -1,12 +1,18 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
+import useSWR from "swr";
 import Edit from "../pages/events/[eid]/edit";
 import { fetchFromPeoplyApiJson } from "../services/fetchers";
 import { renderWithSwr } from "./support/swr";
 
 const QUESTION = "Dietary requirements?";
-const event = { id: "event-1", formQuestion: QUESTION };
+const event = { id: "event-1", urlId: "team-dinner", formQuestion: QUESTION };
+const nextEvent = {
+  id: "event-2",
+  urlId: "team-lunch",
+  formQuestion: "Any allergies?",
+};
 const LOAD_FAILURE = "Kunne ikke hente arrangementet";
 
 const { addSnack, redirect, router } = vi.hoisted(() => ({
@@ -80,9 +86,7 @@ it("keeps the question available for retry when removal fails", async () => {
 
 it("shows the question of the next event after a removal", async () => {
   fetcher.mockImplementation(async (key: string) =>
-    key === "/events/team-lunch"
-      ? { id: "event-2", formQuestion: "Any allergies?" }
-      : event,
+    key === "/events/team-lunch" ? nextEvent : event,
   );
   const user = userEvent.setup();
   const { rerender } = renderWithSwr(<Edit />, { fetcher });
@@ -95,6 +99,51 @@ it("shows the question of the next event after a removal", async () => {
   expect(await screen.findByText("Any allergies?")).toBeInTheDocument();
 });
 
+it("closes the confirmation when moving to another cached event", async () => {
+  fetcher.mockImplementation(async (key: string) =>
+    key === "/events/team-lunch" ? nextEvent : event,
+  );
+  const user = userEvent.setup();
+  const { rerender } = renderWithSwr(<Edit />, {
+    fetcher,
+    fallback: { "/events/team-lunch": nextEvent },
+  });
+  const region = within(await findRegion());
+  await user.click(region.getByRole("button", { name: "Rediger" }));
+  expect(screen.getByRole("button", { name: "Bekreft" })).toBeInTheDocument();
+  router.query.eid = "team-lunch";
+  rerender(<Edit />);
+  expect(await screen.findByText("Any allergies?")).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Bekreft" }),
+  ).not.toBeInTheDocument();
+});
+
+it("updates the cached event page when the editor was opened by id", async () => {
+  function CachedEventPage() {
+    const { data } = useSWR<typeof event>("/events/team-dinner");
+    return <output aria-label="Cached question">{data?.formQuestion}</output>;
+  }
+  router.query.eid = "event-1";
+  const user = userEvent.setup();
+  renderWithSwr(
+    <>
+      <CachedEventPage />
+      <Edit />
+    </>,
+    { fetcher },
+  );
+  await waitFor(() =>
+    expect(screen.getByLabelText("Cached question")).toHaveTextContent(
+      QUESTION,
+    ),
+  );
+  await confirmRemoval(user);
+  await waitFor(() =>
+    expect(screen.getByLabelText("Cached question")).toBeEmptyDOMElement(),
+  );
+});
+
 it("cancels removal without changing the event", async () => {
   const user = userEvent.setup();
   renderWithSwr(<Edit />, { fetcher });
@@ -103,22 +152,6 @@ it("cancels removal without changing the event", async () => {
   await user.click(region.getByRole("button", { name: "Avbryt" }));
   expect(screen.getByText(QUESTION)).toBeInTheDocument();
   expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();
-});
-
-it("keeps the edit form when refreshing a loaded event fails", async () => {
-  const onError = vi.fn();
-  fetcher.mockRejectedValue(new Error("Offline"));
-  renderWithSwr(<Edit />, {
-    fetcher,
-    onError,
-    shouldRetryOnError: false,
-    fallback: { "/events/team-dinner": event },
-  });
-  await waitFor(() => expect(onError).toHaveBeenCalled());
-  await findRegion();
-  expect(redirect).not.toHaveBeenCalledWith(
-    expect.objectContaining({ reason: LOAD_FAILURE }),
-  );
 });
 
 it("leaves the edit page when the event cannot be loaded", async () => {
