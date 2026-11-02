@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 import EditSignupQuestion from "../components/summary/EditSignupQuestion";
@@ -12,7 +12,7 @@ const { event, addSnack, mutate } = vi.hoisted(() => ({
   mutate: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock("next/router", () => ({
-  useRouter: () => ({ query: { eid: "event-1" } }),
+  useRouter: () => ({ query: { eid: "team-dinner" } }),
 }));
 vi.mock("../hooks/useBack", () => ({ default: () => vi.fn() }));
 vi.mock("../hooks/useRedirectWithReason", () => ({
@@ -35,13 +35,10 @@ beforeEach(() => {
 });
 
 async function confirmRemoval(user: ReturnType<typeof userEvent.setup>) {
-  const region = screen.getByRole("region", { name: "Signup question" });
-  const edit = region.querySelector("button button");
-  if (!(edit instanceof HTMLElement)) throw new Error("Missing edit button");
+  const region = screen.getByRole("region", { name: "Påmeldingsspørsmål" });
+  const edit = within(region).getByRole("button", { name: "Rediger" });
   await user.click(edit);
-  const accept = region.querySelector('button[class*="check"]');
-  if (!(accept instanceof HTMLElement))
-    throw new Error("Missing accept button");
+  const accept = within(region).getByRole("button", { name: "Bekreft" });
   await user.click(accept);
 }
 
@@ -49,7 +46,9 @@ it("removes an existing event question and refreshes the event", async () => {
   const user = userEvent.setup();
   render(<Edit />);
   await confirmRemoval(user);
-  await waitFor(() => expect(mutate).toHaveBeenCalledWith("/events/event-1"));
+  await waitFor(() =>
+    expect(mutate).toHaveBeenCalledWith("/events/team-dinner"),
+  );
   const call = vi.mocked(fetchFromPeoplyApiJson).mock.calls[0];
   if (!call) throw new Error("Missing update request");
   const [url, options] = call;
@@ -69,9 +68,9 @@ it("keeps the question available for retry when removal fails", async () => {
   await waitFor(() => expect(addSnack).toHaveBeenCalled());
   expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
   expect(
-    screen
-      .getByRole("region", { name: "Signup question" })
-      .querySelector("button"),
+    within(
+      screen.getByRole("region", { name: "Påmeldingsspørsmål" }),
+    ).getByRole("button", { name: "Rediger" }),
   ).toBeEnabled();
   expect(mutate).not.toHaveBeenCalled();
 });
@@ -83,7 +82,7 @@ it("reports success when refreshing the cache fails after removal", async () => 
   await confirmRemoval(user);
   await waitFor(() =>
     expect(addSnack).toHaveBeenCalledWith(
-      "Signup question removed",
+      "Påmeldingsspørsmålet er fjernet",
       expect.anything(),
     ),
   );
@@ -92,29 +91,36 @@ it("reports success when refreshing the cache fails after removal", async () => 
 
 it("shows the question when navigating to another event after removal", async () => {
   const user = userEvent.setup();
-  const { rerender } = render(<EditSignupQuestion event={event as Event} />);
+  const { rerender } = render(
+    <EditSignupQuestion
+      cacheKey="/events/team-dinner"
+      event={event as Event}
+    />,
+  );
   await confirmRemoval(user);
   await waitFor(() =>
     expect(screen.queryByText("Dietary requirements?")).not.toBeInTheDocument(),
   );
-  rerender(<EditSignupQuestion event={{ ...event, id: "event-2" } as Event} />);
+  rerender(
+    <EditSignupQuestion
+      cacheKey="/events/team-dinner"
+      event={{ ...event, id: "event-2" } as Event}
+    />,
+  );
   expect(
-    screen
-      .getByRole("region", { name: "Signup question" })
-      .querySelector("button"),
+    within(
+      screen.getByRole("region", { name: "Påmeldingsspørsmål" }),
+    ).getByRole("button", { name: "Rediger" }),
   ).toBeEnabled();
 });
 
 it("cancels removal without changing the event", async () => {
   const user = userEvent.setup();
   render(<Edit />);
-  const region = screen.getByRole("region", { name: "Signup question" });
-  const edit = region.querySelector("button button");
-  if (!(edit instanceof HTMLElement)) throw new Error("Missing edit button");
+  const region = screen.getByRole("region", { name: "Påmeldingsspørsmål" });
+  const edit = within(region).getByRole("button", { name: "Rediger" });
   await user.click(edit);
-  const cancel = region.querySelector('button[class*="cross"]');
-  if (!(cancel instanceof HTMLElement))
-    throw new Error("Missing cancel button");
+  const cancel = within(region).getByRole("button", { name: "Avbryt" });
   await user.click(cancel);
   expect(screen.getByText("Dietary requirements?")).toBeInTheDocument();
   expect(fetchFromPeoplyApiJson).not.toHaveBeenCalled();

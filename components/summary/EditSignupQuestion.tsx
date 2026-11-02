@@ -8,7 +8,13 @@ import SummaryCard from "../SummaryCard";
 import IconCircle from "../IconCircle";
 import InfoIconSummary from "../svgs/InfoIconSummary";
 
-export default function EditSignupQuestion({ event }: { event: Event }) {
+export default function EditSignupQuestion({
+  event,
+  cacheKey,
+}: {
+  event: Event;
+  cacheKey: string;
+}) {
   const [pending, setPending] = useState(false);
   const [removed, setRemoved] = useState<string>();
   const { addSnack } = useSnack();
@@ -24,11 +30,11 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
         body,
       });
       setRemoved(event.id);
-      void mutate(`/events/${event.id}`).catch(() => undefined);
-      addSnack("Signup question removed", SnackTypes.SUCCESS);
+      void mutate(cacheKey).catch(() => undefined);
+      addSnack("Påmeldingsspørsmålet er fjernet", SnackTypes.SUCCESS);
     } catch {
       addSnack(
-        "Could not remove the signup question. Try again.",
+        "Kunne ikke fjerne påmeldingsspørsmålet. Prøv igjen.",
         SnackTypes.ERROR,
       );
     } finally {
@@ -38,7 +44,7 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
 
   if (!event.formQuestion || removed === event.id) return null;
   return (
-    <section aria-label="Signup question" className={styles.editSummary}>
+    <section aria-label="Påmeldingsspørsmål" className={styles.editSummary}>
       <SummaryCard
         inputId={8}
         Icon={
@@ -53,9 +59,7 @@ export default function EditSignupQuestion({ event }: { event: Event }) {
         onCheck={removeQuestion}
         onCross={() => undefined}
         valid={!pending}
-        inputComponent={
-          <p>Remove the signup question for future participants?</p>
-        }
+        inputComponent={<p>Fjerne spørsmålet for nye deltakere?</p>}
       >
         <p>{event.formQuestion}</p>
       </SummaryCard>

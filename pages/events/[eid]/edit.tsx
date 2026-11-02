@@ -59,7 +59,7 @@ const Edit = () => {
         <div className={styles.headerContainer}>
           <h1 className={styles.title}>Rediger arrangement</h1>
         </div>
-        <EditSignupQuestion event={data} />
+        <EditSignupQuestion event={data} cacheKey={`/events/${eid}`} />
         <EditSummaryPage event={data} />
       </div>
     </>
