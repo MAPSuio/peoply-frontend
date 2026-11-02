@@ -119,12 +119,22 @@ it("closes the confirmation when moving to another cached event", async () => {
   ).not.toBeInTheDocument();
 });
 
-it("updates the cached event page when the editor was opened by id", async () => {
+it("changes only the question in the cached event page when the editor was opened by id", async () => {
   function CachedEventPage() {
-    const { data } = useSWR<typeof event>("/events/team-dinner");
-    return <output aria-label="Cached question">{data?.formQuestion}</output>;
+    const { data } = useSWR<typeof event & { title?: string }>(
+      "/events/team-dinner",
+    );
+    return (
+      <>
+        <output aria-label="Cached question">{data?.formQuestion}</output>
+        <output aria-label="Cached title">{data?.title}</output>
+      </>
+    );
   }
   router.query.eid = "event-1";
+  fetcher.mockImplementation(async (key: string) =>
+    key === "/events/team-dinner" ? { ...event, title: "Newer title" } : event,
+  );
   const user = userEvent.setup();
   renderWithSwr(
     <>
@@ -141,6 +151,9 @@ it("updates the cached event page when the editor was opened by id", async () =>
   await confirmRemoval(user);
   await waitFor(() =>
     expect(screen.getByLabelText("Cached question")).toBeEmptyDOMElement(),
+  );
+  expect(screen.getByLabelText("Cached title")).toHaveTextContent(
+    "Newer title",
   );
 });
 

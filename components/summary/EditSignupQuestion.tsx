@@ -28,9 +28,9 @@ export default function EditSignupQuestion({
         method: "PATCH",
         body,
       });
-      await mutate(
+      await mutate<Event>(
         (key) => key === cacheKey || key === `/events/${event.urlId}`,
-        { ...event, formQuestion: "" },
+        (current) => current && { ...current, formQuestion: "" },
         { revalidate: false },
       );
       addSnack("Påmeldingsspørsmålet er fjernet", SnackTypes.SUCCESS);
