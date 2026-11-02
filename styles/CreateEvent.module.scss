@@ -249,10 +249,6 @@
   width: 100%;
 }
 
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
-}
-
 .addDateContainer {
   @include resetButton();
   display: flex;
@@ -267,18 +263,6 @@
 
   @include desktop() {
     font-size: $font-size-secondary-desktop;
-  }
-}
-
-.inputHeaderIconDimensions {
-  height: 14px;
-  stroke-width: 2;
-  width: 14px;
-
-  @include desktop() {
-    height: 20px;
-    stroke-width: 2.5;
-    width: 20px;
   }
 }
 

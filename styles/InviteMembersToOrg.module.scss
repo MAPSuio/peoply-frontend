@@ -21,35 +21,6 @@
     width: 100%;
   }
 
-  .inviteMembersButton {
-    @include resetButton();
-    align-self: flex-start;
-    display: flex;
-    margin-bottom: $spacer-small;
-
-    p {
-      color: var(--primary-color-200, $primary-color-200);
-      font-family: $mono-font;
-      font-size: $font-size-secondary;
-      margin-left: $spacer-very-small;
-
-      @include desktop() {
-        font-size: $font-size-secondary-desktop;
-      }
-    }
-
-    .plusIconDimensions {
-      height: $font-size-secondary;
-      stroke: var(--primary-color-200, $primary-color-200);
-      width: $font-size-secondary;
-
-      @include desktop() {
-        height: $font-size-secondary-desktop;
-        width: $font-size-secondary-desktop;
-      }
-    }
-  }
-
   .inviteOrgContainer {
     align-items: flex-end;
     align-self: flex-start;

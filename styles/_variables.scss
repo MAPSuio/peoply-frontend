@@ -53,7 +53,6 @@ $danger-color-button-soft-light: #CF1809;
 $background-color-primary: #1E2630;
 $background-color-card: #303A47;
 $background-color-card-hover: #3F4C5C;
-$background-color-card-transparent: rgba(48, 58, 71, 0.7);
 $background-color-modal-transparent: rgba(6, 9, 13, 0.8);
 $background-color-modal: #1E2630;
 $background-color-circle: $primary-color-muted;
@@ -64,7 +63,6 @@ $background-color-navbar: rgba(63, 76, 92, 0.5);
 $background-color-calendar-tag: #303A47;
 $background-color-input: #1E2630;
 $background-color-input-hover: #303A47;
-$background-color-input-muted: #303A47;
 $background-color-tag: #303A47;
 $background-color-progress-circle: #3F4C5C;
 $background-color-progress-circle-active: #ABB5C1;
@@ -99,7 +97,6 @@ $background-color-snack: #FFFFFF;
 $background-color-primary-night: #000000;
 $background-color-card-night: #232029;
 $background-color-card-hover-night: #44414B;
-$background-color-card-transparent-night: rgba(48, 58, 71, 0.7);
 $background-color-modal-transparent-night: rgba(38, 38, 38, 0.8);
 $background-color-modal-night: #000000;
 $background-color-circle: $primary-color-muted;
@@ -110,7 +107,6 @@ $background-color-navbar-night: rgba(68, 65, 75, 0.5);
 $background-color-calendar-tag-night: #232029;
 $background-color-input-night: #000000;
 $background-color-input-hover-night: #232029;
-$background-color-input-muted-night: #232029;
 $background-color-tag-night: #232029;
 $background-color-progress-circle-night: #44414B;
 $background-color-progress-circle-active-night: #ABB5C1;
@@ -121,8 +117,6 @@ $background-color-switch-container-night: #232029;
 $background-color-switch-night: #63768D;
 $background-color-button-disabled-night: #2E3453;
 $background-color-button-secondary-night: #232029;
-$background-color-button-event-card-night: #4E5F72;
-$background-color-button-event-card-hover-night: #596B80;
 $background-color-button-highlighted-event-card-night: #FFFFFF;
 $background-color-button-highlighted-event-card-hover-night: #DBDBDB;
 $background-color-button-secondary-hover-night: #2C2932;
@@ -143,7 +137,6 @@ $background-color-snack-night: #FFFFFF;
 $background-color-primary-light: #F1F1F1;
 $background-color-card-light: #FFFFFF;
 $background-color-card-hover-light: #FFFFFF;
-$background-color-card-transparent-light: rgba(48, 58, 71, 0.7);
 $background-color-modal-transparent-light: rgba(6, 9, 13, 0.8);
 $background-color-modal-light: #FFFFFF;
 $background-color-circle-light: #EBE4FF;
@@ -153,7 +146,6 @@ $background-color-glass-light: rgba(115, 130, 149, 0.7);
 $background-color-navbar-light: rgba(255, 255, 255, 0.5);
 $background-color-calendar-tag-light: #FFFFFF;
 $background-color-input-light: #FFFFFF;
-$background-color-input-muted-light: #FFFFFF;
 $background-color-tag-light: #FFFFFF;
 $background-color-progress-circle-light: #8A8A8A;
 $background-color-progress-circle-active-light: #282338;
@@ -176,8 +168,6 @@ $background-color-button-danger-soft-hover-light: #F5E0E2;
 $background-color-button-warning-light: #F4E57F;
 $background-color-button-warning-hover-light: #FFF296;
 $background-color-button-warning-disabled-light: #333E44;
-$background-color-button-warning-soft-light: #4D544F;
-$background-color-button-warning-soft-hover-light: #555B51;
 $background-color-button-confirmed-light: #EBE4FF;
 $background-color-button-confirmed-hover-light: #DFD7F5;
 $background-color-avatar-light: #738295;
@@ -239,7 +229,6 @@ $summary-icon-color-light: $primary-color-600;
 $confirmed-button-color-light: $primary-color-600;
 
 // Borders.
-$image-border: 4px solid #A9AAB7;
 
 // Misc.
 $max-width: 1200px;
@@ -254,13 +243,11 @@ $max-width-button: 500px;
 // 44px - minste komfortable tap-target (Apple HIG / WCAG 2.5.5).
 $min-tap-target: 2.75rem;
 $max-width-card: 500px;
-$max-width-small-event-card: 400px;
 $max-width-event-card: 360px;
 // Fast bildehøyde på event-kort: korthøyde (300px/360px) minus kolonne-gap og
 // infokolonnens verste fall (to tittellinjer), så bildet er likt på alle kort.
 $event-card-image-height: 92px;
 $event-card-image-height-desktop: 126px;
-$max-width-highlighted-card: $max-width;
 $max-width-arranger-list-item: 500px;
 $max-width-org-card: 320px;
 $max-width-text: 600px;
@@ -270,11 +257,9 @@ $max-width-modal-desktop: 600px;
 $max-width-member-card: 600px;
 $page-width-mobile: 90%;
 $page-width-desktop: 80%;
-$img-height-card: 350px;
 $background-blur: 8px;
 $background-blur-soft: 4px;
 $animation-duration: 0.3s;
-$animation-duration-longer: 0.6s;
 $z-index-modal: 9999;
 $z-index-snack: 9998;
 $event-image-height: calc(100vw / 1.78);
@@ -323,7 +308,6 @@ $shadow-slider: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 $shadow-switch: 0px 4px 10px rgba(0, 0, 0, 0.2);
 $shadow-event-image: 0px 10px 25px rgba(0, 0, 0, 0.2);
 $shadow-calendar-tag: 0px 3px 8px rgba(0, 0, 0, 0.2);
-$shadow-highlighted-event-card: none;
 $shadow-small-event-card: 0px 5px 12px rgba(0, 0, 0, 0.2);
 $shadow-event-card: none;
 $shadow-event-card-hover: none;
@@ -332,7 +316,6 @@ $shadow-input: none;
 
 // Shadows for light theme.
 $shadow-tag-light: 0px 4px 10px rgba(106, 106, 106, 0.2);
-$shadow-highlighted-event-card-light: 0px 20px 50px rgba(106, 106, 106, 0.08);
 $shadow-event-card-light: 0 8px 20px rgba(106, 106, 106, 0.08);
 $shadow-event-card-hover-light: 0 13px 32px rgba(106, 106, 106, 0.2);
 $shadow-search-light: 0px 7px 17px rgba(106, 106, 106, 0.2);
@@ -381,7 +364,6 @@ $font-size-data-desktop: 1.75rem;
 $font-size-data-small-desktop: 1.375rem;
 
 // Line heights.
-$line-height-title: 1;
 $line-height-hint-text: 1.2;
 $line-height-text: 1.5;
 $line-height-card-title: 1.2;
@@ -404,5 +386,3 @@ $spacer-very-large: 8rem;
 $spacer-very-large-plus: 12rem;
 
 // Break points.
-$first-break: 500px;
-$second-break: 1000px;

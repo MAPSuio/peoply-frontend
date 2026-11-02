@@ -23,12 +23,6 @@
   padding: $spacer-medium;
 }
 
-.eyebrow {
-  @include uppercase();
-  color: var(--text-color-link, $text-color-link);
-  margin: 0 0 $spacer-mini;
-}
-
 .title {
   color: var(--text-color-emphasis, $text-color-emphasis);
   font-size: $font-size-title;
@@ -87,18 +81,6 @@
   color: var(--text-color-primary, $text-color-primary);
   line-height: $line-height-text;
   margin: 0 0 $spacer-small;
-}
-
-.metaRow {
-  display: flex;
-  justify-content: space-between;
-}
-
-.metaText {
-  color: var(--text-color-primary, $text-color-primary);
-  font-size: $font-size-secondary;
-  line-height: $line-height-text;
-  margin: 0;
 }
 
 .submitButton {

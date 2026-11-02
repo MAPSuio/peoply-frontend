@@ -44,25 +44,8 @@
   text-transform: uppercase;
 }
 
-.imageContainer {
-  margin-bottom: $spacer-small;
-  max-width: 250px;
-
-  @media screen and (min-width: 600px) and (min-height: 900px) {
-    margin-bottom: $spacer-medium;
-    max-width: 300px;
-  }
-}
-
 .section {
   max-width: $max-width-input;
-  width: 100%;
-}
-
-.notificationContainer {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: $spacer-mini;
   width: 100%;
 }
 
@@ -80,16 +63,8 @@
   width: 100%;
 }
 
-.marginBottomSmall {
-  margin-bottom: $spacer-small;
-}
-
 .marginBottomMedium {
   margin-bottom: $spacer-medium;
-}
-
-.marginLeftMedium {
-  margin-left: $spacer-medium;
 }
 
 .subsection {

@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import IconCircle from "../../../components/IconCircle";
 import UserIcon from "../../../components/svgs/UserIcon";
 import ArrangerAvatar from "../../../components/ArrangerAvatar";
-import DateIcon from "../../../components/svgs/DateIcon";
+import CalendarIconSummary from "../../../components/svgs/CalendarIconSummary";
 import PlaceIcon from "../../../components/svgs/PlaceIcon";
 import RegistrationCount from "../../../components/RegistrationCount";
 import SmallCheckCircle from "../../../components/SmallCheckCircle";
@@ -223,7 +223,11 @@ const DateTimeRow = ({ eventData }: { eventData: Event }) => {
   return (
     <div className={`${styles.infoTextContainer} ${styles.marginBottomSmall}`}>
       <div className={styles.iconContainer}>
-        <IconCircle Icon={DateIcon} iconClassName={styles.icon} tightPadding />
+        <IconCircle
+          Icon={CalendarIconSummary}
+          iconClassName={styles.icon}
+          tightPadding
+        />
       </div>
       <div>
         <p

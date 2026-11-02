@@ -1,4 +1,4 @@
-import { RegStatus, type Registration } from "../types/types";
+import type { RegStatus, Registration } from "../types/types";
 import { fetchFromPeoplyApi, fetchFromPeoplyApiJson } from "./fetchers";
 
 /* add event as favorite. returns true/false if done succesfull */
@@ -69,23 +69,6 @@ async function registerUser(
   return res;
 }
 
-/* add event as favorite. returns true/false if done succesfull */
-async function unregisterUser(userId: string, eventId: string) {
-  const eventUrl = `/users/${userId}/registrations`;
-  const requestBody = {
-    eventId: eventId,
-    regStatus: RegStatus.NOT_GOING,
-  };
-
-  return fetchFromPeoplyApiJson(eventUrl, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-}
-
 async function updateRegistrationUser(
   userId: string,
   eventId: string,
@@ -108,10 +91,4 @@ async function updateRegistrationUser(
   });
 }
 
-export {
-  addFavorite,
-  removeFavorite,
-  registerUser,
-  unregisterUser,
-  updateRegistrationUser,
-};
+export { addFavorite, removeFavorite, registerUser, updateRegistrationUser };

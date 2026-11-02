@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/legacy/image";
 import Link from "../components/Link";
 import Button from "../components/Button";
-import styles from "../styles/Offline.module.scss";
+import styles from "../styles/Custom404.module.scss";
 import ErrorImage from "../assets/images/undraw_404.png";
 
 const Offline: NextPage = () => {
@@ -12,9 +12,9 @@ const Offline: NextPage = () => {
       <Head>
         <title>Du er offline</title>
       </Head>
-      <div className={styles.offlineWrapper}>
-        <div className={styles.offlineContainer}>
-          <div className={styles.offlineHeaderContainer}>
+      <div className={styles.errorWrapper}>
+        <div className={styles.errorContainer}>
+          <div className={styles.errorHeaderContainer}>
             <h1>Du er offline</h1>
             <p>
               Koble til internett for å nå denne siden. Sidene du allerede har

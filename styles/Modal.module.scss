@@ -83,26 +83,6 @@
   }
 }
 
-.button {
-  border-radius: $border-radius-inside-card;
-}
-
-.button:not(:last-child) {
-  margin-top: $spacer-medium;
-
-  @include desktop() {
-    margin-top: $spacer-medium-plus;
-  }
-}
-
-.button:last-child {
-  margin-top: $spacer-very-small;
-
-  @include desktop() {
-    margin-top: $spacer-very-small-plus;
-  }
-}
-
 .descriptionContainer {
   margin-bottom: $spacer-medium;
 }

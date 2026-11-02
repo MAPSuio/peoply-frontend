@@ -25,10 +25,6 @@ export function formatPercent(rate: number | null): string {
   return rate === null ? EM_DASH : `${Math.round(rate * 100)} %`;
 }
 
-export function formatDays(days: number | null): string {
-  return days === null ? EM_DASH : `${decimal.format(days)} d`;
-}
-
 /** "10 d før" — median lead time ahead of the event start. */
 export function formatDaysBefore(days: number | null): string {
   return days === null ? EM_DASH : `${decimal.format(days)} d før`;

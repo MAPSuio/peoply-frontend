@@ -3,7 +3,7 @@ import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 /* Components */
 import SummaryCard from "../SummaryCard";
 import IconCircle from "../IconCircle";
-import PlaceIconSummary from "../svgs/PlaceIconSummary";
+import PlaceIcon from "../svgs/PlaceIcon";
 import TextInput from "../inputs/TextInput";
 import TextInputLocationSelect from "../inputs/TextInputLocationSelect";
 
@@ -55,12 +55,7 @@ const EditPlaceSection = ({
       editButtonOnClick={editButtonOnClick}
       editButtonDisabled={editOpen}
       inputId={3}
-      Icon={
-        <IconCircle
-          Icon={PlaceIconSummary}
-          iconClassName={styles.summaryIcon}
-        />
-      }
+      Icon={<IconCircle Icon={PlaceIcon} iconClassName={styles.summaryIcon} />}
       editButtonVisible
       valid={validLocationName}
       inputComponent={

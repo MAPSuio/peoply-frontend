@@ -4,25 +4,11 @@ import {
   fetchFromPeoplyApi,
   fetchFromPeoplyApiJson,
 } from "../services/fetchers";
-import {
-  type Organization,
-  OrganizationRole,
-  SnackTypes,
-  type User,
-} from "../types/types";
-import { getOrganizationRolePrivilege } from "../utils/functions";
+import { SnackTypes, type User } from "../types/types";
+import { administers } from "./createEvent/arrangerOptions";
 import useBack from "./useBack";
 import useSnack from "./useSnack";
 import useUser from "./useUser";
-
-function administers(organization: Organization, user: User): boolean {
-  return organization.organizationRoles.some(
-    (userRole) =>
-      userRole.userId === user.id &&
-      getOrganizationRolePrivilege(userRole.role) >
-        getOrganizationRolePrivilege(OrganizationRole.MEMBER),
-  );
-}
 
 export default function useEventInvitations(
   user: User,

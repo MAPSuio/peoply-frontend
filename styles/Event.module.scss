@@ -141,22 +141,6 @@
   }
 }
 
-.eventPriceTag {
-  background-color: var(
-    --background-color-price-tag,
-    $background-color-price-tag
-  );
-  border-radius: $border-radius-regular;
-  color: var(--text-color-black, $text-color-black);
-  font-family: $mono-font;
-  font-weight: $font-weight-bold;
-  padding: $spacer-small;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateY(-75%);
-}
-
 .eventTags {
   font-family: $mono-font;
   font-size: $font-size-tertiary;
@@ -320,17 +304,6 @@
 
 .marginBottomSmall {
   margin-bottom: $spacer-small;
-}
-
-.marginBottomMedium {
-  margin-bottom: $spacer-medium;
-}
-
-.glassButtonsWrapper {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  margin-bottom: $spacer-medium;
 }
 
 .descHeaderWrapper {
