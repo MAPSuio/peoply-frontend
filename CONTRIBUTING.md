@@ -5,15 +5,13 @@ talks to the Peoply backend at `api.peoply.app`.
 
 ## Getting set up
 
-The project requires **Node >= 22.11.0** and **npm >= 10** (`engines` in
-`package.json`). Older Node versions will install but fail in ways that are
-hard to read, so check `node -v` before opening an issue about a broken build.
-
-`.nvmrc` pins the exact version CI builds with — `nvm use` puts you on it, and
-the CI workflow reads the same file, so there is one version to keep current.
+The project requires the exact Node version in `engines.node` in `package.json`
+and **npm >= 10**. DigitalOcean and CI both read `engines.node`, so changing it
+moves production and CI together. `.npmrc` sets `engine-strict`, so `npm ci` and
+`npm install` fail on any other Node version.
 
 ```bash
-nvm use       # reads .nvmrc
+nvm install "$(sed -n 's/.*"node": "\(.*\)".*/\1/p' package.json)"
 npm ci        # install exactly what the lockfile says
 npm run dev   # http://localhost:3001
 ```
