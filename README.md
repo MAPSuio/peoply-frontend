@@ -9,17 +9,16 @@ All data comes from the Peoply backend — this app owns no database.
 | Frontend | you are here | `http://localhost:3001` | `https://peoply.app` |
 | Backend | [`MAPSuio/peoply-backend`](https://github.com/MAPSuio/peoply-backend) | `http://localhost:3000` | `https://api.peoply.app` |
 
-`engines.node` in `package.json` is the only Node version. DigitalOcean and CI
-both read it, and `.npmrc` sets `engine-strict`, so `npm ci` and `npm install`
-fail on any other version. npm must be >= 10.
+Node >= 22.11.0 < 27.0.0, npm >= 10 (`engines` in `package.json`).
 
 ## Run the frontend
 
 ```bash
-nvm install "$(sed -n 's/.*"node": "\(.*\)".*/\1/p' package.json)"
 npm ci                           # not npm install — see CONTRIBUTING.md
 cp .env.example .env.development # local env — see "Environment variables"
 npm run dev                      # http://localhost:3001
+
+npm ci && cp .env.example .env.development && npm run dev
 ```
 
 `.env.example` already points at `http://localhost:3000`, so after the copy `npm run dev` talks to a local backend out of the box.
@@ -45,12 +44,14 @@ Short version — needs Docker for the local Postgres:
 ```bash
 git clone https://github.com/MAPSuio/peoply-backend.git
 cd peoply-backend
-nvm use && npm ci
+npm ci
 cp .env.example .env
 docker compose -f dev-db/docker-compose.yml up -d
-npx prisma migrate dev
+npx prisma migrate deploy
 npm run seed:dev-db     # local users, organizations, events
 npm run dev             # http://localhost:3000
+
+git clone https://github.com/MAPSuio/peoply-backend.git && cd peoply-backend && npm ci && cp .env.example .env && docker compose -f dev-db/docker-compose.yml up -d && npx prisma migrate deploy && npm run seed:dev-db && npm run dev
 ```
 
 Documentation for the API is at <http://localhost:3000/api>.
@@ -66,20 +67,19 @@ FRONTEND_URL="http://localhost:3001"   # redirect target after login
 
 If you move the frontend off 3001, change both and restart the backend.
 
-## Log in locally
+## Log in locally (dummy user)
 
 Vipps and Google login do not work against localhost. The backend has a dev-only
-mock flow instead — set `LOCAL_AUTH_ENABLED=true` in the backend `.env` before
-`npm run dev`. It is disabled in production.
+mock flow instead:
 
-Open this **in the browser** to log in as a seeded user. It sets the cookie and
-redirects back to the frontend:
+1. Ensure `LOCAL_AUTH_ENABLED=true` is set in `peoply-backend/.env` (enabled by default in `.env.example`; restart backend `npm run dev` if you edited `.env`) and that the database is seeded (`npm run seed:dev-db` in `peoply-backend`).
+2. Open this URL **in the browser** to log in as a dummy user — it sets the session cookies and redirects back to the frontend (`http://localhost:3001`):
 
 ```text
 http://localhost:3000/auth/dev-login?email=Kristian@gmail.com
 ```
 
-List the seeded users with `curl http://localhost:3000/auth/dev-users`.
+To see all available seeded dummy users, open <http://localhost:3000/auth/dev-users> in your browser (or run `curl http://localhost:3000/auth/dev-users`).
 
 `curl -c cookies.txt` logs in `curl`, not your browser — use the URL above when
 you want the UI logged in.
