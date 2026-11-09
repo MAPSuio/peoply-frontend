@@ -33,6 +33,41 @@
   }
 }
 
+.happeningNowBadge {
+  align-items: center;
+  background-color: $success-color-muted;
+  border-radius: $border-radius-regular;
+  bottom: $spacer-very-small-plus;
+  color: $success-color;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-medium;
+  gap: $spacer-mini;
+  left: $spacer-very-small-plus;
+  padding: $spacer-mini $spacer-very-small;
+  position: absolute;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.happeningNowDot {
+  animation: pulse 1.8s ease-in-out infinite;
+  background-color: $success-color;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  height: 7px;
+  width: 7px;
+}
+
 .eventCardTitleContainer {
   align-items: flex-end;
   display: flex;

@@ -20,5 +20,10 @@ export function eventWindowBoundary(offsetMs = 0) {
   return new Date(Math.floor(boundary / HOUR_IN_MS) * HOUR_IN_MS).toISOString();
 }
 
-/** The front page keeps an event listed for two hours after it starts. */
+/**
+ * The front page fetches events starting up to two hours ago so that an event
+ * currently in progress is included in the API response. Client-side filtering
+ * in pages/index.tsx then hides events that have truly finished (endDate has
+ * passed, or the two-hour default window has elapsed for events without one).
+ */
 export const FRONT_PAGE_GRACE_MS = 2 * HOUR_IN_MS;

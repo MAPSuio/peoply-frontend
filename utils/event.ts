@@ -55,6 +55,27 @@ export function isEventFinished(event: Event): boolean {
   return new Date(event.endDate) < new Date();
 }
 
+/* Returns true when the event has started but not yet finished.
+   - With an endDate: between startDate and endDate.
+   - Without an endDate: within the two-hour default window after startDate,
+     matching the grace period used on the front page. */
+const DEFAULT_EVENT_DURATION_MS = 2 * 60 * 60 * 1000;
+
+export function isEventHappeningNow(event: Event): boolean {
+  const now = new Date();
+  const start = new Date(event.startDate);
+
+  if (now < start) {
+    return false;
+  }
+
+  if (event.endDate) {
+    return now < new Date(event.endDate);
+  }
+
+  return now < new Date(start.getTime() + DEFAULT_EVENT_DURATION_MS);
+}
+
 /* The external registration URL is arbitrary user input from the event form -
    only http(s) may reach an href or window.open (blocks javascript: etc.). */
 export function getSafeExternalUrl(event: Event): string | undefined {

@@ -32,7 +32,11 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 import styles from "../styles/EventCard.module.scss";
 import RegistrationCount from "./RegistrationCount";
 import SmallCheckCircle from "./SmallCheckCircle";
-import { getEventImage, isEventFinished } from "../utils/event";
+import {
+  getEventImage,
+  isEventFinished,
+  isEventHappeningNow,
+} from "../utils/event";
 
 interface EventCardProps {
   event: Event;
@@ -43,6 +47,7 @@ const EventCard = ({ event }: EventCardProps) => {
   const endDate = event.endDate ? new Date(event.endDate) : null;
 
   const dateString = formatEventDate(startDate, endDate, EventDateFormat.SHORT);
+  const happeningNow = isEventHappeningNow(event);
 
   const {
     data: registrations,
@@ -61,6 +66,12 @@ const EventCard = ({ event }: EventCardProps) => {
           /* This is black magic. This is the only configuration where the size is 384px on both desktop and mobile */
           sizes="(max-width: 500px) 30vw, 384px" // TODO: Consider tweaking this.
         />
+        {happeningNow && (
+          <div className={styles.happeningNowBadge}>
+            <span className={styles.happeningNowDot} />
+            Pågår nå
+          </div>
+        )}
       </div>
       <div className={styles.eventCardInfoContainer}>
         <div className={styles.eventCardInfo}>
