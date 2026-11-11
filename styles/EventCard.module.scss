@@ -35,10 +35,10 @@
 
 .happeningNowBadge {
   align-items: center;
-  background-color: $success-color-muted;
+  background-color: var(--background-color-check, $background-color-check);
   border-radius: $border-radius-regular;
   bottom: $spacer-very-small-plus;
-  color: $success-color;
+  color: var(--success-color, $success-color);
   display: flex;
   flex-flow: row nowrap;
   font-size: $font-size-tertiary;
@@ -53,14 +53,8 @@
   }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
 .happeningNowDot {
-  animation: pulse 1.8s ease-in-out infinite;
-  background-color: $success-color;
+  background-color: var(--success-color, $success-color);
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;

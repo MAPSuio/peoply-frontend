@@ -21,8 +21,12 @@ import type { ArrangerFollower } from "../types/types";
 // Styles.
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
-import { isEventHappeningNow } from "../utils/event";
-import { eventWindowBoundary, FRONT_PAGE_GRACE_MS } from "../utils/eventWindow";
+import { isVisibleOnFrontPage } from "../utils/event";
+import {
+  eventWindowBoundary,
+  FRONT_PAGE_FETCH_LOOKBACK_MS,
+  FRONT_PAGE_GRACE_MS,
+} from "../utils/eventWindow";
 
 /* Lazy loaded. Every carousel below is gated on SWR data, so none of them can
    render until a fetch resolves. Both point at the same module specifier, so
@@ -61,6 +65,7 @@ const Home: NextPage = () => {
      renders the value, so unlike `upcomingHeader` below it cannot produce a
      hydration mismatch by being decided here. */
   const todayString = eventWindowBoundary(FRONT_PAGE_GRACE_MS);
+  const fetchAfterDate = eventWindowBoundary(FRONT_PAGE_FETCH_LOOKBACK_MS);
   const [upcomingHeader, setUpcomingHeader] = useState<string>(
     DEFAULT_UPCOMING_HEADER,
   );
@@ -89,35 +94,22 @@ const Home: NextPage = () => {
   };
 
   const { data: futureEventsRaw, error: futureEventsError } = useSWR<Event[]>(
-    `/events?afterDate=${todayString}&orderBy=startDate`,
+    `/events?afterDate=${fetchAfterDate}&orderBy=startDate`,
   );
 
-  /* The API uses `afterDate` on startDate only, so it cannot filter by endDate.
-     We fetch with a two-hour grace window and drop anything that has truly
-     finished client-side:
-     - Not started yet → keep.
-     - Started and isEventHappeningNow → keep (respects endDate if set,
-       otherwise the two-hour default window matches the grace period).
-     - Started and no longer happening → drop.
-     The key difference from isEventFinished is that events without an endDate
-     are dropped after two hours, not at the end of the day. */
-  const now = new Date();
-  const isStillRelevant = (e: Event) =>
-    new Date(e.startDate) > now || isEventHappeningNow(e);
-
-  const futureEvents = futureEventsRaw?.filter(isStillRelevant);
+  const futureEvents = futureEventsRaw?.filter(isVisibleOnFrontPage);
 
   const {
     data: eventsFromFollowedOrganizationsRaw,
     error: eventsFromFollowedOrganizationsError,
   } = useSWR<Event[]>(
     followedArrangers && followedArrangers.length > 0
-      ? `/events?afterDate=${todayString}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
+      ? `/events?afterDate=${fetchAfterDate}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
       : null,
   );
 
   const eventsFromFollowedOrganizations =
-    eventsFromFollowedOrganizationsRaw?.filter(isStillRelevant);
+    eventsFromFollowedOrganizationsRaw?.filter(isVisibleOnFrontPage);
 
   const { data: organizations, error: organizationsError } = useSWR<
     Organization[]

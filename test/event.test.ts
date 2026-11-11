@@ -4,6 +4,8 @@ import { type Event, EventRegistrationMode, Visibility } from "../types/types";
 import {
   canInviteTo,
   isEventFinished,
+  isEventHappeningNow,
+  isVisibleOnFrontPage,
   showsRegistrationCount,
 } from "../utils/event";
 
@@ -75,6 +77,113 @@ describe("isEventFinished", () => {
         ),
       ).toBe(true);
     });
+  });
+});
+
+describe("isEventHappeningNow", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("is false before the event starts", () => {
+    expect(
+      isEventHappeningNow(makeEvent(new Date(2026, 6, 28, 14, 0, 0))),
+    ).toBe(false);
+  });
+
+  it("is true between startDate and endDate", () => {
+    expect(
+      isEventHappeningNow(
+        makeEvent(
+          new Date(2026, 6, 28, 10, 0, 0),
+          new Date(2026, 6, 28, 14, 0, 0),
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("is false after endDate", () => {
+    expect(
+      isEventHappeningNow(
+        makeEvent(
+          new Date(2026, 6, 28, 8, 0, 0),
+          new Date(2026, 6, 28, 11, 0, 0),
+        ),
+      ),
+    ).toBe(false);
+  });
+
+  it("is true within two hours of startDate when endDate is missing", () => {
+    expect(
+      isEventHappeningNow(makeEvent(new Date(2026, 6, 28, 10, 30, 0))),
+    ).toBe(true);
+  });
+
+  it("is false once two hours have elapsed without an endDate", () => {
+    expect(
+      isEventHappeningNow(makeEvent(new Date(2026, 6, 28, 10, 0, 0))),
+    ).toBe(false);
+  });
+});
+
+describe("isVisibleOnFrontPage", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("keeps upcoming events", () => {
+    expect(
+      isVisibleOnFrontPage(makeEvent(new Date(2026, 6, 28, 18, 0, 0))),
+    ).toBe(true);
+  });
+
+  it("keeps multi-hour ongoing events", () => {
+    expect(
+      isVisibleOnFrontPage(
+        makeEvent(
+          new Date(2026, 6, 28, 8, 0, 0),
+          new Date(2026, 6, 28, 16, 0, 0),
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps ended events with an endDate for two hours after endDate", () => {
+    expect(
+      isVisibleOnFrontPage(
+        makeEvent(
+          new Date(2026, 6, 28, 8, 0, 0),
+          new Date(2026, 6, 28, 10, 30, 0),
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("hides ended events once two hours have passed since endDate", () => {
+    expect(
+      isVisibleOnFrontPage(
+        makeEvent(
+          new Date(2026, 6, 28, 8, 0, 0),
+          new Date(2026, 6, 28, 10, 0, 0),
+        ),
+      ),
+    ).toBe(false);
+  });
+
+  it("hides events without an endDate two hours after startDate", () => {
+    expect(
+      isVisibleOnFrontPage(makeEvent(new Date(2026, 6, 28, 10, 0, 0))),
+    ).toBe(false);
   });
 });
 

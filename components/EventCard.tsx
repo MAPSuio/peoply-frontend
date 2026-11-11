@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 
 // Components.
 import ArrangerAvatar from "./ArrangerAvatar";
+import Button from "./Button";
 import EventActions from "./EventActions";
 import { CALENDAR_ANCHOR_ATTRIBUTE } from "./CalendarLinksButton";
 import UserIconCard from "./svgs/UserIconCard";
@@ -23,7 +24,7 @@ import {
 // Services.
 
 // Types.
-import { type Event, EventDateFormat } from "../types/types";
+import { ButtonSize, type Event, EventDateFormat } from "../types/types";
 
 // Assets.
 import eventPlaceholder from "../assets/images/undraw_partying.png";
@@ -118,8 +119,16 @@ const EventCard = ({ event }: EventCardProps) => {
               <p className={styles.data}>{event.locationName}</p>
             </div>
           </div>
-          {!isEventFinished(event) && (
-            <div className={styles.actionContainer}>
+          <div className={styles.actionContainer}>
+            {isEventFinished(event) ? (
+              <Button
+                text="Arrangementet er ferdig"
+                disabled
+                size={ButtonSize.COMPACT}
+                noShadow
+                className={styles.actionButton}
+              />
+            ) : (
               <EventActions
                 event={event}
                 updateOnChange={[updateRegistrations]}
@@ -130,8 +139,8 @@ const EventCard = ({ event }: EventCardProps) => {
                   styles.calendarActionButton,
                 )}
               />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
