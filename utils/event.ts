@@ -4,6 +4,7 @@ import {
   EventSource,
   Visibility,
 } from "../types/types";
+import { FRONT_PAGE_GRACE_MS } from "./eventWindow";
 import { getPrimaryEventArrangerOrganization } from "./eventArrangers";
 import { formatDateAndTime } from "./functions";
 
@@ -53,6 +54,47 @@ export function isEventFinished(event: Event): boolean {
   }
 
   return new Date(event.endDate) < new Date();
+}
+
+/* Returns true when the event has started but not yet finished.
+   - With an endDate: between startDate and endDate.
+   - Without an endDate: within the two-hour default window after startDate,
+     matching the grace period used on the front page. */
+const DEFAULT_EVENT_DURATION_MS = 2 * 60 * 60 * 1000;
+
+export function isEventHappeningNow(event: Event): boolean {
+  const now = new Date();
+  const start = new Date(event.startDate);
+
+  if (now < start) {
+    return false;
+  }
+
+  if (event.endDate) {
+    return now < new Date(event.endDate);
+  }
+
+  return now < new Date(start.getTime() + DEFAULT_EVENT_DURATION_MS);
+}
+
+/* Front-page carousels keep:
+   - Upcoming events (not started yet)
+   - Ongoing events (via isEventHappeningNow)
+   - Events with an explicit endDate for two hours after they end
+     ("passive promo"). Events without an endDate are dropped after the
+     two-hour default window. */
+export function isVisibleOnFrontPage(event: Event): boolean {
+  const now = new Date();
+  if (now < new Date(event.startDate) || isEventHappeningNow(event)) {
+    return true;
+  }
+
+  if (!event.endDate) {
+    return false;
+  }
+
+  const endWithGrace = new Date(event.endDate).getTime() + FRONT_PAGE_GRACE_MS;
+  return now.getTime() < endWithGrace;
 }
 
 /* The external registration URL is arbitrary user input from the event form -

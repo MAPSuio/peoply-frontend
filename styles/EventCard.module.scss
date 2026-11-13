@@ -33,6 +33,35 @@
   }
 }
 
+.happeningNowBadge {
+  align-items: center;
+  background-color: var(--background-color-check, $background-color-check);
+  border-radius: $border-radius-regular;
+  bottom: $spacer-very-small-plus;
+  color: var(--success-color, $success-color);
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: $font-size-tertiary;
+  font-weight: $font-weight-medium;
+  gap: $spacer-mini;
+  left: $spacer-very-small-plus;
+  padding: $spacer-mini $spacer-very-small;
+  position: absolute;
+
+  @include desktop() {
+    font-size: $font-size-tertiary-desktop;
+  }
+}
+
+.happeningNowDot {
+  background-color: var(--success-color, $success-color);
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  height: 7px;
+  width: 7px;
+}
+
 .eventCardTitleContainer {
   align-items: flex-end;
   display: flex;

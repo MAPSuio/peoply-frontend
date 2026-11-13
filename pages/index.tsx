@@ -21,7 +21,12 @@ import type { ArrangerFollower } from "../types/types";
 // Styles.
 import styles from "../styles/Home.module.scss";
 import useUser from "../hooks/useUser";
-import { eventWindowBoundary, FRONT_PAGE_GRACE_MS } from "../utils/eventWindow";
+import { isVisibleOnFrontPage } from "../utils/event";
+import {
+  eventWindowBoundary,
+  FRONT_PAGE_FETCH_LOOKBACK_MS,
+  FRONT_PAGE_GRACE_MS,
+} from "../utils/eventWindow";
 
 /* Lazy loaded. Every carousel below is gated on SWR data, so none of them can
    render until a fetch resolves. Both point at the same module specifier, so
@@ -60,6 +65,7 @@ const Home: NextPage = () => {
      renders the value, so unlike `upcomingHeader` below it cannot produce a
      hydration mismatch by being decided here. */
   const todayString = eventWindowBoundary(FRONT_PAGE_GRACE_MS);
+  const fetchAfterDate = eventWindowBoundary(FRONT_PAGE_FETCH_LOOKBACK_MS);
   const [upcomingHeader, setUpcomingHeader] = useState<string>(
     DEFAULT_UPCOMING_HEADER,
   );
@@ -87,18 +93,23 @@ const Home: NextPage = () => {
       .join(","),
   };
 
-  const { data: futureEvents, error: futureEventsError } = useSWR<Event[]>(
-    `/events?afterDate=${todayString}&orderBy=startDate`,
+  const { data: futureEventsRaw, error: futureEventsError } = useSWR<Event[]>(
+    `/events?afterDate=${fetchAfterDate}&orderBy=startDate`,
   );
 
+  const futureEvents = futureEventsRaw?.filter(isVisibleOnFrontPage);
+
   const {
-    data: eventsFromFollowedOrganizations,
+    data: eventsFromFollowedOrganizationsRaw,
     error: eventsFromFollowedOrganizationsError,
   } = useSWR<Event[]>(
     followedArrangers && followedArrangers.length > 0
-      ? `/events?afterDate=${todayString}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
+      ? `/events?afterDate=${fetchAfterDate}&orderBy=startDate&arrangerIds=${followedEventsQuery.arrangerIds}`
       : null,
   );
+
+  const eventsFromFollowedOrganizations =
+    eventsFromFollowedOrganizationsRaw?.filter(isVisibleOnFrontPage);
 
   const { data: organizations, error: organizationsError } = useSWR<
     Organization[]

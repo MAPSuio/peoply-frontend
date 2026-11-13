@@ -20,5 +20,17 @@ export function eventWindowBoundary(offsetMs = 0) {
   return new Date(Math.floor(boundary / HOUR_IN_MS) * HOUR_IN_MS).toISOString();
 }
 
-/** The front page keeps an event listed for two hours after it starts. */
+/**
+ * The front page keeps an event with an explicit endDate listed for two hours
+ * after it ends ("passive promo"), and an event without an endDate for two
+ * hours after it starts.
+ */
 export const FRONT_PAGE_GRACE_MS = 2 * HOUR_IN_MS;
+
+/**
+ * The API filters `afterDate` against `startDate`, not `endDate`. Querying 24
+ * hours back ensures multi-hour ongoing events and recently finished events
+ * (within the 2-hour post-end grace window) still arrive from the API before
+ * `isVisibleOnFrontPage` trims them client-side.
+ */
+export const FRONT_PAGE_FETCH_LOOKBACK_MS = 24 * HOUR_IN_MS;

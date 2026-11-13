@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 
 // Components.
 import ArrangerAvatar from "./ArrangerAvatar";
+import Button from "./Button";
 import EventActions from "./EventActions";
 import { CALENDAR_ANCHOR_ATTRIBUTE } from "./CalendarLinksButton";
 import UserIconCard from "./svgs/UserIconCard";
@@ -23,7 +24,7 @@ import {
 // Services.
 
 // Types.
-import { type Event, EventDateFormat } from "../types/types";
+import { ButtonSize, type Event, EventDateFormat } from "../types/types";
 
 // Assets.
 import eventPlaceholder from "../assets/images/undraw_partying.png";
@@ -32,7 +33,11 @@ import eventPlaceholder from "../assets/images/undraw_partying.png";
 import styles from "../styles/EventCard.module.scss";
 import RegistrationCount from "./RegistrationCount";
 import SmallCheckCircle from "./SmallCheckCircle";
-import { getEventImage, isEventFinished } from "../utils/event";
+import {
+  getEventImage,
+  isEventFinished,
+  isEventHappeningNow,
+} from "../utils/event";
 
 interface EventCardProps {
   event: Event;
@@ -43,6 +48,7 @@ const EventCard = ({ event }: EventCardProps) => {
   const endDate = event.endDate ? new Date(event.endDate) : null;
 
   const dateString = formatEventDate(startDate, endDate, EventDateFormat.SHORT);
+  const happeningNow = isEventHappeningNow(event);
 
   const {
     data: registrations,
@@ -61,6 +67,12 @@ const EventCard = ({ event }: EventCardProps) => {
           /* This is black magic. This is the only configuration where the size is 384px on both desktop and mobile */
           sizes="(max-width: 500px) 30vw, 384px" // TODO: Consider tweaking this.
         />
+        {happeningNow && (
+          <div className={styles.happeningNowBadge}>
+            <span className={styles.happeningNowDot} />
+            Pågår nå
+          </div>
+        )}
       </div>
       <div className={styles.eventCardInfoContainer}>
         <div className={styles.eventCardInfo}>
@@ -107,8 +119,16 @@ const EventCard = ({ event }: EventCardProps) => {
               <p className={styles.data}>{event.locationName}</p>
             </div>
           </div>
-          {!isEventFinished(event) && (
-            <div className={styles.actionContainer}>
+          <div className={styles.actionContainer}>
+            {isEventFinished(event) ? (
+              <Button
+                text="Arrangementet er ferdig"
+                disabled
+                size={ButtonSize.COMPACT}
+                noShadow
+                className={styles.actionButton}
+              />
+            ) : (
               <EventActions
                 event={event}
                 updateOnChange={[updateRegistrations]}
@@ -119,8 +139,8 @@ const EventCard = ({ event }: EventCardProps) => {
                   styles.calendarActionButton,
                 )}
               />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
